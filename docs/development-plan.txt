@@ -1,0 +1,317 @@
+Local meeting transcription for macOS
+Research and prototype development plan
+15 October 2026 • Revision 1 • Implementation handoff
+
+1. Recommended direction
+
+Build a native SwiftUI macOS app that records microphone input and system output into separate local tracks, produces a timestamped transcript with editable acoustic speaker labels, and generates evidence-linked meeting notes using local models. The recording must remain usable even if every AI stage fails.
+
+The proposed stack is Core Audio process taps for system output, a device-selectable Core Audio microphone adapter, FluidAudio for speech recognition and offline diarization, llama.cpp with a quantized Qwen instruction model for notes, and SQLite plus recoverable audio segments for storage. Benchmark the candidates before freezing model versions. These are engineering recommendations, not claims about the competitors' internal architecture.
+
+The first usable release includes record, pause, resume, stop, a meeting library, transcript playback, speaker correction, notes, local search, export, deletion, and recovery. It has no accounts, remote inference, meeting bot, or required calendar integration. Model installation may use the network explicitly; subsequent recording and processing must work with networking disabled.
+
+Start with the capture and model feasibility gates in tasks T01–T04. Do not spend the first milestone polishing the interface while the hardest constraints remain untested.
+
+2. Confirmed scope and remaining assumptions
+
+Confirmed by the user: M2-family or newer Macs, minimum macOS Tahoe 26.5.2, a 16 GB supported target with 8 GB support investigated, editable anonymous speaker labels, and local audio retention until deletion. The user's main test machine is an M2 Max on 26.5.2; its additional resources must not substitute for base-M2 qualification.
+
+• Hardware: base M2 with 16 GB is the release performance reference. M2 Max is an additional development/test tier. Intel and M1 are outside initial scope. M2/8 GB is a separate experimental profile until its gates pass.
+• OS: macOS 26.5.2 or later. Use an SDK/toolchain that supports that target; require no later-only API for core features. Express the deployment floor in build/installer metadata where supported and check the full runtime OS version at launch.
+• Language: English first, including varied accents and technical vocabulary. Preserve original speech; do not translate by default.
+• Meeting size: 1–8 speakers and up to two hours, with a four-hour soak test. No arbitrary truncation at two hours; warn if a session exceeds the tested envelope.
+• Timing: post-meeting transcript and notes are sufficient. Live meters and recording health are required; live text is an optional later milestone.
+• Names, confirmed: anonymous, editable speaker labels. No automatic identity recognition or cross-meeting voice profiles initially.
+• Retention, confirmed: keep recordings locally until explicitly deleted. A delete-audio-only action preserves transcript and notes and clearly disables later playback/retranscription.
+
+Language, maximum meeting length, and live-text requirements remain unconfirmed; English, two hours, and post-meeting output are the working defaults. If live text is essential, promote T14 into the release dependency chain and add its latency tests. Automatic names and automatic audio deletion are deferred.
+
+3. What the reference apps actually do
+
+Granola
+
+Granola's central interaction is a notepad: the user writes rough notes during a meeting and AI expands them using the transcript and calendar context. Generated points can be inspected against transcript or raw-note evidence; notes can be edited and regenerated. Templates provide reusable structures. This is a useful pattern for keeping the user's judgment in the loop. [G3] [G4]
+
+The broader product includes calendar integration, meeting preparation, meeting chat, sharing, organization, and integrations. Its public site positions capture as bot-free across meeting applications. These are product features to learn from, but most do not belong in our first prototype. [G1]
+
+On desktop it captures microphone and combined system output, shows a live transcript, and supports stop/resume and transcript search. Its transcription guide says it does not isolate individual applications, retain meeting recordings, or import existing audio files. Audio goes directly to a transcription provider. [G2]
+
+Granola's security page names Deepgram and Assembly as transcription providers and OpenAI and Anthropic as AI providers; notes are stored in US-hosted AWS infrastructure. Local audio capture therefore does not establish local inference or local-only storage. We should borrow the note workflow while implementing a different data path. [G5]
+
+Speaker tags use participant display names and active-speaker information from meeting interfaces. On macOS this can involve Accessibility; Google Meet also supports an extension. Supported platforms are Meet, Zoom, and Teams. Shared room devices and simultaneous speech remain ambiguous; the fallback is microphone versus system-audio attribution. This is platform metadata assisted attribution, not evidence that Granola acoustically identifies every remote speaker in arbitrary applications. [G6]
+
+The specific capture API, native UI framework, acoustic model, echo handling, and internal scheduling are not established by these sources. Some marketing blog language conflicts with the detailed transcription/security docs; the latter are the basis for this plan.
+
+Superwhisper Meetings
+
+The Meetings page advertises bot-free capture, offline speaker separation, local recordings/transcripts/notes, meeting autodetection, action items, private notes, Markdown files, and sharing. Fully local processing requires choosing offline models. Treat these as vendor-described capabilities, not independently measured reliability. [S1]
+
+The changelog dates the dedicated Meetings release, version 3.0.0, to 15 October 2026. It describes recording, transcription, summaries, speaker identification, start notifications, local/cloud model choices, and a separate Meetings tab. Version 3.0.1 on the same date addresses recording-window and finish behavior. This is materially newer than the older Meeting Mode workflow. [S2]
+
+There is unusually useful implementation disclosure: Superwhisper's voice-model documentation says its local Whisper models use whisper.cpp, Parakeet on Mac uses Argmax's WhisperKit SDK, and Cohere Transcribe uses a quantized MLX path on macOS. Its generic voice documentation distinguishes batch and realtime model support. These details describe model families in the product; they do not establish which exact configuration the new Meetings screen selects. [S3]
+
+There is a documentation conflict around offline summaries. The new Meetings page promises offline models, while the generic language-model page says the local S1-mini model cannot run Meeting/Note/Custom modes. The exact local summarizer for the new Meetings experience is consequently unresolved. Do not infer that it uses Qwen, MLX, llama.cpp, or S1-mini for meeting summaries. [S1] [S4]
+
+The older speaker-separated workflow supports identifying and renaming speakers, inspecting segments, copying transcripts, and processing existing files. Its multi-step instructions are useful historical context rather than a specification of the newly launched Meetings interface. [S5]
+
+Its troubleshooting docs describe device selection, Bluetooth quality changes, system-audio permissions, and interference from other audio-routing software. Its changelog records fixes involving long recordings, deadlocks, dropped audio, and device changes. These inform our fault tests; they are not proof the current release still has those bugs. [S6] [S2]
+
+The public sources reviewed do not disclose the new Meetings diarization model, capture implementation, echo strategy, crash journal, or resource scheduler. No installed-app experiment or reverse engineering was performed for this plan.
+
+What to adopt
+
+• From Granola: useful notes rather than an undifferentiated transcript, optional user note anchors, editable/regenerable output, and traceable evidence.
+• From Superwhisper: local model installation, speaker review, original audio and file ownership, a small recorder, and clear processing choices.
+• Our priorities: capture survival, explicit uncertainty, bounded resource use, offline verification, and back-to-back recording without waiting for AI.
+
+4. Prototype product contract
+
+The first-run flow checks OS/architecture, explains storage, obtains microphone and system-audio access, and installs the selected model pack. Show download size, free-space requirement, progress, cancellation, verification, and a short offline sample test. Model installation is separate from permission setup. Capture can still work in a clearly labeled record-only state if models are unavailable.
+
+New meeting: set a title, choose a microphone, choose microphone-only/system-only/both, check independent source meters, and press Record. The default is both sources. Start a meeting without requiring a calendar or supported conferencing application. A visible recording indicator and simple participant-notice reminder belong in the recorder; the app never starts recording silently.
+
+During recording: show elapsed time, both source states, microphone name, last committed-audio time, disk warning, and a small optional scratchpad. Pause stops saving both sources and records a pause event. Resume creates a new capture epoch. A window close leaves the menu-bar recorder visibly active; Quit offers stop-and-save or cancel. No Escape shortcut discards a recording.
+
+Stop seals the session and queues processing immediately. Show separate progress for preparation, transcription, speaker analysis, and notes. A second meeting can start immediately. The default scheduler suspends heavy processing while another recording is active, so pending jobs may finish later; this tradeoff is visible.
+
+Review: a timestamped transcript, source badges, speaker labels, uncertainty/overlap markers, click-to-play, text corrections, speaker renaming/merging/reassignment, and notes with overview, topics, decisions, action items, and open questions. Action owners and due dates may be unknown. Corrections survive reprocessing. Regeneration creates a new version and preserves manual notes.
+
+Library: list meetings by date/title/status, search titles and transcript text locally, resume interrupted processing, delete audio or the whole meeting, and export TXT, Markdown, and versioned JSON. Private scratchpad content is excluded from generated shareable notes and exports by default; the user may explicitly include it as summary context. If included, label the result as influenced by personal notes and require an explicit export choice.
+
+Meaning of any audio stream
+
+For v0, support audio from arbitrary ordinary desktop/browser applications through system-output capture plus one user-selected input device, independently of meeting-vendor APIs. Include applications launched after recording begins. System output is usually a mix of remote voices and unrelated sounds, not separate participant feeds. Source channels identify capture origin, not necessarily people.
+
+Do not promise every simultaneously connected microphone, hardware direct monitoring, exclusive/protected streams, or every virtual routing setup. Test multi-output routing explicitly; if the default tap misses a route, add the required tap configuration or mark that route unsupported with a visible diagnostic. Never claim silent audio is complete capture. Selecting one particular application is a later feature, especially because browser subprocesses complicate selection.
+
+5. Architecture and technology decisions
+
+Native application
+
+Use SwiftUI for the library, recorder, transcript, and settings, with AppKit where needed for the menu bar and window lifecycle. Use Swift packages for domain logic and adapters. Prefer a small C/C++ bridge for the realtime audio ring and llama.cpp. Avoid shipping a Python environment or requiring a separately installed Ollama/LM Studio server for the prototype.
+
+Process boundaries
+
+The app owns recording, the disk writer, meeting state, and the SQLite writer. ML runs in a bundled XPC worker with an explicit cancellation protocol. This isolates model crashes and releases GPU/model memory when the worker exits. XPC messages carry job metadata and bounded results or file references, never a full meeting's PCM. Recording continues if the worker dies. A UI-process crash may interrupt capture; committed audio must recover on relaunch. Surviving all UI crashes with a separate long-lived recording agent is a later enhancement, not a v0 promise.
+
+Data flow
+
+Microphone ─┐
+            ├─ bounded realtime rings → segment writer → immutable audio + journal
+System tap ─┘                                           ↓
+                                      committed segment index / SQLite
+                                                       ↓
+                                resumable inference worker and scheduler
+                                prepare → ASR → diarize → reconcile → notes
+                                                       ↓
+                                      versioned results → review and export
+
+System capture decision
+
+Use a private Core Audio process tap and private aggregate device with nonmuting behavior. Exclude the app's own playback process. Apple's sample documents process/group capture, aggregate-device integration, and NSAudioCaptureUsageDescription; it lists macOS 14.2+. The independent AudioCap example targets 14.4+. Our confirmed 26.5.2 floor is newer than both; verify behavior on that exact floor and do not introduce a later-only dependency. [A1] [A2]
+
+Do not copy AudioCap's optional private TCC permission APIs or its illustrative file-writing pattern into a realtime callback. Use public permission behavior and a start probe with explicit denied/unavailable states. No privileged helper, virtual driver, or output-device replacement is required by the proposed design. ScreenCaptureKit is a documented alternate audio capture backend, but implement it only if the capture spike finds a blocking tap issue; do not ship two capture paths before one passes. [A2] [A3]
+
+Microphone capture decision
+
+Use a device-selectable Core Audio HAL input adapter behind the same AudioSource interface. A simpler AVAudioEngine adapter is acceptable only if the spike proves deterministic device selection and route recovery without altering the user's system default. Keep mic and system clocks/formats separate until normalization. The app does not assume it automatically knows which microphone a meeting application selected.
+
+Local model decision
+
+Primary ASR candidate: FluidAudio with a pinned Parakeet TDT 0.6B model conversion. Evaluate the English v2 and multilingual v3 variants on our fixtures. FluidAudio supplies native Core ML ASR, VAD, and diarization components; its file-based offline diarizer supports disk-backed processing. Use explicit local loading and disable automatic fetch/re-download paths at runtime. [M1] [M2]
+
+ASR challenger: WhisperKit's Whisper large-v3-turbo, including its compressed variant if quality holds. WhisperKit now lives in Argmax's consolidated open-source Swift repository, which also exposes SpeakerKit. Its incremental file-loading option matters for long sessions. Run the challenger in the feasibility harness and ship only the selected default initially; a second user-selectable engine is optional. Do not assume Superwhisper's Parakeet support implies that every corresponding Argmax feature is in the free SDK. [M3]
+
+Diarization default candidate: FluidAudio's offline Community-1 segmentation/embedding/VBx pipeline, with meeting-wide speaker consistency. Use its full-file/disk-backed mode; independent five-minute diarization jobs must not each invent unrelated speaker IDs. SpeakerKit is the bounded fallback evaluation if FluidAudio fails accuracy, compatibility, or memory gates. [M1] [M2] [M3]
+
+Summary default candidate: Qwen3-4B-Instruct-2507, quantized to Q4_K_M GGUF, running through embedded llama.cpp in the worker with Metal. It is a concrete baseline, not a claim to be the best available model. The model card identifies an Apache-2.0 instruction model; llama.cpp documents Metal and constrained generation. Benchmark quality and peak memory using the exact converted weights and tokenizer/template. [M4] [M5] [M6]
+
+MLX Swift LM is a credible alternative if integration or measured performance favors it; it now documents guided generation. Freeze one summary runtime for v0 to avoid duplicating model formats and test coverage. No Apple Intelligence eligibility or remote fallback should be a hidden requirement. [M7]
+
+Model supply chain
+
+Before integration, create a manifest with exact repository revision, every file hash, byte size, model family, conversion provenance, tokenizer/template identity, license/notice, minimum OS, and measured memory. Install to a versioned temporary directory; verify hashes, compile/warm up Core ML as needed, then atomically activate. Never modify a model pack used by an active job. Support importing the same manifest and files from disk for offline installation.
+
+Review code and model licenses separately. NVIDIA's Parakeet v3 card specifies CC-BY-4.0. The FluidInference diarization card scopes its Community-1 license separately from legacy assets and records provenance limitations. A package's Apache/MIT license does not automatically cover every downloaded weight. Bundle required attribution and choose a specific audited artifact set. [M8] [M9]
+
+6. Recording reliability design
+
+Realtime callback: copy into preallocated fixed-capacity single-producer rings and record frame/timestamp counters. No disk I/O, resampling, model inference, locks that can block, Swift actor hops, logging, or allocations on the callback path. Size each ring for two seconds of its supported maximum format; the format whitelist and memory calculation are part of T03. Overrun increments an atomic counter and produces a gap event off-thread. It must never become silent data loss.
+
+Writer: drain continuously on a dedicated queue. Write short independently recoverable PCM CAF segments, initially two seconds, sharded into per-minute directories. Preserve native source sample rates/channels within the supported envelope; preserve format epochs when hardware changes. Close and flush the file, atomically rename it into the committed set, then publish its index entry. Batch database bookkeeping off the callback. Measure the cost of the durability policy under call load.
+
+Crash recovery: the append-only manifest/journal records segment IDs, source, format, frame count, timestamps, and checksum. Scan committed files that lack database rows after a crash. Quarantine truncated files and report the damaged interval; recover valid partial PCM only when its format/frame boundaries can be proven. A completed DB row must never point at an uncommitted file. Keep original audio immutable across all processing retries.
+
+Timeline: use hardware host timestamps and per-source sample counters mapped to an integer session timeline. Record the UTC start and timezone separately for display. Track clock slope and offset across long sessions; resample derivatives to a shared timeline while preserving the original samples. Wall-clock adjustments must not move words. Route changes, sleep, pause, and restarts create explicit epochs/discontinuities. A gap is distinct from recorded silence; do not collapse either and shift later timestamps.
+
+Device changes: listen for device/default/format changes and stop only the affected source while rebuilding it. A pinned microphone disappearing must be visible; fallback to the default mic requires an enabled user preference. Continue the healthy track, mark the missing interval, and resume when possible. Include endpoint identifiers and reason codes in diagnostic events without storing speech in logs.
+
+Health: distinguish active callbacks, recent disk commits, silence, clipping, and inference progress. Missing expected callbacks or stalled commits is a failure signal; zero amplitude alone may just mean nobody is speaking. A source fault becomes visible within two seconds after detection, with the estimated gap shown in the transcript.
+
+Sleep: hold an appropriate user-initiated activity assertion against idle sleep while recording, without promising to prevent lid-close or explicit sleep. On sleep/interruption seal what is available; on wake show an interrupted session and allow explicit resume. Never silently concatenate overnight sessions. A locked display is tested independently of actual sleep.
+
+Disk: project required space from actual stream formats, warn at estimated remaining capacity below 15 minutes or 2 GB, and stop/save before the filesystem is exhausted using a reserved safety margin. Preserve existing audio; delete only reproducible scratch data automatically. At 48 kHz float32, one mono mic plus stereo system output is about 2.07 GB/hour before overhead (48,000 × 4 × 3 × 3,600 bytes). Two 16 kHz mono int16 derivative tracks add about 230 MB/hour. Reserve at least 8 GB free for a two-hour session plus scratch, separately from model downloads; recompute for other formats.
+
+7. Transcription and good-faith diarization
+
+Preparation creates 16 kHz mono analysis streams per source with persistent source-to-session timestamp maps. Use an explicit downmix policy with anti-phase fixtures; naive averaging must not cancel speech. VAD marks work regions with roughly 300 ms of context padding, but never deletes source audio. Split ASR at suitable speech/silence boundaries, starting with 20–30 second windows and a small overlap; tune these numbers in T06 against the selected engine's actual input limits.
+
+Carry bounded context between ASR windows; deduplicate overlapped words by timestamps and sequence alignment, not substring deletion. Flush the last short window at Stop. Persist word timestamps when provided, plus the engine's raw quality indicators. Do not turn raw likelihoods into invented probabilities. Keep original ASR output separate from user edits and any normalized display text. Silence/music/repeated-output fixtures catch hallucination loops; questionable speech is flagged or retried with bounded effort, not replaced with plausible prose.
+
+For online calls, diarize the system track and retain microphone provenance. Do not equate one track with one person: the mic may capture several people in a room, a virtual mix, or speaker bleed. A personal-headset mode can propose a local speaker label; a room mode diarizes the mic as well. Default identifiers remain session-scoped. No voiceprint database is needed.
+
+Run segmentation/embedding extraction in bounded windows and retain only the features needed for meeting-wide clustering. Cap clustering memory and benchmark two/four-hour sessions; a disk-backed audio reader alone does not guarantee bounded clustering memory. If the library materializes too much state, T07 must implement a bounded strategy or select the fallback before release.
+
+Assign words to speaker turns by temporal intersection, split text at supported boundaries, and retain overlap intervals. Low evidence, a near tie, short acknowledgments, and simultaneous speech may yield Unknown or Multiple speakers. Acoustic grouping does not discover a person's name. A manually entered name changes a mapping; it is not proof that every turn was correctly clustered.
+
+Echo and duplicate handling are required test cases. Laptop speakers may re-enter the microphone, causing duplicate words and extra speakers. Preserve raw tracks; estimate delay and compare acoustic/text evidence on derivative streams before suppressing a probable duplicate. Never mute the mic merely because system audio is active: that loses real interruptions. Keep suppression decisions reversible and inspectable. If speakerphone quality misses the gate, evaluate a proven echo-cancellation component with the captured system stream as reference. Headphones may be the documented highest-quality profile; speakerphone limitations must be visible and measured.
+
+Edits include rename, merge clusters, assign a selected turn to a different/new speaker, and mark uncertain. Reprocessing produces a new machine revision, then reapplies compatible user edits. Ambiguous edit rebasing asks for review instead of overwriting corrections. Speaker and transcript changes invalidate affected notes; display a stale indicator until regeneration.
+
+8. Notes that preserve evidence
+
+Summarize only a committed transcript revision. Use fixed, versioned prompts and structured output: overview, topic summaries, decisions, action items, open questions, and limitations. Each factual item contains transcript segment/word-range references. Personal-note evidence has a separate type and cannot masquerade as something said aloud.
+
+For long meetings, tokenize first. Use approximately 4,000–6,000 input-token chunks with adjacent-turn overlap under an initial 8,192-token runtime context cap. Reserve space for system instructions and bounded output. Extract evidence-backed facts per chunk, then combine and deduplicate them hierarchically. Preserve original references throughout reduction. Re-read cited transcript passages when reconciling a changed decision, negation, number, owner, or due date. Never summarize only the first context window or silently truncate a long meeting.
+
+Use grammar-constrained JSON and schema validation, but remember valid JSON does not establish factual truth. Validate referenced IDs and spans against the selected revision. For each note, verify supporting text; omit unsupported claims or show uncertainty. An owner is populated only when supported by the conversation, not merely because the person spoke about a task. Keep relative date text unless its interpretation is unambiguous; retain the original wording when normalizing.
+
+Treat transcript and scratchpad text as data, including statements such as “ignore all instructions.” The notes worker has no tools, network, email, calendar, or arbitrary file access. It cannot execute action items. Test malicious instructions embedded in a transcript alongside ordinary quoted instructions.
+
+Allow one bounded repair attempt for malformed output; then preserve the transcript and mark notes as failed/retryable. Publish generated notes atomically. A failed regeneration must not replace a usable prior version. Human edits to generated notes are stored separately from machine versions.
+
+9. Persistence and integration contracts
+
+Use a SQLite database in Application Support, with WAL, migrations, foreign keys, and a single controlled writer. Store audio and model files outside the database. Use SQLite FTS for text search; embeddings/vector search are unnecessary in v0. The exact wrapper is an implementation choice; the transaction and recovery semantics are not.
+
+Required records:
+• Meeting: UUID, title, UTC/timezone, capture state, selected sources, retention, duration, current transcript/summary revisions.
+• AudioSegment: UUID, meeting/source/epoch, sequence, native format, frame count, session interval, path, hash, committed state.
+• CaptureEvent: source, session interval, type (gap/pause/deviceChange/sleep/overrun), reason and recoverability.
+• ProcessingJob: kind, input revision/hash, model/prompt/config hash, checkpoint, state, attempt, progress, error code, lease.
+• TranscriptRevision and Word/Segment: stable IDs within a revision, text, session times, source, ASR metadata, speaker candidates, uncertainty and evidence.
+• Speaker and UserEdit: session identity, display name, cluster mapping, operation, target revision/range, lineage and conflict state.
+• SummaryRevision and SummaryItem: transcript/edit revisions, structured content, evidence references, model/prompt hash, validation and stale status.
+• Scratchpad: its own revision and inclusion preference; never appended invisibly to the transcript.
+
+Capture state is independent of processing state. Capture: idle → preparing → recording ↔ paused → stopping → captured; failures can produce interrupted or capturedWithGaps. Processing stages: queued → running → succeeded/failed/cancelled, with retry to queued. A meeting can be captured while its summary is failed. Deletion is a tombstoned transaction that cancels jobs before removing their inputs and derivatives.
+
+Protocol boundaries to freeze in T01:
+• AudioSource.start(configuration), stop(), health/events; frames stay inside the audio subsystem, outside SwiftUI/actors.
+• SegmentStore.commit(segment), enumerateCommitted(meeting), recover(meeting).
+• Transcriber.transcribe(audioSlice, context, cancellation) → timed words and diagnostics.
+• Diarizer.analyze(audioSource, constraints, cancellation) → turns/overlaps and opaque speaker clusters.
+• Reconciler.combine(transcriptRevision, diarization, sourceMap, edits) → attributed revision.
+• Summarizer.generate(snapshot, template, cancellation) → validated summary candidate.
+• ModelRegistry.resolve(manifestID) → verified local assets; no implicit download.
+
+Jobs use at-least-once execution with idempotent result commits. Key results by input revision plus model/config/prompt hashes. A worker lease and heartbeat permit interrupted jobs to be requeued after relaunch. Checkpoints commit after completed ASR chunks and summary extraction chunks. Resume diarization from durable features if supported; otherwise rerun only that stage from immutable audio. Late results must not resurrect deleted meetings or overwrite a newer edit revision.
+
+Suggested source ownership: App/, Domain/, Capture/, Storage/, InferenceWorker/, ASR/, Diarization/, Notes/, Models/, Export/, Benchmarks/, Tests/. A task owner may change only its listed modules unless the integration owner approves a contract change. This handoff plans future agent work; it does not launch agents or create a repository.
+
+10. Performance budgets and release evidence
+
+These are proposed acceptance targets, not measured performance. T02/T03 must establish the reference-machine results and revise targets openly if infeasible. A model's vendor throughput is not an end-to-end meeting benchmark.
+
+Recording gates:
+• After permissions are granted, first audio frames reach the writer within 2 seconds and the first segment is committed within 4 seconds; model cold start cannot delay capture. Show “recording” only once capture is active, not while waiting for permission.
+• On the supported stable-device matrix, zero unreported gaps or duplicated frames in each two-hour capture. Count missing samples against a known injected signal and timeline.
+• On route failure/reconnect, surface degraded capture within 2 seconds after detection; resume within 5 seconds after the device becomes usable, or show an explicit actionable failure.
+• Recover all committed segments after forced termination. Target at most 5 seconds of lost tail with the proposed two-second segmentation, measured under load. This is not a guarantee against hardware power loss or filesystem failure.
+• Realtime callback p99 execution below 10% of its buffer duration. No allocations/blocking calls on the instrumented path. Zero ring overruns in the normal two-hour call-load test.
+• Capture-only app physical footprint target below 350 MiB, CPU below 15% of one core averaged over 10 minutes, and memory growth below 50 MiB between minute 15 and minute 120.
+
+Processing gates on the base-M2/16 GB reference:
+• Complete both-source ASR + diarization + notes for a 60-minute English meeting within 10 minutes after Stop, and a 120-minute meeting within 20 minutes, with no new capture active. Report both cold and warm runs; download time is excluded, model load/compilation is measured separately.
+• Total app plus worker physical footprint target at most 6 GiB in the default profile; include Metal allocations and memory pressure, not only process RSS. No sustained swap growth attributable to our app in the reference call workload.
+• One heavy inference stage at a time. Unload ASR/diarization before LLM loading when memory requires it. Pause background inference on new recording, serious thermal state, or memory pressure; cancellation must leave a valid checkpoint and bounded cleanup.
+• Jobs waiting on a new meeting are “queued/paused,” never shown as stuck. No completion-time promise applies while deliberately suspended.
+
+8 GB feasibility profile:
+
+T02 must test a real M2/8 GB machine or clearly leave support unverified. First try the same quantized 4B summary model with a 4,096-token context and sequential model loading. If that exceeds a 3.5 GiB total physical-footprint target, evaluate Qwen3-1.7B in non-thinking mode with a pinned template and quantization. Its model card documents the non-thinking switch; meeting-note quality still requires our own evaluation. [M12]
+
+Use smaller 2,000–2,500-token extraction chunks, cap output, and unload the worker between stages if necessary. Keep capture gates and factual-quality requirements unchanged. Allow up to 20 minutes processing per 60-minute meeting in this profile. Demonstrate capture while a normal video call/browser workload is active, and processing with those apps still open but no active recording. If it needs persistent swap, destabilizes calls, or fails note quality, ship the usable 16 GB prototype and report 8 GB as unsupported rather than quietly substituting cloud inference or removing diarization.
+
+Quality gates on a frozen, held-out English meeting corpus:
+• Overall normalized word error rate at most 15% for clean headset calls and at most 25% for the noisy/speakerphone subset. Report per meeting, accent, and acoustic condition; names/numbers get a separate error report.
+• Diarization error rate at most 20% on clean 2–6 speaker calls and at most 30% on difficult room/speakerphone calls, using no collar and scoring overlap. Report missed speech, false alarms, and speaker confusion separately. Unknown assignments count as missed attribution, so abstention cannot game the score.
+• At least 80% of non-overlapping reference speech receives a speaker label, with at least 90% correct attribution among assigned clean-call words after optimal anonymous-speaker mapping. Manual names are evaluated separately. Short/overlap turns receive their own report.
+• Zero fabricated sentences in dedicated silence/music controls. Boundary fixtures must preserve first/last words, negation, dates, and numbers.
+• Every generated item has valid evidence references; a human reviewer judges at least 95% of sampled factual items supported, at least 80% recall of annotated decisions/actions, and zero unsupported owners/deadlines in the release fixture set. Report counts and sample size, not percentages alone.
+
+Test corpus and measurement:
+
+Build at least 12 consented or appropriately licensed recordings totaling four hours: one-person notes, 1:1 calls, 3–6 speakers, eight-speaker stress, accents, technical terms, shared-room speech, laptop speakers, overlapping speech, silence/music, and two-hour continuity. Separate development/tuning and held-out acceptance subsets by meeting and speaker. Public AMI samples may supplement but cannot substitute for actual captured calls. Human-label word text, speaker turns/overlaps, decisions/actions, and an approximate timing reference. Publish normalization and scoring scripts with raw counts and fixtures' hashes/licensing.
+
+Run a headless audio replay harness for deterministic comparisons and real-device manual capture tests. On each supported OS test Zoom, Teams, Meet in Chrome and Safari, Slack, and a generic local audio player; use built-in mic/speakers, wired headphones, USB mic, and Bluetooth. Cover app startup mid-session, mute/unmute, 44.1/48 kHz, output changes, permission denial/revocation, lock/sleep/wake, process kill, low disk, corrupt model/segment, cancellation, and back-to-back meetings. Mark inaccessible combinations as untested; do not call that support.
+
+Measure release builds with OS/compiler/model hashes recorded. Three repeated 60-minute processing runs establish a range, not a statistically meaningful p95; use at least 20 varied sessions before claiming percentile latency. Run Instruments/OS signposts for callback timing, disk stalls, physical footprint, CPU/GPU load, thermal pressure, and job timing. Logs contain IDs and metrics, not transcript text.
+
+11. Privacy and delivery boundaries
+
+After installation, deny outbound networking to the app and worker and complete record → process → edit → export → relaunch recovery. Separately inspect connection attempts with networking available: offline success alone does not prove there are no attempted requests. Dependencies must not check for models, send telemetry, or use hosted inference implicitly. Downloads occur only through an explicit model-install action; updates are manual in v0.
+
+Use Application Support outside cloud-synced Documents by default, restrictive file permissions, and no content in logs/crash attachments. The prototype relies on macOS account/device protections and FileVault where enabled; do not claim application-level encryption or guaranteed erasure of backups. Delete meeting content, search indexes, cached excerpts, speaker embeddings, and derivatives together. User-created exports/backups remain outside app-controlled deletion.
+
+Package a signed, notarized direct-download .app/DMG for testers when a developer signing identity is available. Freeze bundle IDs early because audio permissions must be tested on the real app identity. Verify helper signing, hardened-runtime requirements, Metal resources, model loading, permissions, and offline behavior in the packaged build. If signing credentials are unavailable, document the local developer-build path explicitly; that is a distribution limitation, not a reason to omit capture tests.
+
+12. Delivery sequence and agent handoff
+
+Milestone A — Prove feasibility: T01 contracts, T02 model harness, T03 capture spike, T04 model packaging. Exit with a working recorder, reproducible benchmark artifacts, compatible model/runtime pins, and a written go/no-go decision. Model quality and capture routing must be proven before final UI assumptions harden.
+
+Milestone B — Reliable recorder: T05 durable storage, T06 ASR, T07 diarization, T08 job orchestration. Recording/recovery is independently usable. Force-kill the inference worker while capturing and prove the audio survives. A failed AI job is not a failed recording.
+
+Milestone C — Complete usable workflow: T09 evidence-backed notes, T10 native review UI, T11 export/search/deletion. A fresh machine can install models, record a real meeting, correct speakers, inspect note evidence, and export locally.
+
+Milestone D — Release gates: T12 fault/quality/performance qualification and T13 packaging. Fix gate failures before calling the prototype usable. T14 live text and T15 richer integrations are deferred unless your answers promote them.
+
+A rough planning envelope is 4–6 engineering weeks for an experienced macOS/ML implementation team, subject to the feasibility results and hardware access. This is not a commitment or a claim about agent speed. Capture/device recovery and diarization evaluation are the main schedule risks.
+
+The companion implementation-tasks.json is the executable backlog: module ownership, prerequisites, deliverables, acceptance evidence, and fallback decisions. Pick only a task whose dependencies have passed. T02 and T03 can proceed independently after T01; UI work can use fixtures after the contracts freeze. Contract changes belong to the integration owner and must update every affected adapter/test. Every completion report includes the changed modules, exact dependency/model versions, commands and results, hardware/OS, remaining failures, and the next ready task.
+
+First implementation assignment:
+
+Read this plan and implementation-tasks.json. Implement T01, then the T03 recorder proof and T02 benchmark harness. Preserve the separate-source/timebase contracts. Do not add cloud inference, infer speaker names, or replace actual hardware measurements with vendor benchmarks. Produce an evidence-backed decision record before freezing the default model pack or declaring capture supported. Continue through the dependency graph until the end-to-end release gates pass.
+
+13. Risks and explicit fallbacks
+
+• Tap/device incompatibility: reproduce with a minimal signed capture app; test an alternate ScreenCaptureKit adapter only if needed. Publish a tested route matrix.
+• Slow or inaccurate ASR: compare the pinned Parakeet and WhisperKit candidates on the same corpus. Prefer quality within the budget; reduce runtime concurrency before reducing quality.
+• Unstable diarization: compare the offline pipeline with SpeakerKit, improve segmentation/reconciliation, and expose uncertainty/manual repair. “Everyone remote is Them” alone does not satisfy the requested diarization.
+• Echo duplication: retain raw tracks, add reversible suppression and evaluate echo cancellation if needed. Do not hide the issue by deleting coincident microphone speech.
+• Memory/thermal pressure: serialize stages, cap windows/context, unload models, checkpoint, and pause inference while recording. Do not let a large model monopolize capture resources.
+• Unreliable notes: smaller evidence extractions, grounded reduction, bounded repair, and editable results. No silent fallback to a remote API.
+• SDK/model churn: immutable revisions and adapter boundaries; update one dependency/model at a time, rerunning the fixed quality and reliability suites.
+
+14. Sources
+
+Sources were read for this planning session. Vendor pages establish advertised/documented behavior; no competitor performance was independently measured. Proposed budgets and architecture are ours.
+
+[G1] Granola product overview — https://www.granola.ai/
+[G2] Granola transcription guide — https://docs.granola.ai/help-center/taking-notes/transcription
+[G3] Granola AI-enhanced notes — https://docs.granola.ai/help-center/taking-notes/ai-enhanced-notes
+[G4] Granola templates — https://docs.granola.ai/help-center/taking-notes/customise-notes-with-templates
+[G5] Granola security and data flow — https://www.granola.ai/security
+[G6] Granola speaker tags — https://docs.granola.ai/help-center/taking-notes/speaker-attribution
+[S1] Superwhisper Meetings — https://superwhisper.com/meetings
+[S2] Superwhisper changelog — https://superwhisper.com/changelog
+[S3] Superwhisper voice models — https://superwhisper.com/docs/models/voice
+[S4] Superwhisper language models — https://superwhisper.com/docs/models/language
+[S5] Superwhisper older speaker workflow — https://superwhisper.com/docs/modes/speaker-separated-meetings
+[S6] Superwhisper audio troubleshooting — https://superwhisper.com/docs/common-issues/microphone-and-system-audio
+[A1] Apple Core Audio tap sample — https://developer.apple.com/documentation/coreaudio/capturing-system-audio-with-core-audio-taps
+[A2] AudioCap author-maintained sample — https://github.com/insidegui/AudioCap
+[A3] Apple ScreenCaptureKit sample — https://developer.apple.com/documentation/screencapturekit/capturing-screen-content-in-macos
+[M1] FluidAudio SDK — https://github.com/FluidInference/FluidAudio
+[M2] FluidAudio API — https://github.com/FluidInference/FluidAudio/blob/main/Documentation/API.md
+[M3] Argmax open-source Swift SDK — https://github.com/argmaxinc/argmax-oss-swift
+[M4] Qwen summary-model candidate — https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507
+[M5] llama.cpp Metal build — https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md
+[M6] llama.cpp constrained generation — https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md
+[M7] MLX Swift LM — https://github.com/ml-explore/mlx-swift-lm
+[M8] NVIDIA Parakeet v3 model card — https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3
+[M9] FluidInference diarization artifacts — https://huggingface.co/FluidInference/speaker-diarization-coreml
+[M10] Upstream Community-1 model and evaluation — https://huggingface.co/pyannote/speaker-diarization-community-1
+[M11] FluidAudio benchmark methodology/results — https://github.com/FluidInference/FluidAudio/blob/main/Documentation/Benchmarks.md
+[M12] Qwen 8 GB profile candidate — https://huggingface.co/Qwen/Qwen3-1.7B

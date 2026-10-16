@@ -1,0 +1,508 @@
+{
+  "schema_version": 1,
+  "title": "Local macOS meeting app implementation backlog",
+  "plan_file": "development-plan.txt",
+  "research_date": "2026-10-15",
+  "confirmed": {
+    "cpu_minimum": "Apple M2 family",
+    "macos_minimum": "26.5.2",
+    "supported_memory_target_gb": 16,
+    "stretch_memory_target_gb": 8,
+    "user_test_machine": "M2 Max, macOS 26.5.2",
+    "speakers": "Editable anonymous labels",
+    "retention": "Until explicit user deletion"
+  },
+  "assumptions": {
+    "language": "English",
+    "tested_meeting_duration_hours": 2,
+    "live_transcript_required": false,
+    "note": "Awaiting user confirmation"
+  },
+  "coordination": {
+    "start": "T01",
+    "ready_after_contracts": [
+      "T02",
+      "T03"
+    ],
+    "definition_of_done": "All nonoptional dependency gates pass; attach actual test evidence.",
+    "report_fields": [
+      "changed_modules",
+      "dependency_and_model_pins",
+      "commands_and_results",
+      "hardware_and_os",
+      "remaining_failures",
+      "next_ready_task"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "T01",
+      "title": "Freeze contracts and establish the macOS project",
+      "milestone": "A",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "Integration",
+      "module_scope": [
+        "App/",
+        "Domain/",
+        "Tests/Contract/",
+        "docs/decisions/"
+      ],
+      "deliverables": [
+        "Create an arm64 native macOS app and bundled XPC inference target, with fixed bundle IDs and a 26.5.2 runtime floor.",
+        "Define versioned capture, transcript, diarization, summary, edit, model-manifest and job contracts from plan section 9.",
+        "Specify integer nanosecond session time, UTC display metadata, per-source epochs/frame counters, explicit gap events, and immutable revision IDs.",
+        "Add deterministic fixtures for a two-source conversation, overlap, missing source, pause and stale-summary case; include a fake worker."
+      ],
+      "acceptance": [
+        "App and worker build in the chosen pinned Xcode/Swift toolchain on supported macOS.",
+        "Contract round trips preserve source, overlapping intervals, unknown speakers, null owners and evidence references.",
+        "A worker crash is observable without terminating the app; fixture UI state distinguishes captured audio from failed processing.",
+        "Document all confirmed user choices and remaining assumptions; dependent agents use these types."
+      ],
+      "fallback": "Resolve contract disagreement before adapters proliferate. Do not introduce cloud services to simplify the skeleton."
+    },
+    {
+      "id": "T02",
+      "title": "Benchmark local model candidates before choosing defaults",
+      "milestone": "A",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T01"
+      ],
+      "owner_role": "ML evaluation",
+      "module_scope": [
+        "Benchmarks/",
+        "Tests/Fixtures/",
+        "docs/decisions/models/"
+      ],
+      "deliverables": [
+        "Build a release-mode replay harness for separate-source ASR, diarization and summary stages.",
+        "Compare FluidAudio Parakeet v2/v3 with WhisperKit large-v3-turbo; compare the default offline diarizer with SpeakerKit only if the primary fails.",
+        "Evaluate Qwen3-4B-Instruct-2507 GGUF through llama.cpp with bounded context and evidence extraction.",
+        "Record exact source/model revisions, format/conversion, hardware, OS, cold/warm load, stage timing, physical footprint, quality scores and failures.",
+        "Create tuning and held-out meeting sets. Test base M2/16 GB and the user M2 Max separately. Investigate the 8 GB profile, including Qwen3-1.7B non-thinking if necessary."
+      ],
+      "acceptance": [
+        "One primary ASR/diarization/summary combination has reproducible quality and projected full-pipeline measurements, including a real 60-minute and two-hour run.",
+        "No shortlist selection rests solely on clean-read-speech or vendor speed numbers.",
+        "Validate actual word timestamps, final-window behavior, model cancellation and meeting-wide speaker consistency.",
+        "Publish a go/no-go decision for 16 GB and a separate supported/experimental/unverified decision for 8 GB. No main-branch or model-latest pins."
+      ],
+      "fallback": "Change one runtime/model at a time within the same interfaces. If physical hardware is unavailable, report that gate as unverified and do not claim supported performance."
+    },
+    {
+      "id": "T03",
+      "title": "Prove arbitrary-application audio capture",
+      "milestone": "A",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T01"
+      ],
+      "owner_role": "macOS audio",
+      "module_scope": [
+        "Capture/",
+        "Tests/Capture/",
+        "Benchmarks/Capture/",
+        "App/Permissions/"
+      ],
+      "deliverables": [
+        "Implement nonmuting private Core Audio system tap plus one selected microphone input, with separate source meters.",
+        "Use preallocated realtime rings; copy frames/timestamps only in callbacks and write test segments off-thread.",
+        "Obtain permissions using public APIs/normal capture prompts with NSMicrophoneUsageDescription and NSAudioCaptureUsageDescription where applicable.",
+        "Test app-self audio exclusion, new processes after start, browser playback, different output routes and route changes under the app bundle identity.",
+        "Publish a source/device/OS compatibility matrix and an unsupported-format diagnostic rather than silently downscoping capture."
+      ],
+      "acceptance": [
+        "On macOS 26.5.2, captured known signals prove mic and system audio both exist and are distinct; first frames reach the writer within 2 seconds after permission and the first segment commits within 4 seconds.",
+        "Zoom, Teams, Meet, Slack and generic playback trials use capture without meeting APIs; manual tests identify every tested app version.",
+        "Recording does not mute or change the user playback route, and self playback does not recursively enter system capture.",
+        "A 30-minute loaded capture has no ring overruns, timing discontinuity without an event, or blocking/allocating callback work."
+      ],
+      "fallback": "Reduce to a minimal signed tap reproducer. Evaluate ScreenCaptureKit only for a demonstrated tap blocker. Do not use private TCC APIs or require a virtual driver by default."
+    },
+    {
+      "id": "T04",
+      "title": "Install and verify an offline model pack",
+      "milestone": "A",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T02"
+      ],
+      "owner_role": "Model packaging",
+      "module_scope": [
+        "Models/",
+        "App/ModelSetup/",
+        "Tests/Models/"
+      ],
+      "deliverables": [
+        "Implement manifest-driven explicit download and local import with file hashes, sizes, revision IDs, tokenizer/templates and notices.",
+        "Stage, verify, compile/warm up and atomically activate packs; retain the active pack until no running job uses it.",
+        "Disable runtime automatic downloads, telemetry and provider fallbacks; use local filesystem loading only in inference.",
+        "Add missing/corrupt model, insufficient space, interrupted download, cancellation and incompatible-model states."
+      ],
+      "acceptance": [
+        "Fresh installation reports actual download/disk requirements and verifies the sample transcript/summary offline.",
+        "Interrupted installs resume or restart cleanly and never activate partial model files.",
+        "A corrupt model is reported without a hidden network repair attempt; record-only remains available.",
+        "Model attribution and conversion provenance cover each actual shipped asset, not just the SDK license."
+      ],
+      "fallback": "Select a compatible auditable model conversion or build one reproducibly. Do not require users to obtain arbitrary API keys for inference."
+    },
+    {
+      "id": "T05",
+      "title": "Make recordings durable and recoverable",
+      "milestone": "B",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T03"
+      ],
+      "owner_role": "Storage and audio",
+      "module_scope": [
+        "Storage/",
+        "Capture/Writer/",
+        "Capture/Recovery/",
+        "Tests/Recovery/"
+      ],
+      "deliverables": [
+        "Implement two-second CAF segments, atomic publication, journal, checksums, per-minute sharding and SQLite indexing.",
+        "Record sample counts, format epochs, session timestamp mappings, explicit pause/sleep/gap/device-change events.",
+        "Recover committed files without index rows; quarantine truncated/corrupt files and preserve valid existing segments.",
+        "Implement disk projections, reserve margin, safe stop, callback/commit watchdogs, and pinned/default microphone policy."
+      ],
+      "acceptance": [
+        "Random force-kill tests recover every committed segment and meet the measured 5-second tail-loss target under the reference load.",
+        "Healthy input persists while the other source disconnects; every affected interval is visible.",
+        "Two-hour capture does not accumulate PCM in memory; timeline drift remains below 100 ms at known alignment markers after normalization.",
+        "Low disk saves a playable partial meeting and does not delete earlier recordings. Callback p99 and memory gates pass."
+      ],
+      "fallback": "Adjust segment size/durability policy using measured loss and disk latency. Never mark a gap as recorded silence or a failed save as complete."
+    },
+    {
+      "id": "T06",
+      "title": "Produce accurate resumable local transcripts",
+      "milestone": "B",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T04",
+        "T05"
+      ],
+      "owner_role": "ASR",
+      "module_scope": [
+        "ASR/",
+        "Tests/ASR/",
+        "Benchmarks/ASR/"
+      ],
+      "deliverables": [
+        "Implement file-backed normalization, timestamp mapping, VAD context padding and bounded ASR windows.",
+        "Persist chunk results and raw quality metadata; stitch overlaps using timing and token alignment.",
+        "Preserve both sources and revisions, flush trailing audio, and surface silence/hallucination/unsupported-language states.",
+        "Provide cancellation/checkpoint progress through the worker contract."
+      ],
+      "acceptance": [
+        "Boundary fixtures preserve opening/closing words, dates, numbers and negations without duplicate overlaps.",
+        "Pause/resume, sample-rate changes and gaps preserve global timestamps; unknown coverage is never silently omitted.",
+        "Held-out WER and runtime targets are measured per subset; silence/music controls produce no invented sentences.",
+        "Cancel/restart yields the same committed transcript content without rerunning already valid chunks unnecessarily."
+      ],
+      "fallback": "Retune segmentation or select the benchmarked challenger. Preserve original audio and low-confidence text; do not use an LLM to invent missing words."
+    },
+    {
+      "id": "T07",
+      "title": "Add honest speaker separation and correction",
+      "milestone": "B",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "owner_role": "Diarization",
+      "module_scope": [
+        "Diarization/",
+        "Domain/Attribution/",
+        "Tests/Diarization/",
+        "Benchmarks/Diarization/"
+      ],
+      "deliverables": [
+        "Implement full-meeting offline diarization with bounded audio/features and stable session-scoped identities.",
+        "Reconcile speaker turns with word intervals, keeping overlap and unknown assignments.",
+        "Support personal-mic and shared-room modes; source identity never guarantees one human speaker.",
+        "Implement reversible echo/duplicate evidence handling and speaker rename/merge/selected-turn reassignment operations.",
+        "Measure acoustic delay, cross-source duplicates, memory growth and speaker identity consistency on long meetings."
+      ],
+      "acceptance": [
+        "Clean and difficult subset DER, assigned-speech coverage and attribution precision meet plan section 10.",
+        "Eight-speaker/short-turn/overlap fixtures retain uncertainty and do not fabricate names.",
+        "Concurrent local speech during remote playback is retained; duplicate suppression never erases genuine interruptions.",
+        "Reprocessing preserves user corrections or exposes a rebase conflict; 2–4 hour clustering memory is bounded."
+      ],
+      "fallback": "Evaluate SpeakerKit or improve window/clustering integration. A source-only Me/Them transcript is an intermediate state, not completion of this task."
+    },
+    {
+      "id": "T08",
+      "title": "Orchestrate isolated resumable processing",
+      "milestone": "B",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T01",
+        "T04",
+        "T05"
+      ],
+      "owner_role": "Integration and runtime",
+      "module_scope": [
+        "InferenceWorker/",
+        "Domain/Jobs/",
+        "Storage/Jobs/",
+        "Tests/Jobs/"
+      ],
+      "deliverables": [
+        "Implement durable stage DAG, leases/heartbeats, content-addressed idempotent results, retries and cancellation.",
+        "Run one heavy stage at a time, with model unload/restart boundaries and bounded XPC payloads.",
+        "Suspend heavy work during a new recording and react to thermal/memory pressure; expose queued/paused status.",
+        "Prevent late jobs from publishing over newer revisions or deleted meetings."
+      ],
+      "acceptance": [
+        "Kill/hang the ML worker while recording: committed audio continues and the failed stage can retry.",
+        "Start a second meeting immediately after stopping the first, including with a cold model and failed prior summary.",
+        "App relaunch requeues incomplete jobs without duplicating output or losing manual edits.",
+        "Cancellation/deletion/stale revisions have deterministic integration tests and bounded worker cleanup."
+      ],
+      "fallback": "Use shorter checkpoints or recycle the worker if a library cannot release memory. Do not run inference in the capture process to avoid lifecycle work."
+    },
+    {
+      "id": "T09",
+      "title": "Generate evidence-backed meeting notes locally",
+      "milestone": "C",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T06",
+        "T07",
+        "T08"
+      ],
+      "owner_role": "Notes and evaluation",
+      "module_scope": [
+        "Notes/",
+        "Tests/Notes/",
+        "Benchmarks/Notes/"
+      ],
+      "deliverables": [
+        "Implement hierarchical token-budgeted extraction/reduction with versioned prompts and evidence IDs.",
+        "Produce schema-validated overview/topics/decisions/actions/questions/limitations with nullable owners and due dates.",
+        "Validate source spans, preserve contradictions/revisions, and support one bounded repair attempt.",
+        "Keep scratchpad inclusion explicit, preserve manual notes, and flag notes stale when underlying transcript/attribution changes.",
+        "Add the 8 GB inference profile only if the selected model passes the same factual-quality criteria."
+      ],
+      "acceptance": [
+        "Two-hour transcripts cover the whole meeting; beginning/middle/end decisions remain represented.",
+        "Every item references valid evidence; human quality evaluation meets support/recall/owner/deadline gates.",
+        "Transcript-injected instructions cannot invoke tools or change export/privacy behavior.",
+        "Failure leaves the transcript and prior summary intact; regeneration never overwrites user edits silently."
+      ],
+      "fallback": "Reduce extraction scope, strengthen evidence validation or choose a better local model within budget. No cloud fallback."
+    },
+    {
+      "id": "T10",
+      "title": "Build the complete native recording and review interface",
+      "milestone": "C",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T01",
+        "T05",
+        "T08"
+      ],
+      "owner_role": "macOS UI",
+      "module_scope": [
+        "App/Recorder/",
+        "App/Library/",
+        "App/Transcript/",
+        "App/Notes/",
+        "App/Settings/",
+        "Tests/UI/"
+      ],
+      "deliverables": [
+        "Implement onboarding, record-only/model-ready states, source checks, recorder, scratchpad and meeting library.",
+        "Display independent recording and processing states, gaps and source health without implying certainty from silence.",
+        "Add virtualized transcript rows, click-to-play, speaker edits, text corrections, evidence inspection and note regeneration.",
+        "Implement keyboard access, clear menu-bar recording status, pause/resume, and safe close/quit behavior using fixture adapters first."
+      ],
+      "acceptance": [
+        "A user can start/stop/save without inspecting logs or the terminal.",
+        "A two-hour transcript scrolls and edits responsively; waveform/meters do not publish every audio callback to SwiftUI.",
+        "Permissions, silent sources, disconnected devices and failed processing have actionable states.",
+        "UI fixtures and final integration agree on unknown speakers, unavailable playback, stale notes and explicit destructive actions."
+      ],
+      "fallback": "Use native basic controls and reduce visual polish. Keep all recording-health and correction affordances."
+    },
+    {
+      "id": "T11",
+      "title": "Add local search, export, retention and deletion",
+      "milestone": "C",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T09",
+        "T10"
+      ],
+      "owner_role": "Data experience",
+      "module_scope": [
+        "Export/",
+        "Storage/Search/",
+        "Storage/Deletion/",
+        "App/Export/",
+        "Tests/DataLifecycle/"
+      ],
+      "deliverables": [
+        "Implement SQLite text search and TXT/Markdown/versioned JSON exports with source timestamps and speaker mappings.",
+        "Exclude private scratchpad by default; explicitly disclose/export personal-note-influenced summaries.",
+        "Implement audio-only deletion and complete-meeting deletion, including derivatives, search entries, caches and queued jobs.",
+        "Keep originals until user deletion and show disk usage. Export audio only when explicitly selected."
+      ],
+      "acceptance": [
+        "Exported content matches the selected transcript/summary revisions and contains no private scratchpad by default.",
+        "Audio-only deletion preserves readable/searchable text and visibly disables playback/retranscription.",
+        "Deletion during processing cannot be undone by a late worker result.",
+        "Search indexes and cached excerpts contain no deleted meeting after relaunch; user-created external exports are described accurately."
+      ],
+      "fallback": "Keep export formats simple and stable. Defer sync, public links, connectors and vector search."
+    },
+    {
+      "id": "T12",
+      "title": "Qualify reliability, performance and offline guarantees",
+      "milestone": "D",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10",
+        "T11"
+      ],
+      "owner_role": "Release qualification",
+      "module_scope": [
+        "Benchmarks/",
+        "Tests/Integration/",
+        "docs/qualification/"
+      ],
+      "deliverables": [
+        "Execute the real-app/device/OS matrix and the held-out quality corpus in release builds.",
+        "Inject permission revocation, disconnects, lock/sleep, kill, full disk, malformed models, worker hangs and cancellations.",
+        "Run two-hour normal recordings, a four-hour soak, back-to-back meetings and cold/warm processing measurements.",
+        "Verify offline operation with networking denied and separately inspect attempted outbound connections while enabled.",
+        "Publish machine-readable measurements and a readable release report listing tested, failed and unverified configurations."
+      ],
+      "acceptance": [
+        "All supported-profile gates in plan section 10 pass with raw evidence; no unsupported claim relies on M2 Max results alone.",
+        "Zero silent data loss in the matrix; every induced discontinuity is visible.",
+        "16 GB and 8 GB support decisions are separate. Unavailable hardware remains unverified.",
+        "No audio/transcript/notes leave the app through inference, logs, telemetry or automatic dependency downloads."
+      ],
+      "fallback": "Fix the owning module and rerun affected gates. Explicitly revise a scope or budget decision with evidence; never relabel a failing test as passing."
+    },
+    {
+      "id": "T13",
+      "title": "Deliver an installable test build",
+      "milestone": "D",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T12"
+      ],
+      "owner_role": "Release integration",
+      "module_scope": [
+        "Packaging/",
+        "App/Info.plist",
+        "docs/tester-guide/"
+      ],
+      "deliverables": [
+        "Produce a signed/notarized arm64 app/DMG where credentials are available and bundle worker/resources/notices correctly.",
+        "Verify full 26.5.2 floor, app identity, audio permission prompts and offline models on a clean user account.",
+        "Provide a short setup/recovery/export guide, tested-hardware matrix, known limitations and release evidence.",
+        "Disable automatic updates during recording; v0 may use manual update installation only."
+      ],
+      "acceptance": [
+        "Fresh install → permissions → model installation → offline real meeting → transcript → speaker correction → notes → export succeeds.",
+        "Back-to-back capture and relaunch recovery pass in the packaged build, not only under Xcode.",
+        "A human tester completes the workflow without developer tooling.",
+        "If signing credentials are absent, deliver a documented developer build and explicitly mark distribution qualification incomplete."
+      ],
+      "fallback": "Preserve a usable local build and explain the specific signing/distribution blocker. Do not claim notarization or clean-machine validation without evidence."
+    },
+    {
+      "id": "T14",
+      "title": "Optional provisional live transcription",
+      "milestone": "Later",
+      "status": "planned",
+      "optional": true,
+      "depends_on": [
+        "T06",
+        "T07",
+        "T08",
+        "T10"
+      ],
+      "owner_role": "Streaming inference",
+      "module_scope": [
+        "ASR/Live/",
+        "Diarization/Live/",
+        "App/Transcript/",
+        "Tests/Streaming/"
+      ],
+      "deliverables": [
+        "Promote into v0 only if live text is required; otherwise keep post-meeting output as the release path.",
+        "Process only durable audio, reuse the scheduler, and show provisional text/speakers distinctly from final results.",
+        "Persist finalized chunk results for reuse after Stop; post-meeting reconciliation may revise provisional labels.",
+        "Drop/defer live inference under pressure while retaining every captured segment."
+      ],
+      "acceptance": [
+        "On the reference machine target median provisional-text delay under 5 seconds and p95 under 10 seconds on a representative measured session set.",
+        "Simultaneous call plus live inference still meets all capture loss, memory and thermal gates.",
+        "Live/final transitions preserve user edits and show uncertainty rather than pretending provisional speakers are final.",
+        "If promoted, T12 and T13 must validate T14 before release."
+      ],
+      "fallback": "Use buffered near-live output or record-only degradation with visible status. Do not compromise saved audio for live text."
+    },
+    {
+      "id": "T15",
+      "title": "Optional meeting convenience features",
+      "milestone": "Later",
+      "status": "planned",
+      "optional": true,
+      "depends_on": [
+        "T13"
+      ],
+      "owner_role": "Product extensions",
+      "module_scope": [
+        "App/MeetingDetection/",
+        "Integrations/",
+        "Notes/Templates/"
+      ],
+      "deliverables": [
+        "Consider local meeting-start suggestions, calendar context, application filtering, reusable templates and meeting-scoped chat.",
+        "Treat automatic names through meeting UI adapters as a separate opt-in attribution source.",
+        "Prioritize using user testing evidence; none of these are required for the core prototype."
+      ],
+      "acceptance": [
+        "New integrations do not become a dependency of generic capture or local processing.",
+        "No automatic recording without an explicit user preference and visible recording state.",
+        "Any network-dependent extension is clearly separate from the local-only core."
+      ],
+      "fallback": "Defer until the recording and note-quality feedback justifies the added maintenance surface."
+    }
+  ]
+}
