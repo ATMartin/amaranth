@@ -1,0 +1,148 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0009.wav",
+  "audioSeconds" : 10.575,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4637176,
+  "loadSeconds" : 0.124192083,
+  "peakFootprintBytes" : 39518856,
+  "processSeconds" : 0.084518667,
+  "realtimeFactor" : 0.007992308936170214,
+  "systemMemoryDeltaPeakBytes" : 32768,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.24,
+      "text" : "At"
+    },
+    {
+      "end" : 1.28,
+      "start" : 0.56,
+      "text" : "most,"
+    },
+    {
+      "end" : 1.44,
+      "start" : 1.28,
+      "text" : "by"
+    },
+    {
+      "end" : 1.5999999999999999,
+      "start" : 1.44,
+      "text" : "an"
+    },
+    {
+      "end" : 2,
+      "start" : 1.6,
+      "text" : "alms"
+    },
+    {
+      "end" : 2.48,
+      "start" : 2.16,
+      "text" : "given"
+    },
+    {
+      "end" : 2.64,
+      "start" : 2.48,
+      "text" : "to"
+    },
+    {
+      "end" : 2.8000000000000003,
+      "start" : 2.64,
+      "text" : "a"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.8000000000000003,
+      "text" : "beggar"
+    },
+    {
+      "end" : 3.52,
+      "start" : 3.2,
+      "text" : "whose"
+    },
+    {
+      "end" : 4,
+      "start" : 3.52,
+      "text" : "blessing"
+    },
+    {
+      "end" : 4.16,
+      "start" : 4,
+      "text" : "he"
+    },
+    {
+      "end" : 4.640000000000001,
+      "start" : 4.16,
+      "text" : "fled"
+    },
+    {
+      "end" : 5.2,
+      "start" : 4.64,
+      "text" : "from,"
+    },
+    {
+      "end" : 5.36,
+      "start" : 5.2,
+      "text" : "he"
+    },
+    {
+      "end" : 5.6000000000000005,
+      "start" : 5.36,
+      "text" : "might"
+    },
+    {
+      "end" : 6,
+      "start" : 5.6000000000000005,
+      "text" : "hope"
+    },
+    {
+      "end" : 6.5600000000000005,
+      "start" : 6,
+      "text" : "wearily"
+    },
+    {
+      "end" : 6.720000000000001,
+      "start" : 6.5600000000000005,
+      "text" : "to"
+    },
+    {
+      "end" : 7.12,
+      "start" : 6.72,
+      "text" : "win"
+    },
+    {
+      "end" : 7.28,
+      "start" : 7.12,
+      "text" : "for"
+    },
+    {
+      "end" : 7.92,
+      "start" : 7.28,
+      "text" : "himself"
+    },
+    {
+      "end" : 8.24,
+      "start" : 7.92,
+      "text" : "some"
+    },
+    {
+      "end" : 8.64,
+      "start" : 8.24,
+      "text" : "measure"
+    },
+    {
+      "end" : 8.96,
+      "start" : 8.64,
+      "text" : "of"
+    },
+    {
+      "end" : 9.6,
+      "start" : 8.96,
+      "text" : "actual"
+    },
+    {
+      "end" : 10.4,
+      "start" : 9.6,
+      "text" : "grace."
+    }
+  ]
+}

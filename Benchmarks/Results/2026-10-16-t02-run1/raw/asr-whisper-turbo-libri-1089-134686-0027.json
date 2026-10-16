@@ -1,0 +1,58 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0027.wav",
+  "audioSeconds" : 2.71,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4194808,
+  "loadSeconds" : 0.633392541,
+  "peakFootprintBytes" : 127075120,
+  "processSeconds" : 0.914269167,
+  "realtimeFactor" : 0.33736869630996313,
+  "systemMemoryDeltaPeakBytes" : 5914624,
+  "words" : [
+    {
+      "end" : 0.3400000035762787,
+      "start" : 0.1599999964237213,
+      "text" : "He"
+    },
+    {
+      "end" : 0.8600000143051147,
+      "start" : 0.3400000035762787,
+      "text" : "clasped"
+    },
+    {
+      "end" : 0.9800000190734863,
+      "start" : 0.8600000143051147,
+      "text" : "his"
+    },
+    {
+      "end" : 1.3799999952316284,
+      "start" : 0.9800000190734863,
+      "text" : "hands"
+    },
+    {
+      "end" : 1.4800000190734863,
+      "start" : 1.3799999952316284,
+      "text" : "on"
+    },
+    {
+      "end" : 1.5800000429153442,
+      "start" : 1.4800000190734863,
+      "text" : "the"
+    },
+    {
+      "end" : 1.8799999952316284,
+      "start" : 1.5800000429153442,
+      "text" : "desk"
+    },
+    {
+      "end" : 2.0799999237060547,
+      "start" : 1.8799999952316284,
+      "text" : "and"
+    },
+    {
+      "end" : 2.4000000953674316,
+      "start" : 2.0799999237060547,
+      "text" : "said,"
+    }
+  ]
+}

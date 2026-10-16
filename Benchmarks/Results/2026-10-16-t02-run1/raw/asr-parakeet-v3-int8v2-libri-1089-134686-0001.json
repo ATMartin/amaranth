@@ -1,0 +1,53 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0001.wav",
+  "audioSeconds" : 3.275,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4162040,
+  "loadSeconds" : 0.121302375,
+  "peakFootprintBytes" : 38208112,
+  "processSeconds" : 0.060081209,
+  "realtimeFactor" : 0.018345407328244273,
+  "systemMemoryDeltaPeakBytes" : 32768,
+  "words" : [
+    {
+      "end" : 0.64,
+      "start" : 0.16,
+      "text" : "Stuff"
+    },
+    {
+      "end" : 0.88,
+      "start" : 0.72,
+      "text" : "it"
+    },
+    {
+      "end" : 0.96,
+      "start" : 0.88,
+      "text" : "into"
+    },
+    {
+      "end" : 1.44,
+      "start" : 1.12,
+      "text" : "you,"
+    },
+    {
+      "end" : 1.5999999999999999,
+      "start" : 1.44,
+      "text" : "his"
+    },
+    {
+      "end" : 2.08,
+      "start" : 1.6,
+      "text" : "belly"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.08,
+      "text" : "counseled"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 2.72,
+      "text" : "him."
+    }
+  ]
+}

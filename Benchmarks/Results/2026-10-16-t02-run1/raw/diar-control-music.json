@@ -1,0 +1,12 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/control-music.wav",
+  "audioSeconds" : 60,
+  "engine" : "fluid-offline-community1",
+  "error" : "noSpeechDetected",
+  "footprintBeforeLoadBytes" : 7881208,
+  "loadSeconds" : 0.081130459,
+  "peakFootprintBytes" : 581813088,
+  "processSeconds" : 0,
+  "realtimeFactor" : 0,
+  "systemMemoryDeltaPeakBytes" : 0
+}

@@ -1,0 +1,173 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0022.wav",
+  "audioSeconds" : 11.175,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4620792,
+  "loadSeconds" : 0.158898458,
+  "peakFootprintBytes" : 56803928,
+  "processSeconds" : 0.081822167,
+  "realtimeFactor" : 0.007321894138702461,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.24,
+      "text" : "How"
+    },
+    {
+      "end" : 0.88,
+      "start" : 0.56,
+      "text" : "comes"
+    },
+    {
+      "end" : 1.04,
+      "start" : 0.88,
+      "text" : "it"
+    },
+    {
+      "end" : 1.36,
+      "start" : 1.12,
+      "text" : "that"
+    },
+    {
+      "end" : 1.5999999999999999,
+      "start" : 1.36,
+      "text" : "while"
+    },
+    {
+      "end" : 1.84,
+      "start" : 1.6,
+      "text" : "the"
+    },
+    {
+      "end" : 2.08,
+      "start" : 1.84,
+      "text" : "first"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.08,
+      "text" : "Beatitude"
+    },
+    {
+      "end" : 3.3600000000000003,
+      "start" : 2.88,
+      "text" : "promises"
+    },
+    {
+      "end" : 3.52,
+      "start" : 3.36,
+      "text" : "the"
+    },
+    {
+      "end" : 3.92,
+      "start" : 3.52,
+      "text" : "kingdom"
+    },
+    {
+      "end" : 4,
+      "start" : 3.92,
+      "text" : "of"
+    },
+    {
+      "end" : 4.32,
+      "start" : 4,
+      "text" : "heaven"
+    },
+    {
+      "end" : 4.4,
+      "start" : 4.32,
+      "text" : "to"
+    },
+    {
+      "end" : 4.5600000000000005,
+      "start" : 4.4,
+      "text" : "the"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.5600000000000005,
+      "text" : "poor"
+    },
+    {
+      "end" : 5.04,
+      "start" : 4.88,
+      "text" : "of"
+    },
+    {
+      "end" : 5.760000000000001,
+      "start" : 5.04,
+      "text" : "heart,"
+    },
+    {
+      "end" : 6,
+      "start" : 5.76,
+      "text" : "the"
+    },
+    {
+      "end" : 6.4,
+      "start" : 6,
+      "text" : "second"
+    },
+    {
+      "end" : 7.2,
+      "start" : 6.4,
+      "text" : "beatitude"
+    },
+    {
+      "end" : 7.92,
+      "start" : 7.2,
+      "text" : "promises"
+    },
+    {
+      "end" : 8.24,
+      "start" : 7.92,
+      "text" : "also"
+    },
+    {
+      "end" : 8.4,
+      "start" : 8.24,
+      "text" : "to"
+    },
+    {
+      "end" : 8.64,
+      "start" : 8.4,
+      "text" : "the"
+    },
+    {
+      "end" : 9.040000000000001,
+      "start" : 8.64,
+      "text" : "meek"
+    },
+    {
+      "end" : 9.280000000000001,
+      "start" : 9.040000000000001,
+      "text" : "that"
+    },
+    {
+      "end" : 9.52,
+      "start" : 9.28,
+      "text" : "they"
+    },
+    {
+      "end" : 9.76,
+      "start" : 9.52,
+      "text" : "shall"
+    },
+    {
+      "end" : 10.16,
+      "start" : 9.76,
+      "text" : "possess"
+    },
+    {
+      "end" : 10.4,
+      "start" : 10.16,
+      "text" : "the"
+    },
+    {
+      "end" : 10.8,
+      "start" : 10.4,
+      "text" : "land"
+    }
+  ]
+}

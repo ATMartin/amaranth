@@ -1,0 +1,53 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0007.wav",
+  "audioSeconds" : 4.275,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4227576,
+  "loadSeconds" : 0.157263291,
+  "peakFootprintBytes" : 54821488,
+  "processSeconds" : 0.064542708,
+  "realtimeFactor" : 0.01509770947368421,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.64,
+      "start" : 0.32,
+      "text" : "A"
+    },
+    {
+      "end" : 1.2,
+      "start" : 0.64,
+      "text" : "cold,"
+    },
+    {
+      "end" : 1.84,
+      "start" : 1.2,
+      "text" : "lucid"
+    },
+    {
+      "end" : 2.64,
+      "start" : 1.84,
+      "text" : "indifference"
+    },
+    {
+      "end" : 3.04,
+      "start" : 2.64,
+      "text" : "reigned"
+    },
+    {
+      "end" : 3.2,
+      "start" : 3.04,
+      "text" : "in"
+    },
+    {
+      "end" : 3.4400000000000004,
+      "start" : 3.2,
+      "text" : "his"
+    },
+    {
+      "end" : 4,
+      "start" : 3.44,
+      "text" : "soul."
+    }
+  ]
+}

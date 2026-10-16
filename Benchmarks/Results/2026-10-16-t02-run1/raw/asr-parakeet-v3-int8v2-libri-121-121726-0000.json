@@ -1,0 +1,98 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0000.wav",
+  "audioSeconds" : 8.46,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4506104,
+  "loadSeconds" : 0.119945583,
+  "peakFootprintBytes" : 38945392,
+  "processSeconds" : 0.072853,
+  "realtimeFactor" : 0.008611465721040188,
+  "systemMemoryDeltaPeakBytes" : 32768,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.24,
+      "text" : "also"
+    },
+    {
+      "end" : 1.04,
+      "start" : 0.72,
+      "text" : "a"
+    },
+    {
+      "end" : 1.6,
+      "start" : 1.04,
+      "text" : "popular"
+    },
+    {
+      "end" : 2.5599999999999996,
+      "start" : 1.6,
+      "text" : "contrivance,"
+    },
+    {
+      "end" : 3.04,
+      "start" : 2.56,
+      "text" : "whereby"
+    },
+    {
+      "end" : 3.2,
+      "start" : 3.04,
+      "text" : "love"
+    },
+    {
+      "end" : 3.8400000000000003,
+      "start" : 3.52,
+      "text" : "making"
+    },
+    {
+      "end" : 4.16,
+      "start" : 3.84,
+      "text" : "may"
+    },
+    {
+      "end" : 4.32,
+      "start" : 4.16,
+      "text" : "be"
+    },
+    {
+      "end" : 5.36,
+      "start" : 4.32,
+      "text" : "suspended,"
+    },
+    {
+      "end" : 5.680000000000001,
+      "start" : 5.36,
+      "text" : "but"
+    },
+    {
+      "end" : 6,
+      "start" : 5.68,
+      "text" : "not"
+    },
+    {
+      "end" : 6.640000000000001,
+      "start" : 6,
+      "text" : "stopped,"
+    },
+    {
+      "end" : 6.88,
+      "start" : 6.640000000000001,
+      "text" : "during"
+    },
+    {
+      "end" : 7.04,
+      "start" : 6.88,
+      "text" : "the"
+    },
+    {
+      "end" : 7.44,
+      "start" : 7.04,
+      "text" : "picnic"
+    },
+    {
+      "end" : 8.32,
+      "start" : 7.6000000000000005,
+      "text" : "season."
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0027.wav",
+  "audioSeconds" : 2.71,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4096504,
+  "loadSeconds" : 0.123758417,
+  "peakFootprintBytes" : 38716016,
+  "processSeconds" : 0.056230042,
+  "realtimeFactor" : 0.02074909298892989,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.32,
+      "start" : 0.08,
+      "text" : "he"
+    },
+    {
+      "end" : 0.88,
+      "start" : 0.32,
+      "text" : "clasped"
+    },
+    {
+      "end" : 1.04,
+      "start" : 0.88,
+      "text" : "his"
+    },
+    {
+      "end" : 1.28,
+      "start" : 1.04,
+      "text" : "hands"
+    },
+    {
+      "end" : 1.44,
+      "start" : 1.28,
+      "text" : "on"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.44,
+      "text" : "the"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.52,
+      "text" : "desk"
+    },
+    {
+      "end" : 2.16,
+      "start" : 1.84,
+      "text" : "and"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2.16,
+      "text" : "said"
+    }
+  ]
+}

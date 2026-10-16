@@ -1,0 +1,26 @@
+# Tracked items
+
+Items 1–9 were carried out of Milestone A (validator verdict v2: PASS). Items 10 and later were opened in Milestone B.
+
+| # | Item | Gate it blocks | Owner task | Status |
+|---|---|---|---|---|
+| 1 | Manual meeting-app (Zoom/Teams/Meet/Slack), device (wired/Bluetooth/USB, sleep/lock) and permission-denial trials | T10, T12 | T03 | Waiting on the user (checklist: capture-manual-checklist.md) |
+| 2 | Live text: overlap alignment, padded final-window flush, first-word handling, measurement under concurrent capture | T14 | T14 | Open. Note: the two engine defects in asr/0001 (chunk drops above 15 s; greedy TDT span skips) apply to live windows too, so reuse the single-pass and under-yield guard. |
+| 3 | Wire a Core ML warm-up into the app installer so the first job doesn't pay the 16 s compile | T06/T08 | T04→T08 | Open |
+| 4 | Diarization DER over the plan gate on clean AMI (22–28% vs ≤ 20%), mostly missed overlap speech. Clustering memory is now flat (about 1.1 GiB at 2–4 h with blocks). | Release | T07 | Open. Next step: SpeakerKit head-to-head on ES2004a/IS1009a/EN2002a. |
+| 5 | Garbled-output detector with a bounded window re-decode (FluidAudio#760) | Release | T06 | **Done** (asr/0001: garble and under-yield share the bounded retry) |
+| 6 | Note quality: decision over-labelling, broader injection suite, entailment verifier, human evaluation | Release | T09 | Over-labelling (verifier demotes proposals), 10-variant injection suite and verifier are **done** (notes/0001). **Human evaluation waiting on the user** (review sheets in `Benchmarks/Results/2026-10-16-t09-notes/`). |
+| 7 | Re-verify offline enforcement once the real engines run in the XPC worker | Release | T06–T08 | **Partly done.** The ASR, diarization and reconcile code path gives identical results under `sandbox-exec (deny network*)` (`evidence/2026-10-16/production-eval-offline-sandbox.txt`). The XPC worker process itself is launched by launchd, so it is not covered by that sandbox. Re-check with a network-denied worker in T12. |
+| 8 | Base-M2/16 GB and M2/8 GB qualification | Support claims | T12 | Unverified (no hardware) |
+| 9 | Real-call held-out corpus from the user | Quality gates | T02/T12 | Waiting on the user |
+| 10 | Language ID: `unsupportedLanguage` coverage status is in the contract but never set | Release | T06 | Open (v0 is English) |
+| 11 | Blockwise diarization over-splits identities on synthetic 2 h / 4 h concatenations (11 clusters vs 8 full-file); AMI 5-min blocks stay correct | Long-meeting quality | T07 | Open |
+| 12 | FluidAudio defects: (a) silent chunk drops for inputs over 15 s; (b) a greedy TDT pass skipping an 11 s span depending on context | – | T06 | Documented locally in `BUGS.md` for the user to review. **Do not post to public trackers** (user decision 2026-10-16). |
+| 13 | The models/0001 T02 batch WERs used FluidAudio's long path, which drops chunks | Model choice | T02 | Open: re-score the challengers with the production pipeline before freezing the pack beyond provisional |
+| 14 | The under-yield guard sees losses only where VAD detected speech; a skip inside speech VAD missed is undetected (that audio is still decoded) | Release | T06 | Open: measure on the real-call corpus, comparing VAD recall against reference turns |
+| 15 | Production reconcile passes an empty `SourceMap` (`StageRunner`). The reconciler doesn't use it yet, but per-epoch source mapping (device names, mode per epoch) is unwired | T10 | T07/T10 | Open |
+| 16 | Real-device drift and force-kill under real load (shard rollover, long sessions, concurrent inference) | Release | T12 | Open (the T05 tests use a synthetic clock and light load) |
+| 17 | Hands-on UI pass: recorder, menu bar, quit guard, playback, edits, search, export, deletion, VoiceOver (`ui-manual-checklist.md`) | T12 | T10/T11 | Waiting on the user |
+| 18 | Notes speed: 465 s for 120 min on M2 Max; base M2 likely over the 20-min end-to-end budget. Levers: item cap, batched verification, Qwen3-1.7B | Processing budget | T09/T12 | Open |
+| 19 | AppKit warning "reentrant operation in its NSTableView delegate" (seen once per `ui-render` run, during the first offscreen MainView layout; the evidence-jump selection was moved to the next run-loop turn). Unknown whether it occurs in interactive use; will become an assert | T13 | T10 | Open |
+| 20 | Two-hour memory test now runs in the child recorder process; the force-kill load is still light (see 16) | – | T05 | Done (validator C v1 #4) |

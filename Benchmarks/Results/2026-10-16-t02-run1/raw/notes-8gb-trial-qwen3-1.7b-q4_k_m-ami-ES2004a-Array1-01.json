@@ -1,0 +1,250 @@
+{
+  "audioSeconds" : 1049.3546875,
+  "chunkTokenBudget" : 2200,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We will do some stuff, get to know each other a bit better, feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            24
+          ],
+          "kind" : "action",
+          "text" : "Practice with the pens and draw our favourite animal on the whiteboard."
+        },
+        {
+          "evidence" : [
+            20
+          ],
+          "kind" : "decision",
+          "text" : "The product should be original, something that people haven't thought of, it's not out in the shops, trendy, appealing to a wide market, but you know, not a hunk of metal."
+        },
+        {
+          "evidence" : [
+            19
+          ],
+          "kind" : "action",
+          "text" : "Discuss our own ideas and everything."
+        },
+        {
+          "evidence" : [
+            20
+          ],
+          "kind" : "decision",
+          "text" : "The product should be user friendly, grannies to kids, maybe even poochies should be able to use it."
+        },
+        {
+          "evidence" : [
+            21
+          ],
+          "kind" : "action",
+          "text" : "Discuss the functional design, conceptual design, and detailed design."
+        },
+        {
+          "evidence" : [
+            47
+          ],
+          "kind" : "decision",
+          "text" : "The product should be a crocodile or an eagle."
+        },
+        {
+          "evidence" : [
+            43
+          ],
+          "kind" : "action",
+          "text" : "Discuss the artistic skill and the drawing process."
+        },
+        {
+          "evidence" : [
+            45
+          ],
+          "kind" : "decision",
+          "text" : "The product should be a bird, not a reptile or a fish."
+        },
+        {
+          "evidence" : [
+            83
+          ],
+          "kind" : "action",
+          "text" : "Discuss the production costs and profit aim."
+        },
+        {
+          "evidence" : [
+            45
+          ],
+          "kind" : "decision",
+          "text" : "The product should be a bird, not a reptile or a fish."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        85
+      ],
+      "stats" : {
+        "generateSeconds" : 4.195607292,
+        "generatedTokens" : 627,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.953109166,
+        "promptTokens" : 2172
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            86,
+            87,
+            89,
+            90,
+            92,
+            93
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We need to focus on making the remote control accessible by all age groups, including older generations."
+        },
+        {
+          "evidence" : [
+            97,
+            98,
+            99,
+            100
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We should consider integrating a LCD display into the remote control for better usability."
+        },
+        {
+          "evidence" : [
+            101,
+            103,
+            104,
+            105,
+            106,
+            107
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We need to ensure the remote control is intuitive for older generations."
+        },
+        {
+          "evidence" : [
+            118,
+            119
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We should consider a dual-function remote control with basic buttons and a menu with obvious symbols."
+        },
+        {
+          "evidence" : [
+            122,
+            124,
+            125,
+            126
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We should avoid making the remote control look as fashionable as a mobile phone."
+        },
+        {
+          "evidence" : [
+            120,
+            122
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We need to consider the cost implications of using a flip-top remote control."
+        },
+        {
+          "evidence" : [
+            107,
+            109
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We should focus on making the remote control intuitive and self-explanatory."
+        },
+        {
+          "evidence" : [
+            131
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We should consider using metal for the remote control to make it more durable."
+        },
+        {
+          "evidence" : [
+            101,
+            103,
+            105,
+            106,
+            107
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We should consider the design of the remote control for older generations."
+        },
+        {
+          "evidence" : [
+            122,
+            124,
+            125,
+            126
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We should consider the cost and practicality of the remote control design."
+        },
+        {
+          "evidence" : [
+            86,
+            87,
+            89,
+            90,
+            92,
+            93
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We should focus on the usability of the remote control for all age groups."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        85,
+        135
+      ],
+      "stats" : {
+        "generateSeconds" : 5.238598583,
+        "generatedTokens" : 789,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.831286667,
+        "promptTokens" : 2152
+      }
+    }
+  ],
+  "contextTokens" : 4096,
+  "loadSeconds" : 0.227254459,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 642304064,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 11.236707167,
+  "transcriptSegments" : 136,
+  "transcriptWords" : 2191
+}

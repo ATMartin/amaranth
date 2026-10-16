@@ -1,0 +1,93 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0000.wav",
+  "audioSeconds" : 8.46,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4571640,
+  "loadSeconds" : 0.642309375,
+  "peakFootprintBytes" : 126272352,
+  "processSeconds" : 1.051089375,
+  "realtimeFactor" : 0.12424224290780142,
+  "systemMemoryDeltaPeakBytes" : 793477120,
+  "words" : [
+    {
+      "end" : 0.5199999809265137,
+      "start" : 0.07999999821186066,
+      "text" : "Also,"
+    },
+    {
+      "end" : 1.0199999809265137,
+      "start" : 0.8999999761581421,
+      "text" : "a"
+    },
+    {
+      "end" : 1.5,
+      "start" : 1.0199999809265137,
+      "text" : "popular"
+    },
+    {
+      "end" : 2.240000009536743,
+      "start" : 1.5,
+      "text" : "contrivance"
+    },
+    {
+      "end" : 2.9800000190734863,
+      "start" : 2.240000009536743,
+      "text" : "whereby"
+    },
+    {
+      "end" : 3.819999933242798,
+      "start" : 2.9800000190734863,
+      "text" : "lovemaking"
+    },
+    {
+      "end" : 4.039999961853027,
+      "start" : 3.819999933242798,
+      "text" : "may"
+    },
+    {
+      "end" : 4.159999847412109,
+      "start" : 4.039999961853027,
+      "text" : "be"
+    },
+    {
+      "end" : 4.78000020980835,
+      "start" : 4.159999847412109,
+      "text" : "suspended"
+    },
+    {
+      "end" : 5.5,
+      "start" : 4.78000020980835,
+      "text" : "but"
+    },
+    {
+      "end" : 6,
+      "start" : 5.5,
+      "text" : "not"
+    },
+    {
+      "end" : 6.440000057220459,
+      "start" : 6,
+      "text" : "stopped"
+    },
+    {
+      "end" : 6.980000019073486,
+      "start" : 6.440000057220459,
+      "text" : "during"
+    },
+    {
+      "end" : 7.139999866485596,
+      "start" : 6.980000019073486,
+      "text" : "the"
+    },
+    {
+      "end" : 7.380000114440918,
+      "start" : 7.139999866485596,
+      "text" : "picnic"
+    },
+    {
+      "end" : 7.739999771118164,
+      "start" : 7.380000114440918,
+      "text" : "season."
+    }
+  ]
+}

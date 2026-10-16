@@ -1,0 +1,68 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0004.wav",
+  "audioSeconds" : 5.2150625,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4243960,
+  "loadSeconds" : 0.609934875,
+  "peakFootprintBytes" : 122553184,
+  "processSeconds" : 1.000951209,
+  "realtimeFactor" : 0.19193465255689646,
+  "systemMemoryDeltaPeakBytes" : 722501632,
+  "words" : [
+    {
+      "end" : 0.5199999809265137,
+      "start" : 0.1599999964237213,
+      "text" : "Number"
+    },
+    {
+      "end" : 1.0199999809265137,
+      "start" : 0.5199999809265137,
+      "text" : "ten."
+    },
+    {
+      "end" : 1.7799999713897705,
+      "start" : 1.2000000476837158,
+      "text" : "Fresh"
+    },
+    {
+      "end" : 2.240000009536743,
+      "start" : 1.7799999713897705,
+      "text" : "Nelly"
+    },
+    {
+      "end" : 2.5399999618530273,
+      "start" : 2.240000009536743,
+      "text" : "is"
+    },
+    {
+      "end" : 2.7799999713897705,
+      "start" : 2.5399999618530273,
+      "text" : "waiting"
+    },
+    {
+      "end" : 3.0999999046325684,
+      "start" : 2.7799999713897705,
+      "text" : "on"
+    },
+    {
+      "end" : 3.2799999713897705,
+      "start" : 3.0999999046325684,
+      "text" : "you."
+    },
+    {
+      "end" : 4.320000171661377,
+      "start" : 4.199999809265137,
+      "text" : "Good"
+    },
+    {
+      "end" : 4.380000114440918,
+      "start" : 4.320000171661377,
+      "text" : "night,"
+    },
+    {
+      "end" : 4.800000190734863,
+      "start" : 4.5,
+      "text" : "husband."
+    }
+  ]
+}

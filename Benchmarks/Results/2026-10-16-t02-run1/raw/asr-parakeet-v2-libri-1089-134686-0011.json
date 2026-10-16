@@ -1,0 +1,208 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0011.wav",
+  "audioSeconds" : 12.445,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4719096,
+  "loadSeconds" : 0.157484542,
+  "peakFootprintBytes" : 56738392,
+  "processSeconds" : 0.086687125,
+  "realtimeFactor" : 0.006965618722378465,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.64,
+      "start" : 0.24,
+      "text" : "On"
+    },
+    {
+      "end" : 1.1199999999999999,
+      "start" : 0.64,
+      "text" : "Saturday"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.12,
+      "text" : "mornings"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.6,
+      "text" : "when"
+    },
+    {
+      "end" : 1.92,
+      "start" : 1.76,
+      "text" : "the"
+    },
+    {
+      "end" : 2.64,
+      "start" : 1.92,
+      "text" : "sodality"
+    },
+    {
+      "end" : 2.88,
+      "start" : 2.64,
+      "text" : "met"
+    },
+    {
+      "end" : 3.04,
+      "start" : 2.88,
+      "text" : "in"
+    },
+    {
+      "end" : 3.12,
+      "start" : 3.04,
+      "text" : "the"
+    },
+    {
+      "end" : 3.6,
+      "start" : 3.12,
+      "text" : "chapel"
+    },
+    {
+      "end" : 3.7600000000000002,
+      "start" : 3.6,
+      "text" : "to"
+    },
+    {
+      "end" : 4.16,
+      "start" : 3.7600000000000002,
+      "text" : "recite"
+    },
+    {
+      "end" : 4.32,
+      "start" : 4.16,
+      "text" : "the"
+    },
+    {
+      "end" : 4.4,
+      "start" : 4.32,
+      "text" : "little"
+    },
+    {
+      "end" : 5.44,
+      "start" : 4.64,
+      "text" : "office,"
+    },
+    {
+      "end" : 5.760000000000001,
+      "start" : 5.44,
+      "text" : "his"
+    },
+    {
+      "end" : 6,
+      "start" : 5.76,
+      "text" : "place"
+    },
+    {
+      "end" : 6.16,
+      "start" : 6,
+      "text" : "was"
+    },
+    {
+      "end" : 6.32,
+      "start" : 6.16,
+      "text" : "a"
+    },
+    {
+      "end" : 6.96,
+      "start" : 6.32,
+      "text" : "cushioned"
+    },
+    {
+      "end" : 7.44,
+      "start" : 6.96,
+      "text" : "kneeling"
+    },
+    {
+      "end" : 7.760000000000001,
+      "start" : 7.44,
+      "text" : "desk"
+    },
+    {
+      "end" : 7.92,
+      "start" : 7.76,
+      "text" : "at"
+    },
+    {
+      "end" : 8.08,
+      "start" : 7.92,
+      "text" : "the"
+    },
+    {
+      "end" : 8.24,
+      "start" : 8.08,
+      "text" : "right"
+    },
+    {
+      "end" : 8.32,
+      "start" : 8.24,
+      "text" : "of"
+    },
+    {
+      "end" : 8.48,
+      "start" : 8.32,
+      "text" : "the"
+    },
+    {
+      "end" : 8.88,
+      "start" : 8.48,
+      "text" : "altar"
+    },
+    {
+      "end" : 9.200000000000001,
+      "start" : 9.040000000000001,
+      "text" : "from"
+    },
+    {
+      "end" : 9.360000000000001,
+      "start" : 9.200000000000001,
+      "text" : "which"
+    },
+    {
+      "end" : 9.52,
+      "start" : 9.36,
+      "text" : "he"
+    },
+    {
+      "end" : 9.84,
+      "start" : 9.52,
+      "text" : "led"
+    },
+    {
+      "end" : 10,
+      "start" : 9.84,
+      "text" : "his"
+    },
+    {
+      "end" : 10.24,
+      "start" : 10,
+      "text" : "wing"
+    },
+    {
+      "end" : 10.4,
+      "start" : 10.24,
+      "text" : "of"
+    },
+    {
+      "end" : 10.8,
+      "start" : 10.4,
+      "text" : "boys"
+    },
+    {
+      "end" : 11.040000000000001,
+      "start" : 10.8,
+      "text" : "through"
+    },
+    {
+      "end" : 11.200000000000001,
+      "start" : 11.040000000000001,
+      "text" : "the"
+    },
+    {
+      "end" : 12.16,
+      "start" : 11.200000000000001,
+      "text" : "responses."
+    }
+  ]
+}

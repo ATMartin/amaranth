@@ -1,0 +1,471 @@
+{
+  "contractVersion" : 1,
+  "payload" : {
+    "id" : "amaranth-default-16gb",
+    "manifests" : [
+      {
+        "conversionProvenance" : "FluidInference\/mobius Core ML conversion of nvidia\/parakeet-tdt-0.6b-v3",
+        "family" : "parakeet-tdt-0.6b-v3",
+        "files" : [
+          {
+            "byteSize" : 243,
+            "path" : "Decoder.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "4238c4e81ecd0dc94bd7dfbb60f7e2cc824107c1ffe0387b8607b72833dba350",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Decoder.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 554,
+            "path" : "Decoder.mlmodelc\/coremldata.bin",
+            "sha256" : "18647af085d87bd8f3121c8a9b4d4564c1ede038dab63d295b4e745cf2d7fb99",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Decoder.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 3427,
+            "path" : "Decoder.mlmodelc\/metadata.json",
+            "sha256" : "a39e93cd8371b8ded92635c7804fcd0590f0d1dd9415c6d19a0484be073077d9",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Decoder.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 13110,
+            "path" : "Decoder.mlmodelc\/model.mil",
+            "sha256" : "ef2a0a281695398a62fde86ac269c68f73d5b578d7ed3b31f2ba91a2d1ea1f35",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Decoder.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 23604992,
+            "path" : "Decoder.mlmodelc\/weights\/weight.bin",
+            "sha256" : "48adf0f0d47c406c8253d4f7fef967436a39da14f5a65e66d5a4b407be355d41",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Decoder.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 243,
+            "path" : "Encoder.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "42e638870d73f26b332918a3496ce36793fbb413a81cbd3d16ba01328637a105",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Encoder.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 485,
+            "path" : "Encoder.mlmodelc\/coremldata.bin",
+            "sha256" : "d48034a167a82e88fc3df64f60af963ab3983538271175b8319e7d5720a0fb86",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Encoder.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 2921,
+            "path" : "Encoder.mlmodelc\/metadata.json",
+            "sha256" : "da24da9cca943fb29d7fa8e376d57fca7cb3aa08ca51b956b0b0e56813f087e9",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Encoder.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 959769,
+            "path" : "Encoder.mlmodelc\/model.mil",
+            "sha256" : "ed7b19156ca29fa7dfd6891deb9fda4b0e8893f68597c985d135736546a43808",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Encoder.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 445187200,
+            "path" : "Encoder.mlmodelc\/weights\/weight.bin",
+            "sha256" : "e2020f323703477a5b21d7c2d282c403e371afb5962e79877e3033e73ba6f421",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Encoder.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 243,
+            "path" : "JointDecisionv3.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "26def4bf73dd56d29dee21c8ef97cb8969e62f6120ed1adc91e46828e2737b6c",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/JointDecisionv3.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 521,
+            "path" : "JointDecisionv3.mlmodelc\/coremldata.bin",
+            "sha256" : "f5fc08b741400f0088492c9e839418b1e18522f19cba28d361dd030c5f398342",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/JointDecisionv3.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 3453,
+            "path" : "JointDecisionv3.mlmodelc\/metadata.json",
+            "sha256" : "d9307211b9a37e0f0ac260c7660b1571a3de25841035cfdf9b58fd40425f890f",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/JointDecisionv3.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 11775,
+            "path" : "JointDecisionv3.mlmodelc\/model.mil",
+            "sha256" : "be60732943389a047175111a83f8839f3eb39d4803adafa828a0871b2f39818d",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/JointDecisionv3.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 12642764,
+            "path" : "JointDecisionv3.mlmodelc\/weights\/weight.bin",
+            "sha256" : "4e0e63d840032f7f07ddb1d64446051166281e5491bf22da8a945c41f6eedb3e",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/JointDecisionv3.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 243,
+            "path" : "Preprocessor.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "c9beeb989c8d66f8be11df59bc6df277ec76cee404f6865b46243835ef562f6d",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Preprocessor.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 486,
+            "path" : "Preprocessor.mlmodelc\/coremldata.bin",
+            "sha256" : "dbde3f2300842c1fd51ef3ff948a0bcffe65ffd2dca10707f2509f32c1d65b1d",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Preprocessor.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 2841,
+            "path" : "Preprocessor.mlmodelc\/metadata.json",
+            "sha256" : "2a98699e22d279dd37fa1d238aeb1c6db1df0d6fad687775324157689d8f3acf",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Preprocessor.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 28181,
+            "path" : "Preprocessor.mlmodelc\/model.mil",
+            "sha256" : "4b8518a956450fec57f06c2a21bdffc26973f7f1fa6842fb38fe917f896b6b93",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Preprocessor.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 491072,
+            "path" : "Preprocessor.mlmodelc\/weights\/weight.bin",
+            "sha256" : "129b76e3aeafa8afa3ea76d995b964b145fe83700d579f6ff42c4c38fa0968ea",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/Preprocessor.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 4285,
+            "path" : "README.md",
+            "sha256" : "4155baa7d7d6f0ada748e1db3c1b91d18c9f7eb7155efc1abfbbe9d4a6507712",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/README.md"
+          },
+          {
+            "byteSize" : 475,
+            "path" : "config.json",
+            "sha256" : "97f19ecccd0fdc730d76fb918090fa8bc64bce8ea4ad43715d5e9c2c7350db66",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/config.json"
+          },
+          {
+            "byteSize" : 151122,
+            "path" : "parakeet_v3_vocab.json",
+            "sha256" : "7ec60e05f1b24480736ec0eed40900f4626bce1fa9a60fd700ec7e2a59198735",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/parakeet_v3_vocab.json"
+          },
+          {
+            "byteSize" : 151122,
+            "path" : "parakeet_vocab.json",
+            "sha256" : "7ec60e05f1b24480736ec0eed40900f4626bce1fa9a60fd700ec7e2a59198735",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/parakeet-tdt-0.6b-v3-coreml\/resolve\/7dd20fe6b1797d35f5e3307e8b1732d9a178edfe\/parakeet_vocab.json"
+          },
+          {
+            "byteSize" : 42888,
+            "path" : "NVIDIA-MODEL-CARD.md",
+            "sha256" : "7a4306a43f395e3a716e77f1d81c03db18a0a355d7b566bb1d6307213ba0302b",
+            "sourceURL" : "https:\/\/huggingface.co\/nvidia\/parakeet-tdt-0.6b-v3\/resolve\/541d1f99c6b0c3cd0b11a95167540bb8edefd82b\/README.md"
+          },
+          {
+            "byteSize" : 17023,
+            "path" : "LICENSE.CC-BY-4.0.txt",
+            "sha256" : "d557539df68e771cc1eedcc91d13f70fca930e508d11eedcafa4b15db49e3744",
+            "sourceURL" : "https:\/\/raw.githubusercontent.com\/spdx\/license-list-data\/31ba1a50e5397e00a304dbadc76531740e89ee48\/text\/CC-BY-4.0.txt"
+          }
+        ],
+        "id" : "parakeet-tdt-0.6b-v3-coreml",
+        "license" : {
+          "attribution" : "NVIDIA Parakeet TDT 0.6B v3, governed by CC-BY-4.0 (NVIDIA model card, included); Core ML conversion by Fluid Inference. The converter README's \"Apache 2.0\" statement does not override NVIDIA's governing license.",
+          "identifier" : "CC-BY-4.0",
+          "noticePath" : "LICENSE.CC-BY-4.0.txt"
+        },
+        "minimumOS" : "26.5.2",
+        "role" : "asr",
+        "sourceRepository" : "FluidInference\/parakeet-tdt-0.6b-v3-coreml",
+        "sourceRevision" : "7dd20fe6b1797d35f5e3307e8b1732d9a178edfe",
+        "tokenizerIdentity" : "parakeet_vocab.json",
+        "version" : "7dd20fe6b179"
+      },
+      {
+        "conversionProvenance" : "Fluid Inference Core ML export of pyannote\/speaker-diarization-community-1@3533c8cf; PROVENANCE.md: historically reconstructed, not build-attested",
+        "family" : "pyannote-community-1+wespeaker+vbx",
+        "files" : [
+          {
+            "byteSize" : 243,
+            "path" : "Embedding.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "8d6706436639b53830b4dbe8aaf9c9a843f7f582d63e16f3cb8bb7c6ccd58682",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Embedding.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 704,
+            "path" : "Embedding.mlmodelc\/coremldata.bin",
+            "sha256" : "4a705bac27d151d9642f37609296042a15602a42253039e0921dc9e75da7e004",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Embedding.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 2818,
+            "path" : "Embedding.mlmodelc\/metadata.json",
+            "sha256" : "1854371eb6b438fb8aeac96afb45c999af7902581c06afdfcd7ff3cb1ce66be5",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Embedding.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 78432,
+            "path" : "Embedding.mlmodelc\/model.mil",
+            "sha256" : "22fa958aef72a561c21f874a07cbdcd30fdf40ee961c0bc2fb67c119273b46d3",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Embedding.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 13412288,
+            "path" : "Embedding.mlmodelc\/weights\/weight.bin",
+            "sha256" : "99356b2985b8d43880a657024d941d450b38820451ccff903f76ed4e52d1868b",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Embedding.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 243,
+            "path" : "FBank.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "0e8bd3a8b82ac123580989f490e4d9245127c535857630b543311268accc3f0a",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/FBank.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 853,
+            "path" : "FBank.mlmodelc\/coremldata.bin",
+            "sha256" : "57ac436bb0671cbb5527a339134d695f752eb77f7a18966b93c6835335595759",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/FBank.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 3409,
+            "path" : "FBank.mlmodelc\/metadata.json",
+            "sha256" : "2623785f5d186893b82d01e84aa33a7704ef763c3309e02055f22dc9d871ce9a",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/FBank.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 15667,
+            "path" : "FBank.mlmodelc\/model.mil",
+            "sha256" : "27aaeb21569e81bdbe2eef87789f50a37cfea800039bd134448a9417de2f30ed",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/FBank.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 1776896,
+            "path" : "FBank.mlmodelc\/weights\/weight.bin",
+            "sha256" : "9e83fdd3ea78064b078069e4d9141603c61c47a27fd19e7e3142ff7476f8db36",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/FBank.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 19759,
+            "path" : "LICENSE",
+            "sha256" : "736763bf08829e36266b8a3bebcc041ac68575424e976490671a7e6b43a525cf",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/LICENSE"
+          },
+          {
+            "byteSize" : 1925,
+            "path" : "NOTICE.md",
+            "sha256" : "0964a66893fa5c3a574758257d30d2944669f44eeed5784b30ec3bab902012b3",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/NOTICE.md"
+          },
+          {
+            "byteSize" : 3377,
+            "path" : "PROVENANCE.md",
+            "sha256" : "0032bc1b7d01b6af2bb6eb8548a39c9a28fe5c1909f74166bc2ea2eb1cc27df6",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/PROVENANCE.md"
+          },
+          {
+            "byteSize" : 243,
+            "path" : "PldaRho.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "8940ea6044dbcbefa22da8cc41e0b485e1fb5ed89aecaf37c6e0c483a97ddcd7",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/PldaRho.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 763,
+            "path" : "PldaRho.mlmodelc\/coremldata.bin",
+            "sha256" : "4d9741477f721c79b09fcdfe455110c4b7d4272e2de3496bf1729d966d3ee418",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/PldaRho.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 2749,
+            "path" : "PldaRho.mlmodelc\/metadata.json",
+            "sha256" : "b314cf25a93e46b4076883a6f5a2f8848b73c3851bd9d36074d067f35a1c7945",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/PldaRho.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 7613,
+            "path" : "PldaRho.mlmodelc\/model.mil",
+            "sha256" : "83aee2e5310d19b5f202aea97d07a0e12102556d1b32ef3ed08b36f7f9725041",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/PldaRho.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 200192,
+            "path" : "PldaRho.mlmodelc\/weights\/weight.bin",
+            "sha256" : "80f7d229202636d372428c90596f11a91545f07da77259f07153aaf225914a36",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/PldaRho.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 4836,
+            "path" : "README.md",
+            "sha256" : "d0488f898df6da6e9d36f28b0704a65a13578d598c8685a9c5af0f5f8af13978",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/README.md"
+          },
+          {
+            "byteSize" : 243,
+            "path" : "Segmentation.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "64265f8e7ad41a5f68d630c15288c2499cca5892ad49e20096819cdeac004cdb",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Segmentation.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 812,
+            "path" : "Segmentation.mlmodelc\/coremldata.bin",
+            "sha256" : "ea51481b8bd3e496ad3cf16f066ddaa37f20e8772eaac76b3393c28de20e06bc",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Segmentation.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 3410,
+            "path" : "Segmentation.mlmodelc\/metadata.json",
+            "sha256" : "88dbf0b07208fe142e1729c2b4c974ad3599fcb2ae5d5f18fce782b225384124",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Segmentation.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 43063,
+            "path" : "Segmentation.mlmodelc\/model.mil",
+            "sha256" : "d37e4ce30b406a6b34f765f769b9baed3178cc0c2b2e299c641daa43a052dd3f",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Segmentation.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 5959360,
+            "path" : "Segmentation.mlmodelc\/weights\/weight.bin",
+            "sha256" : "c3189a64946c75bc24fcb98afe89ad78c52bdbadfdf65e857fb1b81e2cc9fbb2",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/Segmentation.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 2,
+            "path" : "config.json",
+            "sha256" : "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/config.json"
+          },
+          {
+            "byteSize" : 89416,
+            "path" : "plda-parameters.json",
+            "sha256" : "38ee28d4269c076cef254ee760bbd811f0738a92e0f01f9699ad372828c5de8f",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/plda-parameters.json"
+          },
+          {
+            "byteSize" : 10048,
+            "path" : "provenance.json",
+            "sha256" : "0353430db062715c411ba32e66cb435b9caee2662bccdb298f9e5d1bae760872",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/speaker-diarization-coreml\/resolve\/df2625ac79a7ac6b65ad868fee6d80f320da4232\/provenance.json"
+          }
+        ],
+        "id" : "speaker-diarization-coreml",
+        "license" : {
+          "attribution" : "pyannote speaker-diarization-community-1 (CC-BY-4.0), WeSpeaker, BUT Speech@FIT VBx\/PLDA, Fluid Inference conversion",
+          "identifier" : "CC-BY-4.0",
+          "noticePath" : "LICENSE"
+        },
+        "minimumOS" : "26.5.2",
+        "role" : "diarizationSegmentation",
+        "sourceRepository" : "FluidInference\/speaker-diarization-coreml",
+        "sourceRevision" : "df2625ac79a7ac6b65ad868fee6d80f320da4232",
+        "version" : "df2625ac79a7"
+      },
+      {
+        "conversionProvenance" : "Fluid Inference Core ML conversion via onnx-community\/silero-vad",
+        "family" : "silero-vad-6.2.1",
+        "files" : [
+          {
+            "byteSize" : 2472,
+            "path" : "README.md",
+            "sha256" : "c31dbec3e24a014a51fc06c645b3cb04897c97ecdbad9a90645466019c933ef4",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/silero-vad-coreml\/resolve\/b419383c55c110e2c9271fa6ee0ea83d03c70d96\/README.md"
+          },
+          {
+            "byteSize" : 2,
+            "path" : "config.json",
+            "sha256" : "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/silero-vad-coreml\/resolve\/b419383c55c110e2c9271fa6ee0ea83d03c70d96\/config.json"
+          },
+          {
+            "byteSize" : 243,
+            "path" : "silero-vad-unified-256ms-v6.2.1.mlmodelc\/analytics\/coremldata.bin",
+            "sha256" : "8067594eb3126ab8318af507f0c00cabfed40d5fedb8a0ee5075dd02e903d909",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/silero-vad-coreml\/resolve\/b419383c55c110e2c9271fa6ee0ea83d03c70d96\/silero-vad-unified-256ms-v6.2.1.mlmodelc\/analytics\/coremldata.bin"
+          },
+          {
+            "byteSize" : 625,
+            "path" : "silero-vad-unified-256ms-v6.2.1.mlmodelc\/coremldata.bin",
+            "sha256" : "7db35a4fd995222a7fb0129713473b15d1462572ab4a2e5e4d56bcaad9e40f41",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/silero-vad-coreml\/resolve\/b419383c55c110e2c9271fa6ee0ea83d03c70d96\/silero-vad-unified-256ms-v6.2.1.mlmodelc\/coremldata.bin"
+          },
+          {
+            "byteSize" : 3335,
+            "path" : "silero-vad-unified-256ms-v6.2.1.mlmodelc\/metadata.json",
+            "sha256" : "2740be542c611e1ba358e1849b4e265c65cdf0b17192767e1e5de86a31ac94d6",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/silero-vad-coreml\/resolve\/b419383c55c110e2c9271fa6ee0ea83d03c70d96\/silero-vad-unified-256ms-v6.2.1.mlmodelc\/metadata.json"
+          },
+          {
+            "byteSize" : 176918,
+            "path" : "silero-vad-unified-256ms-v6.2.1.mlmodelc\/model.mil",
+            "sha256" : "c6a9d1bf22d413265da0a07a1d14151c3ea2fad296b3aa5859275b33ef1c3270",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/silero-vad-coreml\/resolve\/b419383c55c110e2c9271fa6ee0ea83d03c70d96\/silero-vad-unified-256ms-v6.2.1.mlmodelc\/model.mil"
+          },
+          {
+            "byteSize" : 882304,
+            "path" : "silero-vad-unified-256ms-v6.2.1.mlmodelc\/weights\/weight.bin",
+            "sha256" : "53ecc8b5081146140ab654c89109cf001f2183abddd7a2411c5081feeffff063",
+            "sourceURL" : "https:\/\/huggingface.co\/FluidInference\/silero-vad-coreml\/resolve\/b419383c55c110e2c9271fa6ee0ea83d03c70d96\/silero-vad-unified-256ms-v6.2.1.mlmodelc\/weights\/weight.bin"
+          },
+          {
+            "byteSize" : 1075,
+            "path" : "LICENSE.silero-vad",
+            "sha256" : "2e63e9a38b6e8fc0c7bc37ce174caca1862870856c6daf5697cfb785e925520b",
+            "sourceURL" : "https:\/\/raw.githubusercontent.com\/snakers4\/silero-vad\/7e30209a3e901f9842f81b225f3e93d8199902b1\/LICENSE"
+          }
+        ],
+        "id" : "silero-vad-coreml",
+        "license" : {
+          "attribution" : "Silero VAD (MIT)",
+          "identifier" : "MIT",
+          "noticePath" : "LICENSE.silero-vad"
+        },
+        "minimumOS" : "26.5.2",
+        "role" : "vad",
+        "sourceRepository" : "FluidInference\/silero-vad-coreml",
+        "sourceRevision" : "b419383c55c110e2c9271fa6ee0ea83d03c70d96",
+        "version" : "b419383c55c1"
+      },
+      {
+        "conversionProvenance" : "bartowski GGUF Q4_K_M (llama.cpp b6096, imatrix) of Qwen\/Qwen3-4B-Instruct-2507",
+        "family" : "qwen3-4b-instruct-2507",
+        "files" : [
+          {
+            "byteSize" : 11343,
+            "path" : "LICENSE",
+            "sha256" : "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+            "sourceURL" : "https:\/\/huggingface.co\/Qwen\/Qwen3-4B-Instruct-2507\/resolve\/cdbee75f17c01a7cc42f958dc650907174af0554\/LICENSE"
+          },
+          {
+            "byteSize" : 2497280736,
+            "path" : "Qwen_Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+            "sha256" : "2fde00ce69dd4899c70d020845e2638353015bba0fdf161b3eb965f2bca4464e",
+            "sourceURL" : "https:\/\/huggingface.co\/bartowski\/Qwen_Qwen3-4B-Instruct-2507-GGUF\/resolve\/ae44f08e1392f39c0e474af10c3ff8355c8b6688\/Qwen_Qwen3-4B-Instruct-2507-Q4_K_M.gguf"
+          },
+          {
+            "byteSize" : 13946,
+            "path" : "README.md",
+            "sha256" : "139ebb15c2601ca66b0d2820127b1bfaf491b084a582f9fa08286ba7daeeea82",
+            "sourceURL" : "https:\/\/huggingface.co\/bartowski\/Qwen_Qwen3-4B-Instruct-2507-GGUF\/resolve\/ae44f08e1392f39c0e474af10c3ff8355c8b6688\/README.md"
+          },
+          {
+            "byteSize" : 9377,
+            "path" : "tokenizer_config.json",
+            "sha256" : "a62ff0a2472a0fa1b8eaabcb57c59b58afa42a22831dc141400b6e0cf2b65ce3",
+            "sourceURL" : "https:\/\/huggingface.co\/Qwen\/Qwen3-4B-Instruct-2507\/resolve\/cdbee75f17c01a7cc42f958dc650907174af0554\/tokenizer_config.json"
+          }
+        ],
+        "id" : "qwen3-4b-instruct-2507-q4_k_m",
+        "license" : {
+          "attribution" : "Qwen3-4B-Instruct-2507 (Apache-2.0), Alibaba Qwen team; GGUF by bartowski",
+          "identifier" : "Apache-2.0",
+          "noticePath" : "LICENSE"
+        },
+        "minimumOS" : "26.5.2",
+        "promptTemplateIdentity" : "chatml-manual-v1",
+        "role" : "summary",
+        "sourceRepository" : "bartowski\/Qwen_Qwen3-4B-Instruct-2507-GGUF",
+        "sourceRevision" : "ae44f08e1392f39c0e474af10c3ff8355c8b6688",
+        "tokenizerIdentity" : "embedded GGUF tokenizer",
+        "version" : "ae44f08e1392"
+      }
+    ],
+    "profile" : "standard16GB",
+    "version" : "0.1.1"
+  }
+}

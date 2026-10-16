@@ -1,0 +1,48 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0008.wav",
+  "audioSeconds" : 4.99,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4293112,
+  "loadSeconds" : 0.15855275,
+  "peakFootprintBytes" : 55280216,
+  "processSeconds" : 0.062134875,
+  "realtimeFactor" : 0.01245187875751503,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.7200000000000001,
+      "start" : 0.4,
+      "text" : "Hose"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.16,
+      "text" : "man's"
+    },
+    {
+      "end" : 3.2,
+      "start" : 2.72,
+      "text" : "excuse"
+    },
+    {
+      "end" : 3.3600000000000003,
+      "start" : 3.2,
+      "text" : "for"
+    },
+    {
+      "end" : 3.8400000000000003,
+      "start" : 3.36,
+      "text" : "wetting"
+    },
+    {
+      "end" : 4,
+      "start" : 3.84,
+      "text" : "the"
+    },
+    {
+      "end" : 4.720000000000001,
+      "start" : 4,
+      "text" : "walk."
+    }
+  ]
+}

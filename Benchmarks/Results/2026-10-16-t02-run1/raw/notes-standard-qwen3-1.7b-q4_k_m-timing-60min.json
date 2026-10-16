@@ -1,0 +1,558 @@
+{
+  "audioSeconds" : 3600,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            19,
+            20,
+            21,
+            23,
+            25,
+            27
+          ],
+          "kind" : "decision",
+          "text" : "We need to decide on the design of the right-click menu for speaker characterization."
+        },
+        {
+          "evidence" : [
+            47,
+            52,
+            53,
+            54,
+            55,
+            56
+          ],
+          "kind" : "decision",
+          "text" : "We should consider integrating speaker characterization with topic browsing."
+        },
+        {
+          "evidence" : [
+            103,
+            105,
+            107,
+            109
+          ],
+          "kind" : "decision",
+          "text" : "We need to decide on the use of single-channel audio files."
+        },
+        {
+          "due" : "February",
+          "evidence" : [
+            155,
+            156
+          ],
+          "kind" : "decision",
+          "text" : "We should aim to develop a prototype of the GUI by the end of February."
+        },
+        {
+          "evidence" : [
+            19,
+            20,
+            21,
+            23,
+            25,
+            27
+          ],
+          "kind" : "action",
+          "text" : "Implement the right-click menu for speaker characterization."
+        },
+        {
+          "evidence" : [
+            47,
+            52,
+            53,
+            54,
+            55,
+            56
+          ],
+          "kind" : "action",
+          "text" : "Integrate speaker characterization with topic browsing."
+        },
+        {
+          "due" : "February",
+          "evidence" : [
+            155,
+            156
+          ],
+          "kind" : "action",
+          "text" : "Develop a prototype of the GUI by the end of February."
+        },
+        {
+          "evidence" : [
+            19,
+            20,
+            21,
+            23,
+            25,
+            27
+          ],
+          "kind" : "action",
+          "text" : "Implement the right-click menu for speaker characterization."
+        },
+        {
+          "evidence" : [
+            47,
+            52,
+            53,
+            54,
+            55,
+            56
+          ],
+          "kind" : "action",
+          "text" : "Integrate speaker characterization with topic browsing."
+        },
+        {
+          "due" : "February",
+          "evidence" : [
+            155,
+            156
+          ],
+          "kind" : "action",
+          "text" : "Develop a prototype of the GUI by the end of February."
+        },
+        {
+          "evidence" : [
+            19,
+            20,
+            21,
+            23,
+            25,
+            27
+          ],
+          "kind" : "action",
+          "text" : "Implement the right-click menu for speaker characterization."
+        },
+        {
+          "evidence" : [
+            47,
+            52,
+            53,
+            54,
+            55,
+            56
+          ],
+          "kind" : "action",
+          "text" : "Integrate speaker characterization with topic browsing."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        171
+      ],
+      "stats" : {
+        "generateSeconds" : 6.416685209,
+        "generatedTokens" : 816,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.368693916,
+        "promptTokens" : 4933
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            171,
+            172,
+            173,
+            174,
+            175,
+            176
+          ],
+          "kind" : "decision",
+          "text" : "We should access the directory and make it readable"
+        },
+        {
+          "evidence" : [
+            178
+          ],
+          "kind" : "action",
+          "text" : "Make the directory readable"
+        },
+        {
+          "evidence" : [
+            195,
+            205,
+            215,
+            216
+          ],
+          "kind" : "decision",
+          "text" : "We should collaborate on the code"
+        },
+        {
+          "evidence" : [
+            215,
+            216
+          ],
+          "kind" : "action",
+          "text" : "Share the code and collaborate"
+        },
+        {
+          "evidence" : [
+            310,
+            311,
+            312
+          ],
+          "kind" : "decision",
+          "text" : "We should set milestones for the project"
+        },
+        {
+          "evidence" : [
+            312,
+            313,
+            314
+          ],
+          "kind" : "action",
+          "text" : "Set a date for the interim prototype"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            333
+          ],
+          "kind" : "decision",
+          "text" : "We should meet to discuss the search interface"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            333
+          ],
+          "kind" : "action",
+          "text" : "Discuss the search interface and its features"
+        },
+        {
+          "evidence" : [
+            332,
+            333,
+            334
+          ],
+          "kind" : "decision",
+          "text" : "We should set up the search interface"
+        },
+        {
+          "evidence" : [
+            332,
+            333,
+            334
+          ],
+          "kind" : "action",
+          "text" : "Set up the search interface and make it exist"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            333
+          ],
+          "kind" : "decision",
+          "text" : "We should meet to discuss the search interface"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            333
+          ],
+          "kind" : "action",
+          "text" : "Discuss the search interface and its features"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        171,
+        352
+      ],
+      "stats" : {
+        "generateSeconds" : 5.85880325,
+        "generatedTokens" : 722,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.244510291,
+        "promptTokens" : 4990
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            352,
+            353,
+            354,
+            355,
+            356,
+            357
+          ],
+          "kind" : "decision",
+          "text" : "We will decide on the time for the meeting."
+        },
+        {
+          "evidence" : [
+            356
+          ],
+          "kind" : "action",
+          "text" : "Set the meeting time to 3:30 PM."
+        },
+        {
+          "evidence" : [
+            359,
+            360,
+            361,
+            362,
+            363,
+            364
+          ],
+          "kind" : "decision",
+          "text" : "Determine the location of the meeting."
+        },
+        {
+          "evidence" : [
+            361,
+            362,
+            363,
+            364
+          ],
+          "kind" : "action",
+          "text" : "Set the meeting location to the MSC computer room."
+        },
+        {
+          "evidence" : [
+            372,
+            373,
+            374
+          ],
+          "kind" : "decision",
+          "text" : "Determine the duration of the meeting."
+        },
+        {
+          "evidence" : [
+            372,
+            373,
+            374
+          ],
+          "kind" : "action",
+          "text" : "Set the meeting duration to 25 minutes."
+        },
+        {
+          "evidence" : [
+            383,
+            384,
+            385,
+            386,
+            387
+          ],
+          "kind" : "decision",
+          "text" : "Determine the target audience for the project."
+        },
+        {
+          "evidence" : [
+            383,
+            384,
+            385,
+            386,
+            387
+          ],
+          "kind" : "action",
+          "text" : "Set the target audience to all age groups."
+        },
+        {
+          "evidence" : [
+            479,
+            480,
+            481,
+            482,
+            483,
+            484
+          ],
+          "kind" : "decision",
+          "text" : "Determine the market range of the product."
+        },
+        {
+          "evidence" : [
+            479,
+            480,
+            481,
+            482,
+            483,
+            484
+          ],
+          "kind" : "action",
+          "text" : "Set the market range to international."
+        },
+        {
+          "evidence" : [
+            455,
+            456,
+            457,
+            458,
+            459,
+            460
+          ],
+          "kind" : "decision",
+          "text" : "Determine the design requirements for the remote control."
+        },
+        {
+          "evidence" : [
+            455,
+            456,
+            457,
+            458,
+            459,
+            460
+          ],
+          "kind" : "action",
+          "text" : "Set the design requirements to include an LCD display and menu navigation."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        352,
+        524
+      ],
+      "stats" : {
+        "generateSeconds" : 6.078469834,
+        "generatedTokens" : 805,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.218717041,
+        "promptTokens" : 4988
+      }
+    },
+    {
+      "chunk" : 3,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            527,
+            533,
+            590
+          ],
+          "kind" : "decision",
+          "text" : "We need to make the remote control lightweight and affordable."
+        },
+        {
+          "evidence" : [
+            544,
+            549,
+            554
+          ],
+          "kind" : "action",
+          "text" : "Design the remote control with a trendy and user-friendly interface."
+        },
+        {
+          "evidence" : [
+            559,
+            560,
+            562
+          ],
+          "kind" : "action",
+          "text" : "Conduct a tool training session with whiteboard and animal drawing."
+        },
+        {
+          "evidence" : [
+            544,
+            549,
+            554
+          ],
+          "kind" : "action",
+          "text" : "Introduce ourselves and discuss roles and functions."
+        },
+        {
+          "evidence" : [
+            559,
+            560,
+            562
+          ],
+          "kind" : "action",
+          "text" : "Design the remote control with individual work and discussion."
+        },
+        {
+          "evidence" : [
+            566,
+            567
+          ],
+          "kind" : "action",
+          "text" : "Redesign the remote control after completing the prototype."
+        },
+        {
+          "evidence" : [
+            590,
+            591
+          ],
+          "kind" : "action",
+          "text" : "Set the selling price at 25 euros and profit target at 50 million euros."
+        },
+        {
+          "evidence" : [
+            527,
+            533,
+            590
+          ],
+          "kind" : "action",
+          "text" : "Ensure the remote control is affordable and lightweight."
+        },
+        {
+          "evidence" : [
+            554,
+            558,
+            560
+          ],
+          "kind" : "action",
+          "text" : "Conduct a presentation to outline the design process and requirements."
+        },
+        {
+          "evidence" : [
+            544,
+            549,
+            554
+          ],
+          "kind" : "action",
+          "text" : "Ensure the remote control is user-friendly and visually appealing."
+        },
+        {
+          "evidence" : [
+            590
+          ],
+          "kind" : "action",
+          "text" : "Set the production cost below 125 euros."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        524,
+        594
+      ],
+      "stats" : {
+        "generateSeconds" : 4.507738875,
+        "generatedTokens" : 677,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.065148958,
+        "promptTokens" : 2049
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.254801041,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 1117112696,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 30.825043958,
+  "transcriptSegments" : 595,
+  "transcriptWords" : 8367
+}

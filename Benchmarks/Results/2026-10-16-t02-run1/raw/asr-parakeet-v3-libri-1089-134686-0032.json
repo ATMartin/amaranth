@@ -1,0 +1,68 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0032.wav",
+  "audioSeconds" : 4.09,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4211192,
+  "loadSeconds" : 0.11530825,
+  "peakFootprintBytes" : 38371976,
+  "processSeconds" : 0.05796975,
+  "realtimeFactor" : 0.014173533007334965,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.24,
+      "text" : "He"
+    },
+    {
+      "end" : 0.7200000000000001,
+      "start" : 0.56,
+      "text" : "is"
+    },
+    {
+      "end" : 1.2000000000000002,
+      "start" : 0.72,
+      "text" : "called,"
+    },
+    {
+      "end" : 1.3599999999999999,
+      "start" : 1.2,
+      "text" : "as"
+    },
+    {
+      "end" : 1.6,
+      "start" : 1.36,
+      "text" : "you"
+    },
+    {
+      "end" : 2,
+      "start" : 1.6,
+      "text" : "know,"
+    },
+    {
+      "end" : 2.24,
+      "start" : 2,
+      "text" : "the"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.24,
+      "text" : "Apostle"
+    },
+    {
+      "end" : 3.04,
+      "start" : 2.88,
+      "text" : "of"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 3.04,
+      "text" : "the"
+    },
+    {
+      "end" : 4.16,
+      "start" : 3.2800000000000002,
+      "text" : "Indies."
+    }
+  ]
+}

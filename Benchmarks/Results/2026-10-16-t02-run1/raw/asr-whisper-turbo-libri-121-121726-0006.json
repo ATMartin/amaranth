@@ -1,0 +1,48 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0006.wav",
+  "audioSeconds" : 3.895,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4211192,
+  "loadSeconds" : 0.61996175,
+  "peakFootprintBytes" : 122864504,
+  "processSeconds" : 0.951619459,
+  "realtimeFactor" : 0.24431821797175868,
+  "systemMemoryDeltaPeakBytes" : 708952064,
+  "words" : [
+    {
+      "end" : 1.100000023841858,
+      "start" : 0.019999999552965164,
+      "text" : "HEREDITY,"
+    },
+    {
+      "end" : 2.0999999046325684,
+      "start" : 1.899999976158142,
+      "text" : "THE"
+    },
+    {
+      "end" : 2.5199999809265137,
+      "start" : 2.0999999046325684,
+      "text" : "CAUSE"
+    },
+    {
+      "end" : 2.6600000858306885,
+      "start" : 2.5199999809265137,
+      "text" : "OF"
+    },
+    {
+      "end" : 2.880000114440918,
+      "start" : 2.6600000858306885,
+      "text" : "ALL"
+    },
+    {
+      "end" : 3.0399999618530273,
+      "start" : 2.880000114440918,
+      "text" : "OUR"
+    },
+    {
+      "end" : 3.559999942779541,
+      "start" : 3.0399999618530273,
+      "text" : "FAULTS."
+    }
+  ]
+}

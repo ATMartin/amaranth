@@ -1,0 +1,356 @@
+{
+  "audioSeconds" : 1049.3546875,
+  "chunkTokenBudget" : 2200,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "kind" : "decision",
+          "text" : "The team has decided to develop a remote control that is original, trendy, appealing to a wide market, user-friendly, and accessible to people of all ages including grannies and even pets."
+        },
+        {
+          "evidence" : [
+            15,
+            16,
+            17
+          ],
+          "kind" : "decision",
+          "text" : "The functional design process will be broken into three phases: functional design (what needs the product fulfills), conceptual design (how it will work), and detailed design (how it will be built)."
+        },
+        {
+          "evidence" : [
+            18,
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Each team member will draw their favorite animal on the whiteboard and describe its key characteristics."
+        },
+        {
+          "evidence" : [
+            34
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S4",
+          "text" : "Speaker S4 will leave space at the bottom of the whiteboard for their drawing, indicating they are short and will stand on a chair."
+        },
+        {
+          "evidence" : [
+            63,
+            64,
+            65,
+            66,
+            67
+          ],
+          "kind" : "action",
+          "text" : "The team will discuss and document the selling price of the remote control, which is set at 25 euros."
+        },
+        {
+          "evidence" : [
+            69,
+            70
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Speaker S1 will record and store meeting notes in a shared folder for future reference."
+        },
+        {
+          "evidence" : [
+            74
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S4",
+          "text" : "The team will consider whether to undercut the price to remain competitive, but will assess if it might make the product appear cheap."
+        },
+        {
+          "evidence" : [
+            28,
+            29,
+            30
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S2",
+          "text" : "The team has identified three key characteristics of a dog: it is supportive, loyal, and has intuition (e.g., detecting a thief)."
+        },
+        {
+          "evidence" : [
+            40,
+            41,
+            44
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S3",
+          "text" : "The team has identified that the animal chosen by Speaker S3 is a crocodile, which is described as scary and independent."
+        },
+        {
+          "evidence" : [
+            50,
+            51,
+            52,
+            53,
+            54,
+            55
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S4",
+          "text" : "The team has identified that the animal chosen by Speaker S4 is an eagle, which is described as free-spirited, independent, and skilled at flying."
+        },
+        {
+          "evidence" : [
+            63,
+            64,
+            65,
+            66,
+            67
+          ],
+          "kind" : "decision",
+          "text" : "The team has determined that the selling price of 25 euros is equivalent to approximately 17 pounds."
+        },
+        {
+          "evidence" : [
+            63,
+            65
+          ],
+          "kind" : "question",
+          "text" : "What is the exact exchange rate between euros and pounds to determine the selling price in pounds?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        74
+      ],
+      "stats" : {
+        "generateSeconds" : 11.47478025,
+        "generatedTokens" : 933,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.9558595840000002,
+        "promptTokens" : 2158
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            74,
+            83,
+            84,
+            85,
+            94,
+            95
+          ],
+          "kind" : "action",
+          "text" : "Explore the integration of an LCD display and menu-based navigation in the remote control design, inspired by mobile phone interfaces."
+        },
+        {
+          "evidence" : [
+            89,
+            92,
+            112
+          ],
+          "kind" : "action",
+          "text" : "Design a remote control with basic functions (on\/off, volume, channel) and a section that opens to reveal advanced functions via intuitive menus."
+        },
+        {
+          "evidence" : [
+            113,
+            116
+          ],
+          "kind" : "action",
+          "text" : "Consider a flip-top remote control design that reveals a larger screen when flipped over, to improve usability and reduce bulk."
+        },
+        {
+          "evidence" : [
+            110,
+            111
+          ],
+          "kind" : "action",
+          "text" : "Include a large print mode or extra button for older users who may struggle with small text or symbols."
+        },
+        {
+          "evidence" : [
+            78,
+            90,
+            104,
+            105,
+            106
+          ],
+          "kind" : "action",
+          "text" : "Ensure the remote control is user-friendly for older generations, avoiding complex layouts with tiny buttons or unfamiliar symbols."
+        },
+        {
+          "evidence" : [
+            94,
+            95,
+            115,
+            116
+          ],
+          "kind" : "action",
+          "text" : "Evaluate the feasibility and cost implications of incorporating LCD screens or mobile-style menus, especially given budget constraints."
+        },
+        {
+          "evidence" : [
+            117,
+            120,
+            121,
+            122
+          ],
+          "kind" : "action",
+          "text" : "Assess whether the remote control should adopt a minimalist, plastic-based design that is lightweight and easy to produce, rather than being fashion-focused."
+        },
+        {
+          "evidence" : [
+            78,
+            104,
+            105,
+            106,
+            107
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should be designed to be accessible and usable by all age groups, including older users who may not be familiar with complex interfaces or digital menus."
+        },
+        {
+          "evidence" : [
+            89,
+            92,
+            117,
+            120,
+            121
+          ],
+          "kind" : "decision",
+          "text" : "The design should prioritize simplicity and intuitiveness over advanced features or fashion, focusing on core functions and clear visual cues."
+        },
+        {
+          "evidence" : [
+            81,
+            82,
+            83,
+            100,
+            101,
+            102
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should not require programming or complex setup, as this may be a barrier for older users or those unfamiliar with technology."
+        },
+        {
+          "evidence" : [
+            79,
+            80,
+            81
+          ],
+          "kind" : "decision",
+          "text" : "The product should be accessible internationally, targeting markets such as Australia and the United States, without requiring language-specific adaptations."
+        },
+        {
+          "evidence" : [
+            89,
+            90,
+            92,
+            105,
+            112
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should avoid overwhelming users with too many buttons or symbols, instead using clear, recognizable icons and a hierarchical menu system."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        74,
+        124
+      ],
+      "stats" : {
+        "generateSeconds" : 12.600621166,
+        "generatedTokens" : 959,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.245817792,
+        "promptTokens" : 2197
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            125,
+            127
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Break up the discussion into two parts"
+        },
+        {
+          "evidence" : [
+            127
+          ],
+          "kind" : "action",
+          "text" : "Meet again in half an hour"
+        },
+        {
+          "evidence" : [
+            129
+          ],
+          "kind" : "action",
+          "text" : "Go back to the room together"
+        },
+        {
+          "evidence" : [
+            125
+          ],
+          "kind" : "topic",
+          "owner" : "Speaker S1",
+          "text" : "Comparison of remote control designs (sky vs. telewest)"
+        },
+        {
+          "evidence" : [
+            125,
+            126
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S1",
+          "text" : "Proceed with design considerations for remote controls based on aesthetic differences"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        124,
+        129
+      ],
+      "stats" : {
+        "generateSeconds" : 3.64347225,
+        "generatedTokens" : 264,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.002264375,
+        "promptTokens" : 306
+      }
+    }
+  ],
+  "contextTokens" : 4096,
+  "loadSeconds" : 0.27411625,
+  "model" : "qwen3-4b-instruct-2507-q4_k_m",
+  "peakFootprintBytes" : 780930048,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 74842112,
+  "totalSeconds" : 31.950374958,
+  "transcriptSegments" : 130,
+  "transcriptWords" : 2341
+}

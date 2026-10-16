@@ -1,0 +1,38 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0012.wav",
+  "audioSeconds" : 4.045,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4194808,
+  "loadSeconds" : 0.122596458,
+  "peakFootprintBytes" : 38437536,
+  "processSeconds" : 0.061166833,
+  "realtimeFactor" : 0.015121590358467243,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.88,
+      "start" : 0,
+      "text" : "Hussey,"
+    },
+    {
+      "end" : 1.68,
+      "start" : 0.88,
+      "text" : "woman,"
+    },
+    {
+      "end" : 2,
+      "start" : 1.68,
+      "text" : "and"
+    },
+    {
+      "end" : 2.88,
+      "start" : 2,
+      "text" : "bond,"
+    },
+    {
+      "end" : 4,
+      "start" : 2.88,
+      "text" : "tie."
+    }
+  ]
+}

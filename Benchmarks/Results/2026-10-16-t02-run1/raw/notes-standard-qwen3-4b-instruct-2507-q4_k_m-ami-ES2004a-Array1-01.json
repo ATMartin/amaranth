@@ -1,0 +1,151 @@
+{
+  "audioSeconds" : 1049.3546875,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            101,
+            104,
+            105,
+            106,
+            109,
+            110
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should be designed to be user-friendly for all age groups, including older adults who may struggle with complex interfaces."
+        },
+        {
+          "evidence" : [
+            98,
+            100,
+            118,
+            120
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should incorporate an LCD display with menu navigation, similar to mobile phones, to simplify user interaction and reduce the number of physical buttons."
+        },
+        {
+          "evidence" : [
+            124,
+            125,
+            126,
+            127,
+            131,
+            132
+          ],
+          "kind" : "decision",
+          "text" : "The design should avoid being overly fashionable or metallic, opting instead for lightweight, mouldable plastic to reduce cost and maintain accessibility."
+        },
+        {
+          "evidence" : [
+            127,
+            128
+          ],
+          "kind" : "action",
+          "text" : "The team will go off to work on individual design tasks during the next half-hour."
+        },
+        {
+          "evidence" : [
+            128
+          ],
+          "kind" : "action",
+          "owner" : "Sarah",
+          "text" : "Sarah will present a follow-up PowerPoint during the next meeting."
+        },
+        {
+          "evidence" : [
+            73,
+            75,
+            76,
+            78,
+            79,
+            80
+          ],
+          "kind" : "action",
+          "text" : "The team will discuss and document the selling price and production cost of the remote control in the shared folder."
+        },
+        {
+          "evidence" : [
+            116,
+            117
+          ],
+          "kind" : "action",
+          "text" : "The team will consider adding a large print or high-contrast mode for older users to improve readability."
+        },
+        {
+          "evidence" : [
+            120,
+            126
+          ],
+          "kind" : "action",
+          "text" : "The team will evaluate whether a flip-top design could improve usability and reduce bulk, while considering cost implications."
+        },
+        {
+          "evidence" : [
+            90,
+            91,
+            93,
+            94,
+            95,
+            96
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should not rely on complex programming or advanced features, ensuring it is usable by non-technical users such as grandads and children."
+        },
+        {
+          "evidence" : [
+            86,
+            87
+          ],
+          "kind" : "decision",
+          "text" : "The product should be accessible to a wide market, including international users, without requiring language-specific adaptations."
+        },
+        {
+          "evidence" : [
+            94,
+            95,
+            113
+          ],
+          "kind" : "decision",
+          "text" : "The product should avoid the look and feel of traditional remote controls with excessive buttons and unclear labels."
+        },
+        {
+          "evidence" : [
+            109,
+            110,
+            119
+          ],
+          "kind" : "decision",
+          "text" : "The product should be designed with intuitive, self-explanatory features, such as clear icons and visual menus, to aid understanding across age groups."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        135
+      ],
+      "stats" : {
+        "generateSeconds" : 12.717469875,
+        "generatedTokens" : 873,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 5.135428792,
+        "promptTokens" : 4131
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.317133542,
+  "model" : "qwen3-4b-instruct-2507-q4_k_m",
+  "peakFootprintBytes" : 1387089328,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 1661861888,
+  "totalSeconds" : 17.872841667,
+  "transcriptSegments" : 136,
+  "transcriptWords" : 2191
+}

@@ -1,0 +1,78 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0026.wav",
+  "audioSeconds" : 4.01,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4211192,
+  "loadSeconds" : 0.158243541,
+  "peakFootprintBytes" : 54854232,
+  "processSeconds" : 0.0637315,
+  "realtimeFactor" : 0.015893142144638404,
+  "systemMemoryDeltaPeakBytes" : 16384,
+  "words" : [
+    {
+      "end" : 0.48,
+      "start" : 0.24,
+      "text" : "The"
+    },
+    {
+      "end" : 1.04,
+      "start" : 0.48,
+      "text" : "rector"
+    },
+    {
+      "end" : 1.2,
+      "start" : 1.04,
+      "text" : "did"
+    },
+    {
+      "end" : 1.3599999999999999,
+      "start" : 1.2,
+      "text" : "not"
+    },
+    {
+      "end" : 1.6,
+      "start" : 1.36,
+      "text" : "ask"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.6,
+      "text" : "for"
+    },
+    {
+      "end" : 1.92,
+      "start" : 1.76,
+      "text" : "a"
+    },
+    {
+      "end" : 2.6399999999999997,
+      "start" : 1.92,
+      "text" : "catechism"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.64,
+      "text" : "to"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.72,
+      "text" : "hear"
+    },
+    {
+      "end" : 3.04,
+      "start" : 2.88,
+      "text" : "the"
+    },
+    {
+      "end" : 3.4400000000000004,
+      "start" : 3.04,
+      "text" : "lesson"
+    },
+    {
+      "end" : 3.6799999999999997,
+      "start" : 3.44,
+      "text" : "from"
+    }
+  ]
+}

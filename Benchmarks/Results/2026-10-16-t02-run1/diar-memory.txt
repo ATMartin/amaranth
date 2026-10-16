@@ -1,0 +1,4 @@
+[diar-mem] timing-120min.wav full file: 7200 s audio in 43.5 s, speakers 8, peak footprint 1175 MiB, system Δ 2425 MiB
+[diar-mem] timing-120min.wav 30-min blocks: 7200 s audio in 39.5 s, speakers 11, peak footprint 1098 MiB, system Δ 1938 MiB
+[diar-mem] timing-240min.wav full file: 14400 s audio in 94.8 s, speakers 8, peak footprint 1267 MiB, system Δ 2693 MiB
+[diar-mem] timing-240min.wav 30-min blocks: 14400 s audio in 79.4 s, speakers 11, peak footprint 1076 MiB, system Δ 1742 MiB

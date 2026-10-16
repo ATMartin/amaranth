@@ -1,0 +1,103 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0028.wav",
+  "audioSeconds" : 7.83,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4440568,
+  "loadSeconds" : 0.113785084,
+  "peakFootprintBytes" : 40190576,
+  "processSeconds" : 0.073613,
+  "realtimeFactor" : 0.009401404853128991,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.32,
+      "start" : 0.16,
+      "text" : "The"
+    },
+    {
+      "end" : 0.96,
+      "start" : 0.32,
+      "text" : "retreat"
+    },
+    {
+      "end" : 1.1199999999999999,
+      "start" : 0.96,
+      "text" : "will"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.12,
+      "text" : "begin"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.52,
+      "text" : "on"
+    },
+    {
+      "end" : 2.48,
+      "start" : 1.76,
+      "text" : "Wednesday"
+    },
+    {
+      "end" : 2.96,
+      "start" : 2.48,
+      "text" : "afternoon"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 3.04,
+      "text" : "in"
+    },
+    {
+      "end" : 3.44,
+      "start" : 3.2800000000000002,
+      "text" : "honor"
+    },
+    {
+      "end" : 3.76,
+      "start" : 3.52,
+      "text" : "of"
+    },
+    {
+      "end" : 4.08,
+      "start" : 3.7600000000000002,
+      "text" : "Saint"
+    },
+    {
+      "end" : 4.5600000000000005,
+      "start" : 4.08,
+      "text" : "Francis"
+    },
+    {
+      "end" : 5.36,
+      "start" : 4.72,
+      "text" : "Xavier,"
+    },
+    {
+      "end" : 5.760000000000001,
+      "start" : 5.36,
+      "text" : "whose"
+    },
+    {
+      "end" : 6.16,
+      "start" : 5.76,
+      "text" : "feast"
+    },
+    {
+      "end" : 6.48,
+      "start" : 6.16,
+      "text" : "day"
+    },
+    {
+      "end" : 6.720000000000001,
+      "start" : 6.48,
+      "text" : "is"
+    },
+    {
+      "end" : 7.84,
+      "start" : 6.72,
+      "text" : "Saturday."
+    }
+  ]
+}

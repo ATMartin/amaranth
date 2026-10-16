@@ -1,0 +1,103 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0002.wav",
+  "audioSeconds" : 6.625,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4440568,
+  "loadSeconds" : 0.123745042,
+  "peakFootprintBytes" : 38617712,
+  "processSeconds" : 0.074527333,
+  "realtimeFactor" : 0.01124940875471698,
+  "systemMemoryDeltaPeakBytes" : 35225600,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.16,
+      "text" : "After"
+    },
+    {
+      "end" : 0.9600000000000001,
+      "start" : 0.56,
+      "text" : "early"
+    },
+    {
+      "end" : 1.5999999999999999,
+      "start" : 0.96,
+      "text" : "nightfall"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.68,
+      "text" : "the"
+    },
+    {
+      "end" : 2.08,
+      "start" : 1.76,
+      "text" : "yellow"
+    },
+    {
+      "end" : 2.56,
+      "start" : 2.08,
+      "text" : "lamps"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.56,
+      "text" : "would"
+    },
+    {
+      "end" : 2.9600000000000004,
+      "start" : 2.72,
+      "text" : "light"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.96,
+      "text" : "up"
+    },
+    {
+      "end" : 3.4400000000000004,
+      "start" : 3.2,
+      "text" : "here"
+    },
+    {
+      "end" : 3.6,
+      "start" : 3.44,
+      "text" : "and"
+    },
+    {
+      "end" : 3.7600000000000002,
+      "start" : 3.6,
+      "text" : "there"
+    },
+    {
+      "end" : 4.08,
+      "start" : 3.92,
+      "text" : "the"
+    },
+    {
+      "end" : 4.800000000000001,
+      "start" : 4.08,
+      "text" : "squalid"
+    },
+    {
+      "end" : 5.12,
+      "start" : 4.8,
+      "text" : "quarter"
+    },
+    {
+      "end" : 5.2,
+      "start" : 5.12,
+      "text" : "of"
+    },
+    {
+      "end" : 5.44,
+      "start" : 5.2,
+      "text" : "the"
+    },
+    {
+      "end" : 6.640000000000001,
+      "start" : 5.44,
+      "text" : "brothels."
+    }
+  ]
+}

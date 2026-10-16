@@ -1,0 +1,153 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0012.wav",
+  "audioSeconds" : 11.64,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4719096,
+  "loadSeconds" : 0.116753542,
+  "peakFootprintBytes" : 38535816,
+  "processSeconds" : 0.081310416,
+  "realtimeFactor" : 0.006985430927835051,
+  "systemMemoryDeltaPeakBytes" : 32768,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.24,
+      "text" : "Her"
+    },
+    {
+      "end" : 0.9600000000000001,
+      "start" : 0.56,
+      "text" : "eyes"
+    },
+    {
+      "end" : 1.36,
+      "start" : 0.96,
+      "text" : "seemed"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.36,
+      "text" : "to"
+    },
+    {
+      "end" : 2,
+      "start" : 1.52,
+      "text" : "regard"
+    },
+    {
+      "end" : 2.16,
+      "start" : 2,
+      "text" : "him"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2.16,
+      "text" : "with"
+    },
+    {
+      "end" : 2.8,
+      "start" : 2.4,
+      "text" : "mild"
+    },
+    {
+      "end" : 3.52,
+      "start" : 2.8000000000000003,
+      "text" : "pity."
+    },
+    {
+      "end" : 3.84,
+      "start" : 3.52,
+      "text" : "Her"
+    },
+    {
+      "end" : 4.720000000000001,
+      "start" : 3.84,
+      "text" : "holiness,"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.72,
+      "text" : "a"
+    },
+    {
+      "end" : 5.36,
+      "start" : 4.88,
+      "text" : "strange"
+    },
+    {
+      "end" : 5.680000000000001,
+      "start" : 5.36,
+      "text" : "light"
+    },
+    {
+      "end" : 6.24,
+      "start" : 5.68,
+      "text" : "glowing"
+    },
+    {
+      "end" : 6.720000000000001,
+      "start" : 6.24,
+      "text" : "faintly"
+    },
+    {
+      "end" : 7.04,
+      "start" : 6.72,
+      "text" : "upon"
+    },
+    {
+      "end" : 7.28,
+      "start" : 7.04,
+      "text" : "her"
+    },
+    {
+      "end" : 7.760000000000001,
+      "start" : 7.28,
+      "text" : "frail"
+    },
+    {
+      "end" : 8.48,
+      "start" : 7.76,
+      "text" : "flesh,"
+    },
+    {
+      "end" : 8.72,
+      "start" : 8.48,
+      "text" : "did"
+    },
+    {
+      "end" : 8.96,
+      "start" : 8.72,
+      "text" : "not"
+    },
+    {
+      "end" : 9.52,
+      "start" : 8.96,
+      "text" : "humiliate"
+    },
+    {
+      "end" : 9.76,
+      "start" : 9.52,
+      "text" : "the"
+    },
+    {
+      "end" : 10.16,
+      "start" : 9.76,
+      "text" : "sinner"
+    },
+    {
+      "end" : 10.4,
+      "start" : 10.16,
+      "text" : "who"
+    },
+    {
+      "end" : 11.040000000000001,
+      "start" : 10.4,
+      "text" : "approached"
+    },
+    {
+      "end" : 11.68,
+      "start" : 11.040000000000001,
+      "text" : "her."
+    }
+  ]
+}

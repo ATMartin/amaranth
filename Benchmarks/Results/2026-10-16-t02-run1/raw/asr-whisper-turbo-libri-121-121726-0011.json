@@ -1,0 +1,48 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0011.wav",
+  "audioSeconds" : 4.035,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4260344,
+  "loadSeconds" : 0.619626917,
+  "peakFootprintBytes" : 122766152,
+  "processSeconds" : 0.853645334,
+  "realtimeFactor" : 0.21156018190830234,
+  "systemMemoryDeltaPeakBytes" : 854196224,
+  "words" : [
+    {
+      "end" : 0.8399999737739563,
+      "start" : 0.019999999552965164,
+      "text" : "husband"
+    },
+    {
+      "end" : 2.259999990463257,
+      "start" : 0.8399999737739563,
+      "text" : "the"
+    },
+    {
+      "end" : 2.559999942779541,
+      "start" : 2.259999990463257,
+      "text" : "next"
+    },
+    {
+      "end" : 2.9200000762939453,
+      "start" : 2.559999942779541,
+      "text" : "thing"
+    },
+    {
+      "end" : 3.180000066757202,
+      "start" : 2.9200000762939453,
+      "text" : "to"
+    },
+    {
+      "end" : 3.299999952316284,
+      "start" : 3.180000066757202,
+      "text" : "a"
+    },
+    {
+      "end" : 3.700000047683716,
+      "start" : 3.299999952316284,
+      "text" : "wife"
+    }
+  ]
+}

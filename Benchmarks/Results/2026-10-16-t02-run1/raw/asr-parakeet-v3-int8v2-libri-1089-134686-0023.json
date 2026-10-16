@@ -1,0 +1,193 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0023.wav",
+  "audioSeconds" : 13.275,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4817400,
+  "loadSeconds" : 0.1235735,
+  "peakFootprintBytes" : 41632392,
+  "processSeconds" : 0.09573675,
+  "realtimeFactor" : 0.007211807909604519,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.16,
+      "text" : "Why"
+    },
+    {
+      "end" : 0.7200000000000001,
+      "start" : 0.56,
+      "text" : "was"
+    },
+    {
+      "end" : 0.88,
+      "start" : 0.72,
+      "text" : "the"
+    },
+    {
+      "end" : 1.44,
+      "start" : 0.88,
+      "text" : "sacrament"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.44,
+      "text" : "of"
+    },
+    {
+      "end" : 1.68,
+      "start" : 1.52,
+      "text" : "the"
+    },
+    {
+      "end" : 2.4800000000000004,
+      "start" : 1.68,
+      "text" : "Eucharist"
+    },
+    {
+      "end" : 2.9600000000000004,
+      "start" : 2.48,
+      "text" : "instituted"
+    },
+    {
+      "end" : 3.3600000000000003,
+      "start" : 3.12,
+      "text" : "under"
+    },
+    {
+      "end" : 3.5999999999999996,
+      "start" : 3.36,
+      "text" : "the"
+    },
+    {
+      "end" : 3.84,
+      "start" : 3.6,
+      "text" : "two"
+    },
+    {
+      "end" : 4.32,
+      "start" : 3.84,
+      "text" : "species"
+    },
+    {
+      "end" : 4.5600000000000005,
+      "start" : 4.32,
+      "text" : "of"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.5600000000000005,
+      "text" : "bread"
+    },
+    {
+      "end" : 5.12,
+      "start" : 4.88,
+      "text" : "and"
+    },
+    {
+      "end" : 5.760000000000001,
+      "start" : 5.12,
+      "text" : "wine,"
+    },
+    {
+      "end" : 5.92,
+      "start" : 5.76,
+      "text" : "if"
+    },
+    {
+      "end" : 6.5600000000000005,
+      "start" : 6.08,
+      "text" : "Jesus"
+    },
+    {
+      "end" : 6.96,
+      "start" : 6.5600000000000005,
+      "text" : "Christ"
+    },
+    {
+      "end" : 7.2,
+      "start" : 6.96,
+      "text" : "be"
+    },
+    {
+      "end" : 7.5200000000000005,
+      "start" : 7.2,
+      "text" : "present"
+    },
+    {
+      "end" : 8.08,
+      "start" : 7.68,
+      "text" : "body"
+    },
+    {
+      "end" : 8.24,
+      "start" : 8.08,
+      "text" : "and"
+    },
+    {
+      "end" : 8.96,
+      "start" : 8.24,
+      "text" : "blood,"
+    },
+    {
+      "end" : 9.280000000000001,
+      "start" : 8.96,
+      "text" : "soul"
+    },
+    {
+      "end" : 9.52,
+      "start" : 9.28,
+      "text" : "and"
+    },
+    {
+      "end" : 10.24,
+      "start" : 9.52,
+      "text" : "divinity,"
+    },
+    {
+      "end" : 10.4,
+      "start" : 10.24,
+      "text" : "in"
+    },
+    {
+      "end" : 10.56,
+      "start" : 10.4,
+      "text" : "the"
+    },
+    {
+      "end" : 10.88,
+      "start" : 10.56,
+      "text" : "bread"
+    },
+    {
+      "end" : 11.360000000000001,
+      "start" : 10.88,
+      "text" : "alone"
+    },
+    {
+      "end" : 11.68,
+      "start" : 11.52,
+      "text" : "and"
+    },
+    {
+      "end" : 11.84,
+      "start" : 11.68,
+      "text" : "in"
+    },
+    {
+      "end" : 12.08,
+      "start" : 11.84,
+      "text" : "the"
+    },
+    {
+      "end" : 12.4,
+      "start" : 12.08,
+      "text" : "wine"
+    },
+    {
+      "end" : 13.120000000000001,
+      "start" : 12.4,
+      "text" : "alone?"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[notes-eval] model loaded in 1.2 s; prompt notes-v1
+[notes-eval] planted 60min decision 'titanium': FOUND owner=nil due=nil uncertain=true
+[notes-eval] planted 60min actionItem 'budget': FOUND owner=Speaker 2 due=by Friday uncertain=false
+[notes-eval] planted-60min: 2/2 planted items found (owner exact 2, due exact 2); 313 s; 12 chunks; items: 3 decisions, 11 actions, 20 questions, 15 topics, 4 overview
+[notes-eval]   chunks=12 failed=0 repairs=0 extracted=132 verifications=76 | dropped: invalidEvidence=0 addressedToAI=0 verifier=14 | demotedProposals=15 removedOwners=1 removedDue=1 merged=7 cappedOut=62 uncertain=24
+[notes-eval] planted 120min decision 'titanium': FOUND owner=nil due=nil uncertain=true
+[notes-eval] planted 120min actionItem 'budget': FOUND owner=Speaker 2 due=by Friday uncertain=false
+[notes-eval] planted 120min decision 'voice recognition': FOUND owner=nil due=nil uncertain=false
+[notes-eval] planted 120min actionItem 'lab': MISSING
+[notes-eval] planted 120min decision 'march': FOUND owner=nil due=nil uncertain=true
+[notes-eval] planted 120min actionItem 'press release': FOUND owner=Speaker 3 due=end of the month uncertain=true
+[notes-eval] planted-120min: 5/6 planted items found (owner exact 5, due exact 4); 703 s; 26 chunks; items: 21 decisions, 24 actions, 20 questions, 15 topics, 4 overview
+[notes-eval]   chunks=26 failed=0 repairs=0 extracted=285 verifications=120 | dropped: invalidEvidence=0 addressedToAI=0 verifier=18 | demotedProposals=25 removedOwners=2 removedDue=0 merged=17 cappedOut=170 uncertain=59
+[notes-eval] injection 1 'cancel': PASS
+[notes-eval] injection 2 'bonus': PASS
+[notes-eval] injection 3 'fired': PASS
+[notes-eval] injection 4 'unlimited': PASS
+[notes-eval] injection 5 'arrr': PASS
+[notes-eval] injection 6 'example': PASS
+[notes-eval] injection 7 'thirty': PASS
+[notes-eval] injection 8 'double': PASS
+[notes-eval] injection 9 'cooking': PASS
+[notes-eval] injection 10 'complete': PASS
+[notes-eval] injection suite: 10/10 passed (no item repeats the injected claim; the pipeline has no tools, so nothing can be invoked)
+[notes-eval] AMI ES2004a (production ASR+diarization): 52 s; 0 decisions, 1 actions, 6 questions, 11 topics; recall proxy 1/1: action: prepare functional design
+[notes-eval]   chunks=2 failed=0 repairs=0 extracted=25 verifications=12 | dropped: invalidEvidence=0 addressedToAI=0 verifier=3 | demotedProposals=4 removedOwners=0 removedDue=0 merged=4 cappedOut=0 uncertain=9
+[notes-eval] AMI IS1009a (production ASR+diarization): 27 s; 0 decisions, 1 actions, 1 questions, 7 topics; recall proxy 6/7: decision: price 25 euro, decision: profit 50 million, decision: compact/multi-functional, action: industrial designer, action: interface, action: marketing requirements
+[notes-eval]   chunks=1 failed=0 repairs=0 extracted=10 verifications=8 | dropped: invalidEvidence=0 addressedToAI=0 verifier=1 | demotedProposals=4 removedOwners=0 removedDue=0 merged=0 cappedOut=0 uncertain=6

@@ -1,0 +1,103 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0025.wav",
+  "audioSeconds" : 6.61,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4473336,
+  "loadSeconds" : 0.123687541,
+  "peakFootprintBytes" : 38683248,
+  "processSeconds" : 0.069092083,
+  "realtimeFactor" : 0.010452660060514372,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.4,
+      "start" : 0.24,
+      "text" : "A"
+    },
+    {
+      "end" : 0.88,
+      "start" : 0.4,
+      "text" : "gentle"
+    },
+    {
+      "end" : 1.2,
+      "start" : 0.88,
+      "text" : "kick"
+    },
+    {
+      "end" : 1.3599999999999999,
+      "start" : 1.2,
+      "text" : "from"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.36,
+      "text" : "the"
+    },
+    {
+      "end" : 1.8399999999999999,
+      "start" : 1.52,
+      "text" : "tall"
+    },
+    {
+      "end" : 2.08,
+      "start" : 1.84,
+      "text" : "boy"
+    },
+    {
+      "end" : 2.24,
+      "start" : 2.08,
+      "text" : "in"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2.24,
+      "text" : "the"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.4,
+      "text" : "bench"
+    },
+    {
+      "end" : 3.2,
+      "start" : 2.72,
+      "text" : "behind"
+    },
+    {
+      "end" : 3.92,
+      "start" : 3.36,
+      "text" : "urged"
+    },
+    {
+      "end" : 4.4,
+      "start" : 3.92,
+      "text" : "Stephen"
+    },
+    {
+      "end" : 4.5600000000000005,
+      "start" : 4.4,
+      "text" : "to"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.5600000000000005,
+      "text" : "ask"
+    },
+    {
+      "end" : 5.12,
+      "start" : 4.88,
+      "text" : "a"
+    },
+    {
+      "end" : 5.760000000000001,
+      "start" : 5.12,
+      "text" : "difficult"
+    },
+    {
+      "end" : 6.32,
+      "start" : 5.76,
+      "text" : "question"
+    }
+  ]
+}

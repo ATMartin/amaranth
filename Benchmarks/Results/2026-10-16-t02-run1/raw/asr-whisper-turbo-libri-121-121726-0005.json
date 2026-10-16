@@ -1,0 +1,23 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0005.wav",
+  "audioSeconds" : 3.1,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4162040,
+  "loadSeconds" : 0.611273208,
+  "peakFootprintBytes" : 122831688,
+  "processSeconds" : 0.862515375,
+  "realtimeFactor" : 0.27823076612903225,
+  "systemMemoryDeltaPeakBytes" : 723042304,
+  "words" : [
+    {
+      "end" : 0.9599999785423279,
+      "start" : 0.5,
+      "text" : "Hedge."
+    },
+    {
+      "end" : 2.4000000953674316,
+      "start" : 1.899999976158142,
+      "text" : "Offense."
+    }
+  ]
+}

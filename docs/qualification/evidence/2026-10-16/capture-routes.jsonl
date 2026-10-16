@@ -1,0 +1,9 @@
+{"altInput":"ManyCam Virtual Microphone (virtual, 44100 Hz)","altOutput":"Microsoft Teams Audio (virtual, 48000 Hz)","input":"BuiltInMicrophoneDevice","output":"BuiltInSpeakerDevice","step":"routePlan"}
+{"captured":"true","levelDB":"-10.5","phase":"default output","step":"routeTone","tone":"1000"}
+{"captured":"true","levelDB":"-10.5","phase":"alternate output","step":"routeTone","tone":"1500"}
+{"captured":"true","levelDB":"-10.5","phase":"restored output","step":"routeTone","tone":"2000"}
+{"epochs":"0:sessionStart@00:01:08.844:48000Hz\/1ch\/float32 | 1:deviceChange@00:01:17.756:44100Hz\/2ch\/float32 | 2:deviceChange@00:01:19.894:48000Hz\/1ch\/float32","source":"microphone","step":"routeEpochs"}
+{"epochs":"0:sessionStart@00:01:06.308:48000Hz\/2ch\/float32","source":"systemOutput","step":"routeEpochs"}
+{"events":"systemOutput:gap:source.startDelayed:66.309s, microphone:gap:source.startDelayed:68.844s, microphone:deviceChange:input.defaultChanged:0.000s, microphone:sourceFault:input.defaultChanged:0.058s, microphone:sourceRecovered:source.recovered:0.000s, microphone:formatChange:format.44100Hz.2ch:0.000s, microphone:gap:epoch.deviceChange:0.069s, microphone:deviceChange:input.defaultChanged:0.000s, microphone:sourceFault:input.defaultChanged:0.043s, microphone:sourceRecovered:source.recovered:0.000s, microphone:formatChange:format.48000Hz.1ch:0.000s, microphone:gap:epoch.deviceChange:0.061s","finalState":"capturedWithGaps","inputSwitchAt":"00:01:17.683","micSampleRates":"44100,48000","missingSeconds":"68.983","outputSwitchAt":"00:01:11.441","step":"routeEvents"}
+{"outputRestored":"true","step":"routeRestore"}
+{"result":"pass","test":"capture-routes"}

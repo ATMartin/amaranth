@@ -1,0 +1,58 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0035.wav",
+  "audioSeconds" : 3.445,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4194808,
+  "loadSeconds" : 0.608083583,
+  "peakFootprintBytes" : 122372888,
+  "processSeconds" : 0.877427292,
+  "realtimeFactor" : 0.2546958757619739,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.5400000214576721,
+      "start" : 0.3199999928474426,
+      "text" : "he"
+    },
+    {
+      "end" : 0.800000011920929,
+      "start" : 0.5400000214576721,
+      "text" : "had"
+    },
+    {
+      "end" : 1,
+      "start" : 0.800000011920929,
+      "text" : "the"
+    },
+    {
+      "end" : 1.3200000524520874,
+      "start" : 1,
+      "text" : "faith"
+    },
+    {
+      "end" : 1.5199999809265137,
+      "start" : 1.3200000524520874,
+      "text" : "in"
+    },
+    {
+      "end" : 1.7200000286102295,
+      "start" : 1.5199999809265137,
+      "text" : "him"
+    },
+    {
+      "end" : 2.0199999809265137,
+      "start" : 1.7200000286102295,
+      "text" : "that"
+    },
+    {
+      "end" : 2.359999895095825,
+      "start" : 2.0199999809265137,
+      "text" : "moves"
+    },
+    {
+      "end" : 2.759999990463257,
+      "start" : 2.359999895095825,
+      "text" : "mountains"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0004.wav",
+  "audioSeconds" : 5.2150625,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4309496,
+  "loadSeconds" : 0.1138065,
+  "peakFootprintBytes" : 38584968,
+  "processSeconds" : 0.06770125,
+  "realtimeFactor" : 0.012981867427283949,
+  "systemMemoryDeltaPeakBytes" : 32768,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.16,
+      "text" : "Number"
+    },
+    {
+      "end" : 0.96,
+      "start" : 0.72,
+      "text" : "ten"
+    },
+    {
+      "end" : 1.8399999999999999,
+      "start" : 1.28,
+      "text" : "Fresh"
+    },
+    {
+      "end" : 2.3200000000000003,
+      "start" : 1.84,
+      "text" : "Nelly"
+    },
+    {
+      "end" : 2.56,
+      "start" : 2.4,
+      "text" : "is"
+    },
+    {
+      "end" : 2.9600000000000004,
+      "start" : 2.56,
+      "text" : "waiting"
+    },
+    {
+      "end" : 3.2,
+      "start" : 2.96,
+      "text" : "on"
+    },
+    {
+      "end" : 3.84,
+      "start" : 3.2,
+      "text" : "you."
+    },
+    {
+      "end" : 4.16,
+      "start" : 3.84,
+      "text" : "Good"
+    },
+    {
+      "end" : 4.48,
+      "start" : 4.16,
+      "text" : "night,"
+    },
+    {
+      "end" : 5.28,
+      "start" : 4.48,
+      "text" : "husband."
+    }
+  ]
+}

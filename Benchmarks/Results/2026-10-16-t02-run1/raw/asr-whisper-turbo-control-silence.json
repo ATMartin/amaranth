@@ -1,0 +1,14 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/control-silence.wav",
+  "audioSeconds" : 60,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 7930360,
+  "loadSeconds" : 0.636977917,
+  "peakFootprintBytes" : 135562080,
+  "processSeconds" : 2.3402306250000002,
+  "realtimeFactor" : 0.03900384375,
+  "systemMemoryDeltaPeakBytes" : 820101120,
+  "words" : [
+
+  ]
+}

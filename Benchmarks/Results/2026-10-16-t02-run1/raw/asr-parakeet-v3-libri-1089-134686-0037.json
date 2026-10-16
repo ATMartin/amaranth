@@ -1,0 +1,78 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0037.wav",
+  "audioSeconds" : 5.21,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4325880,
+  "loadSeconds" : 0.114207917,
+  "peakFootprintBytes" : 38552200,
+  "processSeconds" : 0.060747458,
+  "realtimeFactor" : 0.011659780806142035,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.48,
+      "start" : 0.24,
+      "text" : "In"
+    },
+    {
+      "end" : 0.64,
+      "start" : 0.48,
+      "text" : "the"
+    },
+    {
+      "end" : 1.1199999999999999,
+      "start" : 0.64,
+      "text" : "silence"
+    },
+    {
+      "end" : 1.36,
+      "start" : 1.28,
+      "text" : "their"
+    },
+    {
+      "end" : 1.92,
+      "start" : 1.52,
+      "text" : "dark"
+    },
+    {
+      "end" : 2.3200000000000003,
+      "start" : 1.92,
+      "text" : "fire"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.32,
+      "text" : "kindled"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.96,
+      "text" : "the"
+    },
+    {
+      "end" : 3.5200000000000005,
+      "start" : 3.12,
+      "text" : "dusk"
+    },
+    {
+      "end" : 3.68,
+      "start" : 3.52,
+      "text" : "into"
+    },
+    {
+      "end" : 4,
+      "start" : 3.7600000000000002,
+      "text" : "a"
+    },
+    {
+      "end" : 4.5600000000000005,
+      "start" : 4,
+      "text" : "tawny"
+    },
+    {
+      "end" : 5.28,
+      "start" : 4.5600000000000005,
+      "text" : "glow."
+    }
+  ]
+}

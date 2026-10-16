@@ -1,0 +1,48 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0003.wav",
+  "audioSeconds" : 2.68,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4129272,
+  "loadSeconds" : 0.115250917,
+  "peakFootprintBytes" : 37716592,
+  "processSeconds" : 0.053961208,
+  "realtimeFactor" : 0.02013477910447761,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.08,
+      "text" : "Hello,"
+    },
+    {
+      "end" : 1.28,
+      "start" : 0.56,
+      "text" : "Bertie."
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.28,
+      "text" : "Any"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.52,
+      "text" : "good"
+    },
+    {
+      "end" : 1.84,
+      "start" : 1.76,
+      "text" : "in"
+    },
+    {
+      "end" : 2.16,
+      "start" : 1.84,
+      "text" : "your"
+    },
+    {
+      "end" : 2.56,
+      "start" : 2.16,
+      "text" : "mind?"
+    }
+  ]
+}

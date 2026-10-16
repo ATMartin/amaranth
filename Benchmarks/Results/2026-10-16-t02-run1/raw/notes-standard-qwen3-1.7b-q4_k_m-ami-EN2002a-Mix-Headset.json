@@ -1,0 +1,470 @@
+{
+  "audioSeconds" : 2142.709375,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            19,
+            20,
+            21,
+            25,
+            29,
+            30
+          ],
+          "kind" : "decision",
+          "text" : "We need to decide on the design of the right-click menu for the transcription box."
+        },
+        {
+          "evidence" : [
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "kind" : "decision",
+          "text" : "We should consider adding a summary window to the transcription box."
+        },
+        {
+          "evidence" : [
+            104,
+            105,
+            107,
+            108,
+            109,
+            110
+          ],
+          "kind" : "decision",
+          "text" : "We should decide on the integration of audio files into the browsing system."
+        },
+        {
+          "due" : "February",
+          "evidence" : [
+            156,
+            157
+          ],
+          "kind" : "decision",
+          "text" : "We should aim to develop a prototype by the end of February."
+        },
+        {
+          "evidence" : [
+            19,
+            20,
+            21,
+            25,
+            29,
+            30
+          ],
+          "kind" : "action",
+          "text" : "Implement the right-click menu for speaker characterization."
+        },
+        {
+          "evidence" : [
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "kind" : "action",
+          "text" : "Add a summary window to the transcription box."
+        },
+        {
+          "evidence" : [
+            104,
+            105,
+            107,
+            108,
+            109,
+            110
+          ],
+          "kind" : "action",
+          "text" : "Integrate audio files into the browsing system."
+        },
+        {
+          "due" : "February",
+          "evidence" : [
+            156,
+            157
+          ],
+          "kind" : "action",
+          "text" : "Develop a prototype by the end of February."
+        },
+        {
+          "evidence" : [
+            19,
+            20,
+            21,
+            25,
+            29,
+            30
+          ],
+          "kind" : "action",
+          "text" : "Implement the right-click menu for speaker characterization."
+        },
+        {
+          "evidence" : [
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "kind" : "action",
+          "text" : "Add a summary window to the transcription box."
+        },
+        {
+          "evidence" : [
+            104,
+            105,
+            107,
+            108,
+            109,
+            110
+          ],
+          "kind" : "action",
+          "text" : "Integrate audio files into the browsing system."
+        },
+        {
+          "due" : "February",
+          "evidence" : [
+            156,
+            157
+          ],
+          "kind" : "action",
+          "text" : "Develop a prototype by the end of February."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        171
+      ],
+      "stats" : {
+        "generateSeconds" : 6.987178667,
+        "generatedTokens" : 836,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 3.035398625,
+        "promptTokens" : 4935
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            172,
+            174,
+            175,
+            177,
+            181,
+            182
+          ],
+          "kind" : "decision",
+          "text" : "We should access the directory and make it readable"
+        },
+        {
+          "evidence" : [
+            180
+          ],
+          "kind" : "action",
+          "text" : "Email the code to the team"
+        },
+        {
+          "evidence" : [
+            308,
+            311,
+            313,
+            315,
+            317,
+            319
+          ],
+          "kind" : "decision",
+          "text" : "We should set milestones for the search functionality"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            324,
+            325,
+            327,
+            328
+          ],
+          "kind" : "action",
+          "text" : "Develop a search interface"
+        },
+        {
+          "evidence" : [
+            300,
+            301,
+            302,
+            303,
+            304,
+            305
+          ],
+          "kind" : "decision",
+          "text" : "We should meet over the weekend to discuss the search functionality"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            324,
+            325,
+            327,
+            328
+          ],
+          "kind" : "action",
+          "text" : "Develop a search interface"
+        },
+        {
+          "evidence" : [
+            300,
+            301,
+            302,
+            303,
+            304,
+            305
+          ],
+          "kind" : "decision",
+          "text" : "We should meet over the weekend to discuss the search functionality"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            324,
+            325,
+            327,
+            328
+          ],
+          "kind" : "action",
+          "text" : "Develop a search interface"
+        },
+        {
+          "evidence" : [
+            300,
+            301,
+            302,
+            303,
+            304,
+            305
+          ],
+          "kind" : "decision",
+          "text" : "We should meet over the weekend to discuss the search functionality"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            324,
+            325,
+            327,
+            328
+          ],
+          "kind" : "action",
+          "text" : "Develop a search interface"
+        },
+        {
+          "evidence" : [
+            300,
+            301,
+            302,
+            303,
+            304,
+            305
+          ],
+          "kind" : "decision",
+          "text" : "We should meet over the weekend to discuss the search functionality"
+        },
+        {
+          "evidence" : [
+            322,
+            323,
+            324,
+            325,
+            327,
+            328
+          ],
+          "kind" : "action",
+          "text" : "Develop a search interface"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        171,
+        351
+      ],
+      "stats" : {
+        "generateSeconds" : 7.378042833,
+        "generatedTokens" : 875,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 3.360554542,
+        "promptTokens" : 4982
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            351,
+            352,
+            353,
+            355,
+            356
+          ],
+          "kind" : "decision",
+          "text" : "What time do we prefer for the meeting?"
+        },
+        {
+          "evidence" : [
+            358,
+            359,
+            360,
+            361,
+            364,
+            365
+          ],
+          "kind" : "decision",
+          "text" : "What is the location of the meeting?"
+        },
+        {
+          "evidence" : [
+            380,
+            381,
+            382,
+            383,
+            384,
+            385
+          ],
+          "kind" : "decision",
+          "text" : "What is the schedule for the reading?"
+        },
+        {
+          "evidence" : [
+            388,
+            389
+          ],
+          "kind" : "action",
+          "text" : "Take care of the meeting details"
+        },
+        {
+          "evidence" : [
+            360,
+            361,
+            364,
+            365
+          ],
+          "kind" : "action",
+          "text" : "Set up the meeting environment"
+        },
+        {
+          "evidence" : [
+            380,
+            381,
+            382,
+            383,
+            384,
+            385
+          ],
+          "kind" : "action",
+          "text" : "Confirm the reading schedule"
+        },
+        {
+          "evidence" : [
+            360,
+            361,
+            364,
+            365
+          ],
+          "kind" : "action",
+          "text" : "Set up the meeting environment"
+        },
+        {
+          "evidence" : [
+            388,
+            389
+          ],
+          "kind" : "action",
+          "text" : "Confirm the meeting details"
+        },
+        {
+          "evidence" : [
+            360,
+            361,
+            364,
+            365
+          ],
+          "kind" : "action",
+          "text" : "Set up the meeting environment"
+        },
+        {
+          "evidence" : [
+            380,
+            381,
+            382,
+            383,
+            384,
+            385
+          ],
+          "kind" : "action",
+          "text" : "Confirm the reading schedule"
+        },
+        {
+          "evidence" : [
+            360,
+            361,
+            364,
+            365
+          ],
+          "kind" : "action",
+          "text" : "Set up the meeting environment"
+        },
+        {
+          "evidence" : [
+            388,
+            389
+          ],
+          "kind" : "action",
+          "text" : "Confirm the meeting details"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        351,
+        411
+      ],
+      "stats" : {
+        "generateSeconds" : 5.8413525,
+        "generatedTokens" : 801,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.016953167,
+        "promptTokens" : 1578
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.256600125,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 1116981648,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 27.663831917,
+  "transcriptSegments" : 412,
+  "transcriptWords" : 5599
+}

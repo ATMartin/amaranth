@@ -1,0 +1,20 @@
+[sweep] ES2004a-Mix-Headset v5-sil0.3-forced2+1 WER  17.3%  non-overlap  11.6%  windows 99 retried 6 still-under 3 uncovered 30s
+[sweep] ES2004a-Mix-Headset uniform2+2 WER  16.1%  non-overlap   9.5%  windows 111 retried 11 still-under 0 uncovered 22s
+[sweep] ES2004a-Mix-Headset sil1.0-forced2+1 WER  16.1%  non-overlap   9.5%  windows 102 retried 11 still-under 1 uncovered 21s
+[sweep] ES2004a-Mix-Headset REF fluid-long-300s WER  15.8%  non-overlap  10.1%
+[sweep] IS1009a-Mix-Headset v5-sil0.3-forced2+1 WER  23.1%  non-overlap  15.2%  windows 75 retried 11 still-under 5 uncovered 26s
+[sweep] IS1009a-Mix-Headset uniform2+2 WER  20.8%  non-overlap  15.2%  windows 85 retried 9 still-under 2 uncovered 23s
+[sweep] IS1009a-Mix-Headset sil1.0-forced2+1 WER  22.5%  non-overlap  17.1%  windows 77 retried 8 still-under 3 uncovered 24s
+[sweep] IS1009a-Mix-Headset REF fluid-long-300s WER  21.1%  non-overlap  15.0%
+[sweep] EN2002a-Mix-Headset v5-sil0.3-forced2+1 WER  32.7%  non-overlap  16.8%  windows 192 retried 37 still-under 17 uncovered 127s
+[sweep] EN2002a-Mix-Headset uniform2+2 WER  31.4%  non-overlap  16.2%  windows 219 retried 37 still-under 12 uncovered 112s
+[sweep] EN2002a-Mix-Headset sil1.0-forced2+1 WER  32.5%  non-overlap  16.4%  windows 199 retried 40 still-under 16 uncovered 112s
+[sweep] EN2002a-Mix-Headset REF fluid-long-300s WER  29.9%  non-overlap  14.5%
+[sweep] ES2004a-Array1-01 v5-sil0.3-forced2+1 WER  23.1%  non-overlap  21.1%  windows 96 retried 2 still-under 1 uncovered 17s
+[sweep] ES2004a-Array1-01 uniform2+2 WER  24.0%  non-overlap  20.9%  windows 108 retried 4 still-under 1 uncovered 24s
+[sweep] ES2004a-Array1-01 sil1.0-forced2+1 WER  24.2%  non-overlap  22.2%  windows 99 retried 7 still-under 1 uncovered 20s
+[sweep] ES2004a-Array1-01 REF fluid-long-300s WER  24.6%  non-overlap  20.9%
+[sweep] libri-1089 v5-sil0.3-forced2+1 WER   0.8%  windows 28 retried 0 still-under 0 uncovered 0s
+[sweep] libri-1089 uniform2+2 WER   1.0%  windows 34 retried 4 still-under 0 uncovered 2s
+[sweep] libri-1089 sil1.0-forced2+1 WER   1.4%  windows 29 retried 3 still-under 0 uncovered 4s
+[sweep] libri-1089 REF fluid-long-300s WER   1.8%

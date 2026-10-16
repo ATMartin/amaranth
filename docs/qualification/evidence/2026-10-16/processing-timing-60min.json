@@ -1,0 +1,26 @@
+[
+  {
+    "completed" : "true",
+    "diarizeSeconds" : "254",
+    "networkSockets" : "none",
+    "notesSeconds" : "297",
+    "peakAppMiB" : "518",
+    "peakWorkerMiB" : "1341",
+    "prepareSeconds" : "35",
+    "reconcileSeconds" : "2",
+    "step" : "cold",
+    "totalSeconds" : "588",
+    "transcribeSeconds" : "177"
+  },
+  {
+    "completed" : "true",
+    "diarizeSeconds" : "256",
+    "networkSockets" : "none",
+    "notesSeconds" : "297",
+    "peakAppMiB" : "504",
+    "peakWorkerMiB" : "2717",
+    "prepareSeconds" : "34",
+    "reconcileSeconds" : "2",
+    "step" : "warm",
+    "totalSeconds" : "589",
+    "transcribeSeconds" : "178"{"result":"pass","test":"processing-timing"}

@@ -1,0 +1,63 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0016.wav",
+  "audioSeconds" : 3.54,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4194808,
+  "loadSeconds" : 0.157158625,
+  "peakFootprintBytes" : 55083608,
+  "processSeconds" : 0.064250167,
+  "realtimeFactor" : 0.018149764689265536,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.4,
+      "start" : 0.16,
+      "text" : "Then"
+    },
+    {
+      "end" : 0.56,
+      "start" : 0.4,
+      "text" : "you"
+    },
+    {
+      "end" : 0.7200000000000001,
+      "start" : 0.56,
+      "text" : "can"
+    },
+    {
+      "end" : 0.88,
+      "start" : 0.72,
+      "text" : "ask"
+    },
+    {
+      "end" : 1.12,
+      "start" : 0.88,
+      "text" : "him"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.12,
+      "text" : "questions"
+    },
+    {
+      "end" : 1.6,
+      "start" : 1.52,
+      "text" : "on"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.6,
+      "text" : "the"
+    },
+    {
+      "end" : 2.4,
+      "start" : 1.76,
+      "text" : "Catechism,"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 2.4,
+      "text" : "Daedalus."
+    }
+  ]
+}

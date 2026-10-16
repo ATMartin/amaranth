@@ -1,0 +1,14 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/control-noise.wav",
+  "audioSeconds" : 60,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 7799288,
+  "loadSeconds" : 0.116169792,
+  "peakFootprintBytes" : 71713440,
+  "processSeconds" : 1.066345625,
+  "realtimeFactor" : 0.017772427083333334,
+  "systemMemoryDeltaPeakBytes" : 20758528,
+  "words" : [
+
+  ]
+}

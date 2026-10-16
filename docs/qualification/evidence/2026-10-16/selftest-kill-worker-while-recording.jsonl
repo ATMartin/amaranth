@@ -1,0 +1,10 @@
+{"finalState":"captured","missingAudioEvents":"0","segments":"1216","step":"recordedA"}
+{"recordingBAt":"00:00:22.268","step":"killed","transcribeProgress":"0.15","workerPID":"43980"}
+{"contiguous":"true","finalState":"captured","missingAudioEvents":"0","segments":"42","segmentsAfterKill":"30","step":"recordingB"}
+{"step":"retry","transcribeAttempts":"2","transcribeState":"succeeded","workDir":"\/var\/folders\/jn\/0_7nnpqs5ll7q7tdtnlsx4y00000gn\/T\/amaranth-kill-8EF3E29B-8DBA-441B-A407-F3AEC704328C\/work\/2f3bee66-667b-449f-a32b-25bc4a7c288a"}
+{"attempts":"1","error":"","seconds":"12.0","stage":"prepare","state":"succeeded","step":"job"}
+{"attempts":"1","error":"","seconds":"36.0","stage":"diarize","state":"succeeded","step":"job"}
+{"attempts":"2","error":"","seconds":"69.0","stage":"transcribe","state":"succeeded","step":"job"}
+{"attempts":"1","error":"","seconds":"1.0","stage":"reconcile","state":"succeeded","step":"job"}
+{"micWER":"1.2%","micWords":"168","overlapWords":"518","speakers":"5","stage":"attributed","step":"transcript","systemWords":"3299","unknownWords":"39"}
+{"result":"pass","test":"kill-worker-while-recording"}

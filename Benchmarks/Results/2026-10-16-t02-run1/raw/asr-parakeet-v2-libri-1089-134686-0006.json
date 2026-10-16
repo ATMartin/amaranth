@@ -1,0 +1,133 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0006.wav",
+  "audioSeconds" : 10.555,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4637176,
+  "loadSeconds" : 0.15907025,
+  "peakFootprintBytes" : 56410760,
+  "processSeconds" : 0.078164334,
+  "realtimeFactor" : 0.007405431927996211,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.24,
+      "text" : "The"
+    },
+    {
+      "end" : 0.96,
+      "start" : 0.56,
+      "text" : "dull"
+    },
+    {
+      "end" : 1.36,
+      "start" : 0.96,
+      "text" : "light"
+    },
+    {
+      "end" : 1.68,
+      "start" : 1.36,
+      "text" : "fell"
+    },
+    {
+      "end" : 1.92,
+      "start" : 1.68,
+      "text" : "more"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 1.92,
+      "text" : "faintly"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.4,
+      "text" : "upon"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.72,
+      "text" : "the"
+    },
+    {
+      "end" : 3.3600000000000003,
+      "start" : 2.88,
+      "text" : "page,"
+    },
+    {
+      "end" : 3.84,
+      "start" : 3.36,
+      "text" : "whereon"
+    },
+    {
+      "end" : 4.16,
+      "start" : 3.84,
+      "text" : "another"
+    },
+    {
+      "end" : 4.800000000000001,
+      "start" : 4.16,
+      "text" : "equation"
+    },
+    {
+      "end" : 5.2,
+      "start" : 4.8,
+      "text" : "began"
+    },
+    {
+      "end" : 5.36,
+      "start" : 5.2,
+      "text" : "to"
+    },
+    {
+      "end" : 6,
+      "start" : 5.36,
+      "text" : "unfold"
+    },
+    {
+      "end" : 6.5600000000000005,
+      "start" : 6,
+      "text" : "itself"
+    },
+    {
+      "end" : 7.12,
+      "start" : 6.5600000000000005,
+      "text" : "slowly"
+    },
+    {
+      "end" : 7.6000000000000005,
+      "start" : 7.36,
+      "text" : "and"
+    },
+    {
+      "end" : 7.760000000000001,
+      "start" : 7.6000000000000005,
+      "text" : "to"
+    },
+    {
+      "end" : 8.16,
+      "start" : 7.76,
+      "text" : "spread"
+    },
+    {
+      "end" : 8.72,
+      "start" : 8.16,
+      "text" : "abroad"
+    },
+    {
+      "end" : 8.96,
+      "start" : 8.72,
+      "text" : "its"
+    },
+    {
+      "end" : 9.6,
+      "start" : 8.96,
+      "text" : "widening"
+    },
+    {
+      "end" : 10.24,
+      "start" : 9.6,
+      "text" : "tail."
+    }
+  ]
+}

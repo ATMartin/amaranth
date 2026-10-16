@@ -1,0 +1,43 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0033.wav",
+  "audioSeconds" : 3.33,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4194808,
+  "loadSeconds" : 0.619950667,
+  "peakFootprintBytes" : 122995552,
+  "processSeconds" : 0.877653834,
+  "realtimeFactor" : 0.2635597099099099,
+  "systemMemoryDeltaPeakBytes" : 727498752,
+  "words" : [
+    {
+      "end" : 0.3799999952316284,
+      "start" : 0.30000001192092896,
+      "text" : "a"
+    },
+    {
+      "end" : 0.5600000023841858,
+      "start" : 0.3799999952316284,
+      "text" : "great"
+    },
+    {
+      "end" : 0.9800000190734863,
+      "start" : 0.5600000023841858,
+      "text" : "saint,"
+    },
+    {
+      "end" : 1.7999999523162842,
+      "start" : 1.6799999475479126,
+      "text" : "St."
+    },
+    {
+      "end" : 2.259999990463257,
+      "start" : 1.9800000190734863,
+      "text" : "Francis"
+    },
+    {
+      "end" : 2.9000000953674316,
+      "start" : 2.259999990463257,
+      "text" : "Xavier,"
+    }
+  ]
+}

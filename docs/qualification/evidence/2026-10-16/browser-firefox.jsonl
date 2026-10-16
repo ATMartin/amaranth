@@ -1,0 +1,3 @@
+{"label":"firefox","seconds":"10.0","step":"recording"}
+{"directory":"\/var\/folders\/jn\/0_7nnpqs5ll7q7tdtnlsx4y00000gn\/T\/amaranth-capture-selftest\/tone-3B51401F-1593-4306-96C7-96997F5D6000\/meetings\/79debbc8-bc37-4d29-b7e3-a17444817584","hz":"1234","label":"firefox","maxLevelDB":"-14.0","micRmsDB":"-200.0","missingAudioEvents":"0","step":"tone","windowsWithTone":"16\/20"}
+{"result":"pass","test":"capture-tone"}

@@ -1,0 +1,48 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0011.wav",
+  "audioSeconds" : 4.035,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4178424,
+  "loadSeconds" : 0.15782225,
+  "peakFootprintBytes" : 54641240,
+  "processSeconds" : 0.06223975,
+  "realtimeFactor" : 0.015424969021065675,
+  "systemMemoryDeltaPeakBytes" : 84508672,
+  "words" : [
+    {
+      "end" : 1.2,
+      "start" : 0.48,
+      "text" : "Husband"
+    },
+    {
+      "end" : 2.3200000000000003,
+      "start" : 2.08,
+      "text" : "The"
+    },
+    {
+      "end" : 2.48,
+      "start" : 2.32,
+      "text" : "next"
+    },
+    {
+      "end" : 2.96,
+      "start" : 2.72,
+      "text" : "thing"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.96,
+      "text" : "to"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 3.12,
+      "text" : "a"
+    },
+    {
+      "end" : 3.68,
+      "start" : 3.2800000000000002,
+      "text" : "wife"
+    }
+  ]
+}

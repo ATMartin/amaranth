@@ -1,0 +1,12 @@
+// Shared build settings. Frozen identity: see docs/decisions/0001-project-and-toolchain.md
+MACOSX_DEPLOYMENT_TARGET = 26.5
+ARCHS = arm64
+ONLY_ACTIVE_ARCH = NO
+SWIFT_VERSION = 6.0
+SWIFT_STRICT_CONCURRENCY = complete
+ENABLE_HARDENED_RUNTIME = YES
+CODE_SIGN_STYLE = Automatic
+// Ad-hoc until a team is configured. Put DEVELOPMENT_TEAM = XXXXXXXXXX in Config/Signing.local.xcconfig (gitignored).
+CODE_SIGN_IDENTITY = -
+DEVELOPMENT_TEAM =
+#include? "Signing.local.xcconfig"

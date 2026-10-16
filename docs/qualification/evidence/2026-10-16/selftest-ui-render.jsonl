@@ -1,0 +1,9 @@
+{"meetings":"5","step":"library"}
+{"gaps":"1","mainSeconds":"0.09","meeting":"Two-hour planning session","notes":"none","notesSeconds":"0.05","playback":"No recorded audio is available for this meeting.","rows":"3601","step":"render","transcriptSeconds":"0.51","unknownSpeakerRows":"1800"}
+{"gaps":"0","mainSeconds":"0.10","meeting":"Launch checklist","notes":"ready(stale: false, regenerationError: nil)","notesSeconds":"0.05","playback":"available","rows":"7","step":"render","transcriptSeconds":"0.08","unknownSpeakerRows":"1"}
+{"gaps":"1","mainSeconds":"0.09","meeting":"Dropped system audio","notes":"failed(\"notes.schemaInvalid\")","notesSeconds":"0.05","playback":"available","rows":"4","step":"render","transcriptSeconds":"0.05","unknownSpeakerRows":"3"}
+{"gaps":"0","mainSeconds":"0.06","meeting":"Standup with a pause","notes":"unavailable(\"Notes are generated after the transcript is ready.\")","notesSeconds":"0.04","playback":"available","rows":"0","step":"render","transcriptSeconds":"0.04","unknownSpeakerRows":"0"}
+{"gaps":"0","mainSeconds":"0.09","meeting":"Launch checklist (edited)","notes":"ready(stale: true, regenerationError: nil)","notesSeconds":"0.04","playback":"available","rows":"7","step":"render","transcriptSeconds":"0.05","unknownSpeakerRows":"1"}
+{"hits":"50","query":"release","step":"search"}
+{"directory":"\/Users\/alex\/sandbox\/amaranth-v2\/docs\/qualification\/evidence\/2026-10-16\/ui-render","step":"output"}
+{"result":"pass","test":"ui-render"}

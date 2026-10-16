@@ -1,0 +1,289 @@
+{
+  "audioSeconds" : 1049.3546875,
+  "chunkTokenBudget" : 2200,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            13
+          ],
+          "kind" : "decision",
+          "text" : "We will do some stuff, get to know each other a bit better, feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            15
+          ],
+          "kind" : "decision",
+          "text" : "We want it to be original, something that's people haven't thought of, that's not out in the shops. Um trendy, appealing to a wide market, but you know, not a hunk of metal."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We will practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            20
+          ],
+          "kind" : "decision",
+          "text" : "We're running out of flu. Okay. I'm not gonna ask you to guess I'm going to tell you that's supposed to be a tiger. And I see them as majestic and independent and proud."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        74
+      ],
+      "stats" : {
+        "generateSeconds" : 5.934517542,
+        "generatedTokens" : 866,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.888608667,
+        "promptTokens" : 2162
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            74
+          ],
+          "kind" : "decision",
+          "owner" : "S4",
+          "text" : "We need to decide on the pricing strategy for the product."
+        },
+        {
+          "evidence" : [
+            78
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We need to determine the target market and focus areas."
+        },
+        {
+          "evidence" : [
+            82,
+            84,
+            87,
+            92,
+            94,
+            112
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We need to decide on the remote control's design and functionality."
+        },
+        {
+          "evidence" : [
+            97,
+            100,
+            109,
+            110,
+            111,
+            115
+          ],
+          "kind" : "decision",
+          "owner" : "S1",
+          "text" : "We need to consider the design modifications for the older generation."
+        },
+        {
+          "evidence" : [
+            116
+          ],
+          "kind" : "decision",
+          "owner" : "S2",
+          "text" : "We need to decide on the cost implications of the design changes."
+        },
+        {
+          "evidence" : [
+            119
+          ],
+          "kind" : "action",
+          "owner" : "S1",
+          "text" : "S1 will prepare a PowerPoint presentation."
+        },
+        {
+          "evidence" : [
+            97,
+            100,
+            109,
+            110,
+            111
+          ],
+          "kind" : "question",
+          "text" : "What are the main challenges in designing a remote control for the older generation?"
+        },
+        {
+          "evidence" : [
+            113,
+            116
+          ],
+          "kind" : "question",
+          "text" : "What are the cost implications of incorporating a flip top design?"
+        },
+        {
+          "evidence" : [
+            82,
+            84,
+            87,
+            92,
+            94,
+            112
+          ],
+          "kind" : "question",
+          "text" : "What are the design considerations for the remote control's user interface?"
+        },
+        {
+          "evidence" : [
+            74,
+            75
+          ],
+          "kind" : "question",
+          "text" : "What are the main factors affecting the remote control's pricing strategy?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        74,
+        123
+      ],
+      "stats" : {
+        "generateSeconds" : 4.391935,
+        "generatedTokens" : 642,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.951473416,
+        "promptTokens" : 2190
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            123
+          ],
+          "kind" : "decision",
+          "text" : "Probably. Yeah."
+        },
+        {
+          "evidence" : [
+            125
+          ],
+          "kind" : "decision",
+          "text" : "I mean the sky remote controls and everything, they're kind of molded and look a bit different and the telewest remote controls are silver plastic, which looks a bit smarter."
+        },
+        {
+          "evidence" : [
+            126
+          ],
+          "kind" : "decision",
+          "text" : "So yeah, I guess that's stuff we can make."
+        },
+        {
+          "evidence" : [
+            127
+          ],
+          "kind" : "action",
+          "text" : "Break it up there."
+        },
+        {
+          "evidence" : [
+            129
+          ],
+          "kind" : "action",
+          "text" : "Go back to our room? Yeah."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        123,
+        129
+      ],
+      "stats" : {
+        "generateSeconds" : 1.8615141670000002,
+        "generatedTokens" : 278,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.001998833,
+        "promptTokens" : 324
+      }
+    }
+  ],
+  "contextTokens" : 4096,
+  "loadSeconds" : 0.224155542,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 639551528,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 14.056162375,
+  "transcriptSegments" : 130,
+  "transcriptWords" : 2341
+}

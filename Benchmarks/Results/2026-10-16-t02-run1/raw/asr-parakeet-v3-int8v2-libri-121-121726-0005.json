@@ -1,0 +1,28 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0005.wav",
+  "audioSeconds" : 3.1,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4129272,
+  "loadSeconds" : 0.124022334,
+  "peakFootprintBytes" : 40616584,
+  "processSeconds" : 0.055263625,
+  "realtimeFactor" : 0.017826975806451612,
+  "systemMemoryDeltaPeakBytes" : 32768,
+  "words" : [
+    {
+      "end" : 1.68,
+      "start" : 0.4,
+      "text" : "Hedge,"
+    },
+    {
+      "end" : 1.92,
+      "start" : 1.68,
+      "text" : "a"
+    },
+    {
+      "end" : 3.04,
+      "start" : 1.92,
+      "text" : "fence."
+    }
+  ]
+}

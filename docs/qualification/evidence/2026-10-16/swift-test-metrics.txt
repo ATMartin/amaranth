@@ -1,0 +1,15 @@
+[asr-boundary] ctx2 windows=3 WER=8.1% numbers 3/16: On March 3, the team did not ship 42 units because the vendor never confirmed the order. We will not accept a delay beyond 15 April and there is no budget for a second shipment. Please do not approve any invoice above $9,500 until the 21st. The meeting moved from 7.30 to 8.15 and nobody objected to the new time. Sarah said the numbers were never final and the forecast of 60% is not guaranteed.
+[asr-boundary] test-8s windows=6 WER=4.7% numbers 2/16: On March 3 the team did not ship 42 units because the vendor never confirmed the order. We will not accept a delay beyond the 15th of April and there is no budget for a second shipment. Please do not approve any invoice above $9,500 until the 21st, the meeting moved from 7.30 to 8.15 and nobody objected to the new time. Sarah said the numbers were never final, and the forecast of 60% is not guaranteed.
+[asr-e2e] windows=3+ WER=0.5% words=221 resume=2.811883417 seconds
+[diar-cancel] stopped 0.794783042 seconds after cancel (full run takes ~12 s on M2 Max)
+[diar] ES2004a overlap-retaining full-file DER 22.1% (miss 150s FA 26s conf 29s, 4 spk, 37 overlap regions) | 5-min blocks DER 25.7% (4 spk)
+[diar] IS1009a overlap-retaining full-file DER 23.0% (miss 89s FA 32s conf 40s, 4 spk, 31 overlap regions) | 5-min blocks DER 23.4% (4 spk)
+[force-kill] killed at 4.11 s: segments=4 quarantined=0 tail loss mic=0.11 s sys=0.11 s
+[force-kill] killed at 5.31 s: segments=4 quarantined=0 tail loss mic=1.30 s sys=1.30 s
+[force-kill] killed at 6.06 s: segments=6 quarantined=0 tail loss mic=0.06 s sys=0.06 s
+[force-kill] killed at 8.69 s: segments=8 quarantined=0 tail loss mic=0.69 s sys=0.69 s
+[force-kill] killed at 8.72 s: segments=8 quarantined=0 tail loss mic=0.71 s sys=0.71 s
+[force-kill] worst tail loss over 5 kills: 1.30 s
+[long] marker error vs host time: raw sample-count timeline worst 330 ms; normalized worst 0.0 ms; mic↔system normalized worst 0.0 ms
+[long] segments 7234, recorder-process footprint growth 1.6 MiB (minute 15 → end), max 12.0 MiB
+[ui-perf] 2 h transcript: rows 0.249773209 seconds, detail load from store 0.666749625 seconds, one correction round trip 1.252979459 seconds (debug build; runs off the main thread in the app)

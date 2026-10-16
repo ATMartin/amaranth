@@ -1,0 +1,208 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0019.wav",
+  "audioSeconds" : 13.895,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4850168,
+  "loadSeconds" : 0.122039958,
+  "peakFootprintBytes" : 41386632,
+  "processSeconds" : 0.090631833,
+  "realtimeFactor" : 0.006522622022310184,
+  "systemMemoryDeltaPeakBytes" : 75005952,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.24,
+      "text" : "The"
+    },
+    {
+      "end" : 0.9600000000000001,
+      "start" : 0.56,
+      "text" : "sentence"
+    },
+    {
+      "end" : 1.1199999999999999,
+      "start" : 0.96,
+      "text" : "of"
+    },
+    {
+      "end" : 1.6,
+      "start" : 1.12,
+      "text" : "Saint"
+    },
+    {
+      "end" : 2.3200000000000003,
+      "start" : 1.6,
+      "text" : "James,"
+    },
+    {
+      "end" : 2.5599999999999996,
+      "start" : 2.32,
+      "text" : "which"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.56,
+      "text" : "says"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.88,
+      "text" : "that"
+    },
+    {
+      "end" : 3.3600000000000003,
+      "start" : 3.12,
+      "text" : "he"
+    },
+    {
+      "end" : 3.5999999999999996,
+      "start" : 3.36,
+      "text" : "who"
+    },
+    {
+      "end" : 4.16,
+      "start" : 3.6,
+      "text" : "offends"
+    },
+    {
+      "end" : 4.5600000000000005,
+      "start" : 4.16,
+      "text" : "against"
+    },
+    {
+      "end" : 4.800000000000001,
+      "start" : 4.5600000000000005,
+      "text" : "one"
+    },
+    {
+      "end" : 5.44,
+      "start" : 4.8,
+      "text" : "commandment"
+    },
+    {
+      "end" : 5.84,
+      "start" : 5.44,
+      "text" : "becomes"
+    },
+    {
+      "end" : 6.32,
+      "start" : 5.84,
+      "text" : "guilty"
+    },
+    {
+      "end" : 6.5600000000000005,
+      "start" : 6.32,
+      "text" : "of"
+    },
+    {
+      "end" : 7.04,
+      "start" : 6.5600000000000005,
+      "text" : "all,"
+    },
+    {
+      "end" : 7.28,
+      "start" : 7.04,
+      "text" : "had"
+    },
+    {
+      "end" : 7.680000000000001,
+      "start" : 7.28,
+      "text" : "seemed"
+    },
+    {
+      "end" : 7.84,
+      "start" : 7.68,
+      "text" : "to"
+    },
+    {
+      "end" : 8.08,
+      "start" : 7.84,
+      "text" : "him"
+    },
+    {
+      "end" : 8.4,
+      "start" : 8.08,
+      "text" : "first"
+    },
+    {
+      "end" : 8.64,
+      "start" : 8.4,
+      "text" : "a"
+    },
+    {
+      "end" : 9.360000000000001,
+      "start" : 8.64,
+      "text" : "swollen"
+    },
+    {
+      "end" : 10,
+      "start" : 9.36,
+      "text" : "phrase,"
+    },
+    {
+      "end" : 10.32,
+      "start" : 10,
+      "text" : "until"
+    },
+    {
+      "end" : 10.48,
+      "start" : 10.32,
+      "text" : "he"
+    },
+    {
+      "end" : 10.72,
+      "start" : 10.48,
+      "text" : "had"
+    },
+    {
+      "end" : 11.040000000000001,
+      "start" : 10.72,
+      "text" : "begun"
+    },
+    {
+      "end" : 11.200000000000001,
+      "start" : 11.040000000000001,
+      "text" : "to"
+    },
+    {
+      "end" : 11.68,
+      "start" : 11.200000000000001,
+      "text" : "grope"
+    },
+    {
+      "end" : 11.84,
+      "start" : 11.68,
+      "text" : "in"
+    },
+    {
+      "end" : 11.92,
+      "start" : 11.84,
+      "text" : "the"
+    },
+    {
+      "end" : 12.4,
+      "start" : 11.92,
+      "text" : "darkness"
+    },
+    {
+      "end" : 12.56,
+      "start" : 12.4,
+      "text" : "of"
+    },
+    {
+      "end" : 12.72,
+      "start" : 12.56,
+      "text" : "his"
+    },
+    {
+      "end" : 13.120000000000001,
+      "start" : 12.72,
+      "text" : "own"
+    },
+    {
+      "end" : 13.92,
+      "start" : 13.120000000000001,
+      "text" : "state."
+    }
+  ]
+}

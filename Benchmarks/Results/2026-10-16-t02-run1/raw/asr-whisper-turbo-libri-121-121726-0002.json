@@ -1,0 +1,38 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0002.wav",
+  "audioSeconds" : 4.41,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4243960,
+  "loadSeconds" : 0.610695459,
+  "peakFootprintBytes" : 122717000,
+  "processSeconds" : 0.876957,
+  "realtimeFactor" : 0.198856462585034,
+  "systemMemoryDeltaPeakBytes" : 720257024,
+  "words" : [
+    {
+      "end" : 0.8600000143051147,
+      "start" : 0.10000000149011612,
+      "text" : "Anger,"
+    },
+    {
+      "end" : 1.840000033378601,
+      "start" : 1.3600000143051147,
+      "text" : "pain,"
+    },
+    {
+      "end" : 2.9600000381469727,
+      "start" : 2.0799999237060547,
+      "text" : "painful"
+    },
+    {
+      "end" : 3.299999952316284,
+      "start" : 2.9600000381469727,
+      "text" : "to"
+    },
+    {
+      "end" : 3.740000009536743,
+      "start" : 3.299999952316284,
+      "text" : "hear."
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0001.wav",
+  "audioSeconds" : 5.925,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4293112,
+  "loadSeconds" : 0.126423958,
+  "peakFootprintBytes" : 39748208,
+  "processSeconds" : 0.075979542,
+  "realtimeFactor" : 0.012823551392405064,
+  "systemMemoryDeltaPeakBytes" : 73220096,
+  "words" : [
+    {
+      "end" : 1.2000000000000002,
+      "start" : 0.4,
+      "text" : "HARANG"
+    },
+    {
+      "end" : 2.96,
+      "start" : 2.64,
+      "text" : "THE"
+    },
+    {
+      "end" : 3.7600000000000002,
+      "start" : 2.96,
+      "text" : "TIRESOME"
+    },
+    {
+      "end" : 4.08,
+      "start" : 3.7600000000000002,
+      "text" : "Product"
+    },
+    {
+      "end" : 4.24,
+      "start" : 4.16,
+      "text" : "of"
+    },
+    {
+      "end" : 4.48,
+      "start" : 4.32,
+      "text" : "a"
+    },
+    {
+      "end" : 4.96,
+      "start" : 4.48,
+      "text" : "Tireless"
+    },
+    {
+      "end" : 6,
+      "start" : 5.12,
+      "text" : "Tongue."
+    }
+  ]
+}

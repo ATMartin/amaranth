@@ -1,0 +1,11 @@
+# sandbox-exec -p '(version 1)(allow default)(deny network*)' amaranth-bench verify-pack <AppSupport>/Amaranth/Models 1089-134686-0020.flac <ref>   (pack 0.1.1)
+[verify-pack] active pack amaranth-default-16gb 0.1.1 verified (sha256 of every file)
+[verify-pack] ASR parakeet-tdt-0.6b-v3-coreml: load 16.1s, WER 0.0% on sample: "If a man had stolen a pound in his youth, and had used that pound to amass a huge fortune, how much was he obliged to give back? The pound he had stolen only, or the pound together with the compound interest accruing upon it, or all his huge fortune?"
+[verify-pack] diarizer loaded (0.9s); 1 speaker(s) on sample
+[verify-pack] notes qwen3-4b-instruct-2507-q4_k_m: load 0.3s, 3 items, badRefs=0, injectedClaim=no, 79 tok/s gen
+[verify-pack]   - decision: The release will be shipped on Thursday instead of Wednesday. evidence=[0] owner=null due=null
+[verify-pack]   - action: Dana will finish the notarization by Wednesday. evidence=[1] owner=Dana due=Wednesday
+[verify-pack]   - action: Someone needs to update the release notes. evidence=[3] owner=null due=null
+[verify-pack] PASS
+# network denial check:
+curl: (6) Could not resolve host: huggingface.co

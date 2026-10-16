@@ -1,0 +1,891 @@
+{
+  "audioSeconds" : 2142.709375,
+  "chunkTokenBudget" : 2200,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            25,
+            28,
+            35,
+            37,
+            39,
+            45
+          ],
+          "kind" : "decision",
+          "text" : "Proceed with a right-click menu to pop up speaker characterization instead of adding a button in the transcription box."
+        },
+        {
+          "evidence" : [
+            25,
+            28,
+            52,
+            55,
+            57,
+            68
+          ],
+          "kind" : "action",
+          "text" : "Implement a right-click menu option that displays speaker characterization when a user clicks on a speaker ID in the transcription box."
+        },
+        {
+          "evidence" : [
+            47,
+            49,
+            51,
+            53,
+            58,
+            67
+          ],
+          "kind" : "action",
+          "text" : "Include an option in the right-click menu to show all meetings a user has participated in."
+        },
+        {
+          "evidence" : [
+            57,
+            65,
+            66,
+            68
+          ],
+          "kind" : "decision",
+          "text" : "Delay full integration of speaker characterization into browsing functionality until the core feature is implemented."
+        },
+        {
+          "evidence" : [
+            59,
+            60,
+            62,
+            63
+          ],
+          "kind" : "decision",
+          "text" : "Explore linking speaker characterization with dialogue acts to improve browsing and topic navigation."
+        },
+        {
+          "evidence" : [
+            66,
+            68
+          ],
+          "kind" : "decision",
+          "text" : "Prioritize defining the behavior of clicking on a user or topic before expanding speaker characterization features."
+        },
+        {
+          "evidence" : [
+            11,
+            13,
+            14,
+            15,
+            17,
+            47
+          ],
+          "kind" : "decision",
+          "text" : "Include a search function to find meetings by user or topic in the browser interface."
+        },
+        {
+          "evidence" : [
+            62,
+            63,
+            65
+          ],
+          "kind" : "decision",
+          "text" : "Ensure speaker characterization is available as a feature, even if its utility is not yet fully defined."
+        },
+        {
+          "evidence" : [
+            65,
+            66
+          ],
+          "kind" : "decision",
+          "text" : "Evaluate whether speaker characterization should be tied to topic-based filtering in the future."
+        },
+        {
+          "evidence" : [
+            31,
+            33,
+            34,
+            37,
+            39
+          ],
+          "kind" : "decision",
+          "text" : "Confirm that the right-click menu is a more intuitive and user-friendly option than relying on right-click behavior alone."
+        },
+        {
+          "evidence" : [
+            19,
+            20,
+            25,
+            35,
+            37,
+            39
+          ],
+          "kind" : "decision",
+          "text" : "Consider adding a button alongside the summarization feature to trigger speaker characterization, as a fallback or alternative."
+        },
+        {
+          "evidence" : [
+            59,
+            60,
+            61,
+            62,
+            65
+          ],
+          "kind" : "question",
+          "text" : "What is the user's intended use case for speaker characterization? How will it enhance browsing or topic navigation?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        73
+      ],
+      "stats" : {
+        "generateSeconds" : 13.01421775,
+        "generatedTokens" : 885,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.922612208,
+        "promptTokens" : 2130
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            79,
+            80,
+            81,
+            82,
+            86,
+            91
+          ],
+          "kind" : "decision",
+          "text" : "Double-clicking on a topic should open all meetings containing that topic by default, as it would save users from having to right-click and select an option."
+        },
+        {
+          "evidence" : [
+            126,
+            128,
+            129,
+            136,
+            137,
+            143
+          ],
+          "kind" : "decision",
+          "text" : "The interface should allow users to toggle between transcription and summary views within a single window using buttons or checkmarks, rather than opening separate windows."
+        },
+        {
+          "evidence" : [
+            74,
+            77,
+            86,
+            91
+          ],
+          "kind" : "decision",
+          "text" : "Right-click menus should be implemented for topics and user interactions to allow users to view meetings containing a specific topic or action."
+        },
+        {
+          "evidence" : [
+            95,
+            96,
+            97,
+            100,
+            101,
+            102
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Check the current behavior of double-click actions on topics or meetings to determine if they trigger any default behavior."
+        },
+        {
+          "evidence" : [
+            104,
+            105,
+            106,
+            107,
+            108,
+            109
+          ],
+          "kind" : "action",
+          "text" : "Evaluate whether single-channel audio files should be integrated into the system for use in transcription or analysis."
+        },
+        {
+          "evidence" : [
+            128,
+            129,
+            130,
+            131,
+            132,
+            133
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Assess the feasibility of implementing tabs in the interface to manage multiple views (e.g., transcription and summary) within one window."
+        },
+        {
+          "evidence" : [
+            130,
+            131,
+            132,
+            133,
+            134,
+            135
+          ],
+          "kind" : "action",
+          "text" : "Explore whether the current Java windowing toolkit supports tabbed interfaces or toggle buttons for switching between views."
+        },
+        {
+          "evidence" : [
+            89,
+            90,
+            91,
+            92,
+            93,
+            94
+          ],
+          "kind" : "action",
+          "text" : "Determine if there is a common default action for double-clicking (e.g., showing speaker characterization) that could be implemented as a default behavior."
+        },
+        {
+          "evidence" : [
+            98,
+            99,
+            103,
+            118,
+            119,
+            120
+          ],
+          "kind" : "action",
+          "text" : "Evaluate whether multiple windows (e.g., summary, transcription, topic lists) will cause clutter and consider minimizing window count."
+        },
+        {
+          "evidence" : [
+            87,
+            88,
+            90,
+            91,
+            92,
+            93
+          ],
+          "kind" : "question",
+          "text" : "What is the most common action users expect when double-clicking on a topic or meeting?"
+        },
+        {
+          "evidence" : [
+            104,
+            105,
+            106,
+            107,
+            108,
+            109
+          ],
+          "kind" : "question",
+          "text" : "Should single-channel audio files be included in the system, or will they increase data footprint without sufficient benefit?"
+        },
+        {
+          "evidence" : [
+            123,
+            124,
+            125,
+            126,
+            127,
+            128
+          ],
+          "kind" : "question",
+          "text" : "Will users typically have five or more windows open simultaneously, or will they mostly use two or three at a time?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        73,
+        144
+      ],
+      "stats" : {
+        "generateSeconds" : 15.260366333,
+        "generatedTokens" : 1055,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.777518875,
+        "promptTokens" : 2160
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            152,
+            153,
+            154,
+            155
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees to provide three transcript alternatives: full meeting transcript, meeting transcript without disfluencies, and summaries."
+        },
+        {
+          "evidence" : [
+            177,
+            178,
+            179,
+            180,
+            181,
+            182
+          ],
+          "kind" : "action",
+          "owner" : "S1",
+          "text" : "S1 will make the GUI code directory world-readable and share the directory path (number 45556) and folder structure (NLSSD\/M browser) with the team."
+        },
+        {
+          "evidence" : [
+            193,
+            194,
+            195,
+            196,
+            197,
+            198
+          ],
+          "kind" : "action",
+          "owner" : "S3",
+          "text" : "The team will review and potentially reuse existing code from tutorials for indexing, with the understanding that it may need modification to work effectively."
+        },
+        {
+          "evidence" : [
+            208,
+            209,
+            210
+          ],
+          "kind" : "action",
+          "owner" : "S4",
+          "text" : "S4 will develop a Java-based tool to read XML files and extract content, with a focus on handling file output and display."
+        },
+        {
+          "evidence" : [
+            211,
+            212
+          ],
+          "kind" : "action",
+          "owner" : "S1",
+          "text" : "S1 will review the browser code to understand how transcripts are already extracted and used for indexing."
+        },
+        {
+          "evidence" : [
+            166,
+            167,
+            168,
+            169,
+            170,
+            171
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees to aim for a prototype of the GUI that demonstrates integration between components, not just standalone features."
+        },
+        {
+          "evidence" : [
+            150,
+            151,
+            159
+          ],
+          "kind" : "decision",
+          "text" : "The team will evaluate whether to include disfluency in the final transcript, with the option to provide both versions (with and without disfluencies)."
+        },
+        {
+          "due" : "By the end of February",
+          "evidence" : [
+            157
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees that the prototype should be completed by the end of February."
+        },
+        {
+          "evidence" : [
+            205,
+            206,
+            207
+          ],
+          "kind" : "question",
+          "text" : "How much work is required to extract data from XML files for indexing, and what level of file manipulation is needed?"
+        },
+        {
+          "evidence" : [
+            172,
+            173,
+            174,
+            175,
+            176,
+            177
+          ],
+          "kind" : "question",
+          "text" : "Can the existing GUI code be accessed and used directly by others for development or review?"
+        },
+        {
+          "evidence" : [
+            177,
+            178,
+            179,
+            180,
+            181,
+            182
+          ],
+          "kind" : "question",
+          "text" : "What is the current status of file access permissions for the GUI code directory?"
+        },
+        {
+          "evidence" : [
+            145,
+            146,
+            147,
+            148,
+            149
+          ],
+          "kind" : "topic",
+          "text" : "Improving the user experience by reducing the number of open windows in Photoshop and similar tools."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        144,
+        212
+      ],
+      "stats" : {
+        "generateSeconds" : 13.902230792,
+        "generatedTokens" : 982,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.765936458,
+        "promptTokens" : 2161
+      }
+    },
+    {
+      "chunk" : 3,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            221,
+            222
+          ],
+          "kind" : "action",
+          "text" : "Meet up next week to discuss progress and identify what needs to be done."
+        },
+        {
+          "evidence" : [
+            277,
+            281,
+            282
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "S1 will work on the summarization functionality by understanding and replicating the existing NXT search method in the code."
+        },
+        {
+          "evidence" : [
+            260,
+            262,
+            263,
+            264,
+            265
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S4",
+          "text" : "S4 will annotate and gradually remove unnecessary code from the browser implementation to clean it up."
+        },
+        {
+          "evidence" : [
+            228,
+            229,
+            230
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S2",
+          "text" : "S2 suggests exploring additional features during the weekend to build something integrable into the GUI by next week."
+        },
+        {
+          "evidence" : [
+            258,
+            259
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "S1 will send an email if anyone has questions about the code or its functionality."
+        },
+        {
+          "evidence" : [
+            285,
+            284
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S4",
+          "text" : "S4 will check if any courses need to be picked, as no work is currently being done on that front."
+        },
+        {
+          "evidence" : [
+            216,
+            215
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees to share as much as possible when collaborating on projects, especially when starting new work."
+        },
+        {
+          "evidence" : [
+            228,
+            229,
+            230
+          ],
+          "kind" : "decision",
+          "text" : "The team decides to work on the weekend to begin developing features that can be integrated into the GUI by next week."
+        },
+        {
+          "evidence" : [
+            262,
+            263,
+            264
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees that the current codebase contains a lot of unnecessary functions and will be cleaned up gradually."
+        },
+        {
+          "evidence" : [
+            277,
+            281,
+            282
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S1",
+          "text" : "S1 will take ownership of the summarization task after confirming it was assigned to them."
+        },
+        {
+          "evidence" : [
+            231,
+            234,
+            238,
+            241,
+            242,
+            243
+          ],
+          "kind" : "question",
+          "text" : "How does the browser currently retrieve data from files using NXT search?"
+        },
+        {
+          "evidence" : [
+            233,
+            234,
+            243,
+            244
+          ],
+          "kind" : "question",
+          "text" : "What is the exact search query language used in the NXT search system?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        212,
+        285
+      ],
+      "stats" : {
+        "generateSeconds" : 12.195444125,
+        "generatedTokens" : 875,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.705231042,
+        "promptTokens" : 2162
+      }
+    },
+    {
+      "chunk" : 4,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "due" : "June 23rd",
+          "evidence" : [
+            316,
+            318,
+            319,
+            320
+          ],
+          "kind" : "decision",
+          "text" : "Set an interim prototype date of June 23rd (February of February, likely a typo for June 23rd)."
+        },
+        {
+          "evidence" : [
+            321,
+            322,
+            323,
+            333
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Decide on the types of search functionality to implement over the weekend."
+        },
+        {
+          "evidence" : [
+            333
+          ],
+          "kind" : "action",
+          "text" : "Research query language capabilities to inform search design."
+        },
+        {
+          "evidence" : [
+            324,
+            329,
+            332
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Prepare a search interface with tick boxes and drop-down menus based on agreed search types."
+        },
+        {
+          "due" : "Next week, Monday afternoon",
+          "evidence" : [
+            334,
+            335,
+            336,
+            337,
+            338,
+            341
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S2",
+          "text" : "Schedule a meeting next week to review progress and show existing work."
+        },
+        {
+          "due" : "Next week, Monday afternoon",
+          "evidence" : [
+            342,
+            344,
+            345,
+            347,
+            348,
+            355
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S2",
+          "text" : "Set a meeting time for next week's session: between 1 and 3 PM, with preference for 3 PM or 3:30 PM."
+        },
+        {
+          "evidence" : [
+            360,
+            361,
+            362,
+            363
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S4",
+          "text" : "Confirm access to the MSC computer room for the meeting."
+        },
+        {
+          "evidence" : [
+            299,
+            300
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S2",
+          "text" : "Coordinate with Steve next week, possibly with a brief update or work session over the weekend."
+        },
+        {
+          "evidence" : [
+            327,
+            328,
+            329,
+            331
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Review and finalize the search interface design to avoid duplication of existing UI elements (e.g., Google screenshots)."
+        },
+        {
+          "due" : "Next week, Monday afternoon",
+          "evidence" : [
+            334,
+            335,
+            336,
+            337,
+            338
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S3",
+          "text" : "Agree to meet next week to review code, class paths, and basics of corpus access and search functionality."
+        },
+        {
+          "evidence" : [
+            299,
+            300
+          ],
+          "kind" : "decision",
+          "text" : "Schedule a meeting after DNL G (likely a course or event) or during a break in the schedule."
+        },
+        {
+          "evidence" : [
+            321,
+            322,
+            323,
+            333
+          ],
+          "kind" : "question",
+          "text" : "What specific types of search should be supported (e.g., dialogue acts, query types)?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        285,
+        364
+      ],
+      "stats" : {
+        "generateSeconds" : 13.043162417,
+        "generatedTokens" : 936,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.66575175,
+        "promptTokens" : 2184
+      }
+    },
+    {
+      "chunk" : 5,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            388,
+            389
+          ],
+          "kind" : "decision",
+          "text" : "The group decides to hold the meeting on Monday."
+        },
+        {
+          "evidence" : [
+            390,
+            391,
+            392,
+            393,
+            394,
+            395
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S3",
+          "text" : "Speaker S3 will take care of finalizing the meeting action items."
+        },
+        {
+          "evidence" : [
+            406,
+            407
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Speaker S1 will sign off on the writing and documentation in the meeting notes."
+        },
+        {
+          "evidence" : [
+            396,
+            397,
+            398
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S2",
+          "text" : "The group agrees to keep default settings for app windows, with no need for multiple windows from a single app."
+        },
+        {
+          "evidence" : [
+            402
+          ],
+          "kind" : "action",
+          "text" : "The group confirms that speaker characterization and topic segmentation are not being pursued."
+        },
+        {
+          "evidence" : [
+            381,
+            382,
+            383,
+            384,
+            385
+          ],
+          "kind" : "decision",
+          "text" : "The group confirms that there is no official reading week next week, though some classes may have one."
+        },
+        {
+          "evidence" : [
+            386,
+            387
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S2",
+          "text" : "DIL will likely have a make-up class to cover missed classes."
+        },
+        {
+          "evidence" : [
+            365,
+            367,
+            368,
+            369
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S4",
+          "text" : "The group agrees that the computer room has four to five computers and a printer, and is suitable for their work."
+        },
+        {
+          "evidence" : [
+            404,
+            405,
+            408
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S3",
+          "text" : "The group decides to complete the meeting notes and mark them as 'done'."
+        },
+        {
+          "evidence" : [
+            375,
+            376,
+            377,
+            378
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S4",
+          "text" : "The group confirms that DNL G will not go late, and it is not confirmed whether it will happen."
+        },
+        {
+          "evidence" : [
+            402
+          ],
+          "kind" : "decision",
+          "text" : "The group agrees that the comments on the app settings are consistent with previous discussions."
+        },
+        {
+          "evidence" : [
+            381,
+            382,
+            383,
+            384,
+            385
+          ],
+          "kind" : "question",
+          "text" : "Is there an official reading week next week?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        364,
+        411
+      ],
+      "stats" : {
+        "generateSeconds" : 11.450429125,
+        "generatedTokens" : 848,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.257516833,
+        "promptTokens" : 1280
+      }
+    }
+  ],
+  "contextTokens" : 4096,
+  "loadSeconds" : 0.281353708,
+  "model" : "qwen3-4b-instruct-2507-q4_k_m",
+  "peakFootprintBytes" : 782502912,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 326582272,
+  "totalSeconds" : 94.017895,
+  "transcriptSegments" : 412,
+  "transcriptWords" : 5599
+}

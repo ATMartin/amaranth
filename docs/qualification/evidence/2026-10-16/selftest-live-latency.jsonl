@@ -1,0 +1,3 @@
+{"latencyMedianSeconds":"2.18","latencyP95Seconds":"4.99","micProvisionalWER":"2.4%","provisionalPublished":"true","samples":"475","status":"off","step":"live","words":"421"}
+{"appPeakMiB":"91","missingAudioEvents":"0","ringOverruns":"0","segments":"126","step":"capture","workerPeakMiB":"45"}
+{"result":"pass","test":"live-latency"}

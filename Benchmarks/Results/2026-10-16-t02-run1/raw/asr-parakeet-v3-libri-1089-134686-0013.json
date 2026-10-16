@@ -1,0 +1,138 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0013.wav",
+  "audioSeconds" : 7.915,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4424184,
+  "loadSeconds" : 0.1143855,
+  "peakFootprintBytes" : 38535792,
+  "processSeconds" : 0.0684645,
+  "realtimeFactor" : 0.008649968414403032,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.64,
+      "start" : 0.24,
+      "text" : "If"
+    },
+    {
+      "end" : 0.88,
+      "start" : 0.64,
+      "text" : "ever"
+    },
+    {
+      "end" : 1.12,
+      "start" : 0.88,
+      "text" : "he"
+    },
+    {
+      "end" : 1.28,
+      "start" : 1.12,
+      "text" : "was"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.28,
+      "text" : "impelled"
+    },
+    {
+      "end" : 2,
+      "start" : 1.76,
+      "text" : "to"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2,
+      "text" : "cast"
+    },
+    {
+      "end" : 2.7199999999999998,
+      "start" : 2.4,
+      "text" : "sin"
+    },
+    {
+      "end" : 2.96,
+      "start" : 2.72,
+      "text" : "from"
+    },
+    {
+      "end" : 3.04,
+      "start" : 2.96,
+      "text" : "him"
+    },
+    {
+      "end" : 3.3600000000000003,
+      "start" : 3.2,
+      "text" : "and"
+    },
+    {
+      "end" : 3.5999999999999996,
+      "start" : 3.36,
+      "text" : "to"
+    },
+    {
+      "end" : 4.4,
+      "start" : 3.6,
+      "text" : "repent,"
+    },
+    {
+      "end" : 4.640000000000001,
+      "start" : 4.4,
+      "text" : "the"
+    },
+    {
+      "end" : 5.12,
+      "start" : 4.64,
+      "text" : "impulse"
+    },
+    {
+      "end" : 5.28,
+      "start" : 5.12,
+      "text" : "that"
+    },
+    {
+      "end" : 5.680000000000001,
+      "start" : 5.28,
+      "text" : "moved"
+    },
+    {
+      "end" : 5.92,
+      "start" : 5.68,
+      "text" : "him"
+    },
+    {
+      "end" : 6.08,
+      "start" : 5.92,
+      "text" : "was"
+    },
+    {
+      "end" : 6.16,
+      "start" : 6.08,
+      "text" : "the"
+    },
+    {
+      "end" : 6.48,
+      "start" : 6.16,
+      "text" : "wish"
+    },
+    {
+      "end" : 6.640000000000001,
+      "start" : 6.48,
+      "text" : "to"
+    },
+    {
+      "end" : 6.880000000000001,
+      "start" : 6.640000000000001,
+      "text" : "be"
+    },
+    {
+      "end" : 7.12,
+      "start" : 6.88,
+      "text" : "her"
+    },
+    {
+      "end" : 7.92,
+      "start" : 7.12,
+      "text" : "knight."
+    }
+  ]
+}

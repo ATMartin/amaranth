@@ -1,0 +1,133 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0017.wav",
+  "audioSeconds" : 8.87,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4538872,
+  "loadSeconds" : 0.160819958,
+  "peakFootprintBytes" : 56869512,
+  "processSeconds" : 0.076116792,
+  "realtimeFactor" : 0.008581374520856822,
+  "systemMemoryDeltaPeakBytes" : 86425600,
+  "words" : [
+    {
+      "end" : 1.36,
+      "start" : 0.4,
+      "text" : "Stephen,"
+    },
+    {
+      "end" : 1.8399999999999999,
+      "start" : 1.36,
+      "text" : "leaning"
+    },
+    {
+      "end" : 2.08,
+      "start" : 1.84,
+      "text" : "back"
+    },
+    {
+      "end" : 2.3200000000000003,
+      "start" : 2.08,
+      "text" : "and"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.32,
+      "text" : "drawing"
+    },
+    {
+      "end" : 3.2,
+      "start" : 2.72,
+      "text" : "idly"
+    },
+    {
+      "end" : 3.3600000000000003,
+      "start" : 3.2,
+      "text" : "on"
+    },
+    {
+      "end" : 3.52,
+      "start" : 3.36,
+      "text" : "his"
+    },
+    {
+      "end" : 4.4,
+      "start" : 3.52,
+      "text" : "scribbler,"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.4,
+      "text" : "listened"
+    },
+    {
+      "end" : 5.04,
+      "start" : 4.88,
+      "text" : "to"
+    },
+    {
+      "end" : 5.28,
+      "start" : 5.04,
+      "text" : "the"
+    },
+    {
+      "end" : 5.5200000000000005,
+      "start" : 5.28,
+      "text" : "talk"
+    },
+    {
+      "end" : 5.760000000000001,
+      "start" : 5.5200000000000005,
+      "text" : "about"
+    },
+    {
+      "end" : 5.92,
+      "start" : 5.76,
+      "text" : "him"
+    },
+    {
+      "end" : 6.24,
+      "start" : 6,
+      "text" : "which"
+    },
+    {
+      "end" : 6.720000000000001,
+      "start" : 6.24,
+      "text" : "Heron"
+    },
+    {
+      "end" : 7.2,
+      "start" : 6.8,
+      "text" : "checked"
+    },
+    {
+      "end" : 7.36,
+      "start" : 7.2,
+      "text" : "from"
+    },
+    {
+      "end" : 7.6000000000000005,
+      "start" : 7.36,
+      "text" : "time"
+    },
+    {
+      "end" : 7.760000000000001,
+      "start" : 7.6000000000000005,
+      "text" : "to"
+    },
+    {
+      "end" : 8,
+      "start" : 7.76,
+      "text" : "time"
+    },
+    {
+      "end" : 8.24,
+      "start" : 8,
+      "text" : "by"
+    },
+    {
+      "end" : 8.56,
+      "start" : 8.24,
+      "text" : "saying"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0004.wav",
+  "audioSeconds" : 4.02,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4227576,
+  "loadSeconds" : 0.158788083,
+  "peakFootprintBytes" : 54674008,
+  "processSeconds" : 0.061590291,
+  "realtimeFactor" : 0.015320967910447762,
+  "systemMemoryDeltaPeakBytes" : 85655552,
+  "words" : [
+    {
+      "end" : 0.88,
+      "start" : 0.48,
+      "text" : "Heaven"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.52,
+      "text" : "A"
+    },
+    {
+      "end" : 1.92,
+      "start" : 1.76,
+      "text" : "good"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2.16,
+      "text" : "place"
+    },
+    {
+      "end" : 2.56,
+      "start" : 2.4,
+      "text" : "to"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.56,
+      "text" : "be"
+    },
+    {
+      "end" : 3.2,
+      "start" : 2.72,
+      "text" : "raised"
+    },
+    {
+      "end" : 3.76,
+      "start" : 3.2,
+      "text" : "to."
+    }
+  ]
+}

@@ -1,0 +1,519 @@
+{
+  "audioSeconds" : 2142.709375,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            25,
+            28,
+            35,
+            37,
+            39,
+            45
+          ],
+          "kind" : "decision",
+          "text" : "Use a right-click menu to open speaker characterization windows instead of a button for better intuitiveness."
+        },
+        {
+          "evidence" : [
+            47,
+            51,
+            52,
+            57,
+            58,
+            61
+          ],
+          "kind" : "decision",
+          "text" : "Include a 'give me all your meetings' option in the right-click menu for speaker characterization."
+        },
+        {
+          "evidence" : [
+            79,
+            80,
+            81,
+            82,
+            83,
+            86
+          ],
+          "kind" : "decision",
+          "text" : "Implement double-click functionality to open all meetings containing a specific topic as a default action."
+        },
+        {
+          "evidence" : [
+            65,
+            66,
+            74,
+            75,
+            76,
+            77
+          ],
+          "kind" : "decision",
+          "text" : "Integrate speaker characterization with topic browsing by allowing users to click on a topic and see all meetings containing it."
+        },
+        {
+          "due" : "By the end of February",
+          "evidence" : [
+            156,
+            157,
+            163,
+            164,
+            165,
+            166
+          ],
+          "kind" : "action",
+          "text" : "Develop a prototype of the meeting browser GUI with speaker characterization, topic browsing, and summarization features."
+        },
+        {
+          "evidence" : [
+            125,
+            126,
+            127,
+            128,
+            129,
+            130
+          ],
+          "kind" : "action",
+          "text" : "Evaluate and refine the interface to reduce window clutter by using tabs or toggle buttons for transcription and summary views."
+        },
+        {
+          "evidence" : [
+            104,
+            105,
+            106,
+            107,
+            108,
+            109
+          ],
+          "kind" : "action",
+          "text" : "Investigate whether to include single-channel audio files for disfluency analysis, with a note to defer integration due to increased data footprint."
+        },
+        {
+          "evidence" : [
+            89,
+            90,
+            91,
+            92,
+            93,
+            94
+          ],
+          "kind" : "action",
+          "text" : "Determine the default behavior of double-clicking on topics or speaker IDs to improve user experience."
+        },
+        {
+          "evidence" : [
+            17,
+            18,
+            20,
+            21,
+            22,
+            23
+          ],
+          "kind" : "action",
+          "text" : "Define the exact behavior of the summarization button in the transcription box, including its current non-functionality."
+        },
+        {
+          "evidence" : [
+            59,
+            60,
+            62,
+            63,
+            64,
+            65
+          ],
+          "kind" : "action",
+          "text" : "Explore integration of speaker characterization with dialogue acts to enhance browsing functionality."
+        },
+        {
+          "evidence" : [
+            142,
+            143,
+            144,
+            145,
+            146,
+            147
+          ],
+          "kind" : "action",
+          "text" : "Assess whether to allow users to toggle between full transcription, transcription without disfluencies, and summary views in the same window."
+        },
+        {
+          "evidence" : [
+            86,
+            87,
+            88,
+            89,
+            90,
+            91
+          ],
+          "kind" : "question",
+          "text" : "What is the most common use case for double-clicking on a topic or speaker ID?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        171
+      ],
+      "stats" : {
+        "generateSeconds" : 17.38934925,
+        "generatedTokens" : 1000,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 6.370024291,
+        "promptTokens" : 4931
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            341,
+            342,
+            343,
+            344,
+            345,
+            346
+          ],
+          "kind" : "decision",
+          "text" : "The team will meet next week in the morning to review progress and discuss the search interface design."
+        },
+        {
+          "evidence" : [
+            178,
+            180,
+            181,
+            182,
+            183,
+            184
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Speaker S1 will make the directory containing the M browser code world-readable so that others can access it."
+        },
+        {
+          "evidence" : [
+            311,
+            312,
+            313,
+            314,
+            315,
+            321
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Speaker S1 will build a search interface with tick boxes and drop-down menus for search queries, based on a decision made over the weekend."
+        },
+        {
+          "evidence" : [
+            258,
+            259,
+            260,
+            261,
+            262,
+            263
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Speaker S1 will share the code and explain its functionality via email for team members to understand and build upon."
+        },
+        {
+          "evidence" : [
+            208,
+            209,
+            210,
+            211,
+            212,
+            213
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S4",
+          "text" : "Speaker S4 will work on writing a Java program to read XML files and extract data, with a focus on handling file output."
+        },
+        {
+          "evidence" : [
+            321,
+            322,
+            323,
+            324,
+            325,
+            326
+          ],
+          "kind" : "action",
+          "text" : "The team will define a set of search capabilities over the weekend to guide development of the search interface."
+        },
+        {
+          "evidence" : [
+            335,
+            336,
+            337,
+            338,
+            339,
+            340
+          ],
+          "kind" : "action",
+          "text" : "The team will meet to review the code and understand the basics of accessing the corpus and the search functionality."
+        },
+        {
+          "due" : "June 23rd",
+          "evidence" : [
+            311,
+            312,
+            313,
+            314,
+            315,
+            316
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S1",
+          "text" : "The team will set a milestone to complete an interim prototype by June 23rd."
+        },
+        {
+          "evidence" : [
+            310,
+            311,
+            312,
+            313,
+            314,
+            315
+          ],
+          "kind" : "decision",
+          "text" : "The team will decide on specific search types (e.g., dialogue acts) during the weekend meeting to avoid scope creep."
+        },
+        {
+          "evidence" : [
+            333,
+            334,
+            335,
+            336,
+            337,
+            338
+          ],
+          "kind" : "decision",
+          "text" : "The team will research the query language to understand its capabilities for search functionality."
+        },
+        {
+          "evidence" : [
+            346,
+            347,
+            348,
+            349,
+            350,
+            351
+          ],
+          "kind" : "decision",
+          "text" : "The team will meet on Monday afternoon at 3:00 to review progress and discuss next steps."
+        },
+        {
+          "evidence" : [
+            260,
+            261,
+            262,
+            263,
+            264,
+            265
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S1",
+          "text" : "The team will use a shared codebase with annotated functions to avoid duplication and ensure clarity."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        171,
+        352
+      ],
+      "stats" : {
+        "generateSeconds" : 18.995422667,
+        "generatedTokens" : 1077,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 6.809477833,
+        "promptTokens" : 4998
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            373,
+            374,
+            375,
+            376,
+            388,
+            389
+          ],
+          "kind" : "decision",
+          "text" : "The team decides to visit the MSC computer room after the DNL meeting rather than during it."
+        },
+        {
+          "evidence" : [
+            361,
+            362,
+            363,
+            364,
+            365,
+            366
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S4",
+          "text" : "Speaker S4 will show the team the location of the MSC computer room and allow access."
+        },
+        {
+          "evidence" : [
+            368,
+            369,
+            370,
+            371,
+            372,
+            373
+          ],
+          "kind" : "action",
+          "text" : "The team will check the computer room for available equipment, including a printer and photocopy machine."
+        },
+        {
+          "evidence" : [
+            388,
+            389,
+            390,
+            391,
+            392,
+            393
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees to schedule the visit for Monday."
+        },
+        {
+          "evidence" : [
+            396,
+            397,
+            398,
+            399,
+            400,
+            401
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S2",
+          "text" : "The team decides to proceed with default settings for app functionality, rejecting the need for multiple windows from a single app."
+        },
+        {
+          "evidence" : [
+            402,
+            403,
+            404,
+            405,
+            406,
+            407
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees to include both speaker characterization and topic segmentation in the analysis, as noted in the comments."
+        },
+        {
+          "evidence" : [
+            390,
+            391,
+            392,
+            393,
+            394,
+            395
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S3",
+          "text" : "Speaker S3 will confirm and finalize the agreement on the meeting schedule and action items."
+        },
+        {
+          "evidence" : [
+            405,
+            406,
+            407,
+            408,
+            409,
+            410
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "The team will sign off on the final decision in the document or system."
+        },
+        {
+          "evidence" : [
+            381,
+            382,
+            383,
+            384,
+            385,
+            386
+          ],
+          "kind" : "decision",
+          "text" : "The team determines that there is no official reading week, and any such week was likely a bank holiday with only some classes affected."
+        },
+        {
+          "evidence" : [
+            387,
+            388,
+            389,
+            390,
+            391,
+            392
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S2",
+          "text" : "The team concludes that DIL will likely make up for any missed classes due to the reading week."
+        },
+        {
+          "evidence" : [
+            365,
+            366,
+            367,
+            368,
+            369,
+            370
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S4",
+          "text" : "The team agrees that the computer room has only four to five computers and a printer, which is sufficient for their needs."
+        },
+        {
+          "evidence" : [
+            375,
+            376,
+            377,
+            378,
+            379,
+            380
+          ],
+          "kind" : "question",
+          "text" : "Is the DNL meeting scheduled to go late, and will it affect the timing of the computer room visit?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        352,
+        411
+      ],
+      "stats" : {
+        "generateSeconds" : 16.383674625,
+        "generatedTokens" : 1053,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.396062042,
+        "promptTokens" : 1545
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.322552917,
+  "model" : "qwen3-4b-instruct-2507-q4_k_m",
+  "peakFootprintBytes" : 1391300016,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 1835925504,
+  "totalSeconds" : 68.396303958,
+  "transcriptSegments" : 412,
+  "transcriptWords" : 5599
+}

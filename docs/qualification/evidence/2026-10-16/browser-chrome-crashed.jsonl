@@ -1,0 +1,3 @@
+{"label":"chrome","seconds":"10.0","step":"recording"}
+{"directory":"\/var\/folders\/jn\/0_7nnpqs5ll7q7tdtnlsx4y00000gn\/T\/amaranth-capture-selftest\/tone-E7BF41C5-35D9-4C48-A375-7B75B9AF6221\/meetings\/af44be37-9276-4028-91dc-b6eddcbb26ca","hz":"1234","label":"chrome","maxLevelDB":"-200.0","micRmsDB":"-200.0","missingAudioEvents":"0","step":"tone","windowsWithTone":"0\/20"}
+{"result":"fail","test":"capture-tone"}

@@ -1,0 +1,83 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0031.wav",
+  "audioSeconds" : 6.615,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4375032,
+  "loadSeconds" : 0.158226791,
+  "peakFootprintBytes" : 55591512,
+  "processSeconds" : 0.067939042,
+  "realtimeFactor" : 0.01027045230536659,
+  "systemMemoryDeltaPeakBytes" : 32768,
+  "words" : [
+    {
+      "end" : 1.12,
+      "start" : 0.24,
+      "text" : "Stephen's"
+    },
+    {
+      "end" : 1.44,
+      "start" : 1.12,
+      "text" : "heart"
+    },
+    {
+      "end" : 1.92,
+      "start" : 1.44,
+      "text" : "began"
+    },
+    {
+      "end" : 2.48,
+      "start" : 1.92,
+      "text" : "slowly"
+    },
+    {
+      "end" : 2.8,
+      "start" : 2.48,
+      "text" : "to"
+    },
+    {
+      "end" : 3.2,
+      "start" : 2.8000000000000003,
+      "text" : "fold"
+    },
+    {
+      "end" : 3.4400000000000004,
+      "start" : 3.2,
+      "text" : "and"
+    },
+    {
+      "end" : 3.84,
+      "start" : 3.44,
+      "text" : "fade"
+    },
+    {
+      "end" : 4.16,
+      "start" : 3.84,
+      "text" : "with"
+    },
+    {
+      "end" : 4.48,
+      "start" : 4.16,
+      "text" : "fear"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.64,
+      "text" : "like"
+    },
+    {
+      "end" : 5.04,
+      "start" : 4.88,
+      "text" : "a"
+    },
+    {
+      "end" : 5.680000000000001,
+      "start" : 5.04,
+      "text" : "withering"
+    },
+    {
+      "end" : 6.32,
+      "start" : 5.68,
+      "text" : "flower."
+    }
+  ]
+}

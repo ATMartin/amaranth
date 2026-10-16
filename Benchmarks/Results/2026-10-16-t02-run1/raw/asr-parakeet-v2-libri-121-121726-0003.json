@@ -1,0 +1,83 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0003.wav",
+  "audioSeconds" : 6.755,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4342264,
+  "loadSeconds" : 0.154411209,
+  "peakFootprintBytes" : 57918088,
+  "processSeconds" : 0.069445667,
+  "realtimeFactor" : 0.010280631680236862,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.7999999999999999,
+      "start" : 0.48,
+      "text" : "HAY"
+    },
+    {
+      "end" : 1.6800000000000002,
+      "start" : 1.04,
+      "text" : "FEVEVER"
+    },
+    {
+      "end" : 2.7199999999999998,
+      "start" : 2.48,
+      "text" : "A"
+    },
+    {
+      "end" : 2.96,
+      "start" : 2.72,
+      "text" : "heart"
+    },
+    {
+      "end" : 3.6799999999999997,
+      "start" : 3.12,
+      "text" : "trouble"
+    },
+    {
+      "end" : 4.08,
+      "start" : 3.68,
+      "text" : "caused"
+    },
+    {
+      "end" : 4.24,
+      "start" : 4.08,
+      "text" : "by"
+    },
+    {
+      "end" : 4.640000000000001,
+      "start" : 4.24,
+      "text" : "falling"
+    },
+    {
+      "end" : 4.8,
+      "start" : 4.64,
+      "text" : "in"
+    },
+    {
+      "end" : 5.04,
+      "start" : 4.8,
+      "text" : "love"
+    },
+    {
+      "end" : 5.2,
+      "start" : 5.04,
+      "text" : "with"
+    },
+    {
+      "end" : 5.36,
+      "start" : 5.2,
+      "text" : "a"
+    },
+    {
+      "end" : 5.760000000000001,
+      "start" : 5.36,
+      "text" : "grass"
+    },
+    {
+      "end" : 6.4,
+      "start" : 5.92,
+      "text" : "widow"
+    }
+  ]
+}

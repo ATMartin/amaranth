@@ -15,8 +15,8 @@
   "assumptions": {
     "language": "English",
     "tested_meeting_duration_hours": 2,
-    "live_transcript_required": false,
-    "note": "Awaiting user confirmation"
+    "live_transcript_required": true,
+    "note": "Confirmed by user 2026-10-15: English, 2 h tested duration, live text REQUIRED (T14 promoted). See docs/decisions/0003-confirmed-scope.md"
   },
   "coordination": {
     "start": "T01",
@@ -39,7 +39,7 @@
       "id": "T01",
       "title": "Freeze contracts and establish the macOS project",
       "milestone": "A",
-      "status": "planned",
+      "status": "implemented",
       "optional": false,
       "depends_on": [],
       "owner_role": "Integration",
@@ -67,7 +67,7 @@
       "id": "T02",
       "title": "Benchmark local model candidates before choosing defaults",
       "milestone": "A",
-      "status": "planned",
+      "status": "implemented (provisional default; real-call held-out set pending)",
       "optional": false,
       "depends_on": [
         "T01"
@@ -97,7 +97,7 @@
       "id": "T03",
       "title": "Prove arbitrary-application audio capture",
       "milestone": "A",
-      "status": "planned",
+      "status": "implemented (manual app/device matrix pending)",
       "optional": false,
       "depends_on": [
         "T01"
@@ -128,7 +128,7 @@
       "id": "T04",
       "title": "Install and verify an offline model pack",
       "milestone": "A",
-      "status": "planned",
+      "status": "implemented",
       "optional": false,
       "depends_on": [
         "T02"
@@ -157,7 +157,7 @@
       "id": "T05",
       "title": "Make recordings durable and recoverable",
       "milestone": "B",
-      "status": "planned",
+      "status": "implemented",
       "optional": false,
       "depends_on": [
         "T03"
@@ -187,7 +187,7 @@
       "id": "T06",
       "title": "Produce accurate resumable local transcripts",
       "milestone": "B",
-      "status": "planned",
+      "status": "implemented (quality gates measured on public data only; real-call corpus pending)",
       "optional": false,
       "depends_on": [
         "T04",
@@ -217,7 +217,7 @@
       "id": "T07",
       "title": "Add honest speaker separation and correction",
       "milestone": "B",
-      "status": "planned",
+      "status": "implemented (attribution gates met on AMI; DER gate NOT met on clean AMI, SpeakerKit comparison pending)",
       "optional": false,
       "depends_on": [
         "T04",
@@ -250,7 +250,7 @@
       "id": "T08",
       "title": "Orchestrate isolated resumable processing",
       "milestone": "B",
-      "status": "planned",
+      "status": "implemented",
       "optional": false,
       "depends_on": [
         "T01",
@@ -282,7 +282,7 @@
       "id": "T09",
       "title": "Generate evidence-backed meeting notes locally",
       "milestone": "C",
-      "status": "planned",
+      "status": "implemented (human quality evaluation pending: review sheets prepared; real-call corpus pending)",
       "optional": false,
       "depends_on": [
         "T06",
@@ -314,7 +314,7 @@
       "id": "T10",
       "title": "Build the complete native recording and review interface",
       "milestone": "C",
-      "status": "planned",
+      "status": "implemented (hands-on UI checklist pending)",
       "optional": false,
       "depends_on": [
         "T01",
@@ -348,7 +348,7 @@
       "id": "T11",
       "title": "Add local search, export, retention and deletion",
       "milestone": "C",
-      "status": "planned",
+      "status": "implemented",
       "optional": false,
       "depends_on": [
         "T09",
@@ -447,9 +447,9 @@
     {
       "id": "T14",
       "title": "Optional provisional live transcription",
-      "milestone": "Later",
-      "status": "planned",
-      "optional": true,
+      "milestone": "C",
+      "status": "implemented (latency gate met on M2 Max with synthetic replay; real calls and base-M2 unverified)",
+      "optional": false,
       "depends_on": [
         "T06",
         "T07",
@@ -475,7 +475,8 @@
         "Live/final transitions preserve user edits and show uncertainty rather than pretending provisional speakers are final.",
         "If promoted, T12 and T13 must validate T14 before release."
       ],
-      "fallback": "Use buffered near-live output or record-only degradation with visible status. Do not compromise saved audio for live text."
+      "fallback": "Use buffered near-live output or record-only degradation with visible status. Do not compromise saved audio for live text.",
+      "promotion_note": "Promoted into v0 by user decision 2026-10-15; T12/T13 must validate it."
     },
     {
       "id": "T15",

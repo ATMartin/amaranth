@@ -1,0 +1,263 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0020.wav",
+  "audioSeconds" : 16.79,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 5030392,
+  "loadSeconds" : 0.120212,
+  "peakFootprintBytes" : 52462216,
+  "processSeconds" : 0.157255375,
+  "realtimeFactor" : 0.009366013996426444,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.48,
+      "start" : 0.24,
+      "text" : "If"
+    },
+    {
+      "end" : 0.72,
+      "start" : 0.48,
+      "text" : "a"
+    },
+    {
+      "end" : 0.88,
+      "start" : 0.72,
+      "text" : "man"
+    },
+    {
+      "end" : 1.04,
+      "start" : 0.88,
+      "text" : "had"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.04,
+      "text" : "stolen"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.52,
+      "text" : "a"
+    },
+    {
+      "end" : 2.08,
+      "start" : 1.76,
+      "text" : "pound"
+    },
+    {
+      "end" : 2.24,
+      "start" : 2.08,
+      "text" : "in"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2.24,
+      "text" : "his"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.4,
+      "text" : "youth,"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.88,
+      "text" : "and"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 3.12,
+      "text" : "had"
+    },
+    {
+      "end" : 3.6799999999999997,
+      "start" : 3.2800000000000002,
+      "text" : "used"
+    },
+    {
+      "end" : 3.92,
+      "start" : 3.68,
+      "text" : "that"
+    },
+    {
+      "end" : 4.4,
+      "start" : 3.92,
+      "text" : "pound"
+    },
+    {
+      "end" : 4.640000000000001,
+      "start" : 4.4,
+      "text" : "to"
+    },
+    {
+      "end" : 4.96,
+      "start" : 4.64,
+      "text" : "amass"
+    },
+    {
+      "end" : 5.2,
+      "start" : 5.12,
+      "text" : "a"
+    },
+    {
+      "end" : 5.5200000000000005,
+      "start" : 5.2,
+      "text" : "huge"
+    },
+    {
+      "end" : 6.24,
+      "start" : 5.5200000000000005,
+      "text" : "fortune,"
+    },
+    {
+      "end" : 6.5600000000000005,
+      "start" : 6.24,
+      "text" : "how"
+    },
+    {
+      "end" : 6.800000000000001,
+      "start" : 6.5600000000000005,
+      "text" : "much"
+    },
+    {
+      "end" : 6.96,
+      "start" : 6.8,
+      "text" : "was"
+    },
+    {
+      "end" : 7.12,
+      "start" : 6.96,
+      "text" : "he"
+    },
+    {
+      "end" : 7.760000000000001,
+      "start" : 7.12,
+      "text" : "obliged"
+    },
+    {
+      "end" : 7.92,
+      "start" : 7.76,
+      "text" : "to"
+    },
+    {
+      "end" : 8.4,
+      "start" : 7.92,
+      "text" : "give"
+    },
+    {
+      "end" : 8.96,
+      "start" : 8.4,
+      "text" : "back?"
+    },
+    {
+      "end" : 9.120000000000001,
+      "start" : 8.96,
+      "text" : "The"
+    },
+    {
+      "end" : 9.52,
+      "start" : 9.120000000000001,
+      "text" : "pound"
+    },
+    {
+      "end" : 9.68,
+      "start" : 9.52,
+      "text" : "he"
+    },
+    {
+      "end" : 9.84,
+      "start" : 9.68,
+      "text" : "had"
+    },
+    {
+      "end" : 10.4,
+      "start" : 9.84,
+      "text" : "stolen"
+    },
+    {
+      "end" : 10.88,
+      "start" : 10.4,
+      "text" : "only,"
+    },
+    {
+      "end" : 11.120000000000001,
+      "start" : 10.88,
+      "text" : "or"
+    },
+    {
+      "end" : 11.280000000000001,
+      "start" : 11.120000000000001,
+      "text" : "the"
+    },
+    {
+      "end" : 11.68,
+      "start" : 11.28,
+      "text" : "pound"
+    },
+    {
+      "end" : 12,
+      "start" : 11.68,
+      "text" : "together"
+    },
+    {
+      "end" : 12.16,
+      "start" : 12,
+      "text" : "with"
+    },
+    {
+      "end" : 12.4,
+      "start" : 12.16,
+      "text" : "the"
+    },
+    {
+      "end" : 13.040000000000001,
+      "start" : 12.4,
+      "text" : "compound"
+    },
+    {
+      "end" : 13.360000000000001,
+      "start" : 13.040000000000001,
+      "text" : "interest"
+    },
+    {
+      "end" : 13.92,
+      "start" : 13.36,
+      "text" : "accruing"
+    },
+    {
+      "end" : 14.16,
+      "start" : 13.92,
+      "text" : "upon"
+    },
+    {
+      "end" : 14.48,
+      "start" : 14.16,
+      "text" : "it,"
+    },
+    {
+      "end" : 14.72,
+      "start" : 14.48,
+      "text" : "or"
+    },
+    {
+      "end" : 15.360000000000001,
+      "start" : 15.120000000000001,
+      "text" : "all"
+    },
+    {
+      "end" : 15.6,
+      "start" : 15.36,
+      "text" : "his"
+    },
+    {
+      "end" : 15.92,
+      "start" : 15.6,
+      "text" : "huge"
+    },
+    {
+      "end" : 16.64,
+      "start" : 15.92,
+      "text" : "fortune?"
+    }
+  ]
+}

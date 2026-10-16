@@ -1,0 +1,27 @@
+.DS_Store
+.build/
+build/
+DerivedData/
+*.xcodeproj/
+xcuserdata/
+Config/Signing.local.xcconfig
+Benchmarks/Results/scratch/
+ModelStore/
+*.gguf
+*.mlmodelc/
+# Public fixture audio is fetched by Benchmarks/Fixtures/public/SOURCES.md; keep only provenance in git.
+Benchmarks/Fixtures/public/**/*.wav
+Benchmarks/Fixtures/public/**/*.flac
+Benchmarks/Fixtures/public/**/*.mp3
+Benchmarks/Results/*/inputs/
+dist/
+.build-check/
+# Regenerable benchmark intermediates (derived 16 kHz audio, per-window/LLM checkpoints); results and logs stay.
+Benchmarks/Results/*/sweep-inputs/
+Benchmarks/Results/*/production-inputs/
+Benchmarks/Results/*/notes-inputs/
+Benchmarks/Results/*/notes-work-*/
+Benchmarks/Results/**/*.wav
+Benchmarks/Results/**/*.caf
+.build-alt/
+.build-*/

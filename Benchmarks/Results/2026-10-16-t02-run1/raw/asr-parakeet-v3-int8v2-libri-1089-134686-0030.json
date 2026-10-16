@@ -1,0 +1,38 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0030.wav",
+  "audioSeconds" : 2.715,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4129272,
+  "loadSeconds" : 0.121202917,
+  "peakFootprintBytes" : 38126192,
+  "processSeconds" : 0.054209667,
+  "realtimeFactor" : 0.01996672817679558,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.88,
+      "start" : 0.16,
+      "text" : "Beware"
+    },
+    {
+      "end" : 1.12,
+      "start" : 0.88,
+      "text" : "of"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.12,
+      "text" : "making"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.52,
+      "text" : "that"
+    },
+    {
+      "end" : 2.72,
+      "start" : 1.76,
+      "text" : "mistake."
+    }
+  ]
+}

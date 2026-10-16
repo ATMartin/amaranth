@@ -1,0 +1,21 @@
+# live-sim: Parakeet v3, naive midpoint stitching, M2 Max. Inputs: LibriSpeech 1089 (38 utts joined, 295 s) and AMI IS1009a first 600 s.
+## window 10 s / hop 8 s — librispeech
+[live] window=10s hop=8s audio=295s windows=37 compute/window median=78ms max=140ms (budget 8000ms)
+[live] word availability latency (spoken→shown): median 4.86s p95 8.55s max 9.68s  (gate: median < 5 s, p95 < 10 s)
+[live] live vs final (batch) word difference: 7.7% (S7 D35 I13 of 713) — share of provisional text later revised
+[live] WER vs reference: live 7.6%  batch 1.8%   first words ok: yes  last words ok: yes
+## window 10 s / hop 8 s — AMI IS1009a 600 s
+[live] window=10s hop=8s audio=600s windows=75 compute/window median=67ms max=320ms (budget 8000ms)
+[live] word availability latency (spoken→shown): median 4.63s p95 8.47s max 9.02s  (gate: median < 5 s, p95 < 10 s)
+[live] live vs final (batch) word difference: 14.4% (S17 D127 I20 of 1135) — share of provisional text later revised
+[live] WER vs reference: live 29.1%  batch 21.0%   first words ok: no  last words ok: no
+## window 6 s / hop 4 s — librispeech
+[live] window=6s hop=4s audio=295s windows=74 compute/window median=58ms max=264ms (budget 4000ms)
+[live] word availability latency (spoken→shown): median 2.74s p95 4.70s max 5.66s  (gate: median < 5 s, p95 < 10 s)
+[live] live vs final (batch) word difference: 12.1% (S6 D33 I47 of 713) — share of provisional text later revised
+[live] WER vs reference: live 10.5%  batch 1.8%   first words ok: yes  last words ok: no
+## window 6 s / hop 4 s — AMI IS1009a 600 s
+[live] window=6s hop=4s audio=600s windows=150 compute/window median=55ms max=290ms (budget 4000ms)
+[live] word availability latency (spoken→shown): median 2.86s p95 4.70s max 5.03s  (gate: median < 5 s, p95 < 10 s)
+[live] live vs final (batch) word difference: 18.8% (S21 D163 I29 of 1135) — share of provisional text later revised
+[live] WER vs reference: live 31.6%  batch 21.0%   first words ok: no  last words ok: no

@@ -1,0 +1,8968 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Fixtures\/public\/ami\/IS1009a\/IS1009a.Mix-Headset.wav",
+  "audioSeconds" : 838.8333125,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 57721360,
+  "loadSeconds" : 0.114891,
+  "peakFootprintBytes" : 129204968,
+  "processSeconds" : 7.444616417,
+  "realtimeFactor" : 0.008874965152269152,
+  "systemMemoryDeltaPeakBytes" : 170721280,
+  "words" : [
+    {
+      "end" : 23.04,
+      "start" : 22.88,
+      "text" : "The"
+    },
+    {
+      "end" : 23.52,
+      "start" : 23.04,
+      "text" : "microphone"
+    },
+    {
+      "end" : 23.599999999999998,
+      "start" : 23.52,
+      "text" : "is"
+    },
+    {
+      "end" : 23.919999999999998,
+      "start" : 23.68,
+      "text" : "supposed"
+    },
+    {
+      "end" : 24,
+      "start" : 23.92,
+      "text" : "to"
+    },
+    {
+      "end" : 24.08,
+      "start" : 24,
+      "text" : "be"
+    },
+    {
+      "end" : 24.32,
+      "start" : 24.16,
+      "text" : "to"
+    },
+    {
+      "end" : 24.4,
+      "start" : 24.32,
+      "text" : "your"
+    },
+    {
+      "end" : 25.52,
+      "start" : 24.560000000000002,
+      "text" : "right."
+    },
+    {
+      "end" : 26.080000000000002,
+      "start" : 25.6,
+      "text" : "Right?"
+    },
+    {
+      "end" : 27.04,
+      "start" : 26.560000000000002,
+      "text" : "Mm-hmm."
+    },
+    {
+      "end" : 28.08,
+      "start" : 27.84,
+      "text" : "And"
+    },
+    {
+      "end" : 28.32,
+      "start" : 28.080000000000002,
+      "text" : "then"
+    },
+    {
+      "end" : 28.64,
+      "start" : 28.32,
+      "text" : "where's"
+    },
+    {
+      "end" : 28.8,
+      "start" : 28.64,
+      "text" : "the"
+    },
+    {
+      "end" : 28.96,
+      "start" : 28.8,
+      "text" : "other"
+    },
+    {
+      "end" : 29.439999999999998,
+      "start" : 28.96,
+      "text" : "one?"
+    },
+    {
+      "end" : 29.6,
+      "start" : 29.44,
+      "text" : "Oh"
+    },
+    {
+      "end" : 30.64,
+      "start" : 29.68,
+      "text" : "here."
+    },
+    {
+      "end" : 55.440000000000005,
+      "start" : 54.72,
+      "text" : "Okay."
+    },
+    {
+      "end" : 55.92,
+      "start" : 55.44,
+      "text" : "Okay."
+    },
+    {
+      "end" : 56.32,
+      "start" : 55.92,
+      "text" : "Everybody"
+    },
+    {
+      "end" : 56.72,
+      "start" : 56.32,
+      "text" : "ready?"
+    },
+    {
+      "end" : 57.2,
+      "start" : 57.120000000000005,
+      "text" : "I"
+    },
+    {
+      "end" : 57.36,
+      "start" : 57.2,
+      "text" : "think"
+    },
+    {
+      "end" : 57.760000000000005,
+      "start" : 57.36,
+      "text" : "so."
+    },
+    {
+      "end" : 58,
+      "start" : 57.76,
+      "text" : "Uh"
+    },
+    {
+      "end" : 58.16,
+      "start" : 58,
+      "text" : "I"
+    },
+    {
+      "end" : 58.32,
+      "start" : 58.160000000000004,
+      "text" : "think"
+    },
+    {
+      "end" : 58.48,
+      "start" : 58.32,
+      "text" : "the"
+    },
+    {
+      "end" : 58.720000000000006,
+      "start" : 58.480000000000004,
+      "text" : "first"
+    },
+    {
+      "end" : 58.96,
+      "start" : 58.72,
+      "text" : "thing"
+    },
+    {
+      "end" : 59.2,
+      "start" : 58.96,
+      "text" : "we"
+    },
+    {
+      "end" : 59.36,
+      "start" : 59.2,
+      "text" : "do"
+    },
+    {
+      "end" : 59.6,
+      "start" : 59.36,
+      "text" : "is"
+    },
+    {
+      "end" : 60.16,
+      "start" : 59.6,
+      "text" : "introduce"
+    },
+    {
+      "end" : 61.2,
+      "start" : 60.160000000000004,
+      "text" : "ourselves."
+    },
+    {
+      "end" : 61.519999999999996,
+      "start" : 61.2,
+      "text" : "Yeah,"
+    },
+    {
+      "end" : 61.76,
+      "start" : 61.52,
+      "text" : "that's"
+    },
+    {
+      "end" : 61.76,
+      "start" : 61.68,
+      "text" : "a"
+    },
+    {
+      "end" : 61.839999999999996,
+      "start" : 61.76,
+      "text" : "good"
+    },
+    {
+      "end" : 62.16,
+      "start" : 61.92,
+      "text" : "time."
+    },
+    {
+      "end" : 62.88,
+      "start" : 62.64,
+      "text" : "Uh"
+    },
+    {
+      "end" : 62.96,
+      "start" : 62.88,
+      "text" : "Miss"
+    },
+    {
+      "end" : 63.6,
+      "start" : 63.2,
+      "text" : "Name"
+    },
+    {
+      "end" : 63.84,
+      "start" : 63.6,
+      "text" : "and"
+    },
+    {
+      "end" : 64.16,
+      "start" : 63.84,
+      "text" : "what"
+    },
+    {
+      "end" : 64.47999999999999,
+      "start" : 64.16,
+      "text" : "your"
+    },
+    {
+      "end" : 65.03999999999999,
+      "start" : 64.48,
+      "text" : "function"
+    },
+    {
+      "end" : 65.44,
+      "start" : 65.04,
+      "text" : "is."
+    },
+    {
+      "end" : 65.6,
+      "start" : 65.44,
+      "text" : "So"
+    },
+    {
+      "end" : 66.16,
+      "start" : 65.68,
+      "text" : "maybe"
+    },
+    {
+      "end" : 66.39999999999999,
+      "start" : 66.16,
+      "text" : "we"
+    },
+    {
+      "end" : 66.8,
+      "start" : 66.4,
+      "text" : "start"
+    },
+    {
+      "end" : 66.96,
+      "start" : 66.8,
+      "text" : "with"
+    },
+    {
+      "end" : 67.12,
+      "start" : 66.96000000000001,
+      "text" : "you."
+    },
+    {
+      "end" : 67.52,
+      "start" : 67.36,
+      "text" : "Yeah"
+    },
+    {
+      "end" : 67.67999999999999,
+      "start" : 67.52,
+      "text" : "my"
+    },
+    {
+      "end" : 67.84,
+      "start" : 67.68,
+      "text" : "name"
+    },
+    {
+      "end" : 68,
+      "start" : 67.84,
+      "text" : "is"
+    },
+    {
+      "end" : 68.64,
+      "start" : 68,
+      "text" : "Francena"
+    },
+    {
+      "end" : 69.36,
+      "start" : 69.12,
+      "text" : "and"
+    },
+    {
+      "end" : 69.68,
+      "start" : 69.36,
+      "text" : "I'm"
+    },
+    {
+      "end" : 69.92,
+      "start" : 69.76,
+      "text" : "uh"
+    },
+    {
+      "end" : 70.32,
+      "start" : 70.08,
+      "text" : "an"
+    },
+    {
+      "end" : 70.8,
+      "start" : 70.32000000000001,
+      "text" : "user"
+    },
+    {
+      "end" : 71.44,
+      "start" : 70.8,
+      "text" : "interface."
+    },
+    {
+      "end" : 71.6,
+      "start" : 71.44,
+      "text" : "My"
+    },
+    {
+      "end" : 72.16,
+      "start" : 71.60000000000001,
+      "text" : "role"
+    },
+    {
+      "end" : 72.47999999999999,
+      "start" : 72.16,
+      "text" : "is"
+    },
+    {
+      "end" : 72.88,
+      "start" : 72.64,
+      "text" : "uh"
+    },
+    {
+      "end" : 73.2,
+      "start" : 73.04,
+      "text" : "the"
+    },
+    {
+      "end" : 73.75999999999999,
+      "start" : 73.44,
+      "text" : "main"
+    },
+    {
+      "end" : 74.64,
+      "start" : 73.76,
+      "text" : "responsibility"
+    },
+    {
+      "end" : 74.96,
+      "start" : 74.64,
+      "text" : "is"
+    },
+    {
+      "end" : 75.28,
+      "start" : 74.96000000000001,
+      "text" : "user"
+    },
+    {
+      "end" : 75.76,
+      "start" : 75.28,
+      "text" : "interface"
+    },
+    {
+      "end" : 76.8,
+      "start" : 76.48,
+      "text" : "and"
+    },
+    {
+      "end" : 77.03999999999999,
+      "start" : 76.8,
+      "text" : "my"
+    },
+    {
+      "end" : 77.36,
+      "start" : 77.04,
+      "text" : "role"
+    },
+    {
+      "end" : 77.6,
+      "start" : 77.36,
+      "text" : "is"
+    },
+    {
+      "end" : 77.84,
+      "start" : 77.60000000000001,
+      "text" : "to"
+    },
+    {
+      "end" : 78.39999999999999,
+      "start" : 77.84,
+      "text" : "design"
+    },
+    {
+      "end" : 78.72,
+      "start" : 78.4,
+      "text" : "uh"
+    },
+    {
+      "end" : 78.96,
+      "start" : 78.72,
+      "text" : "uh"
+    },
+    {
+      "end" : 79.84,
+      "start" : 79.12,
+      "text" : "television"
+    },
+    {
+      "end" : 80.39999999999999,
+      "start" : 79.84,
+      "text" : "remote"
+    },
+    {
+      "end" : 81.03999999999999,
+      "start" : 80.4,
+      "text" : "control."
+    },
+    {
+      "end" : 83.28,
+      "start" : 81.68,
+      "text" : "Okay."
+    },
+    {
+      "end" : 83.6,
+      "start" : 83.28,
+      "text" : "And"
+    },
+    {
+      "end" : 84,
+      "start" : 83.68,
+      "text" : "I'm"
+    },
+    {
+      "end" : 84.24,
+      "start" : 84,
+      "text" : "a"
+    },
+    {
+      "end" : 84.88,
+      "start" : 84.24,
+      "text" : "marketing"
+    },
+    {
+      "end" : 85.36,
+      "start" : 84.88,
+      "text" : "person."
+    },
+    {
+      "end" : 85.67999999999999,
+      "start" : 85.36,
+      "text" : "I"
+    },
+    {
+      "end" : 85.84,
+      "start" : 85.68,
+      "text" : "want"
+    },
+    {
+      "end" : 86,
+      "start" : 85.84,
+      "text" : "to"
+    },
+    {
+      "end" : 86.16,
+      "start" : 86,
+      "text" : "figure"
+    },
+    {
+      "end" : 86.32,
+      "start" : 86.16,
+      "text" : "out"
+    },
+    {
+      "end" : 86.48,
+      "start" : 86.32000000000001,
+      "text" : "how"
+    },
+    {
+      "end" : 86.64,
+      "start" : 86.48,
+      "text" : "to"
+    },
+    {
+      "end" : 86.96,
+      "start" : 86.64,
+      "text" : "sell"
+    },
+    {
+      "end" : 87.28,
+      "start" : 86.96000000000001,
+      "text" : "them."
+    },
+    {
+      "end" : 87.76,
+      "start" : 87.28,
+      "text" : "Mm-hmm."
+    },
+    {
+      "end" : 88,
+      "start" : 87.76,
+      "text" : "And"
+    },
+    {
+      "end" : 88.16,
+      "start" : 88,
+      "text" : "your"
+    },
+    {
+      "end" : 88.32,
+      "start" : 88.16,
+      "text" : "name"
+    },
+    {
+      "end" : 88.72,
+      "start" : 88.32000000000001,
+      "text" : "is?"
+    },
+    {
+      "end" : 88.88,
+      "start" : 88.72,
+      "text" : "My"
+    },
+    {
+      "end" : 89.04,
+      "start" : 88.88,
+      "text" : "name"
+    },
+    {
+      "end" : 89.12,
+      "start" : 88.96000000000001,
+      "text" : "is"
+    },
+    {
+      "end" : 90,
+      "start" : 89.12,
+      "text" : "Eileen."
+    },
+    {
+      "end" : 90.16,
+      "start" : 90,
+      "text" : "Okay"
+    },
+    {
+      "end" : 91.03999999999999,
+      "start" : 90.08,
+      "text" : "Okay."
+    },
+    {
+      "end" : 91.28,
+      "start" : 91.04,
+      "text" : "Yeah"
+    },
+    {
+      "end" : 91.44,
+      "start" : 91.36,
+      "text" : "uh"
+    },
+    {
+      "end" : 91.84,
+      "start" : 91.60000000000001,
+      "text" : "I'm"
+    },
+    {
+      "end" : 92.8,
+      "start" : 91.84,
+      "text" : "Janvi."
+    },
+    {
+      "end" : 93.12,
+      "start" : 92.8,
+      "text" : "I'm"
+    },
+    {
+      "end" : 93.52,
+      "start" : 93.2,
+      "text" : "um"
+    },
+    {
+      "end" : 94,
+      "start" : 93.76,
+      "text" : "my"
+    },
+    {
+      "end" : 94.32,
+      "start" : 94,
+      "text" : "role"
+    },
+    {
+      "end" : 94.48,
+      "start" : 94.32000000000001,
+      "text" : "as"
+    },
+    {
+      "end" : 95.28,
+      "start" : 94.64,
+      "text" : "industrial"
+    },
+    {
+      "end" : 95.92,
+      "start" : 95.28,
+      "text" : "designer"
+    },
+    {
+      "end" : 96.39999999999999,
+      "start" : 96.08,
+      "text" : "and"
+    },
+    {
+      "end" : 96.56,
+      "start" : 96.4,
+      "text" : "my"
+    },
+    {
+      "end" : 97.6,
+      "start" : 96.56,
+      "text" : "responsibilities"
+    },
+    {
+      "end" : 97.76,
+      "start" : 97.60000000000001,
+      "text" : "are"
+    },
+    {
+      "end" : 97.84,
+      "start" : 97.76,
+      "text" : "uh"
+    },
+    {
+      "end" : 98.8,
+      "start" : 98.48,
+      "text" : "uh"
+    },
+    {
+      "end" : 99.6,
+      "start" : 99.28,
+      "text" : "um"
+    },
+    {
+      "end" : 100.72,
+      "start" : 100.16,
+      "text" : "deal"
+    },
+    {
+      "end" : 100.88,
+      "start" : 100.72,
+      "text" : "with"
+    },
+    {
+      "end" : 101.19999999999999,
+      "start" : 100.88,
+      "text" : "uh"
+    },
+    {
+      "end" : 101.84,
+      "start" : 101.2,
+      "text" : "technical"
+    },
+    {
+      "end" : 102.4,
+      "start" : 101.84,
+      "text" : "functional"
+    },
+    {
+      "end" : 103.03999999999999,
+      "start" : 102.4,
+      "text" : "designs"
+    },
+    {
+      "end" : 103.2,
+      "start" : 103.04,
+      "text" : "and"
+    },
+    {
+      "end" : 104.16,
+      "start" : 103.44,
+      "text" : "specifications"
+    },
+    {
+      "end" : 104.32,
+      "start" : 104.16,
+      "text" : "of"
+    },
+    {
+      "end" : 104.96,
+      "start" : 104.64,
+      "text" : "user"
+    },
+    {
+      "end" : 105.44,
+      "start" : 104.96000000000001,
+      "text" : "interface"
+    },
+    {
+      "end" : 105.67999999999999,
+      "start" : 105.52,
+      "text" : "and"
+    },
+    {
+      "end" : 106,
+      "start" : 105.68,
+      "text" : "dealing"
+    },
+    {
+      "end" : 106.16,
+      "start" : 106,
+      "text" : "with"
+    },
+    {
+      "end" : 106.56,
+      "start" : 106.16,
+      "text" : "user"
+    },
+    {
+      "end" : 107.03999999999999,
+      "start" : 106.56,
+      "text" : "interface"
+    },
+    {
+      "end" : 107.75999999999999,
+      "start" : 107.04,
+      "text" : "design."
+    },
+    {
+      "end" : 108.16,
+      "start" : 107.76,
+      "text" : "Very"
+    },
+    {
+      "end" : 108.32,
+      "start" : 108.16,
+      "text" : "good"
+    },
+    {
+      "end" : 108.8,
+      "start" : 108.48,
+      "text" : "and"
+    },
+    {
+      "end" : 109.03999999999999,
+      "start" : 108.8,
+      "text" : "as"
+    },
+    {
+      "end" : 109.28,
+      "start" : 109.04,
+      "text" : "you"
+    },
+    {
+      "end" : 109.6,
+      "start" : 109.28,
+      "text" : "already"
+    },
+    {
+      "end" : 109.76,
+      "start" : 109.60000000000001,
+      "text" : "know"
+    },
+    {
+      "end" : 110.08,
+      "start" : 109.84,
+      "text" : "I'm"
+    },
+    {
+      "end" : 110.64,
+      "start" : 110.08,
+      "text" : "Betsy."
+    },
+    {
+      "end" : 110.96,
+      "start" : 110.64,
+      "text" : "I'm"
+    },
+    {
+      "end" : 111.04,
+      "start" : 110.96000000000001,
+      "text" : "the"
+    },
+    {
+      "end" : 111.44,
+      "start" : 111.04,
+      "text" : "project"
+    },
+    {
+      "end" : 111.92,
+      "start" : 111.44,
+      "text" : "manager"
+    },
+    {
+      "end" : 112.16,
+      "start" : 111.92,
+      "text" : "for"
+    },
+    {
+      "end" : 112.88,
+      "start" : 112.16,
+      "text" : "today."
+    },
+    {
+      "end" : 113.03999999999999,
+      "start" : 112.88,
+      "text" : "So"
+    },
+    {
+      "end" : 113.28,
+      "start" : 113.12,
+      "text" : "why"
+    },
+    {
+      "end" : 113.68,
+      "start" : 113.28,
+      "text" : "don't"
+    },
+    {
+      "end" : 113.76,
+      "start" : 113.60000000000001,
+      "text" : "we"
+    },
+    {
+      "end" : 114,
+      "start" : 113.76,
+      "text" : "look"
+    },
+    {
+      "end" : 114.16,
+      "start" : 114,
+      "text" : "at"
+    },
+    {
+      "end" : 114.32,
+      "start" : 114.16,
+      "text" : "the"
+    },
+    {
+      "end" : 114.8,
+      "start" : 114.32000000000001,
+      "text" : "presentation"
+    },
+    {
+      "end" : 116,
+      "start" : 115.76,
+      "text" : "to"
+    },
+    {
+      "end" : 116.32,
+      "start" : 116,
+      "text" : "see"
+    },
+    {
+      "end" : 116.64,
+      "start" : 116.32000000000001,
+      "text" : "what"
+    },
+    {
+      "end" : 116.88,
+      "start" : 116.64,
+      "text" : "we"
+    },
+    {
+      "end" : 117.19999999999999,
+      "start" : 116.88,
+      "text" : "really"
+    },
+    {
+      "end" : 117.36,
+      "start" : 117.2,
+      "text" : "are"
+    },
+    {
+      "end" : 117.76,
+      "start" : 117.36,
+      "text" : "supposed"
+    },
+    {
+      "end" : 118.08,
+      "start" : 117.76,
+      "text" : "to"
+    },
+    {
+      "end" : 118.64,
+      "start" : 118.08,
+      "text" : "do?"
+    },
+    {
+      "end" : 119.36,
+      "start" : 118.72,
+      "text" : "Okay."
+    },
+    {
+      "end" : 119.67999999999999,
+      "start" : 119.36,
+      "text" : "Um"
+    },
+    {
+      "end" : 120,
+      "start" : 119.92,
+      "text" : "Um"
+    },
+    {
+      "end" : 121.6,
+      "start" : 121.28,
+      "text" : "uh"
+    },
+    {
+      "end" : 122.4,
+      "start" : 122.08,
+      "text" : "yes"
+    },
+    {
+      "end" : 123.52,
+      "start" : 122.88,
+      "text" : "opening,"
+    },
+    {
+      "end" : 124.32000000000001,
+      "start" : 123.52,
+      "text" : "acquaintancece"
+    },
+    {
+      "end" : 125.03999999999999,
+      "start" : 124.56,
+      "text" : "tool"
+    },
+    {
+      "end" : 125.6,
+      "start" : 125.04,
+      "text" : "training."
+    },
+    {
+      "end" : 125.84,
+      "start" : 125.60000000000001,
+      "text" : "Well"
+    },
+    {
+      "end" : 126.32,
+      "start" : 126,
+      "text" : "the"
+    },
+    {
+      "end" : 127.11999999999999,
+      "start" : 126.32000000000001,
+      "text" : "tools"
+    },
+    {
+      "end" : 127.28,
+      "start" : 127.12,
+      "text" : "are"
+    },
+    {
+      "end" : 127.52,
+      "start" : 127.36,
+      "text" : "I"
+    },
+    {
+      "end" : 127.83999999999999,
+      "start" : 127.52,
+      "text" : "think"
+    },
+    {
+      "end" : 128.24,
+      "start" : 128,
+      "text" : "we"
+    },
+    {
+      "end" : 128.72,
+      "start" : 128.24,
+      "text" : "already"
+    },
+    {
+      "end" : 128.96,
+      "start" : 128.88,
+      "text" : "I"
+    },
+    {
+      "end" : 129.2,
+      "start" : 128.96,
+      "text" : "guess"
+    },
+    {
+      "end" : 129.35999999999999,
+      "start" : 129.2,
+      "text" : "the"
+    },
+    {
+      "end" : 129.6,
+      "start" : 129.36,
+      "text" : "tool"
+    },
+    {
+      "end" : 129.76,
+      "start" : 129.6,
+      "text" : "is"
+    },
+    {
+      "end" : 129.92,
+      "start" : 129.76,
+      "text" : "really"
+    },
+    {
+      "end" : 130.08,
+      "start" : 129.92000000000002,
+      "text" : "our"
+    },
+    {
+      "end" : 130.48,
+      "start" : 130.32,
+      "text" : "the"
+    },
+    {
+      "end" : 130.96,
+      "start" : 130.48,
+      "text" : "computer"
+    },
+    {
+      "end" : 131.44,
+      "start" : 131.2,
+      "text" : "as"
+    },
+    {
+      "end" : 131.6,
+      "start" : 131.44,
+      "text" : "far"
+    },
+    {
+      "end" : 131.76,
+      "start" : 131.6,
+      "text" : "as"
+    },
+    {
+      "end" : 131.92,
+      "start" : 131.76,
+      "text" : "I"
+    },
+    {
+      "end" : 132.24,
+      "start" : 131.92000000000002,
+      "text" : "can"
+    },
+    {
+      "end" : 132.72,
+      "start" : 132.24,
+      "text" : "see."
+    },
+    {
+      "end" : 133.04,
+      "start" : 132.72,
+      "text" : "Uh"
+    },
+    {
+      "end" : 133.2,
+      "start" : 133.04,
+      "text" : "we"
+    },
+    {
+      "end" : 133.44,
+      "start" : 133.2,
+      "text" : "get"
+    },
+    {
+      "end" : 133.6,
+      "start" : 133.44,
+      "text" : "in"
+    },
+    {
+      "end" : 133.68,
+      "start" : 133.6,
+      "text" : "s"
+    },
+    {
+      "end" : 134.08,
+      "start" : 133.92000000000002,
+      "text" : "each"
+    },
+    {
+      "end" : 134.24,
+      "start" : 134.08,
+      "text" : "of"
+    },
+    {
+      "end" : 134.4,
+      "start" : 134.24,
+      "text" : "us"
+    },
+    {
+      "end" : 134.64000000000001,
+      "start" : 134.4,
+      "text" : "will"
+    },
+    {
+      "end" : 134.88000000000002,
+      "start" : 134.64000000000001,
+      "text" : "get"
+    },
+    {
+      "end" : 135.6,
+      "start" : 134.88,
+      "text" : "instructions"
+    },
+    {
+      "end" : 136,
+      "start" : 135.76,
+      "text" : "and"
+    },
+    {
+      "end" : 136.32,
+      "start" : 136,
+      "text" : "we'll"
+    },
+    {
+      "end" : 136.64,
+      "start" : 136.32,
+      "text" : "take"
+    },
+    {
+      "end" : 136.88000000000002,
+      "start" : 136.64000000000001,
+      "text" : "it"
+    },
+    {
+      "end" : 137.2,
+      "start" : 136.88,
+      "text" : "from"
+    },
+    {
+      "end" : 137.52,
+      "start" : 137.20000000000002,
+      "text" : "their"
+    },
+    {
+      "end" : 138.4,
+      "start" : 137.84,
+      "text" : "project"
+    },
+    {
+      "end" : 138.64000000000001,
+      "start" : 138.4,
+      "text" : "plan"
+    },
+    {
+      "end" : 138.88,
+      "start" : 138.72,
+      "text" : "that"
+    },
+    {
+      "end" : 139.2,
+      "start" : 138.88,
+      "text" : "falls"
+    },
+    {
+      "end" : 139.36,
+      "start" : 139.20000000000002,
+      "text" : "under"
+    },
+    {
+      "end" : 139.44000000000003,
+      "start" : 139.36,
+      "text" : "the"
+    },
+    {
+      "end" : 139.68,
+      "start" : 139.44,
+      "text" : "same"
+    },
+    {
+      "end" : 140.08,
+      "start" : 139.68,
+      "text" : "heading"
+    },
+    {
+      "end" : 140.56,
+      "start" : 140.16,
+      "text" : "pretty"
+    },
+    {
+      "end" : 141.04000000000002,
+      "start" : 140.56,
+      "text" : "much."
+    },
+    {
+      "end" : 141.28,
+      "start" : 141.04,
+      "text" : "Um"
+    },
+    {
+      "end" : 141.68,
+      "start" : 141.52,
+      "text" : "I"
+    },
+    {
+      "end" : 141.92,
+      "start" : 141.68,
+      "text" : "don'"
+    },
+    {
+      "end" : 142,
+      "start" : 141.84,
+      "text" : "I"
+    },
+    {
+      "end" : 142.32,
+      "start" : 142,
+      "text" : "don't"
+    },
+    {
+      "end" : 142.56,
+      "start" : 142.32,
+      "text" : "think"
+    },
+    {
+      "end" : 142.8,
+      "start" : 142.56,
+      "text" : "we"
+    },
+    {
+      "end" : 143.12,
+      "start" : 142.8,
+      "text" : "have"
+    },
+    {
+      "end" : 143.36,
+      "start" : 143.12,
+      "text" : "any"
+    },
+    {
+      "end" : 143.76,
+      "start" : 143.36,
+      "text" : "great"
+    },
+    {
+      "end" : 144.32000000000002,
+      "start" : 143.76,
+      "text" : "discussion"
+    },
+    {
+      "end" : 144.56,
+      "start" : 144.32,
+      "text" : "at"
+    },
+    {
+      "end" : 144.88,
+      "start" : 144.56,
+      "text" : "this"
+    },
+    {
+      "end" : 145.52,
+      "start" : 144.88,
+      "text" : "point."
+    },
+    {
+      "end" : 146.24,
+      "start" : 145.6,
+      "text" : "No."
+    },
+    {
+      "end" : 149.68,
+      "start" : 149.20000000000002,
+      "text" : "Here"
+    },
+    {
+      "end" : 150,
+      "start" : 149.68,
+      "text" : "is"
+    },
+    {
+      "end" : 150.24,
+      "start" : 150,
+      "text" : "what"
+    },
+    {
+      "end" : 150.48000000000002,
+      "start" : 150.24,
+      "text" : "this"
+    },
+    {
+      "end" : 150.8,
+      "start" : 150.48,
+      "text" : "thing"
+    },
+    {
+      "end" : 151.12,
+      "start" : 150.8,
+      "text" : "should"
+    },
+    {
+      "end" : 151.52,
+      "start" : 151.12,
+      "text" : "be."
+    },
+    {
+      "end" : 151.76000000000002,
+      "start" : 151.52,
+      "text" : "This"
+    },
+    {
+      "end" : 152.08,
+      "start" : 151.76,
+      "text" : "thing"
+    },
+    {
+      "end" : 152.24,
+      "start" : 152.08,
+      "text" : "we"
+    },
+    {
+      "end" : 152.4,
+      "start" : 152.24,
+      "text" : "are"
+    },
+    {
+      "end" : 152.8,
+      "start" : 152.4,
+      "text" : "gonna"
+    },
+    {
+      "end" : 153.6,
+      "start" : 153.28,
+      "text" : "um"
+    },
+    {
+      "end" : 154.08,
+      "start" : 153.92000000000002,
+      "text" : "uh"
+    },
+    {
+      "end" : 154.88000000000002,
+      "start" : 154.32,
+      "text" : "design"
+    },
+    {
+      "end" : 155.2,
+      "start" : 155.04,
+      "text" : "uh"
+    },
+    {
+      "end" : 155.28000000000003,
+      "start" : 155.20000000000002,
+      "text" : "is"
+    },
+    {
+      "end" : 155.52,
+      "start" : 155.44,
+      "text" : "a"
+    },
+    {
+      "end" : 155.76,
+      "start" : 155.52,
+      "text" : "new"
+    },
+    {
+      "end" : 156.08,
+      "start" : 155.76,
+      "text" : "remote"
+    },
+    {
+      "end" : 156.4,
+      "start" : 156.08,
+      "text" : "control"
+    },
+    {
+      "end" : 157.44,
+      "start" : 157.28,
+      "text" : "uh"
+    },
+    {
+      "end" : 157.92,
+      "start" : 157.6,
+      "text" : "should"
+    },
+    {
+      "end" : 158.24,
+      "start" : 157.92000000000002,
+      "text" : "be"
+    },
+    {
+      "end" : 159.52,
+      "start" : 158.24,
+      "text" : "original,"
+    },
+    {
+      "end" : 160.32,
+      "start" : 159.52,
+      "text" : "trendy"
+    },
+    {
+      "end" : 160.88,
+      "start" : 160.56,
+      "text" : "and"
+    },
+    {
+      "end" : 161.04,
+      "start" : 160.88,
+      "text" : "of"
+    },
+    {
+      "end" : 161.28000000000003,
+      "start" : 161.04,
+      "text" : "course"
+    },
+    {
+      "end" : 161.76000000000002,
+      "start" : 161.44,
+      "text" : "user"
+    },
+    {
+      "end" : 163.2,
+      "start" : 161.84,
+      "text" : "friendly."
+    },
+    {
+      "end" : 165.04000000000002,
+      "start" : 164.8,
+      "text" : "So"
+    },
+    {
+      "end" : 165.36,
+      "start" : 165.04,
+      "text" : "maybe"
+    },
+    {
+      "end" : 165.44000000000003,
+      "start" : 165.36,
+      "text" : "you"
+    },
+    {
+      "end" : 165.52,
+      "start" : 165.44,
+      "text" : "want"
+    },
+    {
+      "end" : 165.76000000000002,
+      "start" : 165.68,
+      "text" : "to"
+    },
+    {
+      "end" : 165.92,
+      "start" : 165.76,
+      "text" : "make"
+    },
+    {
+      "end" : 166.16000000000003,
+      "start" : 165.92000000000002,
+      "text" : "some"
+    },
+    {
+      "end" : 166.48,
+      "start" : 166.16,
+      "text" : "notes"
+    },
+    {
+      "end" : 166.79999999999998,
+      "start" : 166.48,
+      "text" : "of"
+    },
+    {
+      "end" : 167.12,
+      "start" : 166.8,
+      "text" : "that"
+    },
+    {
+      "end" : 188.88,
+      "start" : 187.92000000000002,
+      "text" : "Okay."
+    },
+    {
+      "end" : 195.36,
+      "start" : 194.8,
+      "text" : "Okay."
+    },
+    {
+      "end" : 195.84,
+      "start" : 195.36,
+      "text" : "Mm-hmm."
+    },
+    {
+      "end" : 197.28,
+      "start" : 196.24,
+      "text" : "Alright."
+    },
+    {
+      "end" : 197.68,
+      "start" : 197.28,
+      "text" : "Here"
+    },
+    {
+      "end" : 197.92000000000002,
+      "start" : 197.68,
+      "text" : "is"
+    },
+    {
+      "end" : 198.08,
+      "start" : 197.92000000000002,
+      "text" : "what"
+    },
+    {
+      "end" : 198.32000000000002,
+      "start" : 198.08,
+      "text" : "the"
+    },
+    {
+      "end" : 199.04,
+      "start" : 198.32,
+      "text" : "functional"
+    },
+    {
+      "end" : 199.68,
+      "start" : 199.04,
+      "text" : "design"
+    },
+    {
+      "end" : 200.16000000000003,
+      "start" : 199.92000000000002,
+      "text" : "is"
+    },
+    {
+      "end" : 200.72000000000003,
+      "start" : 200.16,
+      "text" : "supposed"
+    },
+    {
+      "end" : 200.88000000000002,
+      "start" : 200.64000000000001,
+      "text" : "to"
+    },
+    {
+      "end" : 201.76,
+      "start" : 200.88,
+      "text" : "achieve."
+    },
+    {
+      "end" : 202.07999999999998,
+      "start" : 201.76,
+      "text" : "Um"
+    },
+    {
+      "end" : 203.76,
+      "start" : 203.44,
+      "text" : "that"
+    },
+    {
+      "end" : 204,
+      "start" : 203.76,
+      "text" : "is"
+    },
+    {
+      "end" : 204.4,
+      "start" : 204.16,
+      "text" : "it's"
+    },
+    {
+      "end" : 204.64000000000001,
+      "start" : 204.4,
+      "text" : "gonna"
+    },
+    {
+      "end" : 204.8,
+      "start" : 204.64000000000001,
+      "text" : "be"
+    },
+    {
+      "end" : 205.28,
+      "start" : 204.8,
+      "text" : "individual"
+    },
+    {
+      "end" : 205.44,
+      "start" : 205.28,
+      "text" : "work"
+    },
+    {
+      "end" : 205.68,
+      "start" : 205.52,
+      "text" : "and"
+    },
+    {
+      "end" : 205.84,
+      "start" : 205.68,
+      "text" : "then"
+    },
+    {
+      "end" : 206,
+      "start" : 205.84,
+      "text" : "at"
+    },
+    {
+      "end" : 206.08,
+      "start" : 206,
+      "text" : "the"
+    },
+    {
+      "end" : 206.48,
+      "start" : 206.08,
+      "text" : "meeting"
+    },
+    {
+      "end" : 206.88,
+      "start" : 206.48000000000002,
+      "text" : "we'll"
+    },
+    {
+      "end" : 207.52,
+      "start" : 206.88,
+      "text" : "discuss"
+    },
+    {
+      "end" : 208.16,
+      "start" : 207.84,
+      "text" : "what"
+    },
+    {
+      "end" : 208.8,
+      "start" : 208.48000000000002,
+      "text" : "uh"
+    },
+    {
+      "end" : 208.88000000000002,
+      "start" : 208.64000000000001,
+      "text" : "uh"
+    },
+    {
+      "end" : 210,
+      "start" : 209.76,
+      "text" : "we"
+    },
+    {
+      "end" : 210.24,
+      "start" : 210,
+      "text" : "have"
+    },
+    {
+      "end" : 210.48000000000002,
+      "start" : 210.24,
+      "text" : "come"
+    },
+    {
+      "end" : 210.72000000000003,
+      "start" : 210.48000000000002,
+      "text" : "up"
+    },
+    {
+      "end" : 211.04,
+      "start" : 210.72,
+      "text" : "with"
+    },
+    {
+      "end" : 211.44,
+      "start" : 211.28,
+      "text" : "the"
+    },
+    {
+      "end" : 211.84,
+      "start" : 211.44,
+      "text" : "same"
+    },
+    {
+      "end" : 212.16,
+      "start" : 211.84,
+      "text" : "goes"
+    },
+    {
+      "end" : 212.32,
+      "start" : 212.16,
+      "text" : "for"
+    },
+    {
+      "end" : 212.56,
+      "start" : 212.32,
+      "text" : "the"
+    },
+    {
+      "end" : 213.28,
+      "start" : 212.56,
+      "text" : "conceptual"
+    },
+    {
+      "end" : 214.08,
+      "start" : 213.28,
+      "text" : "design."
+    },
+    {
+      "end" : 214.32,
+      "start" : 214.08,
+      "text" : "There"
+    },
+    {
+      "end" : 214.48,
+      "start" : 214.32,
+      "text" : "will"
+    },
+    {
+      "end" : 214.64000000000001,
+      "start" : 214.48000000000002,
+      "text" : "be"
+    },
+    {
+      "end" : 215.44,
+      "start" : 214.64000000000001,
+      "text" : "individual"
+    },
+    {
+      "end" : 215.76,
+      "start" : 215.44,
+      "text" : "work"
+    },
+    {
+      "end" : 216.16,
+      "start" : 216,
+      "text" : "which"
+    },
+    {
+      "end" : 216.56,
+      "start" : 216.4,
+      "text" : "and"
+    },
+    {
+      "end" : 216.88,
+      "start" : 216.56,
+      "text" : "then"
+    },
+    {
+      "end" : 217.44,
+      "start" : 216.88,
+      "text" : "discussion"
+    },
+    {
+      "end" : 219.12,
+      "start" : 217.44,
+      "text" : "afterwards."
+    },
+    {
+      "end" : 219.84,
+      "start" : 219.12,
+      "text" : "Detailed"
+    },
+    {
+      "end" : 220.4,
+      "start" : 219.84,
+      "text" : "design."
+    },
+    {
+      "end" : 220.64000000000001,
+      "start" : 220.4,
+      "text" : "Okay."
+    },
+    {
+      "end" : 221.28,
+      "start" : 220.96,
+      "text" : "Same"
+    },
+    {
+      "end" : 221.52,
+      "start" : 221.28,
+      "text" : "thing"
+    },
+    {
+      "end" : 222.16000000000003,
+      "start" : 221.6,
+      "text" : "basically."
+    },
+    {
+      "end" : 222.88,
+      "start" : 222.56,
+      "text" : "Three"
+    },
+    {
+      "end" : 223.44000000000003,
+      "start" : 223.04,
+      "text" : "different"
+    },
+    {
+      "end" : 223.84,
+      "start" : 223.44,
+      "text" : "types"
+    },
+    {
+      "end" : 224,
+      "start" : 223.84,
+      "text" : "of"
+    },
+    {
+      "end" : 224.4,
+      "start" : 224,
+      "text" : "design"
+    },
+    {
+      "end" : 224.56,
+      "start" : 224.4,
+      "text" : "that"
+    },
+    {
+      "end" : 224.8,
+      "start" : 224.56,
+      "text" : "we're"
+    },
+    {
+      "end" : 224.88000000000002,
+      "start" : 224.8,
+      "text" : "going"
+    },
+    {
+      "end" : 225.04,
+      "start" : 224.88,
+      "text" : "to"
+    },
+    {
+      "end" : 225.12,
+      "start" : 225.04,
+      "text" : "be"
+    },
+    {
+      "end" : 225.44000000000003,
+      "start" : 225.12,
+      "text" : "concerned"
+    },
+    {
+      "end" : 225.76000000000002,
+      "start" : 225.44,
+      "text" : "with."
+    },
+    {
+      "end" : 227.84,
+      "start" : 226.8,
+      "text" : "Mm-hmm."
+    },
+    {
+      "end" : 236.88000000000002,
+      "start" : 236,
+      "text" : "functional"
+    },
+    {
+      "end" : 238.48,
+      "start" : 237.20000000000002,
+      "text" : "conceptual"
+    },
+    {
+      "end" : 241.12,
+      "start" : 240.88,
+      "text" : "and"
+    },
+    {
+      "end" : 242,
+      "start" : 241.68,
+      "text" : "detail"
+    },
+    {
+      "end" : 243.84,
+      "start" : 243.52,
+      "text" : "I"
+    },
+    {
+      "end" : 244.16,
+      "start" : 243.84,
+      "text" : "can't"
+    },
+    {
+      "end" : 244.32000000000002,
+      "start" : 244.16,
+      "text" : "write"
+    },
+    {
+      "end" : 244.56000000000003,
+      "start" : 244.48000000000002,
+      "text" : "this"
+    },
+    {
+      "end" : 244.96,
+      "start" : 244.72,
+      "text" : "this"
+    },
+    {
+      "end" : 245.52,
+      "start" : 244.96,
+      "text" : "thing"
+    },
+    {
+      "end" : 248.4,
+      "start" : 248,
+      "text" : "Maybe"
+    },
+    {
+      "end" : 248.48000000000002,
+      "start" : 248.4,
+      "text" : "we"
+    },
+    {
+      "end" : 248.72,
+      "start" : 248.48000000000002,
+      "text" : "should"
+    },
+    {
+      "end" : 249.28,
+      "start" : 248.72,
+      "text" : "redesign"
+    },
+    {
+      "end" : 249.76,
+      "start" : 249.28,
+      "text" : "it."
+    },
+    {
+      "end" : 252.4,
+      "start" : 251.6,
+      "text" : "Yes."
+    },
+    {
+      "end" : 252.8,
+      "start" : 252.56,
+      "text" : "After"
+    },
+    {
+      "end" : 253.04000000000002,
+      "start" : 252.8,
+      "text" : "we"
+    },
+    {
+      "end" : 253.36,
+      "start" : 253.04,
+      "text" : "finish"
+    },
+    {
+      "end" : 253.44000000000003,
+      "start" : 253.36,
+      "text" : "the"
+    },
+    {
+      "end" : 253.76000000000002,
+      "start" : 253.44,
+      "text" : "remote"
+    },
+    {
+      "end" : 254.00000000000003,
+      "start" : 253.76000000000002,
+      "text" : "control"
+    },
+    {
+      "end" : 254.32000000000002,
+      "start" : 254.08,
+      "text" : "we'll"
+    },
+    {
+      "end" : 254.48,
+      "start" : 254.32,
+      "text" : "get"
+    },
+    {
+      "end" : 254.56000000000003,
+      "start" : 254.48000000000002,
+      "text" : "to"
+    },
+    {
+      "end" : 255.12,
+      "start" : 254.56,
+      "text" : "that."
+    },
+    {
+      "end" : 255.52,
+      "start" : 255.12,
+      "text" : "Yeah,"
+    },
+    {
+      "end" : 257.12,
+      "start" : 255.52,
+      "text" : "okay."
+    },
+    {
+      "end" : 257.44,
+      "start" : 257.12,
+      "text" : "All"
+    },
+    {
+      "end" : 258.32,
+      "start" : 257.44,
+      "text" : "right."
+    },
+    {
+      "end" : 260.08000000000004,
+      "start" : 259.84000000000003,
+      "text" : "Then"
+    },
+    {
+      "end" : 260.56,
+      "start" : 260.24,
+      "text" : "tool"
+    },
+    {
+      "end" : 261.03999999999996,
+      "start" : 260.56,
+      "text" : "training,"
+    },
+    {
+      "end" : 261.28,
+      "start" : 261.04,
+      "text" : "try"
+    },
+    {
+      "end" : 261.44,
+      "start" : 261.36,
+      "text" : "out"
+    },
+    {
+      "end" : 261.68,
+      "start" : 261.6,
+      "text" : "the"
+    },
+    {
+      "end" : 262.24,
+      "start" : 261.68,
+      "text" : "whiteboard,"
+    },
+    {
+      "end" : 262.8,
+      "start" : 262.4,
+      "text" : "participant"
+    },
+    {
+      "end" : 263.12,
+      "start" : 262.96,
+      "text" : "control"
+    },
+    {
+      "end" : 263.52000000000004,
+      "start" : 263.36,
+      "text" : "their"
+    },
+    {
+      "end" : 263.76,
+      "start" : 263.52,
+      "text" : "favorite"
+    },
+    {
+      "end" : 264.56,
+      "start" : 263.84000000000003,
+      "text" : "animal."
+    },
+    {
+      "end" : 264.88000000000005,
+      "start" : 264.56,
+      "text" : "Does"
+    },
+    {
+      "end" : 265.36,
+      "start" : 264.88,
+      "text" : "anybody"
+    },
+    {
+      "end" : 265.68,
+      "start" : 265.44,
+      "text" : "want"
+    },
+    {
+      "end" : 265.92,
+      "start" : 265.68,
+      "text" : "to"
+    },
+    {
+      "end" : 266.24,
+      "start" : 265.92,
+      "text" : "go"
+    },
+    {
+      "end" : 266.56,
+      "start" : 266.24,
+      "text" : "and"
+    },
+    {
+      "end" : 267.04,
+      "start" : 266.8,
+      "text" : "see"
+    },
+    {
+      "end" : 267.20000000000005,
+      "start" : 267.04,
+      "text" : "how"
+    },
+    {
+      "end" : 267.36,
+      "start" : 267.2,
+      "text" : "the"
+    },
+    {
+      "end" : 267.92,
+      "start" : 267.36,
+      "text" : "whiteboard"
+    },
+    {
+      "end" : 268.40000000000003,
+      "start" : 268.08,
+      "text" : "works"
+    },
+    {
+      "end" : 268.88,
+      "start" : 268.64,
+      "text" : "so"
+    },
+    {
+      "end" : 269.2,
+      "start" : 268.88,
+      "text" : "that"
+    },
+    {
+      "end" : 269.36,
+      "start" : 269.2,
+      "text" : "in"
+    },
+    {
+      "end" : 269.68,
+      "start" : 269.36,
+      "text" : "case"
+    },
+    {
+      "end" : 269.84000000000003,
+      "start" : 269.68,
+      "text" : "we"
+    },
+    {
+      "end" : 270.00000000000006,
+      "start" : 269.84000000000003,
+      "text" : "have"
+    },
+    {
+      "end" : 270.16,
+      "start" : 270,
+      "text" : "to"
+    },
+    {
+      "end" : 270.40000000000003,
+      "start" : 270.24,
+      "text" : "in"
+    },
+    {
+      "end" : 270.47999999999996,
+      "start" : 270.4,
+      "text" : "the"
+    },
+    {
+      "end" : 270.72,
+      "start" : 270.48,
+      "text" : "next"
+    },
+    {
+      "end" : 270.96,
+      "start" : 270.72,
+      "text" : "meeting"
+    },
+    {
+      "end" : 271.44000000000005,
+      "start" : 271.12,
+      "text" : "present"
+    },
+    {
+      "end" : 271.68,
+      "start" : 271.44,
+      "text" : "something"
+    },
+    {
+      "end" : 271.84000000000003,
+      "start" : 271.68,
+      "text" : "on"
+    },
+    {
+      "end" : 272.00000000000006,
+      "start" : 271.84000000000003,
+      "text" : "the"
+    },
+    {
+      "end" : 273.92,
+      "start" : 272,
+      "text" : "whiteboard?"
+    },
+    {
+      "end" : 274.56,
+      "start" : 274.24,
+      "text" : "You"
+    },
+    {
+      "end" : 274.8,
+      "start" : 274.56,
+      "text" : "wanna"
+    },
+    {
+      "end" : 275.12,
+      "start" : 274.8,
+      "text" : "go,"
+    },
+    {
+      "end" : 275.6,
+      "start" : 275.12,
+      "text" : "Eileen"
+    },
+    {
+      "end" : 275.76,
+      "start" : 275.68,
+      "text" : "and"
+    },
+    {
+      "end" : 276.4,
+      "start" : 276.16,
+      "text" : "Okay,"
+    },
+    {
+      "end" : 276.64,
+      "start" : 276.40000000000003,
+      "text" : "I'll"
+    },
+    {
+      "end" : 276.8,
+      "start" : 276.64,
+      "text" : "see"
+    },
+    {
+      "end" : 276.88,
+      "start" : 276.8,
+      "text" : "what"
+    },
+    {
+      "end" : 276.96,
+      "start" : 276.88,
+      "text" : "I"
+    },
+    {
+      "end" : 277.12,
+      "start" : 276.96,
+      "text" : "can"
+    },
+    {
+      "end" : 277.44,
+      "start" : 277.12,
+      "text" : "do."
+    },
+    {
+      "end" : 277.76,
+      "start" : 277.44,
+      "text" : "Whether"
+    },
+    {
+      "end" : 277.92,
+      "start" : 277.76,
+      "text" : "you"
+    },
+    {
+      "end" : 278.24,
+      "start" : 278.16,
+      "text" : "see"
+    },
+    {
+      "end" : 278.4,
+      "start" : 278.32,
+      "text" : "if"
+    },
+    {
+      "end" : 279.03999999999996,
+      "start" : 278.72,
+      "text" : "without"
+    },
+    {
+      "end" : 279.36,
+      "start" : 279.04,
+      "text" : "hanging"
+    },
+    {
+      "end" : 280,
+      "start" : 279.36,
+      "text" : "yourself."
+    },
+    {
+      "end" : 280.24,
+      "start" : 280.08,
+      "text" : "See"
+    },
+    {
+      "end" : 280.40000000000003,
+      "start" : 280.24,
+      "text" : "if"
+    },
+    {
+      "end" : 280.48,
+      "start" : 280.40000000000003,
+      "text" : "I"
+    },
+    {
+      "end" : 280.96000000000004,
+      "start" : 280.48,
+      "text" : "remember"
+    },
+    {
+      "end" : 281.12,
+      "start" : 280.96,
+      "text" : "how"
+    },
+    {
+      "end" : 281.44,
+      "start" : 281.12,
+      "text" : "to"
+    },
+    {
+      "end" : 281.76000000000005,
+      "start" : 281.44,
+      "text" : "draw"
+    },
+    {
+      "end" : 281.92,
+      "start" : 281.76,
+      "text" : "a"
+    },
+    {
+      "end" : 282.24,
+      "start" : 281.92,
+      "text" : "kitty"
+    },
+    {
+      "end" : 282.56,
+      "start" : 282.32,
+      "text" : "cat"
+    },
+    {
+      "end" : 282.72,
+      "start" : 282.56,
+      "text" : "or"
+    },
+    {
+      "end" : 282.8,
+      "start" : 282.72,
+      "text" : "a"
+    },
+    {
+      "end" : 283.20000000000005,
+      "start" : 282.8,
+      "text" : "rabbit"
+    },
+    {
+      "end" : 283.36,
+      "start" : 283.2,
+      "text" : "or"
+    },
+    {
+      "end" : 284.16,
+      "start" : 283.36,
+      "text" : "something."
+    },
+    {
+      "end" : 288.08,
+      "start" : 287.76,
+      "text" : "And"
+    },
+    {
+      "end" : 288.48,
+      "start" : 288.08,
+      "text" : "remember"
+    },
+    {
+      "end" : 288.72,
+      "start" : 288.56,
+      "text" : "you"
+    },
+    {
+      "end" : 288.88000000000005,
+      "start" : 288.72,
+      "text" : "have"
+    },
+    {
+      "end" : 289.04,
+      "start" : 288.88,
+      "text" : "to"
+    },
+    {
+      "end" : 289.36,
+      "start" : 289.04,
+      "text" : "press"
+    },
+    {
+      "end" : 289.52000000000004,
+      "start" : 289.36,
+      "text" : "so"
+    },
+    {
+      "end" : 289.68,
+      "start" : 289.52,
+      "text" : "it"
+    },
+    {
+      "end" : 289.92,
+      "start" : 289.68,
+      "text" : "works."
+    },
+    {
+      "end" : 290.24,
+      "start" : 290.16,
+      "text" : "So"
+    },
+    {
+      "end" : 290.48,
+      "start" : 290.32,
+      "text" : "that"
+    },
+    {
+      "end" : 290.56,
+      "start" : 290.48,
+      "text" : "it"
+    },
+    {
+      "end" : 290.72,
+      "start" : 290.56,
+      "text" : "will"
+    },
+    {
+      "end" : 291.28000000000003,
+      "start" : 290.72,
+      "text" : "record,"
+    },
+    {
+      "end" : 292.16,
+      "start" : 291.28000000000003,
+      "text" : "okay."
+    },
+    {
+      "end" : 292.48,
+      "start" : 292.16,
+      "text" : "Um"
+    },
+    {
+      "end" : 293.6,
+      "start" : 293.28000000000003,
+      "text" : "well"
+    },
+    {
+      "end" : 295.04,
+      "start" : 294.72,
+      "text" : "um"
+    },
+    {
+      "end" : 296.56,
+      "start" : 295.44,
+      "text" : "traditional"
+    },
+    {
+      "end" : 297.20000000000005,
+      "start" : 296.72,
+      "text" : "kitty"
+    },
+    {
+      "end" : 298.4,
+      "start" : 297.36,
+      "text" : "cat."
+    },
+    {
+      "end" : 311.12,
+      "start" : 310.96,
+      "text" : "A"
+    },
+    {
+      "end" : 311.76,
+      "start" : 311.44,
+      "text" : "very"
+    },
+    {
+      "end" : 312.08,
+      "start" : 311.76,
+      "text" : "fat"
+    },
+    {
+      "end" : 315.36,
+      "start" : 312.08,
+      "text" : "cat."
+    },
+    {
+      "end" : 315.68,
+      "start" : 315.36,
+      "text" : "And"
+    },
+    {
+      "end" : 315.92,
+      "start" : 315.68,
+      "text" : "it"
+    },
+    {
+      "end" : 316.24,
+      "start" : 315.92,
+      "text" : "likes"
+    },
+    {
+      "end" : 316.40000000000003,
+      "start" : 316.24,
+      "text" : "to"
+    },
+    {
+      "end" : 316.56000000000006,
+      "start" : 316.40000000000003,
+      "text" : "sit"
+    },
+    {
+      "end" : 316.96000000000004,
+      "start" : 316.72,
+      "text" : "like"
+    },
+    {
+      "end" : 317.52,
+      "start" : 316.96,
+      "text" : "that."
+    },
+    {
+      "end" : 318.16,
+      "start" : 317.52,
+      "text" : "Okay."
+    },
+    {
+      "end" : 319.28,
+      "start" : 318.16,
+      "text" : "Okay."
+    },
+    {
+      "end" : 320.64,
+      "start" : 320.32,
+      "text" : "And"
+    },
+    {
+      "end" : 320.96000000000004,
+      "start" : 320.8,
+      "text" : "your"
+    },
+    {
+      "end" : 321.52000000000004,
+      "start" : 321.2,
+      "text" : "front"
+    },
+    {
+      "end" : 322.15999999999997,
+      "start" : 321.68,
+      "text" : "scene,"
+    },
+    {
+      "end" : 322.32,
+      "start" : 322.16,
+      "text" : "right?"
+    },
+    {
+      "end" : 322.64,
+      "start" : 322.48,
+      "text" : "Would"
+    },
+    {
+      "end" : 322.71999999999997,
+      "start" : 322.64,
+      "text" : "you"
+    },
+    {
+      "end" : 322.8,
+      "start" : 322.72,
+      "text" : "like"
+    },
+    {
+      "end" : 323.84000000000003,
+      "start" : 323.68,
+      "text" : "just"
+    },
+    {
+      "end" : 324.00000000000006,
+      "start" : 323.84000000000003,
+      "text" : "to"
+    },
+    {
+      "end" : 324.16,
+      "start" : 324,
+      "text" : "see"
+    },
+    {
+      "end" : 324.32,
+      "start" : 324.24,
+      "text" : "um"
+    },
+    {
+      "end" : 325.44000000000005,
+      "start" : 325.28000000000003,
+      "text" : "how"
+    },
+    {
+      "end" : 325.6,
+      "start" : 325.44,
+      "text" : "it"
+    },
+    {
+      "end" : 325.92,
+      "start" : 325.6,
+      "text" : "feels"
+    },
+    {
+      "end" : 326.24,
+      "start" : 326,
+      "text" : "so"
+    },
+    {
+      "end" : 326.40000000000003,
+      "start" : 326.24,
+      "text" : "that"
+    },
+    {
+      "end" : 326.56000000000006,
+      "start" : 326.40000000000003,
+      "text" : "you"
+    },
+    {
+      "end" : 326.72,
+      "start" : 326.56,
+      "text" : "have"
+    },
+    {
+      "end" : 326.88000000000005,
+      "start" : 326.72,
+      "text" : "a"
+    },
+    {
+      "end" : 327.12,
+      "start" : 326.88,
+      "text" : "little"
+    },
+    {
+      "end" : 327.59999999999997,
+      "start" : 327.12,
+      "text" : "idea?"
+    },
+    {
+      "end" : 328.64,
+      "start" : 328.56,
+      "text" : "Am"
+    },
+    {
+      "end" : 328.88000000000005,
+      "start" : 328.72,
+      "text" : "I"
+    },
+    {
+      "end" : 329.12,
+      "start" : 328.88,
+      "text" : "supposed"
+    },
+    {
+      "end" : 329.28000000000003,
+      "start" : 329.12,
+      "text" : "to"
+    },
+    {
+      "end" : 329.52000000000004,
+      "start" : 329.28000000000003,
+      "text" : "wipe"
+    },
+    {
+      "end" : 329.68,
+      "start" : 329.52,
+      "text" : "off"
+    },
+    {
+      "end" : 329.92,
+      "start" : 329.68,
+      "text" : "that?"
+    },
+    {
+      "end" : 330.72,
+      "start" : 330.40000000000003,
+      "text" : "no."
+    },
+    {
+      "end" : 330.96,
+      "start" : 330.72,
+      "text" : "No,"
+    },
+    {
+      "end" : 331.2,
+      "start" : 330.96,
+      "text" : "that's"
+    },
+    {
+      "end" : 331.52,
+      "start" : 331.2,
+      "text" : "okay."
+    },
+    {
+      "end" : 331.84,
+      "start" : 331.52,
+      "text" : "No,"
+    },
+    {
+      "end" : 332.32000000000005,
+      "start" : 331.84000000000003,
+      "text" : "okay."
+    },
+    {
+      "end" : 333.44000000000005,
+      "start" : 333.28000000000003,
+      "text" : "I"
+    },
+    {
+      "end" : 333.84,
+      "start" : 333.44,
+      "text" : "don't"
+    },
+    {
+      "end" : 334.00000000000006,
+      "start" : 333.76,
+      "text" : "know."
+    },
+    {
+      "end" : 334.32000000000005,
+      "start" : 334,
+      "text" : "We'll"
+    },
+    {
+      "end" : 334.64000000000004,
+      "start" : 334.48,
+      "text" : "get"
+    },
+    {
+      "end" : 334.8,
+      "start" : 334.64,
+      "text" : "to"
+    },
+    {
+      "end" : 334.96000000000004,
+      "start" : 334.8,
+      "text" : "that"
+    },
+    {
+      "end" : 335.2,
+      "start" : 334.96,
+      "text" : "later."
+    },
+    {
+      "end" : 337.12,
+      "start" : 336.08,
+      "text" : "Okay."
+    },
+    {
+      "end" : 337.52000000000004,
+      "start" : 337.2,
+      "text" : "What"
+    },
+    {
+      "end" : 337.76,
+      "start" : 337.52,
+      "text" : "should"
+    },
+    {
+      "end" : 338,
+      "start" : 337.76,
+      "text" : "I"
+    },
+    {
+      "end" : 338.8,
+      "start" : 338,
+      "text" : "draw?"
+    },
+    {
+      "end" : 348,
+      "start" : 347.36,
+      "text" : "Sneak."
+    },
+    {
+      "end" : 348.24,
+      "start" : 348,
+      "text" : "I'm"
+    },
+    {
+      "end" : 348.32000000000005,
+      "start" : 348.16,
+      "text" : "going"
+    },
+    {
+      "end" : 348.48,
+      "start" : 348.32,
+      "text" : "to"
+    },
+    {
+      "end" : 348.71999999999997,
+      "start" : 348.48,
+      "text" : "draw"
+    },
+    {
+      "end" : 349.68,
+      "start" : 348.88,
+      "text" : "snake."
+    },
+    {
+      "end" : 357.44000000000005,
+      "start" : 357.28000000000003,
+      "text" : "Oh"
+    },
+    {
+      "end" : 358.24,
+      "start" : 357.6,
+      "text" : "okay."
+    },
+    {
+      "end" : 359.76,
+      "start" : 359.52,
+      "text" : "I"
+    },
+    {
+      "end" : 360,
+      "start" : 359.76,
+      "text" : "hope"
+    },
+    {
+      "end" : 360.08,
+      "start" : 360,
+      "text" : "the"
+    },
+    {
+      "end" : 360.48,
+      "start" : 360.08,
+      "text" : "kitty"
+    },
+    {
+      "end" : 360.64,
+      "start" : 360.56,
+      "text" : "cat"
+    },
+    {
+      "end" : 360.88,
+      "start" : 360.8,
+      "text" : "is"
+    },
+    {
+      "end" : 361.03999999999996,
+      "start" : 360.88,
+      "text" : "hungry"
+    },
+    {
+      "end" : 361.36,
+      "start" : 361.28000000000003,
+      "text" : "because"
+    },
+    {
+      "end" : 361.52,
+      "start" : 361.44,
+      "text" : "I"
+    },
+    {
+      "end" : 361.68,
+      "start" : 361.52,
+      "text" : "don't"
+    },
+    {
+      "end" : 361.84000000000003,
+      "start" : 361.6,
+      "text" : "like"
+    },
+    {
+      "end" : 362.96,
+      "start" : 361.84000000000003,
+      "text" : "space."
+    },
+    {
+      "end" : 367.28,
+      "start" : 366.88,
+      "text" : "Yes,"
+    },
+    {
+      "end" : 367.52000000000004,
+      "start" : 367.36,
+      "text" : "a"
+    },
+    {
+      "end" : 368.16,
+      "start" : 367.52,
+      "text" : "project"
+    },
+    {
+      "end" : 368.96000000000004,
+      "start" : 368.16,
+      "text" : "finance,"
+    },
+    {
+      "end" : 369.28000000000003,
+      "start" : 368.96,
+      "text" : "Uh"
+    },
+    {
+      "end" : 369.6,
+      "start" : 369.28000000000003,
+      "text" : "which"
+    },
+    {
+      "end" : 369.68,
+      "start" : 369.6,
+      "text" : "of"
+    },
+    {
+      "end" : 369.92,
+      "start" : 369.68,
+      "text" : "course"
+    },
+    {
+      "end" : 370.08000000000004,
+      "start" : 369.92,
+      "text" : "we"
+    },
+    {
+      "end" : 370.24,
+      "start" : 370.08,
+      "text" : "all"
+    },
+    {
+      "end" : 370.32,
+      "start" : 370.24,
+      "text" : "have"
+    },
+    {
+      "end" : 370.48,
+      "start" : 370.32,
+      "text" : "to"
+    },
+    {
+      "end" : 370.64000000000004,
+      "start" : 370.48,
+      "text" : "think"
+    },
+    {
+      "end" : 370.88,
+      "start" : 370.64,
+      "text" : "about"
+    },
+    {
+      "end" : 371.04,
+      "start" : 370.88,
+      "text" : "when"
+    },
+    {
+      "end" : 371.20000000000005,
+      "start" : 371.04,
+      "text" : "we"
+    },
+    {
+      "end" : 371.6,
+      "start" : 371.2,
+      "text" : "design"
+    },
+    {
+      "end" : 371.92,
+      "start" : 371.6,
+      "text" : "this"
+    },
+    {
+      "end" : 372.64000000000004,
+      "start" : 371.92,
+      "text" : "thing."
+    },
+    {
+      "end" : 372.96,
+      "start" : 372.64,
+      "text" : "Um"
+    },
+    {
+      "end" : 373.76000000000005,
+      "start" : 373.28000000000003,
+      "text" : "selling"
+    },
+    {
+      "end" : 374.16,
+      "start" : 373.84000000000003,
+      "text" : "price"
+    },
+    {
+      "end" : 374.32000000000005,
+      "start" : 374.16,
+      "text" : "is"
+    },
+    {
+      "end" : 374.64,
+      "start" : 374.32,
+      "text" : "supposed"
+    },
+    {
+      "end" : 374.71999999999997,
+      "start" : 374.64,
+      "text" : "to"
+    },
+    {
+      "end" : 374.88000000000005,
+      "start" : 374.72,
+      "text" : "be"
+    },
+    {
+      "end" : 375.20000000000005,
+      "start" : 374.88,
+      "text" : "twenty"
+    },
+    {
+      "end" : 375.68,
+      "start" : 375.2,
+      "text" : "five"
+    },
+    {
+      "end" : 376.96000000000004,
+      "start" : 375.68,
+      "text" : "euro."
+    },
+    {
+      "end" : 377.28,
+      "start" : 376.96,
+      "text" : "Uh"
+    },
+    {
+      "end" : 378,
+      "start" : 377.52,
+      "text" : "profit"
+    },
+    {
+      "end" : 378.64000000000004,
+      "start" : 378.24,
+      "text" : "aim"
+    },
+    {
+      "end" : 378.8,
+      "start" : 378.64,
+      "text" : "for"
+    },
+    {
+      "end" : 379.04,
+      "start" : 378.8,
+      "text" : "the"
+    },
+    {
+      "end" : 379.68,
+      "start" : 379.04,
+      "text" : "company"
+    },
+    {
+      "end" : 380,
+      "start" : 379.68,
+      "text" : "is"
+    },
+    {
+      "end" : 380.56,
+      "start" : 380,
+      "text" : "fifty"
+    },
+    {
+      "end" : 381.04,
+      "start" : 380.56,
+      "text" : "million"
+    },
+    {
+      "end" : 382.48,
+      "start" : 381.04,
+      "text" : "euro."
+    },
+    {
+      "end" : 382.8,
+      "start" : 382.48,
+      "text" : "The"
+    },
+    {
+      "end" : 383.12,
+      "start" : 382.8,
+      "text" : "market"
+    },
+    {
+      "end" : 383.52000000000004,
+      "start" : 383.12,
+      "text" : "range"
+    },
+    {
+      "end" : 384.48,
+      "start" : 383.68,
+      "text" : "unlimited"
+    },
+    {
+      "end" : 385.28000000000003,
+      "start" : 384.56,
+      "text" : "meaning"
+    },
+    {
+      "end" : 386.48,
+      "start" : 385.28000000000003,
+      "text" : "international."
+    },
+    {
+      "end" : 386.96000000000004,
+      "start" : 386.48,
+      "text" : "Okay."
+    },
+    {
+      "end" : 387.52,
+      "start" : 387.2,
+      "text" : "And"
+    },
+    {
+      "end" : 387.76,
+      "start" : 387.52,
+      "text" : "the"
+    },
+    {
+      "end" : 388.4,
+      "start" : 387.76,
+      "text" : "production"
+    },
+    {
+      "end" : 388.72,
+      "start" : 388.40000000000003,
+      "text" : "cost"
+    },
+    {
+      "end" : 389.28000000000003,
+      "start" : 388.88,
+      "text" : "should"
+    },
+    {
+      "end" : 389.44000000000005,
+      "start" : 389.28000000000003,
+      "text" : "not"
+    },
+    {
+      "end" : 390.24,
+      "start" : 389.44,
+      "text" : "exceed,"
+    },
+    {
+      "end" : 390.71999999999997,
+      "start" : 390.24,
+      "text" : "hopefully"
+    },
+    {
+      "end" : 391.12,
+      "start" : 390.88,
+      "text" : "should"
+    },
+    {
+      "end" : 391.28000000000003,
+      "start" : 391.12,
+      "text" : "be"
+    },
+    {
+      "end" : 391.6,
+      "start" : 391.28000000000003,
+      "text" : "less"
+    },
+    {
+      "end" : 391.84000000000003,
+      "start" : 391.6,
+      "text" : "than"
+    },
+    {
+      "end" : 392.48,
+      "start" : 391.84000000000003,
+      "text" : "twelve"
+    },
+    {
+      "end" : 393.36,
+      "start" : 392.64,
+      "text" : "fifty"
+    },
+    {
+      "end" : 395.12,
+      "start" : 393.36,
+      "text" : "euro."
+    },
+    {
+      "end" : 395.76000000000005,
+      "start" : 395.2,
+      "text" : "Okay,"
+    },
+    {
+      "end" : 396.08,
+      "start" : 395.76,
+      "text" : "that"
+    },
+    {
+      "end" : 396.40000000000003,
+      "start" : 396.08,
+      "text" : "should"
+    },
+    {
+      "end" : 396.64,
+      "start" : 396.40000000000003,
+      "text" : "keep"
+    },
+    {
+      "end" : 397.04,
+      "start" : 396.64,
+      "text" : "everybody"
+    },
+    {
+      "end" : 397.20000000000005,
+      "start" : 397.04,
+      "text" : "on"
+    },
+    {
+      "end" : 397.36,
+      "start" : 397.2,
+      "text" : "their"
+    },
+    {
+      "end" : 397.76000000000005,
+      "start" : 397.36,
+      "text" : "toes"
+    },
+    {
+      "end" : 398.72,
+      "start" : 397.76,
+      "text" : "unchallenged."
+    },
+    {
+      "end" : 400,
+      "start" : 398.72,
+      "text" : "Mm-hmm."
+    },
+    {
+      "end" : 400.96000000000004,
+      "start" : 400,
+      "text" : "Profit."
+    },
+    {
+      "end" : 402.96000000000004,
+      "start" : 402.72,
+      "text" : "Um"
+    },
+    {
+      "end" : 403.84000000000003,
+      "start" : 403.68,
+      "text" : "So"
+    },
+    {
+      "end" : 404.32,
+      "start" : 404,
+      "text" : "these"
+    },
+    {
+      "end" : 404.56,
+      "start" : 404.32,
+      "text" : "are"
+    },
+    {
+      "end" : 404.88,
+      "start" : 404.56,
+      "text" : "all"
+    },
+    {
+      "end" : 405.52000000000004,
+      "start" : 405.2,
+      "text" : "things"
+    },
+    {
+      "end" : 405.84000000000003,
+      "start" : 405.6,
+      "text" : "of"
+    },
+    {
+      "end" : 406.48,
+      "start" : 405.84000000000003,
+      "text" : "course"
+    },
+    {
+      "end" : 407.04,
+      "start" : 406.8,
+      "text" : "to"
+    },
+    {
+      "end" : 407.44000000000005,
+      "start" : 407.04,
+      "text" : "remember"
+    },
+    {
+      "end" : 407.68,
+      "start" : 407.44,
+      "text" : "with"
+    },
+    {
+      "end" : 407.84000000000003,
+      "start" : 407.68,
+      "text" : "the"
+    },
+    {
+      "end" : 408.08,
+      "start" : 407.84000000000003,
+      "text" : "budget"
+    },
+    {
+      "end" : 408.32000000000005,
+      "start" : 408.16,
+      "text" : "and"
+    },
+    {
+      "end" : 408.56,
+      "start" : 408.32,
+      "text" : "when"
+    },
+    {
+      "end" : 408.64,
+      "start" : 408.56,
+      "text" : "you"
+    },
+    {
+      "end" : 409.44,
+      "start" : 408.88,
+      "text" : "design"
+    },
+    {
+      "end" : 410.16,
+      "start" : 409.84000000000003,
+      "text" : "to"
+    },
+    {
+      "end" : 411.68,
+      "start" : 410.72,
+      "text" : "materials,"
+    },
+    {
+      "end" : 412.08,
+      "start" : 411.68,
+      "text" : "cost,"
+    },
+    {
+      "end" : 413.44,
+      "start" : 412.08,
+      "text" : "etcetera."
+    },
+    {
+      "end" : 419.44000000000005,
+      "start" : 419.04,
+      "text" : "Now"
+    },
+    {
+      "end" : 419.84000000000003,
+      "start" : 419.6,
+      "text" : "uh"
+    },
+    {
+      "end" : 420.32,
+      "start" : 420,
+      "text" : "the"
+    },
+    {
+      "end" : 420.8,
+      "start" : 420.32,
+      "text" : "discussion"
+    },
+    {
+      "end" : 421.12,
+      "start" : 420.88,
+      "text" : "I"
+    },
+    {
+      "end" : 421.36,
+      "start" : 421.12,
+      "text" : "guess"
+    },
+    {
+      "end" : 421.92,
+      "start" : 421.6,
+      "text" : "is"
+    },
+    {
+      "end" : 422.4,
+      "start" : 422.08,
+      "text" : "um"
+    },
+    {
+      "end" : 423.44,
+      "start" : 423.04,
+      "text" : "does"
+    },
+    {
+      "end" : 423.68,
+      "start" : 423.44,
+      "text" : "any"
+    },
+    {
+      "end" : 423.84,
+      "start" : 423.76,
+      "text" : "uh"
+    },
+    {
+      "end" : 424.16,
+      "start" : 424,
+      "text" : "one"
+    },
+    {
+      "end" : 424.32000000000005,
+      "start" : 424.16,
+      "text" : "of"
+    },
+    {
+      "end" : 424.64,
+      "start" : 424.32,
+      "text" : "you"
+    },
+    {
+      "end" : 424.96,
+      "start" : 424.64,
+      "text" : "have"
+    },
+    {
+      "end" : 425.84,
+      "start" : 424.96000000000004,
+      "text" : "experience"
+    },
+    {
+      "end" : 426.16,
+      "start" : 425.84000000000003,
+      "text" : "with"
+    },
+    {
+      "end" : 427.12,
+      "start" : 426.40000000000003,
+      "text" : "remote"
+    },
+    {
+      "end" : 428.4,
+      "start" : 427.12,
+      "text" : "control."
+    },
+    {
+      "end" : 429.44,
+      "start" : 428.56,
+      "text" : "Yeah,"
+    },
+    {
+      "end" : 429.52,
+      "start" : 429.44,
+      "text" : "I"
+    },
+    {
+      "end" : 429.59999999999997,
+      "start" : 429.52,
+      "text" : "think"
+    },
+    {
+      "end" : 429.68,
+      "start" : 429.52,
+      "text" : "that's"
+    },
+    {
+      "end" : 429.92,
+      "start" : 429.84000000000003,
+      "text" : "because"
+    },
+    {
+      "end" : 430.15999999999997,
+      "start" : 430.08,
+      "text" : "we"
+    },
+    {
+      "end" : 430.48,
+      "start" : 430.32,
+      "text" : "we"
+    },
+    {
+      "end" : 430.64000000000004,
+      "start" : 430.48,
+      "text" : "use"
+    },
+    {
+      "end" : 430.71999999999997,
+      "start" : 430.64,
+      "text" : "them"
+    },
+    {
+      "end" : 431.04,
+      "start" : 430.88,
+      "text" : "we"
+    },
+    {
+      "end" : 431.28000000000003,
+      "start" : 431.04,
+      "text" : "use"
+    },
+    {
+      "end" : 431.52,
+      "start" : 431.28000000000003,
+      "text" : "them,"
+    },
+    {
+      "end" : 431.84,
+      "start" : 431.52,
+      "text" : "right?"
+    },
+    {
+      "end" : 432.24,
+      "start" : 431.84000000000003,
+      "text" : "Every"
+    },
+    {
+      "end" : 433.28000000000003,
+      "start" : 432.24,
+      "text" : "day."
+    },
+    {
+      "end" : 433.68,
+      "start" : 433.36,
+      "text" : "And"
+    },
+    {
+      "end" : 434.32,
+      "start" : 434,
+      "text" : "um"
+    },
+    {
+      "end" : 434.88,
+      "start" : 434.56,
+      "text" : "Um"
+    },
+    {
+      "end" : 436.64,
+      "start" : 436.32,
+      "text" : "now"
+    },
+    {
+      "end" : 437.36,
+      "start" : 436.96000000000004,
+      "text" : "having"
+    },
+    {
+      "end" : 437.68,
+      "start" : 437.36,
+      "text" : "used"
+    },
+    {
+      "end" : 437.76,
+      "start" : 437.68,
+      "text" : "in"
+    },
+    {
+      "end" : 437.92,
+      "start" : 437.76,
+      "text" : "the"
+    },
+    {
+      "end" : 438.32,
+      "start" : 437.92,
+      "text" : "remote"
+    },
+    {
+      "end" : 438.56,
+      "start" : 438.32,
+      "text" : "control"
+    },
+    {
+      "end" : 438.88000000000005,
+      "start" : 438.72,
+      "text" : "for"
+    },
+    {
+      "end" : 439.44000000000005,
+      "start" : 438.88,
+      "text" : "years,"
+    },
+    {
+      "end" : 439.68,
+      "start" : 439.44,
+      "text" : "does"
+    },
+    {
+      "end" : 440.16,
+      "start" : 439.68,
+      "text" : "anybody"
+    },
+    {
+      "end" : 440.48,
+      "start" : 440.16,
+      "text" : "already"
+    },
+    {
+      "end" : 440.72,
+      "start" : 440.48,
+      "text" : "have"
+    },
+    {
+      "end" : 440.96000000000004,
+      "start" : 440.72,
+      "text" : "like"
+    },
+    {
+      "end" : 441.44,
+      "start" : 441.2,
+      "text" : "an"
+    },
+    {
+      "end" : 442.16,
+      "start" : 441.44,
+      "text" : "idea,"
+    },
+    {
+      "end" : 442.48,
+      "start" : 442.16,
+      "text" : "like"
+    },
+    {
+      "end" : 442.8,
+      "start" : 442.48,
+      "text" : "things"
+    },
+    {
+      "end" : 442.96000000000004,
+      "start" : 442.8,
+      "text" : "you"
+    },
+    {
+      "end" : 443.28,
+      "start" : 442.96000000000004,
+      "text" : "didn't"
+    },
+    {
+      "end" : 443.52000000000004,
+      "start" : 443.28000000000003,
+      "text" : "like"
+    },
+    {
+      "end" : 443.68,
+      "start" : 443.52,
+      "text" : "with"
+    },
+    {
+      "end" : 444.00000000000006,
+      "start" : 443.68,
+      "text" : "it,"
+    },
+    {
+      "end" : 444.32000000000005,
+      "start" : 444,
+      "text" : "things"
+    },
+    {
+      "end" : 444.48,
+      "start" : 444.32,
+      "text" : "you"
+    },
+    {
+      "end" : 444.72,
+      "start" : 444.48,
+      "text" : "would"
+    },
+    {
+      "end" : 444.88000000000005,
+      "start" : 444.72,
+      "text" : "like"
+    },
+    {
+      "end" : 445.12,
+      "start" : 444.88,
+      "text" : "to"
+    },
+    {
+      "end" : 445.68,
+      "start" : 445.12,
+      "text" : "change,"
+    },
+    {
+      "end" : 445.92,
+      "start" : 445.68,
+      "text" : "things"
+    },
+    {
+      "end" : 446.08000000000004,
+      "start" : 445.92,
+      "text" : "you"
+    },
+    {
+      "end" : 446.24,
+      "start" : 446.08,
+      "text" : "would"
+    },
+    {
+      "end" : 446.40000000000003,
+      "start" : 446.24,
+      "text" : "like"
+    },
+    {
+      "end" : 446.56000000000006,
+      "start" : 446.40000000000003,
+      "text" : "to"
+    },
+    {
+      "end" : 446.96000000000004,
+      "start" : 446.56,
+      "text" : "improve"
+    },
+    {
+      "end" : 447.12000000000006,
+      "start" : 446.96000000000004,
+      "text" : "with"
+    },
+    {
+      "end" : 447.28000000000003,
+      "start" : 447.12,
+      "text" : "this"
+    },
+    {
+      "end" : 447.59999999999997,
+      "start" : 447.28000000000003,
+      "text" : "thing?"
+    },
+    {
+      "end" : 447.68,
+      "start" : 447.6,
+      "text" : "You"
+    },
+    {
+      "end" : 448.08000000000004,
+      "start" : 447.92,
+      "text" : "any"
+    },
+    {
+      "end" : 448.64,
+      "start" : 448.32,
+      "text" : "first"
+    },
+    {
+      "end" : 450,
+      "start" : 448.64,
+      "text" : "ideas?"
+    },
+    {
+      "end" : 450.32000000000005,
+      "start" : 450.08,
+      "text" : "Would"
+    },
+    {
+      "end" : 450.48,
+      "start" : 450.32,
+      "text" : "you"
+    },
+    {
+      "end" : 450.64000000000004,
+      "start" : 450.48,
+      "text" : "like"
+    },
+    {
+      "end" : 450.71999999999997,
+      "start" : 450.64,
+      "text" : "it"
+    },
+    {
+      "end" : 450.88000000000005,
+      "start" : 450.72,
+      "text" : "to"
+    },
+    {
+      "end" : 451.04,
+      "start" : 450.88,
+      "text" : "be"
+    },
+    {
+      "end" : 452.08000000000004,
+      "start" : 451.04,
+      "text" : "smaller,"
+    },
+    {
+      "end" : 453.52000000000004,
+      "start" : 452.32,
+      "text" : "bigger?"
+    },
+    {
+      "end" : 453.84,
+      "start" : 453.52,
+      "text" : "Yeah."
+    },
+    {
+      "end" : 454.15999999999997,
+      "start" : 454,
+      "text" : "Have"
+    },
+    {
+      "end" : 454.40000000000003,
+      "start" : 454.16,
+      "text" : "more"
+    },
+    {
+      "end" : 454.72,
+      "start" : 454.56,
+      "text" : "have"
+    },
+    {
+      "end" : 454.96000000000004,
+      "start" : 454.72,
+      "text" : "more"
+    },
+    {
+      "end" : 455.44000000000005,
+      "start" : 454.96000000000004,
+      "text" : "buttons"
+    },
+    {
+      "end" : 455.68,
+      "start" : 455.44,
+      "text" : "on"
+    },
+    {
+      "end" : 456.08000000000004,
+      "start" : 455.68,
+      "text" : "it,"
+    },
+    {
+      "end" : 456.4,
+      "start" : 456.08,
+      "text" : "or"
+    },
+    {
+      "end" : 456.8,
+      "start" : 456.40000000000003,
+      "text" : "maybe"
+    },
+    {
+      "end" : 457.36,
+      "start" : 456.8,
+      "text" : "clearly"
+    },
+    {
+      "end" : 458.08,
+      "start" : 457.6,
+      "text" : "better"
+    },
+    {
+      "end" : 458.48,
+      "start" : 458.08,
+      "text" : "marked"
+    },
+    {
+      "end" : 459.12,
+      "start" : 458.48,
+      "text" : "buttons,"
+    },
+    {
+      "end" : 459.44,
+      "start" : 459.12,
+      "text" : "you"
+    },
+    {
+      "end" : 459.76000000000005,
+      "start" : 459.44,
+      "text" : "know,"
+    },
+    {
+      "end" : 460.24,
+      "start" : 459.76,
+      "text" : "things"
+    },
+    {
+      "end" : 460.56,
+      "start" : 460.24,
+      "text" : "like"
+    },
+    {
+      "end" : 461.04,
+      "start" : 460.56,
+      "text" : "that."
+    },
+    {
+      "end" : 461.68,
+      "start" : 461.44,
+      "text" : "Yes,"
+    },
+    {
+      "end" : 461.92,
+      "start" : 461.68,
+      "text" : "I"
+    },
+    {
+      "end" : 462.08000000000004,
+      "start" : 461.92,
+      "text" : "I"
+    },
+    {
+      "end" : 462.32000000000005,
+      "start" : 462.08,
+      "text" : "feel"
+    },
+    {
+      "end" : 462.48,
+      "start" : 462.32,
+      "text" : "that"
+    },
+    {
+      "end" : 462.64000000000004,
+      "start" : 462.48,
+      "text" : "all"
+    },
+    {
+      "end" : 462.8,
+      "start" : 462.64,
+      "text" : "the"
+    },
+    {
+      "end" : 463.2,
+      "start" : 462.8,
+      "text" : "remote"
+    },
+    {
+      "end" : 463.6,
+      "start" : 463.36,
+      "text" : "should"
+    },
+    {
+      "end" : 463.84000000000003,
+      "start" : 463.6,
+      "text" : "be"
+    },
+    {
+      "end" : 464.16,
+      "start" : 463.84000000000003,
+      "text" : "very"
+    },
+    {
+      "end" : 465.12,
+      "start" : 464.24,
+      "text" : "compact."
+    },
+    {
+      "end" : 465.52,
+      "start" : 465.12,
+      "text" : "Small,"
+    },
+    {
+      "end" : 465.84000000000003,
+      "start" : 465.52,
+      "text" : "right."
+    },
+    {
+      "end" : 465.92,
+      "start" : 465.84000000000003,
+      "text" : "But"
+    },
+    {
+      "end" : 466.40000000000003,
+      "start" : 466.08,
+      "text" : "those"
+    },
+    {
+      "end" : 466.64000000000004,
+      "start" : 466.40000000000003,
+      "text" : "which"
+    },
+    {
+      "end" : 466.96,
+      "start" : 466.64,
+      "text" : "we"
+    },
+    {
+      "end" : 467.20000000000005,
+      "start" : 466.96000000000004,
+      "text" : "get"
+    },
+    {
+      "end" : 467.44,
+      "start" : 467.2,
+      "text" : "here"
+    },
+    {
+      "end" : 468.00000000000006,
+      "start" : 467.44,
+      "text" : "nowadays"
+    },
+    {
+      "end" : 468.40000000000003,
+      "start" : 468.08,
+      "text" : "it's"
+    },
+    {
+      "end" : 468.72,
+      "start" : 468.40000000000003,
+      "text" : "very"
+    },
+    {
+      "end" : 469.20000000000005,
+      "start" : 468.72,
+      "text" : "long."
+    },
+    {
+      "end" : 469.84000000000003,
+      "start" : 469.2,
+      "text" : "Mm-hmm."
+    },
+    {
+      "end" : 470.08000000000004,
+      "start" : 469.84000000000003,
+      "text" : "And"
+    },
+    {
+      "end" : 470.48,
+      "start" : 470.16,
+      "text" : "um"
+    },
+    {
+      "end" : 471.04,
+      "start" : 470.72,
+      "text" : "and"
+    },
+    {
+      "end" : 471.20000000000005,
+      "start" : 471.04,
+      "text" : "it"
+    },
+    {
+      "end" : 471.44,
+      "start" : 471.2,
+      "text" : "should"
+    },
+    {
+      "end" : 471.68,
+      "start" : 471.44,
+      "text" : "have"
+    },
+    {
+      "end" : 472.00000000000006,
+      "start" : 471.68,
+      "text" : "multi"
+    },
+    {
+      "end" : 472.72,
+      "start" : 472.08,
+      "text" : "purpose."
+    },
+    {
+      "end" : 472.96000000000004,
+      "start" : 472.72,
+      "text" : "Like"
+    },
+    {
+      "end" : 473.20000000000005,
+      "start" : 473.04,
+      "text" : "uh"
+    },
+    {
+      "end" : 473.44000000000005,
+      "start" : 473.28000000000003,
+      "text" : "the"
+    },
+    {
+      "end" : 473.92,
+      "start" : 473.44,
+      "text" : "remote"
+    },
+    {
+      "end" : 474.24,
+      "start" : 473.92,
+      "text" : "control"
+    },
+    {
+      "end" : 474.56,
+      "start" : 474.32,
+      "text" : "which"
+    },
+    {
+      "end" : 474.72,
+      "start" : 474.56,
+      "text" : "we"
+    },
+    {
+      "end" : 474.96000000000004,
+      "start" : 474.72,
+      "text" : "use"
+    },
+    {
+      "end" : 475.20000000000005,
+      "start" : 474.96000000000004,
+      "text" : "for"
+    },
+    {
+      "end" : 475.36,
+      "start" : 475.2,
+      "text" : "T"
+    },
+    {
+      "end" : 475.76,
+      "start" : 475.52,
+      "text" : "V"
+    },
+    {
+      "end" : 476.08000000000004,
+      "start" : 475.92,
+      "text" : "it"
+    },
+    {
+      "end" : 476.40000000000003,
+      "start" : 476.08,
+      "text" : "should"
+    },
+    {
+      "end" : 476.56000000000006,
+      "start" : 476.40000000000003,
+      "text" : "uh"
+    },
+    {
+      "end" : 476.8,
+      "start" : 476.64,
+      "text" : "it"
+    },
+    {
+      "end" : 477.04,
+      "start" : 476.8,
+      "text" : "should"
+    },
+    {
+      "end" : 477.20000000000005,
+      "start" : 477.04,
+      "text" : "be"
+    },
+    {
+      "end" : 477.44000000000005,
+      "start" : 477.2,
+      "text" : "used"
+    },
+    {
+      "end" : 477.52,
+      "start" : 477.44,
+      "text" : "f"
+    },
+    {
+      "end" : 477.68,
+      "start" : 477.6,
+      "text" : "uh"
+    },
+    {
+      "end" : 477.92,
+      "start" : 477.76,
+      "text" : "for"
+    },
+    {
+      "end" : 478.08000000000004,
+      "start" : 477.92,
+      "text" : "some"
+    },
+    {
+      "end" : 478.32,
+      "start" : 478.08,
+      "text" : "other"
+    },
+    {
+      "end" : 478.64000000000004,
+      "start" : 478.32,
+      "text" : "purpose"
+    },
+    {
+      "end" : 479.28000000000003,
+      "start" : 478.64,
+      "text" : "also,"
+    },
+    {
+      "end" : 479.6,
+      "start" : 479.28000000000003,
+      "text" : "like"
+    },
+    {
+      "end" : 480.48,
+      "start" : 479.92,
+      "text" : "controlling"
+    },
+    {
+      "end" : 480.96000000000004,
+      "start" : 480.72,
+      "text" : "the"
+    },
+    {
+      "end" : 481.44000000000005,
+      "start" : 481.28000000000003,
+      "text" : "uh"
+    },
+    {
+      "end" : 482.32000000000005,
+      "start" : 481.6,
+      "text" : "temperature"
+    },
+    {
+      "end" : 482.8,
+      "start" : 482.32,
+      "text" : "inside"
+    },
+    {
+      "end" : 483.04,
+      "start" : 482.8,
+      "text" : "the"
+    },
+    {
+      "end" : 483.44,
+      "start" : 483.04,
+      "text" : "house"
+    },
+    {
+      "end" : 483.76,
+      "start" : 483.52,
+      "text" : "or"
+    },
+    {
+      "end" : 484,
+      "start" : 483.76,
+      "text" : "for"
+    },
+    {
+      "end" : 484.32000000000005,
+      "start" : 484,
+      "text" : "air"
+    },
+    {
+      "end" : 485.04,
+      "start" : 484.32,
+      "text" : "conditioners"
+    },
+    {
+      "end" : 485.44,
+      "start" : 485.2,
+      "text" : "or"
+    },
+    {
+      "end" : 485.68,
+      "start" : 485.44,
+      "text" : "for"
+    },
+    {
+      "end" : 486.08000000000004,
+      "start" : 485.68,
+      "text" : "heating"
+    },
+    {
+      "end" : 486.64000000000004,
+      "start" : 486.08,
+      "text" : "system."
+    },
+    {
+      "end" : 486.88,
+      "start" : 486.64,
+      "text" : "So"
+    },
+    {
+      "end" : 486.96,
+      "start" : 486.88,
+      "text" : "it"
+    },
+    {
+      "end" : 487.2,
+      "start" : 486.96000000000004,
+      "text" : "should"
+    },
+    {
+      "end" : 487.36,
+      "start" : 487.2,
+      "text" : "be"
+    },
+    {
+      "end" : 487.52000000000004,
+      "start" : 487.36,
+      "text" : "a"
+    },
+    {
+      "end" : 487.84000000000003,
+      "start" : 487.52,
+      "text" : "multi"
+    },
+    {
+      "end" : 488.56000000000006,
+      "start" : 487.92,
+      "text" : "functional"
+    },
+    {
+      "end" : 488.88,
+      "start" : 488.64,
+      "text" : "uh"
+    },
+    {
+      "end" : 489.6,
+      "start" : 489.12,
+      "text" : "gadget"
+    },
+    {
+      "end" : 490.08000000000004,
+      "start" : 489.84000000000003,
+      "text" : "that"
+    },
+    {
+      "end" : 490.24,
+      "start" : 490.08,
+      "text" : "would"
+    },
+    {
+      "end" : 490.56,
+      "start" : 490.32,
+      "text" : "uh"
+    },
+    {
+      "end" : 490.72,
+      "start" : 490.56,
+      "text" : "um"
+    },
+    {
+      "end" : 491.20000000000005,
+      "start" : 490.96000000000004,
+      "text" : "control"
+    },
+    {
+      "end" : 491.68,
+      "start" : 491.52,
+      "text" : "all"
+    },
+    {
+      "end" : 491.92,
+      "start" : 491.68,
+      "text" : "your"
+    },
+    {
+      "end" : 492.48,
+      "start" : 491.92,
+      "text" : "household"
+    },
+    {
+      "end" : 492.72,
+      "start" : 492.56,
+      "text" : "uh"
+    },
+    {
+      "end" : 493.36,
+      "start" : 493.12,
+      "text" : "uh"
+    },
+    {
+      "end" : 494.40000000000003,
+      "start" : 493.84000000000003,
+      "text" : "machines"
+    },
+    {
+      "end" : 494.88,
+      "start" : 494.48,
+      "text" : "basically"
+    },
+    {
+      "end" : 495.92,
+      "start" : 495.36,
+      "text" : "exactly"
+    },
+    {
+      "end" : 497.20000000000005,
+      "start" : 497.04,
+      "text" : "uh"
+    },
+    {
+      "end" : 497.52000000000004,
+      "start" : 497.28000000000003,
+      "text" : "at"
+    },
+    {
+      "end" : 497.84000000000003,
+      "start" : 497.6,
+      "text" : "um"
+    },
+    {
+      "end" : 498.72,
+      "start" : 498.24,
+      "text" : "twelve"
+    },
+    {
+      "end" : 499.52000000000004,
+      "start" : 498.96000000000004,
+      "text" : "fifty"
+    },
+    {
+      "end" : 500.16,
+      "start" : 499.68,
+      "text" : "euros"
+    },
+    {
+      "end" : 500.8,
+      "start" : 500.48,
+      "text" : "per"
+    },
+    {
+      "end" : 502.96000000000004,
+      "start" : 502.72,
+      "text" : "well"
+    },
+    {
+      "end" : 504.08000000000004,
+      "start" : 503.84000000000003,
+      "text" : "who"
+    },
+    {
+      "end" : 504.24,
+      "start" : 504.08,
+      "text" : "knows"
+    },
+    {
+      "end" : 504.4,
+      "start" : 504.32,
+      "text" : "if"
+    },
+    {
+      "end" : 504.48,
+      "start" : 504.40000000000003,
+      "text" : "we"
+    },
+    {
+      "end" : 504.64,
+      "start" : 504.56,
+      "text" : "get"
+    },
+    {
+      "end" : 504.71999999999997,
+      "start" : 504.64,
+      "text" : "a"
+    },
+    {
+      "end" : 504.88000000000005,
+      "start" : 504.72,
+      "text" : "really"
+    },
+    {
+      "end" : 505.04,
+      "start" : 504.88,
+      "text" : "good"
+    },
+    {
+      "end" : 505.2,
+      "start" : 505.04,
+      "text" : "Really"
+    },
+    {
+      "end" : 505.44000000000005,
+      "start" : 505.28000000000003,
+      "text" : "good"
+    },
+    {
+      "end" : 505.92,
+      "start" : 505.44,
+      "text" : "designer,"
+    },
+    {
+      "end" : 506.16,
+      "start" : 505.92,
+      "text" : "maybe"
+    },
+    {
+      "end" : 506.32000000000005,
+      "start" : 506.16,
+      "text" : "we"
+    },
+    {
+      "end" : 506.56,
+      "start" : 506.32,
+      "text" : "can"
+    },
+    {
+      "end" : 506.8,
+      "start" : 506.56,
+      "text" : "do"
+    },
+    {
+      "end" : 507.84000000000003,
+      "start" : 506.8,
+      "text" : "that."
+    },
+    {
+      "end" : 508.24,
+      "start" : 508.08,
+      "text" : "We"
+    },
+    {
+      "end" : 508.64000000000004,
+      "start" : 508.24,
+      "text" : "certainly"
+    },
+    {
+      "end" : 508.8,
+      "start" : 508.64,
+      "text" : "can"
+    },
+    {
+      "end" : 509.12000000000006,
+      "start" : 508.8,
+      "text" : "try"
+    },
+    {
+      "end" : 509.36,
+      "start" : 509.12,
+      "text" : "to"
+    },
+    {
+      "end" : 509.68000000000006,
+      "start" : 509.52000000000004,
+      "text" : "I"
+    },
+    {
+      "end" : 509.92,
+      "start" : 509.68,
+      "text" : "agree"
+    },
+    {
+      "end" : 510.08000000000004,
+      "start" : 509.92,
+      "text" : "with"
+    },
+    {
+      "end" : 510.24,
+      "start" : 510.08,
+      "text" : "her"
+    },
+    {
+      "end" : 510.56,
+      "start" : 510.32,
+      "text" : "that"
+    },
+    {
+      "end" : 510.72,
+      "start" : 510.56,
+      "text" : "to"
+    },
+    {
+      "end" : 511.04,
+      "start" : 510.72,
+      "text" : "market"
+    },
+    {
+      "end" : 511.36,
+      "start" : 511.04,
+      "text" : "something"
+    },
+    {
+      "end" : 511.92,
+      "start" : 511.36,
+      "text" : "successfully"
+    },
+    {
+      "end" : 512.16,
+      "start" : 512,
+      "text" : "it"
+    },
+    {
+      "end" : 512.32,
+      "start" : 512.16,
+      "text" : "should"
+    },
+    {
+      "end" : 512.4000000000001,
+      "start" : 512.32,
+      "text" : "do"
+    },
+    {
+      "end" : 512.56,
+      "start" : 512.4,
+      "text" : "some"
+    },
+    {
+      "end" : 512.72,
+      "start" : 512.5600000000001,
+      "text" : "more"
+    },
+    {
+      "end" : 512.96,
+      "start" : 512.72,
+      "text" : "things."
+    },
+    {
+      "end" : 513.36,
+      "start" : 513.2,
+      "text" : "It"
+    },
+    {
+      "end" : 513.5200000000001,
+      "start" : 513.36,
+      "text" : "should"
+    },
+    {
+      "end" : 513.6,
+      "start" : 513.52,
+      "text" : "be"
+    },
+    {
+      "end" : 513.84,
+      "start" : 513.6,
+      "text" : "something"
+    },
+    {
+      "end" : 514.24,
+      "start" : 513.84,
+      "text" : "new."
+    },
+    {
+      "end" : 514.32,
+      "start" : 514.24,
+      "text" : "It"
+    },
+    {
+      "end" : 514.48,
+      "start" : 514.32,
+      "text" : "should"
+    },
+    {
+      "end" : 514.5600000000001,
+      "start" : 514.48,
+      "text" : "be"
+    },
+    {
+      "end" : 514.72,
+      "start" : 514.64,
+      "text" : "s"
+    },
+    {
+      "end" : 515.1999999999999,
+      "start" : 515.04,
+      "text" : "it"
+    },
+    {
+      "end" : 515.4399999999999,
+      "start" : 515.2,
+      "text" : "should"
+    },
+    {
+      "end" : 515.6,
+      "start" : 515.44,
+      "text" : "do"
+    },
+    {
+      "end" : 515.92,
+      "start" : 515.6,
+      "text" : "something"
+    },
+    {
+      "end" : 516.3199999999999,
+      "start" : 515.92,
+      "text" : "different"
+    },
+    {
+      "end" : 516.6400000000001,
+      "start" : 516.32,
+      "text" : "than"
+    },
+    {
+      "end" : 516.88,
+      "start" : 516.64,
+      "text" : "than"
+    },
+    {
+      "end" : 517.04,
+      "start" : 516.88,
+      "text" : "just"
+    },
+    {
+      "end" : 517.28,
+      "start" : 517.04,
+      "text" : "what"
+    },
+    {
+      "end" : 517.4399999999999,
+      "start" : 517.28,
+      "text" : "we"
+    },
+    {
+      "end" : 517.9200000000001,
+      "start" : 517.44,
+      "text" : "have."
+    },
+    {
+      "end" : 518.1600000000001,
+      "start" : 518,
+      "text" : "Now"
+    },
+    {
+      "end" : 518.32,
+      "start" : 518.24,
+      "text" : "of"
+    },
+    {
+      "end" : 518.5600000000001,
+      "start" : 518.32,
+      "text" : "course"
+    },
+    {
+      "end" : 518.72,
+      "start" : 518.64,
+      "text" : "the"
+    },
+    {
+      "end" : 518.88,
+      "start" : 518.72,
+      "text" : "other"
+    },
+    {
+      "end" : 519.0400000000001,
+      "start" : 518.88,
+      "text" : "thing"
+    },
+    {
+      "end" : 519.1999999999999,
+      "start" : 519.04,
+      "text" : "to"
+    },
+    {
+      "end" : 519.36,
+      "start" : 519.2,
+      "text" : "think"
+    },
+    {
+      "end" : 519.44,
+      "start" : 519.36,
+      "text" : "there"
+    },
+    {
+      "end" : 520.08,
+      "start" : 519.84,
+      "text" : "is"
+    },
+    {
+      "end" : 520.3199999999999,
+      "start" : 520.08,
+      "text" : "maybe"
+    },
+    {
+      "end" : 520.48,
+      "start" : 520.32,
+      "text" : "the"
+    },
+    {
+      "end" : 520.9599999999999,
+      "start" : 520.48,
+      "text" : "design."
+    },
+    {
+      "end" : 521.12,
+      "start" : 520.96,
+      "text" : "Yeah"
+    },
+    {
+      "end" : 521.6800000000001,
+      "start" : 521.28,
+      "text" : "design"
+    },
+    {
+      "end" : 521.84,
+      "start" : 521.6800000000001,
+      "text" : "should"
+    },
+    {
+      "end" : 522,
+      "start" : 521.84,
+      "text" : "be"
+    },
+    {
+      "end" : 522.24,
+      "start" : 522.08,
+      "text" : "yeah"
+    },
+    {
+      "end" : 522.48,
+      "start" : 522.32,
+      "text" : "it"
+    },
+    {
+      "end" : 522.6400000000001,
+      "start" : 522.48,
+      "text" : "should"
+    },
+    {
+      "end" : 522.72,
+      "start" : 522.64,
+      "text" : "be"
+    },
+    {
+      "end" : 523.12,
+      "start" : 522.72,
+      "text" : "different."
+    },
+    {
+      "end" : 523.28,
+      "start" : 523.12,
+      "text" : "All"
+    },
+    {
+      "end" : 523.4399999999999,
+      "start" : 523.28,
+      "text" : "the"
+    },
+    {
+      "end" : 523.7600000000001,
+      "start" : 523.52,
+      "text" : "almost"
+    },
+    {
+      "end" : 523.84,
+      "start" : 523.76,
+      "text" : "all"
+    },
+    {
+      "end" : 523.9200000000001,
+      "start" : 523.84,
+      "text" : "the"
+    },
+    {
+      "end" : 524.1600000000001,
+      "start" : 524.08,
+      "text" : "time."
+    },
+    {
+      "end" : 524.4000000000001,
+      "start" : 524.24,
+      "text" : "Like"
+    },
+    {
+      "end" : 524.72,
+      "start" : 524.48,
+      "text" : "trendy"
+    },
+    {
+      "end" : 524.88,
+      "start" : 524.8,
+      "text" : "you"
+    },
+    {
+      "end" : 524.96,
+      "start" : 524.88,
+      "text" : "know"
+    },
+    {
+      "end" : 525.0400000000001,
+      "start" : 524.96,
+      "text" : "like"
+    },
+    {
+      "end" : 525.6800000000001,
+      "start" : 525.36,
+      "text" : "earlier"
+    },
+    {
+      "end" : 525.84,
+      "start" : 525.6800000000001,
+      "text" : "we"
+    },
+    {
+      "end" : 526,
+      "start" : 525.84,
+      "text" : "saw"
+    },
+    {
+      "end" : 526.3199999999999,
+      "start" : 526.08,
+      "text" : "maybe"
+    },
+    {
+      "end" : 526.4000000000001,
+      "start" : 526.32,
+      "text" : "it"
+    },
+    {
+      "end" : 526.5600000000001,
+      "start" : 526.4,
+      "text" : "should"
+    },
+    {
+      "end" : 526.72,
+      "start" : 526.5600000000001,
+      "text" : "be"
+    },
+    {
+      "end" : 526.9599999999999,
+      "start" : 526.72,
+      "text" : "something"
+    },
+    {
+      "end" : 527.5200000000001,
+      "start" : 526.96,
+      "text" : "trendy,"
+    },
+    {
+      "end" : 527.6,
+      "start" : 527.52,
+      "text" : "you"
+    },
+    {
+      "end" : 528.24,
+      "start" : 527.6,
+      "text" : "know,"
+    },
+    {
+      "end" : 528.4000000000001,
+      "start" : 528.24,
+      "text" : "maybe"
+    },
+    {
+      "end" : 529.6,
+      "start" : 529.28,
+      "text" : "different"
+    },
+    {
+      "end" : 529.92,
+      "start" : 529.6,
+      "text" : "colors"
+    },
+    {
+      "end" : 530.6400000000001,
+      "start" : 530.32,
+      "text" : "or"
+    },
+    {
+      "end" : 531.12,
+      "start" : 530.64,
+      "text" : "materials"
+    },
+    {
+      "end" : 532.48,
+      "start" : 532.24,
+      "text" : "or"
+    },
+    {
+      "end" : 532.96,
+      "start" : 532.64,
+      "text" : "you"
+    },
+    {
+      "end" : 533.44,
+      "start" : 532.96,
+      "text" : "know."
+    },
+    {
+      "end" : 533.7600000000001,
+      "start" : 533.44,
+      "text" : "Um"
+    },
+    {
+      "end" : 534.16,
+      "start" : 533.92,
+      "text" : "so"
+    },
+    {
+      "end" : 534.72,
+      "start" : 534.32,
+      "text" : "yeah,"
+    },
+    {
+      "end" : 535.2,
+      "start" : 534.72,
+      "text" : "shapes,"
+    },
+    {
+      "end" : 535.52,
+      "start" : 535.2,
+      "text" : "right?"
+    },
+    {
+      "end" : 535.6,
+      "start" : 535.52,
+      "text" : "You"
+    },
+    {
+      "end" : 535.7600000000001,
+      "start" : 535.6,
+      "text" : "know,"
+    },
+    {
+      "end" : 536,
+      "start" : 535.76,
+      "text" : "like"
+    },
+    {
+      "end" : 536.4,
+      "start" : 536,
+      "text" : "kidney"
+    },
+    {
+      "end" : 536.6400000000001,
+      "start" : 536.48,
+      "text" : "shape"
+    },
+    {
+      "end" : 536.96,
+      "start" : 536.8,
+      "text" : "feels"
+    },
+    {
+      "end" : 537.36,
+      "start" : 537.04,
+      "text" : "better"
+    },
+    {
+      "end" : 537.44,
+      "start" : 537.36,
+      "text" : "in"
+    },
+    {
+      "end" : 537.6,
+      "start" : 537.44,
+      "text" : "your"
+    },
+    {
+      "end" : 537.76,
+      "start" : 537.6,
+      "text" : "hand"
+    },
+    {
+      "end" : 537.9200000000001,
+      "start" : 537.84,
+      "text" : "or"
+    },
+    {
+      "end" : 538.1600000000001,
+      "start" : 537.92,
+      "text" : "something."
+    },
+    {
+      "end" : 539.12,
+      "start" : 538.8,
+      "text" : "Okay."
+    },
+    {
+      "end" : 539.52,
+      "start" : 539.12,
+      "text" : "Friendly"
+    },
+    {
+      "end" : 540,
+      "start" : 539.52,
+      "text" : "shape."
+    },
+    {
+      "end" : 540.24,
+      "start" : 540,
+      "text" : "Yeah."
+    },
+    {
+      "end" : 540.8000000000001,
+      "start" : 540.5600000000001,
+      "text" : "That"
+    },
+    {
+      "end" : 541.04,
+      "start" : 540.8,
+      "text" : "would"
+    },
+    {
+      "end" : 542.0000000000001,
+      "start" : 541.04,
+      "text" : "help."
+    },
+    {
+      "end" : 542.24,
+      "start" : 542,
+      "text" : "I"
+    },
+    {
+      "end" : 542.48,
+      "start" : 542.24,
+      "text" : "think"
+    },
+    {
+      "end" : 542.8000000000001,
+      "start" : 542.48,
+      "text" : "another"
+    },
+    {
+      "end" : 542.96,
+      "start" : 542.8,
+      "text" : "thing"
+    },
+    {
+      "end" : 543.12,
+      "start" : 542.96,
+      "text" : "that"
+    },
+    {
+      "end" : 543.28,
+      "start" : 543.12,
+      "text" : "would"
+    },
+    {
+      "end" : 543.6,
+      "start" : 543.28,
+      "text" : "help"
+    },
+    {
+      "end" : 543.76,
+      "start" : 543.6,
+      "text" : "is"
+    },
+    {
+      "end" : 544.4,
+      "start" : 544.16,
+      "text" : "um"
+    },
+    {
+      "end" : 545.0400000000001,
+      "start" : 544.72,
+      "text" : "if"
+    },
+    {
+      "end" : 545.6800000000001,
+      "start" : 545.36,
+      "text" : "it"
+    },
+    {
+      "end" : 546.24,
+      "start" : 545.6800000000001,
+      "text" : "beeps"
+    },
+    {
+      "end" : 546.48,
+      "start" : 546.24,
+      "text" : "when"
+    },
+    {
+      "end" : 546.64,
+      "start" : 546.48,
+      "text" : "you"
+    },
+    {
+      "end" : 547.36,
+      "start" : 546.64,
+      "text" : "clap."
+    },
+    {
+      "end" : 547.6,
+      "start" : 547.36,
+      "text" : "Because"
+    },
+    {
+      "end" : 547.76,
+      "start" : 547.6,
+      "text" : "I"
+    },
+    {
+      "end" : 548,
+      "start" : 547.76,
+      "text" : "think"
+    },
+    {
+      "end" : 548.16,
+      "start" : 548,
+      "text" : "one"
+    },
+    {
+      "end" : 548.24,
+      "start" : 548.16,
+      "text" : "of"
+    },
+    {
+      "end" : 548.32,
+      "start" : 548.24,
+      "text" : "the"
+    },
+    {
+      "end" : 548.48,
+      "start" : 548.32,
+      "text" : "big"
+    },
+    {
+      "end" : 548.72,
+      "start" : 548.48,
+      "text" : "things"
+    },
+    {
+      "end" : 548.88,
+      "start" : 548.72,
+      "text" : "that"
+    },
+    {
+      "end" : 549.1999999999999,
+      "start" : 548.88,
+      "text" : "happens"
+    },
+    {
+      "end" : 549.44,
+      "start" : 549.2,
+      "text" : "is"
+    },
+    {
+      "end" : 549.6800000000001,
+      "start" : 549.44,
+      "text" : "people"
+    },
+    {
+      "end" : 550,
+      "start" : 549.6800000000001,
+      "text" : "lose"
+    },
+    {
+      "end" : 550.24,
+      "start" : 550,
+      "text" : "them."
+    },
+    {
+      "end" : 550.4000000000001,
+      "start" : 550.24,
+      "text" : "They"
+    },
+    {
+      "end" : 550.8,
+      "start" : 550.4,
+      "text" : "can't"
+    },
+    {
+      "end" : 551.2,
+      "start" : 550.8000000000001,
+      "text" : "find"
+    },
+    {
+      "end" : 551.6800000000001,
+      "start" : 551.2,
+      "text" : "it."
+    },
+    {
+      "end" : 552.5600000000001,
+      "start" : 552.32,
+      "text" : "That"
+    },
+    {
+      "end" : 552.72,
+      "start" : 552.5600000000001,
+      "text" : "is"
+    },
+    {
+      "end" : 553.1999999999999,
+      "start" : 552.72,
+      "text" : "true."
+    },
+    {
+      "end" : 553.84,
+      "start" : 553.6,
+      "text" : "They"
+    },
+    {
+      "end" : 554.08,
+      "start" : 553.84,
+      "text" : "put"
+    },
+    {
+      "end" : 554.24,
+      "start" : 554.08,
+      "text" : "a"
+    },
+    {
+      "end" : 554.88,
+      "start" : 554.24,
+      "text" : "newspaper"
+    },
+    {
+      "end" : 555.04,
+      "start" : 554.88,
+      "text" : "or"
+    },
+    {
+      "end" : 555.1999999999999,
+      "start" : 555.04,
+      "text" : "they"
+    },
+    {
+      "end" : 555.36,
+      "start" : 555.2,
+      "text" : "put"
+    },
+    {
+      "end" : 555.52,
+      "start" : 555.36,
+      "text" : "it"
+    },
+    {
+      "end" : 555.76,
+      "start" : 555.52,
+      "text" : "behind"
+    },
+    {
+      "end" : 555.92,
+      "start" : 555.76,
+      "text" : "a"
+    },
+    {
+      "end" : 556.08,
+      "start" : 555.92,
+      "text" : "plant"
+    },
+    {
+      "end" : 557.0400000000001,
+      "start" : 556.8000000000001,
+      "text" : "or"
+    },
+    {
+      "end" : 557.12,
+      "start" : 557.04,
+      "text" : "we"
+    },
+    {
+      "end" : 557.44,
+      "start" : 557.36,
+      "text" : "know"
+    },
+    {
+      "end" : 558,
+      "start" : 557.6,
+      "text" : "whatever"
+    },
+    {
+      "end" : 558.4,
+      "start" : 558.16,
+      "text" : "and"
+    },
+    {
+      "end" : 558.56,
+      "start" : 558.4,
+      "text" : "and"
+    },
+    {
+      "end" : 558.6400000000001,
+      "start" : 558.5600000000001,
+      "text" : "they"
+    },
+    {
+      "end" : 558.8000000000001,
+      "start" : 558.72,
+      "text" : "w"
+    },
+    {
+      "end" : 559.2800000000001,
+      "start" : 559.04,
+      "text" : "suddenly"
+    },
+    {
+      "end" : 559.44,
+      "start" : 559.36,
+      "text" : "the"
+    },
+    {
+      "end" : 559.6800000000001,
+      "start" : 559.44,
+      "text" : "phone"
+    },
+    {
+      "end" : 560,
+      "start" : 559.6800000000001,
+      "text" : "rings"
+    },
+    {
+      "end" : 560.08,
+      "start" : 560,
+      "text" : "and"
+    },
+    {
+      "end" : 560.24,
+      "start" : 560.08,
+      "text" : "they"
+    },
+    {
+      "end" : 560.32,
+      "start" : 560.24,
+      "text" : "want"
+    },
+    {
+      "end" : 560.72,
+      "start" : 560.48,
+      "text" : "to"
+    },
+    {
+      "end" : 560.96,
+      "start" : 560.72,
+      "text" : "turn"
+    },
+    {
+      "end" : 561.12,
+      "start" : 560.96,
+      "text" : "the"
+    },
+    {
+      "end" : 561.28,
+      "start" : 561.12,
+      "text" : "T"
+    },
+    {
+      "end" : 561.36,
+      "start" : 561.28,
+      "text" : "V"
+    },
+    {
+      "end" : 561.6,
+      "start" : 561.44,
+      "text" : "off"
+    },
+    {
+      "end" : 561.84,
+      "start" : 561.6800000000001,
+      "text" : "and"
+    },
+    {
+      "end" : 561.9200000000001,
+      "start" : 561.84,
+      "text" : "they"
+    },
+    {
+      "end" : 562,
+      "start" : 561.92,
+      "text" : "say"
+    },
+    {
+      "end" : 562.4000000000001,
+      "start" : 562.32,
+      "text" : "where"
+    },
+    {
+      "end" : 562.6400000000001,
+      "start" : 562.5600000000001,
+      "text" : "the"
+    },
+    {
+      "end" : 562.96,
+      "start" : 562.64,
+      "text" : "hell"
+    },
+    {
+      "end" : 563.2800000000001,
+      "start" : 562.96,
+      "text" : "is"
+    },
+    {
+      "end" : 563.52,
+      "start" : 563.28,
+      "text" : "my"
+    },
+    {
+      "end" : 564.24,
+      "start" : 563.92,
+      "text" : "my"
+    },
+    {
+      "end" : 564.8000000000001,
+      "start" : 564.24,
+      "text" : "remote"
+    },
+    {
+      "end" : 565.2800000000001,
+      "start" : 564.8000000000001,
+      "text" : "control?"
+    },
+    {
+      "end" : 566.0000000000001,
+      "start" : 565.28,
+      "text" : "Yeah."
+    },
+    {
+      "end" : 566.1600000000001,
+      "start" : 566,
+      "text" : "Well"
+    },
+    {
+      "end" : 566.48,
+      "start" : 566.24,
+      "text" : "or"
+    },
+    {
+      "end" : 566.8000000000001,
+      "start" : 566.5600000000001,
+      "text" : "yeah,"
+    },
+    {
+      "end" : 567.0400000000001,
+      "start" : 566.8000000000001,
+      "text" : "or"
+    },
+    {
+      "end" : 567.1999999999999,
+      "start" : 567.04,
+      "text" : "if"
+    },
+    {
+      "end" : 567.52,
+      "start" : 567.2,
+      "text" : "it's"
+    },
+    {
+      "end" : 567.84,
+      "start" : 567.52,
+      "text" : "really"
+    },
+    {
+      "end" : 568.24,
+      "start" : 568.08,
+      "text" : "if"
+    },
+    {
+      "end" : 568.32,
+      "start" : 568.24,
+      "text" : "it"
+    },
+    {
+      "end" : 568.5600000000001,
+      "start" : 568.4,
+      "text" : "If"
+    },
+    {
+      "end" : 568.8000000000001,
+      "start" : 568.5600000000001,
+      "text" : "it's"
+    },
+    {
+      "end" : 569.0400000000001,
+      "start" : 568.8000000000001,
+      "text" : "really"
+    },
+    {
+      "end" : 569.1999999999999,
+      "start" : 569.04,
+      "text" : "in"
+    },
+    {
+      "end" : 569.2800000000001,
+      "start" : 569.2,
+      "text" : "a"
+    },
+    {
+      "end" : 569.6800000000001,
+      "start" : 569.28,
+      "text" : "dark"
+    },
+    {
+      "end" : 570.0799999999999,
+      "start" : 569.6800000000001,
+      "text" : "spot"
+    },
+    {
+      "end" : 570.5600000000001,
+      "start" : 570.32,
+      "text" : "that"
+    },
+    {
+      "end" : 570.72,
+      "start" : 570.5600000000001,
+      "text" : "it"
+    },
+    {
+      "end" : 571.0400000000001,
+      "start" : 570.72,
+      "text" : "gives"
+    },
+    {
+      "end" : 571.1999999999999,
+      "start" : 571.04,
+      "text" : "out"
+    },
+    {
+      "end" : 571.2800000000001,
+      "start" : 571.2,
+      "text" : "a"
+    },
+    {
+      "end" : 571.5200000000001,
+      "start" : 571.44,
+      "text" : "a"
+    },
+    {
+      "end" : 572,
+      "start" : 571.76,
+      "text" : "sound"
+    },
+    {
+      "end" : 572.3199999999999,
+      "start" : 572.16,
+      "text" : "or"
+    },
+    {
+      "end" : 572.4000000000001,
+      "start" : 572.32,
+      "text" : "a"
+    },
+    {
+      "end" : 572.6400000000001,
+      "start" : 572.4,
+      "text" : "signal"
+    },
+    {
+      "end" : 573.36,
+      "start" : 573.2,
+      "text" : "Yeah,"
+    },
+    {
+      "end" : 574.1600000000001,
+      "start" : 574.08,
+      "text" : "it"
+    },
+    {
+      "end" : 574.32,
+      "start" : 574.16,
+      "text" : "should"
+    },
+    {
+      "end" : 575.6,
+      "start" : 574.32,
+      "text" : "either,"
+    },
+    {
+      "end" : 575.6800000000001,
+      "start" : 575.6,
+      "text" : "a"
+    },
+    {
+      "end" : 575.92,
+      "start" : 575.6800000000001,
+      "text" : "light"
+    },
+    {
+      "end" : 576.08,
+      "start" : 575.92,
+      "text" : "should"
+    },
+    {
+      "end" : 576.8000000000001,
+      "start" : 576.08,
+      "text" : "blink."
+    },
+    {
+      "end" : 576.96,
+      "start" : 576.8000000000001,
+      "text" : "If"
+    },
+    {
+      "end" : 577.4399999999999,
+      "start" : 577.12,
+      "text" : "lost"
+    },
+    {
+      "end" : 578.24,
+      "start" : 578,
+      "text" : "uh"
+    },
+    {
+      "end" : 580.08,
+      "start" : 578.64,
+      "text" : "signal."
+    },
+    {
+      "end" : 580.48,
+      "start" : 580.24,
+      "text" : "Throw"
+    },
+    {
+      "end" : 580.96,
+      "start" : 580.5600000000001,
+      "text" : "signal,"
+    },
+    {
+      "end" : 581.0400000000001,
+      "start" : 580.96,
+      "text" : "you"
+    },
+    {
+      "end" : 581.2,
+      "start" : 581.04,
+      "text" : "know."
+    },
+    {
+      "end" : 581.6,
+      "start" : 581.44,
+      "text" : "Yeah,"
+    },
+    {
+      "end" : 581.84,
+      "start" : 581.6,
+      "text" : "maybe"
+    },
+    {
+      "end" : 582,
+      "start" : 581.84,
+      "text" : "it"
+    },
+    {
+      "end" : 582.1600000000001,
+      "start" : 582,
+      "text" : "should"
+    },
+    {
+      "end" : 582.3199999999999,
+      "start" : 582.16,
+      "text" : "have"
+    },
+    {
+      "end" : 582.4000000000001,
+      "start" : 582.32,
+      "text" : "a"
+    },
+    {
+      "end" : 582.72,
+      "start" : 582.4,
+      "text" : "light"
+    },
+    {
+      "end" : 583.0400000000001,
+      "start" : 582.8000000000001,
+      "text" : "so"
+    },
+    {
+      "end" : 583.1999999999999,
+      "start" : 583.04,
+      "text" : "that"
+    },
+    {
+      "end" : 583.36,
+      "start" : 583.2,
+      "text" : "we"
+    },
+    {
+      "end" : 583.52,
+      "start" : 583.36,
+      "text" : "can"
+    },
+    {
+      "end" : 583.76,
+      "start" : 583.6,
+      "text" : "we"
+    },
+    {
+      "end" : 583.92,
+      "start" : 583.76,
+      "text" : "can"
+    },
+    {
+      "end" : 584.16,
+      "start" : 583.92,
+      "text" : "just"
+    },
+    {
+      "end" : 584.64,
+      "start" : 584.16,
+      "text" : "recognize"
+    },
+    {
+      "end" : 584.88,
+      "start" : 584.64,
+      "text" : "where"
+    },
+    {
+      "end" : 585.04,
+      "start" : 584.88,
+      "text" : "it"
+    },
+    {
+      "end" : 585.6,
+      "start" : 585.04,
+      "text" : "is."
+    },
+    {
+      "end" : 586.08,
+      "start" : 585.6800000000001,
+      "text" : "Exactly."
+    },
+    {
+      "end" : 586.1600000000001,
+      "start" : 586.08,
+      "text" : "I"
+    },
+    {
+      "end" : 586.32,
+      "start" : 586.16,
+      "text" : "mean"
+    },
+    {
+      "end" : 586.64,
+      "start" : 586.48,
+      "text" : "just"
+    },
+    {
+      "end" : 586.8800000000001,
+      "start" : 586.72,
+      "text" : "mean"
+    },
+    {
+      "end" : 587.0400000000001,
+      "start" : 586.96,
+      "text" : "what"
+    },
+    {
+      "end" : 587.2800000000001,
+      "start" : 587.12,
+      "text" : "I'm"
+    },
+    {
+      "end" : 587.36,
+      "start" : 587.2,
+      "text" : "saying."
+    },
+    {
+      "end" : 587.6,
+      "start" : 587.52,
+      "text" : "what"
+    },
+    {
+      "end" : 587.84,
+      "start" : 587.6,
+      "text" : "I'm"
+    },
+    {
+      "end" : 587.9200000000001,
+      "start" : 587.76,
+      "text" : "saying."
+    },
+    {
+      "end" : 588.1600000000001,
+      "start" : 587.92,
+      "text" : "I'm"
+    },
+    {
+      "end" : 588.1600000000001,
+      "start" : 588.08,
+      "text" : "just"
+    },
+    {
+      "end" : 588.32,
+      "start" : 588.16,
+      "text" : "saying"
+    },
+    {
+      "end" : 588.6400000000001,
+      "start" : 588.48,
+      "text" : "throw"
+    },
+    {
+      "end" : 589.12,
+      "start" : 588.8000000000001,
+      "text" : "signal"
+    },
+    {
+      "end" : 589.52,
+      "start" : 589.2,
+      "text" : "meaning"
+    },
+    {
+      "end" : 589.68,
+      "start" : 589.52,
+      "text" : "just"
+    },
+    {
+      "end" : 590,
+      "start" : 589.6800000000001,
+      "text" : "whether"
+    },
+    {
+      "end" : 590.24,
+      "start" : 590,
+      "text" : "it's"
+    },
+    {
+      "end" : 590.4,
+      "start" : 590.24,
+      "text" : "uh"
+    },
+    {
+      "end" : 590.56,
+      "start" : 590.4,
+      "text" : "B"
+    },
+    {
+      "end" : 590.8000000000001,
+      "start" : 590.72,
+      "text" : "B"
+    },
+    {
+      "end" : 591.36,
+      "start" : 591.12,
+      "text" : "whether"
+    },
+    {
+      "end" : 591.5200000000001,
+      "start" : 591.44,
+      "text" : "a"
+    },
+    {
+      "end" : 591.6800000000001,
+      "start" : 591.52,
+      "text" : "light"
+    },
+    {
+      "end" : 591.92,
+      "start" : 591.76,
+      "text" : "or"
+    },
+    {
+      "end" : 592.5600000000001,
+      "start" : 592.48,
+      "text" : "do"
+    },
+    {
+      "end" : 592.6400000000001,
+      "start" : 592.5600000000001,
+      "text" : "you"
+    },
+    {
+      "end" : 592.72,
+      "start" : 592.64,
+      "text" : "think"
+    },
+    {
+      "end" : 592.96,
+      "start" : 592.88,
+      "text" : "a"
+    },
+    {
+      "end" : 593.36,
+      "start" : 593.12,
+      "text" : "good"
+    },
+    {
+      "end" : 593.52,
+      "start" : 593.36,
+      "text" : "c"
+    },
+    {
+      "end" : 593.9200000000001,
+      "start" : 593.6800000000001,
+      "text" : "um"
+    },
+    {
+      "end" : 595.2800000000001,
+      "start" : 594.4,
+      "text" : "clue"
+    },
+    {
+      "end" : 595.6,
+      "start" : 595.28,
+      "text" : "for"
+    },
+    {
+      "end" : 596.72,
+      "start" : 596.5600000000001,
+      "text" : "that"
+    },
+    {
+      "end" : 597.0400000000001,
+      "start" : 596.72,
+      "text" : "is"
+    },
+    {
+      "end" : 597.36,
+      "start" : 597.04,
+      "text" : "that"
+    },
+    {
+      "end" : 597.52,
+      "start" : 597.36,
+      "text" : "it"
+    },
+    {
+      "end" : 597.76,
+      "start" : 597.52,
+      "text" : "would"
+    },
+    {
+      "end" : 598.0799999999999,
+      "start" : 597.76,
+      "text" : "respond"
+    },
+    {
+      "end" : 598.24,
+      "start" : 598.08,
+      "text" : "to"
+    },
+    {
+      "end" : 598.4,
+      "start" : 598.24,
+      "text" : "a"
+    },
+    {
+      "end" : 598.8000000000001,
+      "start" : 598.4,
+      "text" : "clap"
+    },
+    {
+      "end" : 599.44,
+      "start" : 599.2,
+      "text" : "or"
+    },
+    {
+      "end" : 600.4,
+      "start" : 599.84,
+      "text" : "respond"
+    },
+    {
+      "end" : 600.72,
+      "start" : 600.4,
+      "text" : "to"
+    },
+    {
+      "end" : 601.0400000000001,
+      "start" : 600.72,
+      "text" : "your"
+    },
+    {
+      "end" : 601.6,
+      "start" : 601.04,
+      "text" : "voice"
+    },
+    {
+      "end" : 602.1600000000001,
+      "start" : 601.84,
+      "text" : "or"
+    },
+    {
+      "end" : 602.4,
+      "start" : 602.16,
+      "text" : "it"
+    },
+    {
+      "end" : 602.64,
+      "start" : 602.4,
+      "text" : "would"
+    },
+    {
+      "end" : 603.2,
+      "start" : 602.64,
+      "text" : "respond"
+    },
+    {
+      "end" : 603.44,
+      "start" : 603.36,
+      "text" : "what"
+    },
+    {
+      "end" : 603.84,
+      "start" : 603.6,
+      "text" : "what"
+    },
+    {
+      "end" : 604,
+      "start" : 603.84,
+      "text" : "should"
+    },
+    {
+      "end" : 604.16,
+      "start" : 604,
+      "text" : "you"
+    },
+    {
+      "end" : 604.24,
+      "start" : 604.16,
+      "text" : "have"
+    },
+    {
+      "end" : 604.32,
+      "start" : 604.24,
+      "text" : "to"
+    },
+    {
+      "end" : 604.48,
+      "start" : 604.32,
+      "text" : "do"
+    },
+    {
+      "end" : 604.5600000000001,
+      "start" : 604.48,
+      "text" : "to"
+    },
+    {
+      "end" : 604.6400000000001,
+      "start" : 604.5600000000001,
+      "text" : "make"
+    },
+    {
+      "end" : 604.8,
+      "start" : 604.64,
+      "text" : "it"
+    },
+    {
+      "end" : 605.2,
+      "start" : 604.8000000000001,
+      "text" : "beeper"
+    },
+    {
+      "end" : 605.76,
+      "start" : 605.36,
+      "text" : "blink?"
+    },
+    {
+      "end" : 606.08,
+      "start" : 605.76,
+      "text" : "Okay,"
+    },
+    {
+      "end" : 606.32,
+      "start" : 606.08,
+      "text" : "my"
+    },
+    {
+      "end" : 606.48,
+      "start" : 606.32,
+      "text" : "my"
+    },
+    {
+      "end" : 606.88,
+      "start" : 606.48,
+      "text" : "idea"
+    },
+    {
+      "end" : 607.12,
+      "start" : 606.88,
+      "text" : "is"
+    },
+    {
+      "end" : 607.6,
+      "start" : 607.12,
+      "text" : "maybe"
+    },
+    {
+      "end" : 607.84,
+      "start" : 607.6,
+      "text" : "that"
+    },
+    {
+      "end" : 608.24,
+      "start" : 608,
+      "text" : "the"
+    },
+    {
+      "end" : 608.56,
+      "start" : 608.24,
+      "text" : "minute"
+    },
+    {
+      "end" : 608.88,
+      "start" : 608.5600000000001,
+      "text" : "it's"
+    },
+    {
+      "end" : 609.04,
+      "start" : 608.88,
+      "text" : "really"
+    },
+    {
+      "end" : 609.5200000000001,
+      "start" : 609.04,
+      "text" : "hidden,"
+    },
+    {
+      "end" : 609.68,
+      "start" : 609.52,
+      "text" : "in"
+    },
+    {
+      "end" : 609.92,
+      "start" : 609.76,
+      "text" : "in"
+    },
+    {
+      "end" : 610.0799999999999,
+      "start" : 609.92,
+      "text" : "other"
+    },
+    {
+      "end" : 610.24,
+      "start" : 610.08,
+      "text" : "words"
+    },
+    {
+      "end" : 610.48,
+      "start" : 610.32,
+      "text" : "if"
+    },
+    {
+      "end" : 611.0400000000001,
+      "start" : 610.48,
+      "text" : "it's"
+    },
+    {
+      "end" : 611.5200000000001,
+      "start" : 611.2,
+      "text" : "like"
+    },
+    {
+      "end" : 612.16,
+      "start" : 611.92,
+      "text" : "in"
+    },
+    {
+      "end" : 612.4,
+      "start" : 612.16,
+      "text" : "a"
+    },
+    {
+      "end" : 612.96,
+      "start" : 612.4,
+      "text" : "dark"
+    },
+    {
+      "end" : 613.2800000000001,
+      "start" : 612.96,
+      "text" : "spot"
+    },
+    {
+      "end" : 614.16,
+      "start" : 613.92,
+      "text" : "uh"
+    },
+    {
+      "end" : 614.6400000000001,
+      "start" : 614.32,
+      "text" : "meaning"
+    },
+    {
+      "end" : 614.8000000000001,
+      "start" : 614.72,
+      "text" : "you"
+    },
+    {
+      "end" : 614.8800000000001,
+      "start" : 614.8000000000001,
+      "text" : "know"
+    },
+    {
+      "end" : 615.1999999999999,
+      "start" : 615.04,
+      "text" : "like"
+    },
+    {
+      "end" : 615.2800000000001,
+      "start" : 615.2,
+      "text" : "a"
+    },
+    {
+      "end" : 615.7600000000001,
+      "start" : 615.28,
+      "text" : "newspaper"
+    },
+    {
+      "end" : 615.92,
+      "start" : 615.76,
+      "text" : "is"
+    },
+    {
+      "end" : 616.0799999999999,
+      "start" : 615.92,
+      "text" : "on"
+    },
+    {
+      "end" : 616.4,
+      "start" : 616.08,
+      "text" : "top,"
+    },
+    {
+      "end" : 616.48,
+      "start" : 616.4,
+      "text" : "a"
+    },
+    {
+      "end" : 616.8000000000001,
+      "start" : 616.48,
+      "text" : "sweater"
+    },
+    {
+      "end" : 617.2,
+      "start" : 616.96,
+      "text" : "is"
+    },
+    {
+      "end" : 617.44,
+      "start" : 617.2,
+      "text" : "on"
+    },
+    {
+      "end" : 617.68,
+      "start" : 617.44,
+      "text" : "top"
+    },
+    {
+      "end" : 618.08,
+      "start" : 617.84,
+      "text" : "or"
+    },
+    {
+      "end" : 618.32,
+      "start" : 618.08,
+      "text" : "it's"
+    },
+    {
+      "end" : 618.4000000000001,
+      "start" : 618.32,
+      "text" : "uh"
+    },
+    {
+      "end" : 618.8000000000001,
+      "start" : 618.5600000000001,
+      "text" : "it's"
+    },
+    {
+      "end" : 619.12,
+      "start" : 618.8000000000001,
+      "text" : "behind"
+    },
+    {
+      "end" : 619.28,
+      "start" : 619.12,
+      "text" : "a"
+    },
+    {
+      "end" : 620.16,
+      "start" : 619.28,
+      "text" : "plant,"
+    },
+    {
+      "end" : 620.48,
+      "start" : 620.16,
+      "text" : "at"
+    },
+    {
+      "end" : 620.72,
+      "start" : 620.48,
+      "text" : "that"
+    },
+    {
+      "end" : 620.96,
+      "start" : 620.72,
+      "text" : "moment"
+    },
+    {
+      "end" : 621.36,
+      "start" : 621.04,
+      "text" : "it's"
+    },
+    {
+      "end" : 621.6,
+      "start" : 621.36,
+      "text" : "it's"
+    },
+    {
+      "end" : 621.76,
+      "start" : 621.6,
+      "text" : "like"
+    },
+    {
+      "end" : 622.1600000000001,
+      "start" : 621.92,
+      "text" : "it's"
+    },
+    {
+      "end" : 622.3199999999999,
+      "start" : 622.16,
+      "text" : "like"
+    },
+    {
+      "end" : 622.8000000000001,
+      "start" : 622.48,
+      "text" : "um"
+    },
+    {
+      "end" : 623.12,
+      "start" : 622.96,
+      "text" : "what"
+    },
+    {
+      "end" : 623.2,
+      "start" : 623.12,
+      "text" : "do"
+    },
+    {
+      "end" : 623.2800000000001,
+      "start" : 623.2,
+      "text" : "you"
+    },
+    {
+      "end" : 623.44,
+      "start" : 623.28,
+      "text" : "call"
+    },
+    {
+      "end" : 623.6,
+      "start" : 623.44,
+      "text" : "it"
+    },
+    {
+      "end" : 623.84,
+      "start" : 623.6800000000001,
+      "text" : "the"
+    },
+    {
+      "end" : 624,
+      "start" : 623.84,
+      "text" : "light"
+    },
+    {
+      "end" : 624.24,
+      "start" : 624.16,
+      "text" : "s"
+    },
+    {
+      "end" : 624.96,
+      "start" : 624.4,
+      "text" : "sensors,"
+    },
+    {
+      "end" : 625.0400000000001,
+      "start" : 624.96,
+      "text" : "you"
+    },
+    {
+      "end" : 625.36,
+      "start" : 625.04,
+      "text" : "know."
+    },
+    {
+      "end" : 625.44,
+      "start" : 625.36,
+      "text" : "Okay"
+    },
+    {
+      "end" : 625.92,
+      "start" : 625.76,
+      "text" : "in"
+    },
+    {
+      "end" : 626.0799999999999,
+      "start" : 625.92,
+      "text" : "in"
+    },
+    {
+      "end" : 626.24,
+      "start" : 626.08,
+      "text" : "that"
+    },
+    {
+      "end" : 626.4,
+      "start" : 626.24,
+      "text" : "moment"
+    },
+    {
+      "end" : 626.64,
+      "start" : 626.48,
+      "text" : "it"
+    },
+    {
+      "end" : 626.8,
+      "start" : 626.64,
+      "text" : "has"
+    },
+    {
+      "end" : 626.96,
+      "start" : 626.8000000000001,
+      "text" : "a"
+    },
+    {
+      "end" : 627.6,
+      "start" : 626.96,
+      "text" : "sensor."
+    },
+    {
+      "end" : 627.7600000000001,
+      "start" : 627.6,
+      "text" : "Yes"
+    },
+    {
+      "end" : 628.08,
+      "start" : 628,
+      "text" : "i"
+    },
+    {
+      "end" : 628.1600000000001,
+      "start" : 628.08,
+      "text" : "i"
+    },
+    {
+      "end" : 628.4,
+      "start" : 628.24,
+      "text" : "it"
+    },
+    {
+      "end" : 628.72,
+      "start" : 628.4,
+      "text" : "gets"
+    },
+    {
+      "end" : 628.8000000000001,
+      "start" : 628.72,
+      "text" : "a"
+    },
+    {
+      "end" : 629.12,
+      "start" : 628.8000000000001,
+      "text" : "certain"
+    },
+    {
+      "end" : 629.92,
+      "start" : 629.12,
+      "text" : "darkness,"
+    },
+    {
+      "end" : 630.0799999999999,
+      "start" : 629.92,
+      "text" : "it"
+    },
+    {
+      "end" : 630.1600000000001,
+      "start" : 630.08,
+      "text" : "g"
+    },
+    {
+      "end" : 630.48,
+      "start" : 630.32,
+      "text" : "has"
+    },
+    {
+      "end" : 630.64,
+      "start" : 630.48,
+      "text" : "a"
+    },
+    {
+      "end" : 630.96,
+      "start" : 630.64,
+      "text" : "sensor"
+    },
+    {
+      "end" : 631.1999999999999,
+      "start" : 631.04,
+      "text" : "and"
+    },
+    {
+      "end" : 631.36,
+      "start" : 631.2,
+      "text" : "it"
+    },
+    {
+      "end" : 631.68,
+      "start" : 631.36,
+      "text" : "gives"
+    },
+    {
+      "end" : 631.84,
+      "start" : 631.6800000000001,
+      "text" : "out"
+    },
+    {
+      "end" : 632,
+      "start" : 631.84,
+      "text" : "a"
+    },
+    {
+      "end" : 632.5600000000001,
+      "start" : 632,
+      "text" : "signal."
+    },
+    {
+      "end" : 632.8800000000001,
+      "start" : 632.5600000000001,
+      "text" : "Whether"
+    },
+    {
+      "end" : 633.04,
+      "start" : 632.88,
+      "text" : "that"
+    },
+    {
+      "end" : 633.1999999999999,
+      "start" : 633.04,
+      "text" : "be"
+    },
+    {
+      "end" : 633.2800000000001,
+      "start" : 633.2,
+      "text" : "a"
+    },
+    {
+      "end" : 633.6,
+      "start" : 633.28,
+      "text" : "light"
+    },
+    {
+      "end" : 633.92,
+      "start" : 633.6,
+      "text" : "signal"
+    },
+    {
+      "end" : 634.0799999999999,
+      "start" : 633.92,
+      "text" : "or"
+    },
+    {
+      "end" : 634.24,
+      "start" : 634.08,
+      "text" : "a"
+    },
+    {
+      "end" : 634.6400000000001,
+      "start" : 634.24,
+      "text" : "beep,"
+    },
+    {
+      "end" : 634.72,
+      "start" : 634.64,
+      "text" : "I"
+    },
+    {
+      "end" : 634.8800000000001,
+      "start" : 634.72,
+      "text" : "mean"
+    },
+    {
+      "end" : 634.96,
+      "start" : 634.88,
+      "text" : "that"
+    },
+    {
+      "end" : 635.52,
+      "start" : 635.36,
+      "text" : "we"
+    },
+    {
+      "end" : 635.68,
+      "start" : 635.52,
+      "text" : "can"
+    },
+    {
+      "end" : 636.0799999999999,
+      "start" : 635.6800000000001,
+      "text" : "discuss"
+    },
+    {
+      "end" : 636.32,
+      "start" : 636.08,
+      "text" : "that"
+    },
+    {
+      "end" : 636.72,
+      "start" : 636.32,
+      "text" : "later,"
+    },
+    {
+      "end" : 636.88,
+      "start" : 636.72,
+      "text" : "you"
+    },
+    {
+      "end" : 637.0400000000001,
+      "start" : 636.88,
+      "text" : "know."
+    },
+    {
+      "end" : 638,
+      "start" : 637.36,
+      "text" : "Yeah."
+    },
+    {
+      "end" : 638.32,
+      "start" : 638,
+      "text" : "Yeah."
+    },
+    {
+      "end" : 638.48,
+      "start" : 638.32,
+      "text" : "And"
+    },
+    {
+      "end" : 638.6400000000001,
+      "start" : 638.5600000000001,
+      "text" : "uh"
+    },
+    {
+      "end" : 639.1999999999999,
+      "start" : 639.04,
+      "text" : "So"
+    },
+    {
+      "end" : 639.2800000000001,
+      "start" : 639.2,
+      "text" : "the"
+    },
+    {
+      "end" : 639.52,
+      "start" : 639.28,
+      "text" : "light"
+    },
+    {
+      "end" : 639.92,
+      "start" : 639.52,
+      "text" : "sensor"
+    },
+    {
+      "end" : 640.0799999999999,
+      "start" : 639.92,
+      "text" : "would"
+    },
+    {
+      "end" : 640.56,
+      "start" : 640.08,
+      "text" : "activate"
+    },
+    {
+      "end" : 640.72,
+      "start" : 640.5600000000001,
+      "text" : "the"
+    },
+    {
+      "end" : 641.36,
+      "start" : 640.72,
+      "text" : "signal."
+    },
+    {
+      "end" : 641.6,
+      "start" : 641.36,
+      "text" : "That's"
+    },
+    {
+      "end" : 641.84,
+      "start" : 641.6,
+      "text" : "right."
+    },
+    {
+      "end" : 642.24,
+      "start" : 642.08,
+      "text" : "You"
+    },
+    {
+      "end" : 642.4000000000001,
+      "start" : 642.24,
+      "text" : "know,"
+    },
+    {
+      "end" : 642.56,
+      "start" : 642.4,
+      "text" : "that"
+    },
+    {
+      "end" : 642.8000000000001,
+      "start" : 642.5600000000001,
+      "text" : "would"
+    },
+    {
+      "end" : 642.96,
+      "start" : 642.8000000000001,
+      "text" : "be"
+    },
+    {
+      "end" : 643.6,
+      "start" : 643.28,
+      "text" : "right,"
+    },
+    {
+      "end" : 643.76,
+      "start" : 643.6,
+      "text" : "you"
+    },
+    {
+      "end" : 643.92,
+      "start" : 643.76,
+      "text" : "have"
+    },
+    {
+      "end" : 644,
+      "start" : 643.92,
+      "text" : "to"
+    },
+    {
+      "end" : 644.16,
+      "start" : 644,
+      "text" : "have"
+    },
+    {
+      "end" : 644.3199999999999,
+      "start" : 644.16,
+      "text" : "some"
+    },
+    {
+      "end" : 644.48,
+      "start" : 644.32,
+      "text" : "kind"
+    },
+    {
+      "end" : 644.5600000000001,
+      "start" : 644.48,
+      "text" : "of"
+    },
+    {
+      "end" : 645.44,
+      "start" : 644.64,
+      "text" : "sensor."
+    },
+    {
+      "end" : 645.6,
+      "start" : 645.44,
+      "text" : "And"
+    },
+    {
+      "end" : 645.84,
+      "start" : 645.6,
+      "text" : "I"
+    },
+    {
+      "end" : 646.08,
+      "start" : 645.84,
+      "text" : "I"
+    },
+    {
+      "end" : 646.24,
+      "start" : 646.08,
+      "text" : "think"
+    },
+    {
+      "end" : 646.56,
+      "start" : 646.4,
+      "text" : "uh"
+    },
+    {
+      "end" : 647.04,
+      "start" : 646.72,
+      "text" : "voice"
+    },
+    {
+      "end" : 647.9200000000001,
+      "start" : 647.6,
+      "text" : "or"
+    },
+    {
+      "end" : 648.72,
+      "start" : 648.08,
+      "text" : "clapping"
+    },
+    {
+      "end" : 649.12,
+      "start" : 648.8000000000001,
+      "text" : "that's"
+    },
+    {
+      "end" : 649.36,
+      "start" : 649.12,
+      "text" : "not"
+    },
+    {
+      "end" : 649.9200000000001,
+      "start" : 649.36,
+      "text" : "specific"
+    },
+    {
+      "end" : 650.56,
+      "start" : 649.92,
+      "text" : "enough."
+    },
+    {
+      "end" : 650.88,
+      "start" : 650.5600000000001,
+      "text" : "Uh"
+    },
+    {
+      "end" : 651.04,
+      "start" : 650.88,
+      "text" : "I"
+    },
+    {
+      "end" : 651.1999999999999,
+      "start" : 651.04,
+      "text" : "know"
+    },
+    {
+      "end" : 651.36,
+      "start" : 651.2,
+      "text" : "there"
+    },
+    {
+      "end" : 651.44,
+      "start" : 651.36,
+      "text" : "are"
+    },
+    {
+      "end" : 651.68,
+      "start" : 651.52,
+      "text" : "the"
+    },
+    {
+      "end" : 652.0799999999999,
+      "start" : 651.6800000000001,
+      "text" : "lamps"
+    },
+    {
+      "end" : 652.24,
+      "start" : 652.08,
+      "text" : "and"
+    },
+    {
+      "end" : 652.48,
+      "start" : 652.24,
+      "text" : "stuff,"
+    },
+    {
+      "end" : 652.64,
+      "start" : 652.48,
+      "text" : "you"
+    },
+    {
+      "end" : 652.8000000000001,
+      "start" : 652.64,
+      "text" : "know,"
+    },
+    {
+      "end" : 652.8800000000001,
+      "start" : 652.8000000000001,
+      "text" : "you"
+    },
+    {
+      "end" : 653.04,
+      "start" : 652.88,
+      "text" : "can"
+    },
+    {
+      "end" : 653.28,
+      "start" : 653.04,
+      "text" : "clap"
+    },
+    {
+      "end" : 653.6800000000001,
+      "start" : 653.44,
+      "text" : "on"
+    },
+    {
+      "end" : 653.9200000000001,
+      "start" : 653.6800000000001,
+      "text" : "and"
+    },
+    {
+      "end" : 654.48,
+      "start" : 653.92,
+      "text" : "off,"
+    },
+    {
+      "end" : 654.72,
+      "start" : 654.48,
+      "text" : "but"
+    },
+    {
+      "end" : 654.88,
+      "start" : 654.72,
+      "text" : "I"
+    },
+    {
+      "end" : 655.04,
+      "start" : 654.88,
+      "text" : "think"
+    },
+    {
+      "end" : 655.36,
+      "start" : 655.04,
+      "text" : "they"
+    },
+    {
+      "end" : 655.6800000000001,
+      "start" : 655.36,
+      "text" : "only"
+    },
+    {
+      "end" : 656.0000000000001,
+      "start" : 655.6800000000001,
+      "text" : "work"
+    },
+    {
+      "end" : 656.24,
+      "start" : 656,
+      "text" : "to"
+    },
+    {
+      "end" : 656.4,
+      "start" : 656.24,
+      "text" : "a"
+    },
+    {
+      "end" : 656.8000000000001,
+      "start" : 656.4,
+      "text" : "certain"
+    },
+    {
+      "end" : 657.6800000000001,
+      "start" : 656.8000000000001,
+      "text" : "degree."
+    },
+    {
+      "end" : 658.24,
+      "start" : 658.08,
+      "text" : "But"
+    },
+    {
+      "end" : 658.4000000000001,
+      "start" : 658.32,
+      "text" : "it"
+    },
+    {
+      "end" : 658.56,
+      "start" : 658.4,
+      "text" : "could"
+    },
+    {
+      "end" : 658.6400000000001,
+      "start" : 658.5600000000001,
+      "text" : "be"
+    },
+    {
+      "end" : 659.04,
+      "start" : 658.64,
+      "text" : "someplace"
+    },
+    {
+      "end" : 659.36,
+      "start" : 659.12,
+      "text" : "really"
+    },
+    {
+      "end" : 659.6,
+      "start" : 659.36,
+      "text" : "obvious"
+    },
+    {
+      "end" : 659.92,
+      "start" : 659.76,
+      "text" : "and"
+    },
+    {
+      "end" : 660,
+      "start" : 659.92,
+      "text" : "you"
+    },
+    {
+      "end" : 660.24,
+      "start" : 660.08,
+      "text" : "still"
+    },
+    {
+      "end" : 660.96,
+      "start" : 660.5600000000001,
+      "text" : "wouldn't"
+    },
+    {
+      "end" : 661.04,
+      "start" : 660.88,
+      "text" : "be"
+    },
+    {
+      "end" : 661.2,
+      "start" : 661.04,
+      "text" : "able"
+    },
+    {
+      "end" : 661.44,
+      "start" : 661.2,
+      "text" : "to"
+    },
+    {
+      "end" : 661.9200000000001,
+      "start" : 661.44,
+      "text" : "find"
+    },
+    {
+      "end" : 662.5600000000001,
+      "start" : 661.92,
+      "text" : "it."
+    },
+    {
+      "end" : 664.1600000000001,
+      "start" : 663.92,
+      "text" : "What"
+    },
+    {
+      "end" : 664.6400000000001,
+      "start" : 664.32,
+      "text" : "within"
+    },
+    {
+      "end" : 664.96,
+      "start" : 664.88,
+      "text" : "the"
+    },
+    {
+      "end" : 665.2,
+      "start" : 665.04,
+      "text" : "case?"
+    },
+    {
+      "end" : 665.5200000000001,
+      "start" : 665.36,
+      "text" : "Well"
+    },
+    {
+      "end" : 665.68,
+      "start" : 665.52,
+      "text" : "because"
+    },
+    {
+      "end" : 665.9200000000001,
+      "start" : 665.6800000000001,
+      "text" : "you're"
+    },
+    {
+      "end" : 665.9200000000001,
+      "start" : 665.84,
+      "text" : "s"
+    },
+    {
+      "end" : 666.1600000000001,
+      "start" : 666.08,
+      "text" : "because"
+    },
+    {
+      "end" : 666.5600000000001,
+      "start" : 666.32,
+      "text" : "you're"
+    },
+    {
+      "end" : 666.8800000000001,
+      "start" : 666.48,
+      "text" : "silly,"
+    },
+    {
+      "end" : 667.04,
+      "start" : 666.88,
+      "text" : "because"
+    },
+    {
+      "end" : 667.1999999999999,
+      "start" : 667.04,
+      "text" : "people"
+    },
+    {
+      "end" : 667.2800000000001,
+      "start" : 667.2,
+      "text" : "are"
+    },
+    {
+      "end" : 667.6,
+      "start" : 667.28,
+      "text" : "silly."
+    },
+    {
+      "end" : 667.84,
+      "start" : 667.76,
+      "text" : "Oh"
+    },
+    {
+      "end" : 668.1600000000001,
+      "start" : 667.92,
+      "text" : "yeah,"
+    },
+    {
+      "end" : 668.24,
+      "start" : 668.16,
+      "text" : "well"
+    },
+    {
+      "end" : 668.56,
+      "start" : 668.4,
+      "text" : "but"
+    },
+    {
+      "end" : 668.8000000000001,
+      "start" : 668.5600000000001,
+      "text" : "then"
+    },
+    {
+      "end" : 668.96,
+      "start" : 668.8000000000001,
+      "text" : "those"
+    },
+    {
+      "end" : 669.0400000000001,
+      "start" : 668.96,
+      "text" : "people"
+    },
+    {
+      "end" : 669.4399999999999,
+      "start" : 669.28,
+      "text" : "they"
+    },
+    {
+      "end" : 669.7600000000001,
+      "start" : 669.52,
+      "text" : "can't"
+    },
+    {
+      "end" : 670,
+      "start" : 669.6800000000001,
+      "text" : "help"
+    },
+    {
+      "end" : 670.5600000000001,
+      "start" : 670,
+      "text" : "everybody."
+    },
+    {
+      "end" : 671.52,
+      "start" : 670.5600000000001,
+      "text" : "Well,"
+    },
+    {
+      "end" : 671.6,
+      "start" : 671.52,
+      "text" : "like"
+    },
+    {
+      "end" : 671.7600000000001,
+      "start" : 671.6800000000001,
+      "text" : "on"
+    },
+    {
+      "end" : 671.9200000000001,
+      "start" : 671.76,
+      "text" : "top"
+    },
+    {
+      "end" : 672,
+      "start" : 671.92,
+      "text" : "of"
+    },
+    {
+      "end" : 672.08,
+      "start" : 672,
+      "text" : "your"
+    },
+    {
+      "end" : 672.24,
+      "start" : 672.16,
+      "text" : "of"
+    },
+    {
+      "end" : 672.4,
+      "start" : 672.24,
+      "text" : "your"
+    },
+    {
+      "end" : 672.88,
+      "start" : 672.4,
+      "text" : "bookcase"
+    },
+    {
+      "end" : 673.12,
+      "start" : 672.96,
+      "text" : "and"
+    },
+    {
+      "end" : 673.28,
+      "start" : 673.12,
+      "text" : "you"
+    },
+    {
+      "end" : 673.5200000000001,
+      "start" : 673.28,
+      "text" : "usually"
+    },
+    {
+      "end" : 673.76,
+      "start" : 673.52,
+      "text" : "kept"
+    },
+    {
+      "end" : 673.84,
+      "start" : 673.76,
+      "text" : "it"
+    },
+    {
+      "end" : 674,
+      "start" : 673.84,
+      "text" : "on"
+    },
+    {
+      "end" : 674.08,
+      "start" : 674,
+      "text" : "the"
+    },
+    {
+      "end" : 674.5600000000001,
+      "start" : 674.08,
+      "text" : "coffee"
+    },
+    {
+      "end" : 675.44,
+      "start" : 674.5600000000001,
+      "text" : "table."
+    },
+    {
+      "end" : 675.7600000000001,
+      "start" : 675.44,
+      "text" : "Um"
+    },
+    {
+      "end" : 677.5200000000001,
+      "start" : 677.44,
+      "text" : "You"
+    },
+    {
+      "end" : 677.6,
+      "start" : 677.52,
+      "text" : "know"
+    },
+    {
+      "end" : 678.1600000000001,
+      "start" : 678,
+      "text" : "Okay,"
+    },
+    {
+      "end" : 678.24,
+      "start" : 678.16,
+      "text" : "we"
+    },
+    {
+      "end" : 678.32,
+      "start" : 678.24,
+      "text" : "have"
+    },
+    {
+      "end" : 679.0400000000001,
+      "start" : 678.96,
+      "text" : "to"
+    },
+    {
+      "end" : 679.36,
+      "start" : 679.12,
+      "text" : "along."
+    },
+    {
+      "end" : 679.84,
+      "start" : 679.6800000000001,
+      "text" : "Yeah,"
+    },
+    {
+      "end" : 680,
+      "start" : 679.84,
+      "text" : "we"
+    },
+    {
+      "end" : 680.08,
+      "start" : 680,
+      "text" : "have"
+    },
+    {
+      "end" : 680.1600000000001,
+      "start" : 680.08,
+      "text" : "to"
+    },
+    {
+      "end" : 680.32,
+      "start" : 680.16,
+      "text" : "move"
+    },
+    {
+      "end" : 680.6400000000001,
+      "start" : 680.32,
+      "text" : "along."
+    },
+    {
+      "end" : 680.72,
+      "start" : 680.64,
+      "text" : "But"
+    },
+    {
+      "end" : 681.04,
+      "start" : 680.88,
+      "text" : "I"
+    },
+    {
+      "end" : 681.1999999999999,
+      "start" : 681.04,
+      "text" : "think"
+    },
+    {
+      "end" : 681.36,
+      "start" : 681.2,
+      "text" : "we"
+    },
+    {
+      "end" : 681.52,
+      "start" : 681.36,
+      "text" : "have"
+    },
+    {
+      "end" : 681.68,
+      "start" : 681.52,
+      "text" : "some"
+    },
+    {
+      "end" : 681.84,
+      "start" : 681.6800000000001,
+      "text" : "good"
+    },
+    {
+      "end" : 682.4,
+      "start" : 682.16,
+      "text" : "good"
+    },
+    {
+      "end" : 682.8,
+      "start" : 682.4,
+      "text" : "points"
+    },
+    {
+      "end" : 683.0400000000001,
+      "start" : 682.8000000000001,
+      "text" : "to"
+    },
+    {
+      "end" : 683.44,
+      "start" : 683.04,
+      "text" : "start"
+    },
+    {
+      "end" : 683.7600000000001,
+      "start" : 683.44,
+      "text" : "with"
+    },
+    {
+      "end" : 684.5600000000001,
+      "start" : 683.76,
+      "text" : "here."
+    },
+    {
+      "end" : 685.9200000000001,
+      "start" : 685.52,
+      "text" : "Okay."
+    },
+    {
+      "end" : 686.72,
+      "start" : 686.48,
+      "text" : "Next"
+    },
+    {
+      "end" : 687.0400000000001,
+      "start" : 686.72,
+      "text" : "meeting"
+    },
+    {
+      "end" : 687.36,
+      "start" : 687.2,
+      "text" : "will"
+    },
+    {
+      "end" : 687.52,
+      "start" : 687.36,
+      "text" : "be"
+    },
+    {
+      "end" : 687.68,
+      "start" : 687.52,
+      "text" : "in"
+    },
+    {
+      "end" : 688,
+      "start" : 687.76,
+      "text" : "30"
+    },
+    {
+      "end" : 688.48,
+      "start" : 688,
+      "text" : "minutes."
+    },
+    {
+      "end" : 688.64,
+      "start" : 688.48,
+      "text" : "I"
+    },
+    {
+      "end" : 688.8,
+      "start" : 688.64,
+      "text" : "think"
+    },
+    {
+      "end" : 688.96,
+      "start" : 688.8000000000001,
+      "text" : "you"
+    },
+    {
+      "end" : 689.2,
+      "start" : 688.96,
+      "text" : "all"
+    },
+    {
+      "end" : 689.6,
+      "start" : 689.36,
+      "text" : "did"
+    },
+    {
+      "end" : 689.84,
+      "start" : 689.6,
+      "text" : "you"
+    },
+    {
+      "end" : 690,
+      "start" : 689.84,
+      "text" : "get"
+    },
+    {
+      "end" : 690.24,
+      "start" : 690,
+      "text" : "uh"
+    },
+    {
+      "end" : 690.8800000000001,
+      "start" : 690.24,
+      "text" : "notices"
+    },
+    {
+      "end" : 691.04,
+      "start" : 690.88,
+      "text" : "on"
+    },
+    {
+      "end" : 691.1999999999999,
+      "start" : 691.04,
+      "text" : "your"
+    },
+    {
+      "end" : 691.6,
+      "start" : 691.2,
+      "text" : "computer"
+    },
+    {
+      "end" : 691.6800000000001,
+      "start" : 691.6,
+      "text" : "for"
+    },
+    {
+      "end" : 692.08,
+      "start" : 691.6800000000001,
+      "text" : "this?"
+    },
+    {
+      "end" : 692.32,
+      "start" : 692.08,
+      "text" : "Okay,"
+    },
+    {
+      "end" : 692.48,
+      "start" : 692.32,
+      "text" : "so"
+    },
+    {
+      "end" : 692.72,
+      "start" : 692.48,
+      "text" : "we'll"
+    },
+    {
+      "end" : 692.88,
+      "start" : 692.72,
+      "text" : "you"
+    },
+    {
+      "end" : 693.12,
+      "start" : 692.96,
+      "text" : "got"
+    },
+    {
+      "end" : 693.28,
+      "start" : 693.12,
+      "text" : "the"
+    },
+    {
+      "end" : 693.7600000000001,
+      "start" : 693.28,
+      "text" : "notice."
+    },
+    {
+      "end" : 694.4000000000001,
+      "start" : 694.08,
+      "text" : "Um"
+    },
+    {
+      "end" : 696.1600000000001,
+      "start" : 695.52,
+      "text" : "Uh"
+    },
+    {
+      "end" : 697.0400000000001,
+      "start" : 696.72,
+      "text" : "the"
+    },
+    {
+      "end" : 697.6800000000001,
+      "start" : 697.04,
+      "text" : "working"
+    },
+    {
+      "end" : 698.56,
+      "start" : 697.6800000000001,
+      "text" : "design,"
+    },
+    {
+      "end" : 698.72,
+      "start" : 698.5600000000001,
+      "text" : "I"
+    },
+    {
+      "end" : 699.04,
+      "start" : 698.72,
+      "text" : "guess"
+    },
+    {
+      "end" : 699.36,
+      "start" : 699.04,
+      "text" : "that's"
+    },
+    {
+      "end" : 699.52,
+      "start" : 699.36,
+      "text" : "the"
+    },
+    {
+      "end" : 700.08,
+      "start" : 699.52,
+      "text" : "function"
+    },
+    {
+      "end" : 700.72,
+      "start" : 700.08,
+      "text" : "ID."
+    },
+    {
+      "end" : 700.8800000000001,
+      "start" : 700.72,
+      "text" : "Uh"
+    },
+    {
+      "end" : 701.12,
+      "start" : 700.96,
+      "text" : "who"
+    },
+    {
+      "end" : 701.28,
+      "start" : 701.12,
+      "text" : "is"
+    },
+    {
+      "end" : 701.6,
+      "start" : 701.28,
+      "text" : "this?"
+    },
+    {
+      "end" : 701.76,
+      "start" : 701.6,
+      "text" : "The"
+    },
+    {
+      "end" : 702.1600000000001,
+      "start" : 701.76,
+      "text" : "industrial"
+    },
+    {
+      "end" : 702.88,
+      "start" : 702.16,
+      "text" : "designer."
+    },
+    {
+      "end" : 703.44,
+      "start" : 702.88,
+      "text" : "Yeah."
+    },
+    {
+      "end" : 703.84,
+      "start" : 703.44,
+      "text" : "That's"
+    },
+    {
+      "end" : 704.08,
+      "start" : 703.84,
+      "text" : "you?"
+    },
+    {
+      "end" : 704.8000000000001,
+      "start" : 704.4,
+      "text" : "Yeah,"
+    },
+    {
+      "end" : 705.0400000000001,
+      "start" : 704.8000000000001,
+      "text" : "it's"
+    },
+    {
+      "end" : 705.44,
+      "start" : 705.12,
+      "text" : "functional"
+    },
+    {
+      "end" : 706.16,
+      "start" : 705.84,
+      "text" : "yeah,"
+    },
+    {
+      "end" : 706.8800000000001,
+      "start" : 706.16,
+      "text" : "exactly."
+    },
+    {
+      "end" : 707.52,
+      "start" : 706.88,
+      "text" : "Okay."
+    },
+    {
+      "end" : 707.76,
+      "start" : 707.52,
+      "text" : "So"
+    },
+    {
+      "end" : 708.32,
+      "start" : 708,
+      "text" : "we"
+    },
+    {
+      "end" : 708.88,
+      "start" : 708.5600000000001,
+      "text" : "looking"
+    },
+    {
+      "end" : 709.04,
+      "start" : 708.88,
+      "text" : "for"
+    },
+    {
+      "end" : 709.1999999999999,
+      "start" : 709.04,
+      "text" : "a"
+    },
+    {
+      "end" : 709.6,
+      "start" : 709.2,
+      "text" : "working"
+    },
+    {
+      "end" : 710.08,
+      "start" : 709.6,
+      "text" : "design"
+    },
+    {
+      "end" : 710.32,
+      "start" : 710.08,
+      "text" : "when"
+    },
+    {
+      "end" : 710.6400000000001,
+      "start" : 710.32,
+      "text" : "we"
+    },
+    {
+      "end" : 710.96,
+      "start" : 710.64,
+      "text" : "come"
+    },
+    {
+      "end" : 711.28,
+      "start" : 710.96,
+      "text" : "back."
+    },
+    {
+      "end" : 711.84,
+      "start" : 711.6,
+      "text" : "Uh"
+    },
+    {
+      "end" : 712.4,
+      "start" : 712,
+      "text" : "working"
+    },
+    {
+      "end" : 712.72,
+      "start" : 712.4,
+      "text" : "design,"
+    },
+    {
+      "end" : 713.0400000000001,
+      "start" : 712.72,
+      "text" : "yeah."
+    },
+    {
+      "end" : 713.6,
+      "start" : 713.28,
+      "text" : "it's"
+    },
+    {
+      "end" : 713.6800000000001,
+      "start" : 713.6,
+      "text" : "uh"
+    },
+    {
+      "end" : 714.4,
+      "start" : 713.92,
+      "text" : "mainly"
+    },
+    {
+      "end" : 714.8,
+      "start" : 714.4,
+      "text" : "technical"
+    },
+    {
+      "end" : 715.2,
+      "start" : 714.88,
+      "text" : "functional"
+    },
+    {
+      "end" : 715.44,
+      "start" : 715.2,
+      "text" : "design."
+    },
+    {
+      "end" : 715.84,
+      "start" : 715.6800000000001,
+      "text" : "And"
+    },
+    {
+      "end" : 716,
+      "start" : 715.84,
+      "text" : "then"
+    },
+    {
+      "end" : 716.08,
+      "start" : 716,
+      "text" : "the"
+    },
+    {
+      "end" : 716.4000000000001,
+      "start" : 716.08,
+      "text" : "technical"
+    },
+    {
+      "end" : 716.5600000000001,
+      "start" : 716.4,
+      "text" : "function"
+    },
+    {
+      "end" : 716.96,
+      "start" : 716.88,
+      "text" : "you"
+    },
+    {
+      "end" : 717.0400000000001,
+      "start" : 716.96,
+      "text" : "are"
+    },
+    {
+      "end" : 717.2,
+      "start" : 717.12,
+      "text" : "the"
+    },
+    {
+      "end" : 717.5200000000001,
+      "start" : 717.2,
+      "text" : "technical"
+    },
+    {
+      "end" : 717.6800000000001,
+      "start" : 717.52,
+      "text" : "function"
+    },
+    {
+      "end" : 717.9200000000001,
+      "start" : 717.84,
+      "text" : "so"
+    },
+    {
+      "end" : 719.0400000000001,
+      "start" : 718.8000000000001,
+      "text" : "you're"
+    },
+    {
+      "end" : 719.1999999999999,
+      "start" : 719.04,
+      "text" : "the"
+    },
+    {
+      "end" : 719.6,
+      "start" : 719.2,
+      "text" : "working"
+    },
+    {
+      "end" : 720,
+      "start" : 719.6,
+      "text" : "design."
+    },
+    {
+      "end" : 720.16,
+      "start" : 720,
+      "text" : "So"
+    },
+    {
+      "end" : 720.48,
+      "start" : 720.32,
+      "text" : "you"
+    },
+    {
+      "end" : 720.64,
+      "start" : 720.48,
+      "text" : "have"
+    },
+    {
+      "end" : 720.72,
+      "start" : 720.64,
+      "text" : "a"
+    },
+    {
+      "end" : 721.12,
+      "start" : 720.72,
+      "text" : "working"
+    },
+    {
+      "end" : 721.52,
+      "start" : 721.12,
+      "text" : "design"
+    },
+    {
+      "end" : 721.84,
+      "start" : 721.6800000000001,
+      "text" : "and"
+    },
+    {
+      "end" : 722.08,
+      "start" : 721.84,
+      "text" : "then"
+    },
+    {
+      "end" : 722.32,
+      "start" : 722.08,
+      "text" : "a"
+    },
+    {
+      "end" : 722.96,
+      "start" : 722.32,
+      "text" : "functional"
+    },
+    {
+      "end" : 724.32,
+      "start" : 722.96,
+      "text" : "design."
+    },
+    {
+      "end" : 724.6400000000001,
+      "start" : 724.32,
+      "text" : "And"
+    },
+    {
+      "end" : 725.1200000000001,
+      "start" : 724.8000000000001,
+      "text" : "the"
+    },
+    {
+      "end" : 725.68,
+      "start" : 725.2,
+      "text" : "marketing"
+    },
+    {
+      "end" : 726.8000000000001,
+      "start" : 726.16,
+      "text" : "manager"
+    },
+    {
+      "end" : 727.12,
+      "start" : 726.96,
+      "text" : "is"
+    },
+    {
+      "end" : 727.4399999999999,
+      "start" : 727.12,
+      "text" : "coming"
+    },
+    {
+      "end" : 727.6,
+      "start" : 727.44,
+      "text" : "up"
+    },
+    {
+      "end" : 727.84,
+      "start" : 727.6,
+      "text" : "with"
+    },
+    {
+      "end" : 728.08,
+      "start" : 727.84,
+      "text" : "some"
+    },
+    {
+      "end" : 728.48,
+      "start" : 728.08,
+      "text" : "user"
+    },
+    {
+      "end" : 729.12,
+      "start" : 728.48,
+      "text" : "requirement"
+    },
+    {
+      "end" : 730.0799999999999,
+      "start" : 729.12,
+      "text" : "specification"
+    },
+    {
+      "end" : 730.6400000000001,
+      "start" : 730.32,
+      "text" : "like"
+    },
+    {
+      "end" : 731.44,
+      "start" : 730.64,
+      "text" : "friendliness"
+    },
+    {
+      "end" : 731.6800000000001,
+      "start" : 731.44,
+      "text" : "and"
+    },
+    {
+      "end" : 731.9200000000001,
+      "start" : 731.6800000000001,
+      "text" : "what"
+    },
+    {
+      "end" : 732.0799999999999,
+      "start" : 731.92,
+      "text" : "we"
+    },
+    {
+      "end" : 732.32,
+      "start" : 732.08,
+      "text" : "just"
+    },
+    {
+      "end" : 732.96,
+      "start" : 732.32,
+      "text" : "discussed"
+    },
+    {
+      "end" : 733.2800000000001,
+      "start" : 732.96,
+      "text" : "in"
+    },
+    {
+      "end" : 734.08,
+      "start" : 733.28,
+      "text" : "general."
+    },
+    {
+      "end" : 734.4000000000001,
+      "start" : 734.08,
+      "text" : "That"
+    },
+    {
+      "end" : 734.56,
+      "start" : 734.4,
+      "text" : "would"
+    },
+    {
+      "end" : 734.8800000000001,
+      "start" : 734.5600000000001,
+      "text" : "be"
+    },
+    {
+      "end" : 735.2,
+      "start" : 734.88,
+      "text" : "your"
+    },
+    {
+      "end" : 735.84,
+      "start" : 735.2,
+      "text" : "idea."
+    },
+    {
+      "end" : 736.1600000000001,
+      "start" : 735.84,
+      "text" : "And"
+    },
+    {
+      "end" : 736.3199999999999,
+      "start" : 736.16,
+      "text" : "of"
+    },
+    {
+      "end" : 736.6400000000001,
+      "start" : 736.32,
+      "text" : "course"
+    },
+    {
+      "end" : 738,
+      "start" : 736.96,
+      "text" : "price."
+    },
+    {
+      "end" : 738.24,
+      "start" : 738,
+      "text" : "That"
+    },
+    {
+      "end" : 738.4,
+      "start" : 738.24,
+      "text" : "it"
+    },
+    {
+      "end" : 738.72,
+      "start" : 738.48,
+      "text" : "that"
+    },
+    {
+      "end" : 738.8000000000001,
+      "start" : 738.72,
+      "text" : "it"
+    },
+    {
+      "end" : 738.96,
+      "start" : 738.88,
+      "text" : "that"
+    },
+    {
+      "end" : 739.6,
+      "start" : 739.36,
+      "text" : "the"
+    },
+    {
+      "end" : 740,
+      "start" : 739.6,
+      "text" : "price"
+    },
+    {
+      "end" : 740.24,
+      "start" : 740,
+      "text" : "is"
+    },
+    {
+      "end" : 740.48,
+      "start" : 740.24,
+      "text" : "a"
+    },
+    {
+      "end" : 740.72,
+      "start" : 740.48,
+      "text" : "good"
+    },
+    {
+      "end" : 741.1999999999999,
+      "start" : 740.72,
+      "text" : "price."
+    },
+    {
+      "end" : 741.5200000000001,
+      "start" : 741.2,
+      "text" : "Mm-hmm"
+    },
+    {
+      "end" : 741.6,
+      "start" : 741.52,
+      "text" : "I"
+    },
+    {
+      "end" : 741.7600000000001,
+      "start" : 741.6,
+      "text" : "mean"
+    },
+    {
+      "end" : 741.9200000000001,
+      "start" : 741.84,
+      "text" : "the"
+    },
+    {
+      "end" : 742.16,
+      "start" : 741.92,
+      "text" : "price"
+    },
+    {
+      "end" : 742.3199999999999,
+      "start" : 742.16,
+      "text" : "is"
+    },
+    {
+      "end" : 742.72,
+      "start" : 742.32,
+      "text" : "given"
+    },
+    {
+      "end" : 743.2,
+      "start" : 742.88,
+      "text" : "but"
+    },
+    {
+      "end" : 743.4399999999999,
+      "start" : 743.28,
+      "text" : "uh"
+    },
+    {
+      "end" : 743.9200000000001,
+      "start" : 743.6,
+      "text" : "that"
+    },
+    {
+      "end" : 744.0799999999999,
+      "start" : 743.92,
+      "text" : "was"
+    },
+    {
+      "end" : 745.28,
+      "start" : 745.04,
+      "text" : "We"
+    },
+    {
+      "end" : 745.36,
+      "start" : 745.28,
+      "text" : "have"
+    },
+    {
+      "end" : 745.52,
+      "start" : 745.36,
+      "text" : "to"
+    },
+    {
+      "end" : 745.9200000000001,
+      "start" : 745.52,
+      "text" : "justify"
+    },
+    {
+      "end" : 746,
+      "start" : 745.92,
+      "text" : "that"
+    },
+    {
+      "end" : 746.1600000000001,
+      "start" : 746.08,
+      "text" : "but"
+    },
+    {
+      "end" : 747.2,
+      "start" : 746.96,
+      "text" : "by"
+    },
+    {
+      "end" : 747.52,
+      "start" : 747.2,
+      "text" : "having"
+    },
+    {
+      "end" : 748,
+      "start" : 747.52,
+      "text" : "sufficient"
+    },
+    {
+      "end" : 748.3199999999999,
+      "start" : 748,
+      "text" : "features"
+    },
+    {
+      "end" : 748.48,
+      "start" : 748.32,
+      "text" : "to"
+    },
+    {
+      "end" : 748.5600000000001,
+      "start" : 748.48,
+      "text" : "make"
+    },
+    {
+      "end" : 748.72,
+      "start" : 748.5600000000001,
+      "text" : "it"
+    },
+    {
+      "end" : 748.96,
+      "start" : 748.72,
+      "text" : "sell"
+    },
+    {
+      "end" : 749.0400000000001,
+      "start" : 748.96,
+      "text" : "at"
+    },
+    {
+      "end" : 749.12,
+      "start" : 749.04,
+      "text" : "that"
+    },
+    {
+      "end" : 749.5200000000001,
+      "start" : 749.12,
+      "text" : "price."
+    },
+    {
+      "end" : 749.7600000000001,
+      "start" : 749.52,
+      "text" : "That's"
+    },
+    {
+      "end" : 750.1600000000001,
+      "start" : 749.6800000000001,
+      "text" : "right."
+    },
+    {
+      "end" : 751.4399999999999,
+      "start" : 751.28,
+      "text" : "And"
+    },
+    {
+      "end" : 751.68,
+      "start" : 751.52,
+      "text" : "you"
+    },
+    {
+      "end" : 751.9200000000001,
+      "start" : 751.6800000000001,
+      "text" : "know,"
+    },
+    {
+      "end" : 752.32,
+      "start" : 751.92,
+      "text" : "bespit"
+    },
+    {
+      "end" : 752.64,
+      "start" : 752.4,
+      "text" : "you"
+    },
+    {
+      "end" : 752.72,
+      "start" : 752.64,
+      "text" : "you"
+    },
+    {
+      "end" : 752.88,
+      "start" : 752.72,
+      "text" : "will"
+    },
+    {
+      "end" : 753.44,
+      "start" : 753.12,
+      "text" : "get"
+    },
+    {
+      "end" : 754,
+      "start" : 753.44,
+      "text" : "specific"
+    },
+    {
+      "end" : 754.4000000000001,
+      "start" : 754.08,
+      "text" : "um"
+    },
+    {
+      "end" : 755.52,
+      "start" : 754.72,
+      "text" : "instructions"
+    },
+    {
+      "end" : 755.76,
+      "start" : 755.52,
+      "text" : "for"
+    },
+    {
+      "end" : 756,
+      "start" : 755.76,
+      "text" : "that."
+    },
+    {
+      "end" : 756.16,
+      "start" : 756,
+      "text" : "I"
+    },
+    {
+      "end" : 756.3199999999999,
+      "start" : 756.16,
+      "text" : "think"
+    },
+    {
+      "end" : 756.5600000000001,
+      "start" : 756.32,
+      "text" : "that's"
+    },
+    {
+      "end" : 756.72,
+      "start" : 756.5600000000001,
+      "text" : "the"
+    },
+    {
+      "end" : 756.88,
+      "start" : 756.72,
+      "text" : "end"
+    },
+    {
+      "end" : 757.04,
+      "start" : 756.88,
+      "text" : "of"
+    },
+    {
+      "end" : 757.1999999999999,
+      "start" : 757.04,
+      "text" : "the"
+    },
+    {
+      "end" : 757.68,
+      "start" : 757.2,
+      "text" : "show."
+    },
+    {
+      "end" : 758.5600000000001,
+      "start" : 757.6800000000001,
+      "text" : "Yeah."
+    },
+    {
+      "end" : 764.8000000000001,
+      "start" : 764.48,
+      "text" : "So"
+    },
+    {
+      "end" : 765.0400000000001,
+      "start" : 764.72,
+      "text" : "So"
+    },
+    {
+      "end" : 765.6,
+      "start" : 765.28,
+      "text" : "um"
+    },
+    {
+      "end" : 766.08,
+      "start" : 765.84,
+      "text" : "Um"
+    },
+    {
+      "end" : 767.36,
+      "start" : 767.04,
+      "text" : "we"
+    },
+    {
+      "end" : 767.6,
+      "start" : 767.36,
+      "text" : "have"
+    },
+    {
+      "end" : 767.84,
+      "start" : 767.6800000000001,
+      "text" : "well"
+    },
+    {
+      "end" : 768.08,
+      "start" : 767.9200000000001,
+      "text" : "we"
+    },
+    {
+      "end" : 768.24,
+      "start" : 768.08,
+      "text" : "have"
+    },
+    {
+      "end" : 768.32,
+      "start" : 768.24,
+      "text" : "a"
+    },
+    {
+      "end" : 768.72,
+      "start" : 768.48,
+      "text" : "try"
+    },
+    {
+      "end" : 769.0400000000001,
+      "start" : 768.96,
+      "text" : "two"
+    },
+    {
+      "end" : 769.36,
+      "start" : 769.28,
+      "text" : "two"
+    },
+    {
+      "end" : 769.6,
+      "start" : 769.52,
+      "text" : "two"
+    },
+    {
+      "end" : 770.16,
+      "start" : 769.84,
+      "text" : "three"
+    },
+    {
+      "end" : 770.8000000000001,
+      "start" : 770.16,
+      "text" : "minutes."
+    },
+    {
+      "end" : 771.0400000000001,
+      "start" : 770.8000000000001,
+      "text" : "Um"
+    },
+    {
+      "end" : 771.6800000000001,
+      "start" : 771.36,
+      "text" : "any"
+    },
+    {
+      "end" : 772.5600000000001,
+      "start" : 771.9200000000001,
+      "text" : "questions"
+    },
+    {
+      "end" : 772.8800000000001,
+      "start" : 772.5600000000001,
+      "text" : "at"
+    },
+    {
+      "end" : 773.2,
+      "start" : 772.88,
+      "text" : "this"
+    },
+    {
+      "end" : 773.5200000000001,
+      "start" : 773.2,
+      "text" : "point"
+    },
+    {
+      "end" : 774.1600000000001,
+      "start" : 773.84,
+      "text" : "or"
+    },
+    {
+      "end" : 774.48,
+      "start" : 774.16,
+      "text" : "uh"
+    },
+    {
+      "end" : 777.0400000000001,
+      "start" : 774.8000000000001,
+      "text" : "suggestions?"
+    },
+    {
+      "end" : 777.76,
+      "start" : 777.52,
+      "text" : "I"
+    },
+    {
+      "end" : 777.92,
+      "start" : 777.76,
+      "text" : "think"
+    },
+    {
+      "end" : 778.4000000000001,
+      "start" : 778.08,
+      "text" : "basically"
+    },
+    {
+      "end" : 778.8800000000001,
+      "start" : 778.5600000000001,
+      "text" : "basically"
+    },
+    {
+      "end" : 779.28,
+      "start" : 779.12,
+      "text" : "you"
+    },
+    {
+      "end" : 779.52,
+      "start" : 779.36,
+      "text" : "will"
+    },
+    {
+      "end" : 779.9200000000001,
+      "start" : 779.6800000000001,
+      "text" : "get"
+    },
+    {
+      "end" : 780.96,
+      "start" : 779.9200000000001,
+      "text" : "instructions"
+    },
+    {
+      "end" : 781.5200000000001,
+      "start" : 781.2,
+      "text" : "to"
+    },
+    {
+      "end" : 781.84,
+      "start" : 781.52,
+      "text" : "work"
+    },
+    {
+      "end" : 782.5600000000001,
+      "start" : 782.08,
+      "text" : "with."
+    },
+    {
+      "end" : 782.8000000000001,
+      "start" : 782.5600000000001,
+      "text" : "And"
+    },
+    {
+      "end" : 783.1200000000001,
+      "start" : 782.8000000000001,
+      "text" : "if"
+    },
+    {
+      "end" : 783.28,
+      "start" : 783.12,
+      "text" : "you"
+    },
+    {
+      "end" : 783.52,
+      "start" : 783.28,
+      "text" : "have"
+    },
+    {
+      "end" : 783.84,
+      "start" : 783.52,
+      "text" : "any"
+    },
+    {
+      "end" : 784.4,
+      "start" : 783.84,
+      "text" : "questions"
+    },
+    {
+      "end" : 784.8800000000001,
+      "start" : 784.5600000000001,
+      "text" : "uh"
+    },
+    {
+      "end" : 785.68,
+      "start" : 785.52,
+      "text" : "uh"
+    },
+    {
+      "end" : 785.92,
+      "start" : 785.76,
+      "text" : "I"
+    },
+    {
+      "end" : 786.32,
+      "start" : 785.9200000000001,
+      "text" : "guess"
+    },
+    {
+      "end" : 786.48,
+      "start" : 786.32,
+      "text" : "you"
+    },
+    {
+      "end" : 786.64,
+      "start" : 786.48,
+      "text" : "can"
+    },
+    {
+      "end" : 786.96,
+      "start" : 786.72,
+      "text" : "uh"
+    },
+    {
+      "end" : 787.7600000000001,
+      "start" : 787.44,
+      "text" : "Okay,"
+    },
+    {
+      "end" : 787.92,
+      "start" : 787.76,
+      "text" : "I"
+    },
+    {
+      "end" : 788.08,
+      "start" : 787.9200000000001,
+      "text" : "think"
+    },
+    {
+      "end" : 788.24,
+      "start" : 788.08,
+      "text" : "I"
+    },
+    {
+      "end" : 788.4,
+      "start" : 788.24,
+      "text" : "have"
+    },
+    {
+      "end" : 788.72,
+      "start" : 788.4,
+      "text" : "enough"
+    },
+    {
+      "end" : 789.0400000000001,
+      "start" : 788.72,
+      "text" : "to"
+    },
+    {
+      "end" : 789.36,
+      "start" : 789.04,
+      "text" : "think"
+    },
+    {
+      "end" : 789.44,
+      "start" : 789.36,
+      "text" : "about"
+    },
+    {
+      "end" : 789.84,
+      "start" : 789.6800000000001,
+      "text" : "to"
+    },
+    {
+      "end" : 789.9200000000001,
+      "start" : 789.84,
+      "text" : "our"
+    },
+    {
+      "end" : 790.3199999999999,
+      "start" : 790.08,
+      "text" : "next"
+    },
+    {
+      "end" : 790.72,
+      "start" : 790.32,
+      "text" : "meeting."
+    },
+    {
+      "end" : 791.2,
+      "start" : 790.72,
+      "text" : "Mm-hmm."
+    },
+    {
+      "end" : 791.7600000000001,
+      "start" : 791.6,
+      "text" : "How"
+    },
+    {
+      "end" : 791.92,
+      "start" : 791.76,
+      "text" : "about"
+    },
+    {
+      "end" : 792.1600000000001,
+      "start" : 791.9200000000001,
+      "text" : "you"
+    },
+    {
+      "end" : 792.48,
+      "start" : 792.16,
+      "text" : "people?"
+    },
+    {
+      "end" : 792.96,
+      "start" : 792.72,
+      "text" : "yeah."
+    },
+    {
+      "end" : 793.2800000000001,
+      "start" : 793.12,
+      "text" : "Uh"
+    },
+    {
+      "end" : 793.5200000000001,
+      "start" : 793.44,
+      "text" : "I"
+    },
+    {
+      "end" : 793.68,
+      "start" : 793.52,
+      "text" : "think"
+    },
+    {
+      "end" : 794.4000000000001,
+      "start" : 793.76,
+      "text" : "yeah."
+    },
+    {
+      "end" : 796.1600000000001,
+      "start" : 795.36,
+      "text" : "Okay."
+    },
+    {
+      "end" : 796.4,
+      "start" : 796.24,
+      "text" : "All"
+    },
+    {
+      "end" : 796.6400000000001,
+      "start" : 796.4,
+      "text" : "right,"
+    },
+    {
+      "end" : 796.8,
+      "start" : 796.64,
+      "text" : "well"
+    },
+    {
+      "end" : 798.32,
+      "start" : 798,
+      "text" : "then"
+    },
+    {
+      "end" : 798.56,
+      "start" : 798.4,
+      "text" : "uh"
+    },
+    {
+      "end" : 798.88,
+      "start" : 798.72,
+      "text" : "we"
+    },
+    {
+      "end" : 799.28,
+      "start" : 799.12,
+      "text" : "see"
+    },
+    {
+      "end" : 799.84,
+      "start" : 799.52,
+      "text" : "you"
+    },
+    {
+      "end" : 800.1600000000001,
+      "start" : 799.84,
+      "text" : "in"
+    },
+    {
+      "end" : 800.4,
+      "start" : 800.16,
+      "text" : "about"
+    },
+    {
+      "end" : 800.88,
+      "start" : 800.4,
+      "text" : "thirty"
+    },
+    {
+      "end" : 801.7600000000001,
+      "start" : 800.88,
+      "text" : "minutes."
+    },
+    {
+      "end" : 801.84,
+      "start" : 801.76,
+      "text" : "And"
+    },
+    {
+      "end" : 802.32,
+      "start" : 802.08,
+      "text" : "see"
+    },
+    {
+      "end" : 802.5600000000001,
+      "start" : 802.32,
+      "text" : "what"
+    },
+    {
+      "end" : 802.6400000000001,
+      "start" : 802.5600000000001,
+      "text" : "we"
+    },
+    {
+      "end" : 802.88,
+      "start" : 802.64,
+      "text" : "can"
+    },
+    {
+      "end" : 803.04,
+      "start" : 802.88,
+      "text" : "come"
+    },
+    {
+      "end" : 803.12,
+      "start" : 803.04,
+      "text" : "up"
+    },
+    {
+      "end" : 803.36,
+      "start" : 803.12,
+      "text" : "with."
+    },
+    {
+      "end" : 804.08,
+      "start" : 803.84,
+      "text" : "Okay,"
+    },
+    {
+      "end" : 804.32,
+      "start" : 804.08,
+      "text" : "very"
+    },
+    {
+      "end" : 804.48,
+      "start" : 804.32,
+      "text" : "good."
+    },
+    {
+      "end" : 805.2,
+      "start" : 804.72,
+      "text" : "Okay."
+    },
+    {
+      "end" : 805.44,
+      "start" : 805.2,
+      "text" : "Yes."
+    },
+    {
+      "end" : 806.56,
+      "start" : 805.6,
+      "text" : "Yeah."
+    },
+    {
+      "end" : 814.3199999999999,
+      "start" : 814.16,
+      "text" : "So"
+    },
+    {
+      "end" : 814.64,
+      "start" : 814.48,
+      "text" : "now"
+    },
+    {
+      "end" : 814.8,
+      "start" : 814.64,
+      "text" : "we"
+    },
+    {
+      "end" : 814.8800000000001,
+      "start" : 814.8000000000001,
+      "text" : "have"
+    },
+    {
+      "end" : 814.96,
+      "start" : 814.88,
+      "text" : "to"
+    },
+    {
+      "end" : 815.2,
+      "start" : 815.12,
+      "text" : "Do"
+    },
+    {
+      "end" : 816.2400000000001,
+      "start" : 815.28,
+      "text" : "it."
+    },
+    {
+      "end" : 821.12,
+      "start" : 820.96,
+      "text" : "I"
+    },
+    {
+      "end" : 821.28,
+      "start" : 821.12,
+      "text" : "think"
+    },
+    {
+      "end" : 821.4399999999999,
+      "start" : 821.28,
+      "text" : "we"
+    },
+    {
+      "end" : 821.6,
+      "start" : 821.44,
+      "text" : "have"
+    },
+    {
+      "end" : 821.6800000000001,
+      "start" : 821.6,
+      "text" : "to"
+    },
+    {
+      "end" : 821.9200000000001,
+      "start" : 821.6800000000001,
+      "text" : "keep"
+    },
+    {
+      "end" : 822.2400000000001,
+      "start" : 821.9200000000001,
+      "text" : "it"
+    },
+    {
+      "end" : 822.8800000000001,
+      "start" : 822.24,
+      "text" : "here."
+    }
+  ]
+}

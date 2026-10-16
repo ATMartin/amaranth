@@ -1,0 +1,119 @@
+{
+  "audioSeconds" : 1049.3546875,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            13
+          ],
+          "kind" : "decision",
+          "text" : "We will do some stuff, get to know each other a bit better, feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            13
+          ],
+          "kind" : "decision",
+          "text" : "We will do tool training, talk about the project plan, discuss our own ideas and everything."
+        },
+        {
+          "evidence" : [
+            14
+          ],
+          "kind" : "decision",
+          "text" : "We want it to be original, something that's people haven't thought of, that's not out in the shops."
+        },
+        {
+          "evidence" : [
+            14
+          ],
+          "kind" : "decision",
+          "text" : "We want it to be trendy, appealing to a wide market, but you know, not a hunk of metal."
+        },
+        {
+          "evidence" : [
+            14
+          ],
+          "kind" : "decision",
+          "text" : "We want it to be user friendly, grannies to kids, maybe even pooches should be able to use it."
+        },
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We will practice with the pens and draw our favorite animal on the whiteboard."
+        },
+        {
+          "evidence" : [
+            16
+          ],
+          "kind" : "decision",
+          "text" : "We will go off and do our individual work."
+        },
+        {
+          "evidence" : [
+            43
+          ],
+          "kind" : "decision",
+          "text" : "We will have to change what it was originally gonna be because that looks like a beak now."
+        },
+        {
+          "evidence" : [
+            43
+          ],
+          "kind" : "decision",
+          "text" : "We will have to think on the spot of things that it is."
+        },
+        {
+          "evidence" : [
+            43
+          ],
+          "kind" : "decision",
+          "text" : "We will have to think on the spot of things that it is."
+        },
+        {
+          "evidence" : [
+            43
+          ],
+          "kind" : "decision",
+          "text" : "We will have to think on the spot of things that it is."
+        },
+        {
+          "evidence" : [
+            43
+          ],
+          "kind" : "decision",
+          "text" : "We will have to think on the spot of things that it is."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        129
+      ],
+      "stats" : {
+        "generateSeconds" : 5.1200005,
+        "generatedTokens" : 704,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.716254625,
+        "promptTokens" : 4279
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.253217833,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 1113721208,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 6.853712083,
+  "transcriptSegments" : 130,
+  "transcriptWords" : 2341
+}

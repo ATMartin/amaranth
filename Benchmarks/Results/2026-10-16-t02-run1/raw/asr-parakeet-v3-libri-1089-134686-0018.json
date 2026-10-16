@@ -1,0 +1,218 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0018.wav",
+  "audioSeconds" : 15.72,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4915704,
+  "loadSeconds" : 0.116550792,
+  "peakFootprintBytes" : 51495584,
+  "processSeconds" : 0.147582833,
+  "realtimeFactor" : 0.00938822092875318,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.56,
+      "start" : 0.24,
+      "text" : "It"
+    },
+    {
+      "end" : 0.8,
+      "start" : 0.56,
+      "text" : "was"
+    },
+    {
+      "end" : 1.3599999999999999,
+      "start" : 0.8,
+      "text" : "strange,"
+    },
+    {
+      "end" : 1.92,
+      "start" : 1.36,
+      "text" : "too,"
+    },
+    {
+      "end" : 2.16,
+      "start" : 1.92,
+      "text" : "that"
+    },
+    {
+      "end" : 2.3200000000000003,
+      "start" : 2.16,
+      "text" : "he"
+    },
+    {
+      "end" : 2.56,
+      "start" : 2.32,
+      "text" : "found"
+    },
+    {
+      "end" : 2.8,
+      "start" : 2.56,
+      "text" : "an"
+    },
+    {
+      "end" : 3.2,
+      "start" : 2.8000000000000003,
+      "text" : "arid"
+    },
+    {
+      "end" : 3.84,
+      "start" : 3.36,
+      "text" : "pleasure"
+    },
+    {
+      "end" : 4,
+      "start" : 3.84,
+      "text" : "in"
+    },
+    {
+      "end" : 4.5600000000000005,
+      "start" : 4,
+      "text" : "following"
+    },
+    {
+      "end" : 4.720000000000001,
+      "start" : 4.5600000000000005,
+      "text" : "up"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.72,
+      "text" : "to"
+    },
+    {
+      "end" : 5.2,
+      "start" : 4.88,
+      "text" : "the"
+    },
+    {
+      "end" : 5.44,
+      "start" : 5.2,
+      "text" : "end"
+    },
+    {
+      "end" : 5.680000000000001,
+      "start" : 5.44,
+      "text" : "the"
+    },
+    {
+      "end" : 6.24,
+      "start" : 5.68,
+      "text" : "rigid"
+    },
+    {
+      "end" : 6.5600000000000005,
+      "start" : 6.24,
+      "text" : "lines"
+    },
+    {
+      "end" : 6.720000000000001,
+      "start" : 6.5600000000000005,
+      "text" : "of"
+    },
+    {
+      "end" : 6.88,
+      "start" : 6.72,
+      "text" : "the"
+    },
+    {
+      "end" : 7.44,
+      "start" : 6.88,
+      "text" : "doctrines"
+    },
+    {
+      "end" : 7.5200000000000005,
+      "start" : 7.44,
+      "text" : "of"
+    },
+    {
+      "end" : 7.760000000000001,
+      "start" : 7.5200000000000005,
+      "text" : "the"
+    },
+    {
+      "end" : 8.24,
+      "start" : 7.76,
+      "text" : "church,"
+    },
+    {
+      "end" : 8.56,
+      "start" : 8.24,
+      "text" : "and"
+    },
+    {
+      "end" : 9.360000000000001,
+      "start" : 8.56,
+      "text" : "penetrating"
+    },
+    {
+      "end" : 9.68,
+      "start" : 9.36,
+      "text" : "into"
+    },
+    {
+      "end" : 10.32,
+      "start" : 9.68,
+      "text" : "obscure"
+    },
+    {
+      "end" : 10.96,
+      "start" : 10.32,
+      "text" : "silences"
+    },
+    {
+      "end" : 11.440000000000001,
+      "start" : 11.200000000000001,
+      "text" : "only"
+    },
+    {
+      "end" : 11.68,
+      "start" : 11.44,
+      "text" : "to"
+    },
+    {
+      "end" : 12.08,
+      "start" : 11.68,
+      "text" : "hear"
+    },
+    {
+      "end" : 12.32,
+      "start" : 12.08,
+      "text" : "and"
+    },
+    {
+      "end" : 12.64,
+      "start" : 12.32,
+      "text" : "feel"
+    },
+    {
+      "end" : 12.88,
+      "start" : 12.64,
+      "text" : "the"
+    },
+    {
+      "end" : 13.120000000000001,
+      "start" : 12.88,
+      "text" : "more"
+    },
+    {
+      "end" : 13.68,
+      "start" : 13.120000000000001,
+      "text" : "deeply"
+    },
+    {
+      "end" : 13.84,
+      "start" : 13.68,
+      "text" : "his"
+    },
+    {
+      "end" : 14.16,
+      "start" : 13.84,
+      "text" : "own"
+    },
+    {
+      "end" : 14.8,
+      "start" : 14.16,
+      "text" : "condemnation."
+    }
+  ]
+}

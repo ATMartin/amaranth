@@ -1,0 +1,626 @@
+{
+  "audioSeconds" : 3600,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            25,
+            28,
+            35,
+            37,
+            39,
+            45
+          ],
+          "kind" : "decision",
+          "text" : "Use a right-click menu to open speaker characterization windows instead of a button, as it is more intuitive and user-friendly."
+        },
+        {
+          "evidence" : [
+            47,
+            51,
+            52,
+            53,
+            54,
+            55
+          ],
+          "kind" : "decision",
+          "text" : "Implement a right-click menu that includes options to view all meetings a user has been in or to characterize a speaker."
+        },
+        {
+          "evidence" : [
+            78,
+            79,
+            80,
+            81,
+            82,
+            85
+          ],
+          "kind" : "decision",
+          "text" : "Allow double-clicking on topics to automatically show all meetings containing that topic, as a default action to improve usability."
+        },
+        {
+          "evidence" : [
+            58,
+            60,
+            65,
+            66,
+            68,
+            69
+          ],
+          "kind" : "decision",
+          "text" : "Integrate speaker characterization into the browsing experience by linking speaker traits to topics or meetings."
+        },
+        {
+          "evidence" : [
+            81,
+            82,
+            85,
+            86,
+            87,
+            88
+          ],
+          "kind" : "action",
+          "text" : "Evaluate and test the behavior of double-click actions on topics and speakers to determine if they should be implemented as a default action."
+        },
+        {
+          "evidence" : [
+            103,
+            104,
+            105,
+            106,
+            107,
+            108
+          ],
+          "kind" : "action",
+          "text" : "Investigate whether single-channel audio files should be included in the system, with a recommendation to defer integration due to increased data footprint."
+        },
+        {
+          "evidence" : [
+            123,
+            124,
+            125,
+            126,
+            127,
+            128
+          ],
+          "kind" : "action",
+          "text" : "Design a unified interface where transcription and summary are displayed in the same window using tabs or toggle buttons to reduce window clutter."
+        },
+        {
+          "evidence" : [
+            148,
+            149,
+            150,
+            151,
+            152,
+            153
+          ],
+          "kind" : "action",
+          "text" : "Explore the feasibility of implementing multiple transcript views (full meeting, meeting without disfluencies, summary) within a single window using toggle buttons."
+        },
+        {
+          "due" : "By the end of February",
+          "evidence" : [
+            155,
+            156,
+            157,
+            158,
+            163,
+            164
+          ],
+          "kind" : "action",
+          "text" : "Develop a prototype that demonstrates integration between GUI components, such as speaker characterization, topic browsing, and transcription views."
+        },
+        {
+          "evidence" : [
+            170,
+            171,
+            172
+          ],
+          "kind" : "action",
+          "text" : "Assess the accessibility of existing GUI code to allow team members to review and build upon the latest implementation."
+        },
+        {
+          "evidence" : [
+            86,
+            87,
+            88,
+            90,
+            91,
+            92
+          ],
+          "kind" : "question",
+          "text" : "What is the most common use case for double-clicking on a topic or speaker in the interface?"
+        },
+        {
+          "evidence" : [
+            58,
+            60,
+            65,
+            66,
+            68,
+            69
+          ],
+          "kind" : "question",
+          "text" : "How should speaker characterization be leveraged to improve meeting browsing and user navigation?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        172
+      ],
+      "stats" : {
+        "generateSeconds" : 15.498647875,
+        "generatedTokens" : 1017,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 5.800579959,
+        "promptTokens" : 4999
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            292,
+            300,
+            301,
+            302,
+            303,
+            304
+          ],
+          "kind" : "decision",
+          "text" : "The team will meet next week in the morning to review progress and discuss the search interface design."
+        },
+        {
+          "evidence" : [
+            323,
+            324,
+            325,
+            326,
+            327,
+            328
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Speaker S1 will build a search interface with tick boxes and drop-down menus for search options based on agreed criteria."
+        },
+        {
+          "evidence" : [
+            310,
+            311,
+            312,
+            313,
+            314,
+            315
+          ],
+          "kind" : "action",
+          "text" : "The team will decide on specific search types (e.g., dialogue acts) over the weekend to define the scope of the search interface."
+        },
+        {
+          "evidence" : [
+            174,
+            175,
+            176,
+            177,
+            178,
+            180
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Speaker S1 will make the NLSSD\/M browser directory readable and share it with the team."
+        },
+        {
+          "evidence" : [
+            231,
+            232,
+            233,
+            234,
+            235,
+            236
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S1",
+          "text" : "Speaker S1 will share code and explain how the NXT search works to help others understand the transcript and summary extraction process."
+        },
+        {
+          "evidence" : [
+            208,
+            209,
+            210,
+            211,
+            212,
+            213
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S7",
+          "text" : "Speaker S7 will share their work on reading XML files and extracting data, including challenges with file output."
+        },
+        {
+          "evidence" : [
+            193,
+            194,
+            195,
+            196,
+            197,
+            198
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S8",
+          "text" : "Speaker S8 will explore existing code and tutorials for indexing and reusing code from tutorials."
+        },
+        {
+          "due" : "June 23",
+          "evidence" : [
+            311,
+            312,
+            313,
+            314,
+            315,
+            316
+          ],
+          "kind" : "decision",
+          "text" : "The team will set a milestone to complete an interim prototype by June 23 (two weeks from now)."
+        },
+        {
+          "evidence" : [
+            323,
+            324,
+            325,
+            326,
+            327,
+            328
+          ],
+          "kind" : "decision",
+          "text" : "The team will research the query language to understand what search capabilities are available."
+        },
+        {
+          "evidence" : [
+            336,
+            337,
+            338,
+            339,
+            340,
+            341
+          ],
+          "kind" : "decision",
+          "owner" : "Speaker S6",
+          "text" : "The team will meet to review the current code and basics of the project (e.g., class paths, access to corpus) as a tutorial."
+        },
+        {
+          "evidence" : [
+            342,
+            343,
+            344,
+            345,
+            346,
+            347
+          ],
+          "kind" : "decision",
+          "text" : "The meeting will be scheduled for Monday afternoon, between 1 and 3 PM, with 3 PM being a preferred time."
+        },
+        {
+          "evidence" : [
+            334,
+            335,
+            336,
+            337,
+            338,
+            339
+          ],
+          "kind" : "decision",
+          "text" : "The team will define a clear set of search capabilities (e.g., dialogue acts) before finalizing the interface design."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        172,
+        353
+      ],
+      "stats" : {
+        "generateSeconds" : 16.668731625,
+        "generatedTokens" : 1092,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 5.977482041,
+        "promptTokens" : 4995
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            494,
+            495,
+            504,
+            505,
+            506,
+            522
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees to use a menu-based design with an LCD display, inspired by mobile phones, to simplify navigation and improve usability for all age groups."
+        },
+        {
+          "evidence" : [
+            509,
+            510,
+            511,
+            520,
+            521
+          ],
+          "kind" : "decision",
+          "text" : "The team decides to include a large print mode or an extra button for older users to enhance readability on the LCD screen."
+        },
+        {
+          "evidence" : [
+            523,
+            524,
+            525
+          ],
+          "kind" : "decision",
+          "text" : "The team agrees to consider a flip-top remote control design to provide a larger screen when flipped open, drawing from mobile phone design features."
+        },
+        {
+          "evidence" : [
+            480,
+            481,
+            482,
+            483
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S5",
+          "text" : "S5 will document the meeting notes and store them in the shared folder for future reference."
+        },
+        {
+          "evidence" : [
+            486,
+            487
+          ],
+          "kind" : "action",
+          "text" : "The team will evaluate whether to undercut the price of the remote control in future iterations based on market feedback and production costs."
+        },
+        {
+          "evidence" : [
+            491,
+            492,
+            493
+          ],
+          "kind" : "action",
+          "text" : "The team will discuss and refine the product's target market, confirming it is accessible and user-friendly for all age groups, including older adults."
+        },
+        {
+          "evidence" : [
+            501,
+            502,
+            503,
+            519,
+            520
+          ],
+          "kind" : "action",
+          "text" : "The team will explore the feasibility of using a black-and-white LCD screen within the budget of €25 selling price and €12.50 production cost."
+        },
+        {
+          "evidence" : [
+            494,
+            495,
+            496,
+            497,
+            500,
+            501
+          ],
+          "kind" : "action",
+          "text" : "The team will assess whether the current universal remote control design, with its signal loss and complexity, presents a key design challenge to be addressed."
+        },
+        {
+          "evidence" : [
+            403,
+            404,
+            405,
+            406,
+            407,
+            408
+          ],
+          "kind" : "action",
+          "text" : "The team will consider whether to include both speaker characterization and topic segmentation features in the remote control software, based on user feedback."
+        },
+        {
+          "evidence" : [
+            488,
+            489,
+            490
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S5",
+          "text" : "The team will confirm the target launch timeline for the remote control, with a focus on the first year of operations and a profit aim of €15 million."
+        },
+        {
+          "evidence" : [
+            493,
+            494
+          ],
+          "kind" : "action",
+          "text" : "The team will evaluate the feasibility of international market expansion, including regions such as Australia and the United States, without requiring language-specific adaptations."
+        },
+        {
+          "evidence" : [
+            507,
+            508,
+            509,
+            510,
+            511,
+            512
+          ],
+          "kind" : "question",
+          "text" : "Can the remote control be designed to be intuitive enough for older users who are not familiar with digital interfaces or programming?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        353,
+        526
+      ],
+      "stats" : {
+        "generateSeconds" : 15.853408833,
+        "generatedTokens" : 1032,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 6.014882834,
+        "promptTokens" : 4994
+      }
+    },
+    {
+      "chunk" : 3,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            553,
+            554
+          ],
+          "kind" : "decision",
+          "text" : "The new remote control should be original, trendy, and user-friendly."
+        },
+        {
+          "evidence" : [
+            558,
+            559,
+            560,
+            561,
+            562,
+            563
+          ],
+          "kind" : "action",
+          "text" : "Each team member will complete individual work on functional, conceptual, and detailed design phases before discussing them in the meeting."
+        },
+        {
+          "evidence" : [
+            569,
+            570,
+            571,
+            572,
+            573,
+            574
+          ],
+          "kind" : "action",
+          "owner" : "Eileen",
+          "text" : "Eileen and Speaker S2 will try out the whiteboard to learn how to present on it during the next meeting."
+        },
+        {
+          "evidence" : [
+            574,
+            575,
+            576,
+            577,
+            578,
+            579
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S2",
+          "text" : "Speaker S2 will draw a cat (specifically a 'sneak' cat) as a test of the whiteboard functionality."
+        },
+        {
+          "evidence" : [
+            590
+          ],
+          "kind" : "decision",
+          "text" : "The selling price of the remote control will be 25 euros."
+        },
+        {
+          "evidence" : [
+            590
+          ],
+          "kind" : "decision",
+          "text" : "The company's profit aim is 50 million euros."
+        },
+        {
+          "evidence" : [
+            590
+          ],
+          "kind" : "decision",
+          "text" : "The market range is unlimited (international)."
+        },
+        {
+          "evidence" : [
+            590
+          ],
+          "kind" : "decision",
+          "text" : "The production cost should not exceed 12.50 euros."
+        },
+        {
+          "evidence" : [
+            565,
+            566,
+            567
+          ],
+          "kind" : "action",
+          "owner" : "Speaker S2",
+          "text" : "Speaker S2 will consider redesigning the remote control after completion of the design phase."
+        },
+        {
+          "evidence" : [
+            527,
+            528,
+            533,
+            534,
+            535
+          ],
+          "kind" : "decision",
+          "text" : "The remote control does not need to be fashionable or made of metal; plastic is acceptable and potentially cheaper."
+        },
+        {
+          "evidence" : [
+            543,
+            544,
+            545,
+            546,
+            547,
+            548
+          ],
+          "kind" : "action",
+          "text" : "Team members will introduce themselves with their name and role during the meeting."
+        },
+        {
+          "evidence" : [
+            528,
+            532,
+            533
+          ],
+          "kind" : "question",
+          "text" : "Can the remote control be made with plastic and still look good?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        526,
+        594
+      ],
+      "stats" : {
+        "generateSeconds" : 11.734665833,
+        "generatedTokens" : 856,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.827512708,
+        "promptTokens" : 2010
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.311817667,
+  "model" : "qwen3-4b-instruct-2507-q4_k_m",
+  "peakFootprintBytes" : 1389432264,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 2014396416,
+  "totalSeconds" : 79.45191875,
+  "transcriptSegments" : 595,
+  "transcriptWords" : 8367
+}

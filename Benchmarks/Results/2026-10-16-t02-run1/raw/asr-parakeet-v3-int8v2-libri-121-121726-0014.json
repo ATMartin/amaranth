@@ -1,0 +1,33 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0014.wav",
+  "audioSeconds" : 3.165,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4112888,
+  "loadSeconds" : 0.121400375,
+  "peakFootprintBytes" : 38355592,
+  "processSeconds" : 0.058181875,
+  "realtimeFactor" : 0.018382898894154818,
+  "systemMemoryDeltaPeakBytes" : 16384,
+  "words" : [
+    {
+      "end" : 1.6,
+      "start" : 0.16,
+      "text" : "Hypocrite."
+    },
+    {
+      "end" : 1.84,
+      "start" : 1.6,
+      "text" : "A"
+    },
+    {
+      "end" : 2.3200000000000003,
+      "start" : 1.84,
+      "text" : "horse"
+    },
+    {
+      "end" : 3.2,
+      "start" : 2.32,
+      "text" : "dealer."
+    }
+  ]
+}

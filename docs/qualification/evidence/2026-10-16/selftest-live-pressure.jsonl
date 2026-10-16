@@ -1,0 +1,4 @@
+{"latencyMedianSeconds":"2.55","latencyP95Seconds":"11.28","micProvisionalWER":"1.8%","provisionalPublished":"true","samples":"475","status":"off","step":"live","words":"424"}
+{"appPeakMiB":"90","missingAudioEvents":"0","ringOverruns":"0","segments":"126","step":"capture","workerPeakMiB":"43"}
+{"audioEnd":"124","caughtUp":"true","processedUntil":"systemOutput=124,microphone=122","sawPaused":"true","step":"pressure"}
+{"result":"pass","test":"live-pressure"}

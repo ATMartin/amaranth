@@ -1,0 +1,103 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0010.wav",
+  "audioSeconds" : 9.81,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4571640,
+  "loadSeconds" : 0.653591666,
+  "peakFootprintBytes" : 125895496,
+  "processSeconds" : 1.100684041,
+  "realtimeFactor" : 0.11220020805300714,
+  "systemMemoryDeltaPeakBytes" : 597098496,
+  "words" : [
+    {
+      "end" : 1.3799999952316284,
+      "start" : 0.019999999552965164,
+      "text" : "Housecleaning."
+    },
+    {
+      "end" : 2.799999952316284,
+      "start" : 2.5199999809265137,
+      "text" : "A"
+    },
+    {
+      "end" : 3.4000000953674316,
+      "start" : 2.799999952316284,
+      "text" : "domestic"
+    },
+    {
+      "end" : 4.239999771118164,
+      "start" : 3.4000000953674316,
+      "text" : "upheaval"
+    },
+    {
+      "end" : 5,
+      "start" : 4.239999771118164,
+      "text" : "that"
+    },
+    {
+      "end" : 5.300000190734863,
+      "start" : 5,
+      "text" : "makes"
+    },
+    {
+      "end" : 5.480000019073486,
+      "start" : 5.300000190734863,
+      "text" : "it"
+    },
+    {
+      "end" : 5.920000076293945,
+      "start" : 5.480000019073486,
+      "text" : "easy"
+    },
+    {
+      "end" : 6.139999866485596,
+      "start" : 5.920000076293945,
+      "text" : "for"
+    },
+    {
+      "end" : 6.28000020980835,
+      "start" : 6.139999866485596,
+      "text" : "the"
+    },
+    {
+      "end" : 6.800000190734863,
+      "start" : 6.28000020980835,
+      "text" : "government"
+    },
+    {
+      "end" : 7.159999847412109,
+      "start" : 6.800000190734863,
+      "text" : "to"
+    },
+    {
+      "end" : 7.559999942779541,
+      "start" : 7.159999847412109,
+      "text" : "enlist"
+    },
+    {
+      "end" : 7.980000019073486,
+      "start" : 7.559999942779541,
+      "text" : "all"
+    },
+    {
+      "end" : 8.15999984741211,
+      "start" : 7.980000019073486,
+      "text" : "the"
+    },
+    {
+      "end" : 8.479999542236328,
+      "start" : 8.15999984741211,
+      "text" : "soldiers"
+    },
+    {
+      "end" : 8.800000190734863,
+      "start" : 8.479999542236328,
+      "text" : "it"
+    },
+    {
+      "end" : 9.180000305175781,
+      "start" : 8.800000190734863,
+      "text" : "needs."
+    }
+  ]
+}

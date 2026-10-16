@@ -1,0 +1,33 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0013.wav",
+  "audioSeconds" : 2.49,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4063736,
+  "loadSeconds" : 0.123646708,
+  "peakFootprintBytes" : 39174792,
+  "processSeconds" : 0.053470875,
+  "realtimeFactor" : 0.021474246987951806,
+  "systemMemoryDeltaPeakBytes" : 32768,
+  "words" : [
+    {
+      "end" : 0.48,
+      "start" : 0.24,
+      "text" : "tied"
+    },
+    {
+      "end" : 1.2,
+      "start" : 0.96,
+      "text" : "to"
+    },
+    {
+      "end" : 1.44,
+      "start" : 1.2,
+      "text" : "a"
+    },
+    {
+      "end" : 2.3200000000000003,
+      "start" : 1.44,
+      "text" : "woman."
+    }
+  ]
+}

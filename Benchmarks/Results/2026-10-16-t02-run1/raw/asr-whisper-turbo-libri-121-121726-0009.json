@@ -1,0 +1,83 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0009.wav",
+  "audioSeconds" : 7.26,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4440568,
+  "loadSeconds" : 0.633766375,
+  "peakFootprintBytes" : 123093856,
+  "processSeconds" : 0.967934584,
+  "realtimeFactor" : 0.13332432286501378,
+  "systemMemoryDeltaPeakBytes" : 901677056,
+  "words" : [
+    {
+      "end" : 0.8799999952316284,
+      "start" : 0.019999999552965164,
+      "text" : "Hotel,"
+    },
+    {
+      "end" : 2.299999952316284,
+      "start" : 1.5800000429153442,
+      "text" : "a"
+    },
+    {
+      "end" : 2.880000114440918,
+      "start" : 2.299999952316284,
+      "text" : "place"
+    },
+    {
+      "end" : 3.0799999237060547,
+      "start" : 2.880000114440918,
+      "text" : "where"
+    },
+    {
+      "end" : 3.2200000286102295,
+      "start" : 3.0799999237060547,
+      "text" : "a"
+    },
+    {
+      "end" : 3.4600000381469727,
+      "start" : 3.2200000286102295,
+      "text" : "guest"
+    },
+    {
+      "end" : 3.859999895095825,
+      "start" : 3.4600000381469727,
+      "text" : "often"
+    },
+    {
+      "end" : 4.239999771118164,
+      "start" : 3.859999895095825,
+      "text" : "gives"
+    },
+    {
+      "end" : 4.5,
+      "start" : 4.239999771118164,
+      "text" : "up"
+    },
+    {
+      "end" : 4.820000171661377,
+      "start" : 4.5,
+      "text" : "good"
+    },
+    {
+      "end" : 5.159999847412109,
+      "start" : 4.820000171661377,
+      "text" : "dollars"
+    },
+    {
+      "end" : 5.539999961853027,
+      "start" : 5.159999847412109,
+      "text" : "for"
+    },
+    {
+      "end" : 5.980000019073486,
+      "start" : 5.539999961853027,
+      "text" : "poor"
+    },
+    {
+      "end" : 6.380000114440918,
+      "start" : 5.980000019073486,
+      "text" : "quarters."
+    }
+  ]
+}

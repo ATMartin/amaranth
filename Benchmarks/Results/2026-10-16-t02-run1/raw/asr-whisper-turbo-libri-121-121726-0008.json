@@ -1,0 +1,48 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0008.wav",
+  "audioSeconds" : 4.99,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4293112,
+  "loadSeconds" : 0.618622333,
+  "peakFootprintBytes" : 123290464,
+  "processSeconds" : 0.878401209,
+  "realtimeFactor" : 0.17603230641282563,
+  "systemMemoryDeltaPeakBytes" : 33865728,
+  "words" : [
+    {
+      "end" : 0.699999988079071,
+      "start" : 0.019999999552965164,
+      "text" : "hose"
+    },
+    {
+      "end" : 2.700000047683716,
+      "start" : 0.699999988079071,
+      "text" : "man's"
+    },
+    {
+      "end" : 3.0799999237060547,
+      "start" : 2.700000047683716,
+      "text" : "excuse"
+    },
+    {
+      "end" : 3.440000057220459,
+      "start" : 3.0799999237060547,
+      "text" : "for"
+    },
+    {
+      "end" : 3.8399999141693115,
+      "start" : 3.440000057220459,
+      "text" : "wetting"
+    },
+    {
+      "end" : 3.9800000190734863,
+      "start" : 3.8399999141693115,
+      "text" : "the"
+    },
+    {
+      "end" : 4.239999771118164,
+      "start" : 3.9800000190734863,
+      "text" : "walk"
+    }
+  ]
+}

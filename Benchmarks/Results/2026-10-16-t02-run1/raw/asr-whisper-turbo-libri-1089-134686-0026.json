@@ -1,0 +1,78 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0026.wav",
+  "audioSeconds" : 4.01,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4194808,
+  "loadSeconds" : 0.634085667,
+  "peakFootprintBytes" : 124273480,
+  "processSeconds" : 0.989854459,
+  "realtimeFactor" : 0.24684649850374066,
+  "systemMemoryDeltaPeakBytes" : 703102976,
+  "words" : [
+    {
+      "end" : 0.5799999833106995,
+      "start" : 0.5,
+      "text" : "The"
+    },
+    {
+      "end" : 0.9399999976158142,
+      "start" : 0.5799999833106995,
+      "text" : "rector"
+    },
+    {
+      "end" : 1.159999966621399,
+      "start" : 0.9399999976158142,
+      "text" : "did"
+    },
+    {
+      "end" : 1.3600000143051147,
+      "start" : 1.159999966621399,
+      "text" : "not"
+    },
+    {
+      "end" : 1.6200000047683716,
+      "start" : 1.3600000143051147,
+      "text" : "ask"
+    },
+    {
+      "end" : 1.8200000524520874,
+      "start" : 1.6200000047683716,
+      "text" : "for"
+    },
+    {
+      "end" : 1.940000057220459,
+      "start" : 1.8200000524520874,
+      "text" : "a"
+    },
+    {
+      "end" : 2.5399999618530273,
+      "start" : 1.940000057220459,
+      "text" : "catechism"
+    },
+    {
+      "end" : 2.680000066757202,
+      "start" : 2.5399999618530273,
+      "text" : "to"
+    },
+    {
+      "end" : 2.9000000953674316,
+      "start" : 2.680000066757202,
+      "text" : "hear"
+    },
+    {
+      "end" : 3.0399999618530273,
+      "start" : 2.9000000953674316,
+      "text" : "the"
+    },
+    {
+      "end" : 3.299999952316284,
+      "start" : 3.0399999618530273,
+      "text" : "lesson"
+    },
+    {
+      "end" : 3.5399999618530273,
+      "start" : 3.299999952316284,
+      "text" : "from,"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0037.wav",
+  "audioSeconds" : 5.21,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4276728,
+  "loadSeconds" : 0.610755416,
+  "peakFootprintBytes" : 124011336,
+  "processSeconds" : 0.984657833,
+  "realtimeFactor" : 0.18899382591170824,
+  "systemMemoryDeltaPeakBytes" : 728629248,
+  "words" : [
+    {
+      "end" : 0.5400000214576721,
+      "start" : 0.41999998688697815,
+      "text" : "In"
+    },
+    {
+      "end" : 0.6399999856948853,
+      "start" : 0.5400000214576721,
+      "text" : "the"
+    },
+    {
+      "end" : 1,
+      "start" : 0.6399999856948853,
+      "text" : "silence"
+    },
+    {
+      "end" : 1.5399999618530273,
+      "start" : 1,
+      "text" : "their"
+    },
+    {
+      "end" : 1.7799999713897705,
+      "start" : 1.5399999618530273,
+      "text" : "dark"
+    },
+    {
+      "end" : 2.259999990463257,
+      "start" : 1.7799999713897705,
+      "text" : "fire"
+    },
+    {
+      "end" : 2.9000000953674316,
+      "start" : 2.259999990463257,
+      "text" : "kindled"
+    },
+    {
+      "end" : 3.0999999046325684,
+      "start" : 2.9000000953674316,
+      "text" : "the"
+    },
+    {
+      "end" : 3.619999885559082,
+      "start" : 3.0999999046325684,
+      "text" : "dusk"
+    },
+    {
+      "end" : 3.859999895095825,
+      "start" : 3.619999885559082,
+      "text" : "into"
+    },
+    {
+      "end" : 4.039999961853027,
+      "start" : 3.859999895095825,
+      "text" : "a"
+    },
+    {
+      "end" : 4.5,
+      "start" : 4.039999961853027,
+      "text" : "tawny"
+    },
+    {
+      "end" : 4.760000228881836,
+      "start" : 4.5,
+      "text" : "glow."
+    }
+  ]
+}

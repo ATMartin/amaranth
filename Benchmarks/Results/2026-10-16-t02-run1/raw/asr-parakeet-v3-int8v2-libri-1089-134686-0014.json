@@ -1,0 +1,53 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0014.wav",
+  "audioSeconds" : 2.225,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4162040,
+  "loadSeconds" : 0.120587792,
+  "peakFootprintBytes" : 38077064,
+  "processSeconds" : 0.060254,
+  "realtimeFactor" : 0.02708044943820225,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.32,
+      "start" : 0.16,
+      "text" : "He"
+    },
+    {
+      "end" : 0.64,
+      "start" : 0.32,
+      "text" : "tried"
+    },
+    {
+      "end" : 0.8,
+      "start" : 0.64,
+      "text" : "to"
+    },
+    {
+      "end" : 1.04,
+      "start" : 0.8,
+      "text" : "think"
+    },
+    {
+      "end" : 1.2,
+      "start" : 1.04,
+      "text" : "how"
+    },
+    {
+      "end" : 1.44,
+      "start" : 1.2,
+      "text" : "it"
+    },
+    {
+      "end" : 1.68,
+      "start" : 1.44,
+      "text" : "could"
+    },
+    {
+      "end" : 2,
+      "start" : 1.68,
+      "text" : "be"
+    }
+  ]
+}

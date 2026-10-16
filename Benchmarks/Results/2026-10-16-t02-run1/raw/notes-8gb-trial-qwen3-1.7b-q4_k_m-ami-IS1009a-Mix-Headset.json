@@ -1,0 +1,225 @@
+{
+  "audioSeconds" : 838.8333125,
+  "chunkTokenBudget" : 2200,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            0
+          ],
+          "kind" : "decision",
+          "text" : "The microphone is supposed to be to your right."
+        },
+        {
+          "evidence" : [
+            1
+          ],
+          "kind" : "decision",
+          "text" : "Right? Mm-hmm. And then where's the other one? Oh here."
+        },
+        {
+          "evidence" : [
+            2
+          ],
+          "kind" : "decision",
+          "text" : "Okay. Okay. Everybody ready? I think so. Uh I think the first thing we do is introduce ourselves. Yeah, that's a good time. Uh Miss Name and what your function is. So maybe"
+        },
+        {
+          "evidence" : [
+            3
+          ],
+          "kind" : "decision",
+          "text" : "we start with you. Yeah my name is Francena and I'm uh an user interface. My role is uh the main responsibility is user interface and my role is to design uh uh television remote control."
+        },
+        {
+          "evidence" : [
+            4
+          ],
+          "kind" : "decision",
+          "text" : "Okay."
+        },
+        {
+          "evidence" : [
+            5
+          ],
+          "kind" : "decision",
+          "text" : "And I'm a marketing person. I want to figure out how to sell them. Mm-hmm. And your name"
+        },
+        {
+          "evidence" : [
+            7
+          ],
+          "kind" : "decision",
+          "text" : "is? My name is Eileen. Okay"
+        },
+        {
+          "evidence" : [
+            8
+          ],
+          "kind" : "decision",
+          "text" : "Okay. Yeah"
+        },
+        {
+          "evidence" : [
+            9
+          ],
+          "kind" : "decision",
+          "text" : "uh I'm Janvi. I'm um my role as industrial designer and my responsibilities are uh uh um deal with uh technical functional designs and specifications of user interface and dealing with user interface design."
+        },
+        {
+          "evidence" : [
+            10
+          ],
+          "kind" : "decision",
+          "text" : "Very good and as you already know I'm Betsy. I'm the project manager for today. So why don't we look at the presentation to see what we really are supposed to do? Okay. Um Um"
+        },
+        {
+          "evidence" : [
+            12
+          ],
+          "kind" : "decision",
+          "text" : "opening, acquaintancece tool training. Well the tools are I think we already I guess the tool is really our the computer as far as I can see. Uh we get in s each of us will get instructions and we'll take it from their project plan that falls under the same heading pretty much. Um I don' I don't"
+        },
+        {
+          "evidence" : [
+            13
+          ],
+          "kind" : "decision",
+          "text" : "think we have any great discussion at this point."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        78
+      ],
+      "stats" : {
+        "generateSeconds" : 5.532042583,
+        "generatedTokens" : 795,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.035709875,
+        "promptTokens" : 2146
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            89,
+            100
+          ],
+          "kind" : "decision",
+          "text" : "We need to move along."
+        },
+        {
+          "evidence" : [
+            111
+          ],
+          "kind" : "decision",
+          "text" : "We have to justify that but by having sufficient features to make it sell at that price."
+        },
+        {
+          "evidence" : [
+            107
+          ],
+          "kind" : "action",
+          "text" : "Looking for a working design when we come back."
+        },
+        {
+          "evidence" : [
+            108
+          ],
+          "kind" : "action",
+          "text" : "The working design is mainly technical functional design."
+        },
+        {
+          "evidence" : [
+            109
+          ],
+          "kind" : "action",
+          "text" : "The marketing manager is coming up with some user requirement specification like friendliness and what we just discussed in general."
+        },
+        {
+          "evidence" : [
+            119
+          ],
+          "kind" : "action",
+          "text" : "We have to keep it here."
+        },
+        {
+          "evidence" : [
+            89,
+            100
+          ],
+          "kind" : "action",
+          "text" : "We have to move along."
+        },
+        {
+          "evidence" : [
+            111
+          ],
+          "kind" : "action",
+          "text" : "We have to justify that but by having sufficient features to make it sell at that price."
+        },
+        {
+          "evidence" : [
+            119
+          ],
+          "kind" : "action",
+          "text" : "We have to keep it here."
+        },
+        {
+          "evidence" : [
+            89,
+            100
+          ],
+          "kind" : "action",
+          "text" : "We have to move along."
+        },
+        {
+          "evidence" : [
+            111
+          ],
+          "kind" : "action",
+          "text" : "We have to justify that but by having sufficient features to make it sell at that price."
+        },
+        {
+          "evidence" : [
+            119
+          ],
+          "kind" : "action",
+          "text" : "We have to keep it here."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        78,
+        120
+      ],
+      "stats" : {
+        "generateSeconds" : 4.839568625,
+        "generatedTokens" : 647,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.448995333,
+        "promptTokens" : 1530
+      }
+    }
+  ],
+  "contextTokens" : 4096,
+  "loadSeconds" : 0.226323,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 682444912,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 11.873219333,
+  "transcriptSegments" : 121,
+  "transcriptWords" : 1791
+}

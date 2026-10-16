@@ -1,0 +1,48 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0006.wav",
+  "audioSeconds" : 3.895,
+  "engine" : "parakeet-v3",
+  "footprintBeforeLoadBytes" : 4211192,
+  "loadSeconds" : 0.115950625,
+  "peakFootprintBytes" : 37847688,
+  "processSeconds" : 0.055318291,
+  "realtimeFactor" : 0.014202385365853658,
+  "systemMemoryDeltaPeakBytes" : 49152,
+  "words" : [
+    {
+      "end" : 1.2,
+      "start" : 0.32,
+      "text" : "Heredity"
+    },
+    {
+      "end" : 2,
+      "start" : 1.84,
+      "text" : "the"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2,
+      "text" : "cause"
+    },
+    {
+      "end" : 2.56,
+      "start" : 2.4,
+      "text" : "of"
+    },
+    {
+      "end" : 2.8,
+      "start" : 2.56,
+      "text" : "all"
+    },
+    {
+      "end" : 2.9600000000000004,
+      "start" : 2.8000000000000003,
+      "text" : "our"
+    },
+    {
+      "end" : 3.9200000000000004,
+      "start" : 2.96,
+      "text" : "faults."
+    }
+  ]
+}

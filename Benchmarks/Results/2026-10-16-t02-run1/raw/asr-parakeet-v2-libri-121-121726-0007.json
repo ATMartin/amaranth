@@ -1,0 +1,83 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0007.wav",
+  "audioSeconds" : 6.73,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4407800,
+  "loadSeconds" : 0.161246541,
+  "peakFootprintBytes" : 57836144,
+  "processSeconds" : 0.067105417,
+  "realtimeFactor" : 0.00997108722139673,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.88,
+      "start" : 0.4,
+      "text" : "Horse"
+    },
+    {
+      "end" : 1.44,
+      "start" : 1.04,
+      "text" : "sense"
+    },
+    {
+      "end" : 2.5599999999999996,
+      "start" : 2.32,
+      "text" : "a"
+    },
+    {
+      "end" : 3.04,
+      "start" : 2.56,
+      "text" : "degree"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 3.04,
+      "text" : "of"
+    },
+    {
+      "end" : 3.8400000000000003,
+      "start" : 3.2800000000000002,
+      "text" : "wisdom"
+    },
+    {
+      "end" : 4.08,
+      "start" : 3.84,
+      "text" : "that"
+    },
+    {
+      "end" : 4.48,
+      "start" : 4.08,
+      "text" : "keeps"
+    },
+    {
+      "end" : 4.720000000000001,
+      "start" : 4.48,
+      "text" : "one"
+    },
+    {
+      "end" : 4.96,
+      "start" : 4.72,
+      "text" : "from"
+    },
+    {
+      "end" : 5.28,
+      "start" : 4.96,
+      "text" : "betting"
+    },
+    {
+      "end" : 5.44,
+      "start" : 5.28,
+      "text" : "on"
+    },
+    {
+      "end" : 5.6000000000000005,
+      "start" : 5.44,
+      "text" : "the"
+    },
+    {
+      "end" : 6.48,
+      "start" : 5.6000000000000005,
+      "text" : "races."
+    }
+  ]
+}

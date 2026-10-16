@@ -1,0 +1,163 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0024.wav",
+  "audioSeconds" : 11.655,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4686328,
+  "loadSeconds" : 0.159414458,
+  "peakFootprintBytes" : 57492104,
+  "processSeconds" : 0.080400959,
+  "realtimeFactor" : 0.006898409180609181,
+  "systemMemoryDeltaPeakBytes" : 4734976,
+  "words" : [
+    {
+      "end" : 0.4,
+      "start" : 0.24,
+      "text" : "If"
+    },
+    {
+      "end" : 0.56,
+      "start" : 0.4,
+      "text" : "the"
+    },
+    {
+      "end" : 0.96,
+      "start" : 0.56,
+      "text" : "wine"
+    },
+    {
+      "end" : 1.28,
+      "start" : 0.96,
+      "text" : "change"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.28,
+      "text" : "into"
+    },
+    {
+      "end" : 2.24,
+      "start" : 1.52,
+      "text" : "vinegar,"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2.24,
+      "text" : "and"
+    },
+    {
+      "end" : 2.56,
+      "start" : 2.4,
+      "text" : "the"
+    },
+    {
+      "end" : 3.04,
+      "start" : 2.56,
+      "text" : "host"
+    },
+    {
+      "end" : 3.52,
+      "start" : 3.04,
+      "text" : "crumble"
+    },
+    {
+      "end" : 3.76,
+      "start" : 3.52,
+      "text" : "into"
+    },
+    {
+      "end" : 4.4,
+      "start" : 3.7600000000000002,
+      "text" : "corruption,"
+    },
+    {
+      "end" : 4.720000000000001,
+      "start" : 4.4,
+      "text" : "after"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.72,
+      "text" : "they"
+    },
+    {
+      "end" : 5.04,
+      "start" : 4.88,
+      "text" : "have"
+    },
+    {
+      "end" : 5.28,
+      "start" : 5.04,
+      "text" : "been"
+    },
+    {
+      "end" : 6.32,
+      "start" : 5.28,
+      "text" : "consecrated,"
+    },
+    {
+      "end" : 6.5600000000000005,
+      "start" : 6.32,
+      "text" : "is"
+    },
+    {
+      "end" : 7.04,
+      "start" : 6.5600000000000005,
+      "text" : "Jesus"
+    },
+    {
+      "end" : 7.680000000000001,
+      "start" : 7.04,
+      "text" : "Christ"
+    },
+    {
+      "end" : 7.92,
+      "start" : 7.68,
+      "text" : "still"
+    },
+    {
+      "end" : 8.4,
+      "start" : 7.92,
+      "text" : "present"
+    },
+    {
+      "end" : 8.64,
+      "start" : 8.4,
+      "text" : "under"
+    },
+    {
+      "end" : 8.88,
+      "start" : 8.64,
+      "text" : "their"
+    },
+    {
+      "end" : 9.52,
+      "start" : 8.88,
+      "text" : "species"
+    },
+    {
+      "end" : 9.84,
+      "start" : 9.52,
+      "text" : "as"
+    },
+    {
+      "end" : 10.16,
+      "start" : 9.84,
+      "text" : "God"
+    },
+    {
+      "end" : 10.4,
+      "start" : 10.16,
+      "text" : "and"
+    },
+    {
+      "end" : 10.72,
+      "start" : 10.4,
+      "text" : "as"
+    },
+    {
+      "end" : 11.360000000000001,
+      "start" : 10.72,
+      "text" : "man?"
+    }
+  ]
+}

@@ -1,0 +1,307 @@
+{
+  "audioSeconds" : 838.8333125,
+  "chunkTokenBudget" : 2200,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            17,
+            19
+          ],
+          "kind" : "decision",
+          "text" : "The team has decided to design a new remote control that is original, trendy, and user-friendly."
+        },
+        {
+          "evidence" : [
+            70,
+            71
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should be multi-functional, capable of controlling not just TV but also household devices like air conditioners and heating systems."
+        },
+        {
+          "evidence" : [
+            68,
+            75,
+            76,
+            77
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should be compact and have a friendly, trendy design, such as a kidney shape or different colors and materials."
+        },
+        {
+          "evidence" : [
+            78
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should beep when a user claps to help prevent loss and improve usability."
+        },
+        {
+          "evidence" : [
+            34,
+            36,
+            37,
+            38,
+            39,
+            43
+          ],
+          "kind" : "action",
+          "owner" : "Eileen",
+          "text" : "Eileen and S3 will try out the whiteboard and see if they can draw a cat or rabbit to demonstrate how the remote control might look."
+        },
+        {
+          "evidence" : [
+            53
+          ],
+          "kind" : "action",
+          "owner" : "S2",
+          "text" : "S2 will draw a snake as part of the design exploration."
+        },
+        {
+          "evidence" : [
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ],
+          "kind" : "action",
+          "text" : "Team members are to take individual work on functional, conceptual, and detailed design phases, followed by group discussion."
+        },
+        {
+          "evidence" : [
+            21,
+            19
+          ],
+          "kind" : "action",
+          "text" : "Team members are to make notes on the design requirements, including originality, usability, and functionality."
+        },
+        {
+          "evidence" : [
+            31,
+            32
+          ],
+          "kind" : "action",
+          "owner" : "S3",
+          "text" : "S3 will consider redesigning the remote control after the initial design phase is complete."
+        },
+        {
+          "evidence" : [
+            51,
+            57,
+            59,
+            60,
+            61
+          ],
+          "kind" : "action",
+          "text" : "Team members are to think about the production cost, aiming for less than 1250 euros per unit, and a selling price of 25 euros with a profit target of 50 million euros."
+        },
+        {
+          "evidence" : [
+            65,
+            66,
+            67
+          ],
+          "kind" : "action",
+          "text" : "Team members are to identify and share their experiences or frustrations with current remote controls during the meeting."
+        },
+        {
+          "evidence" : [
+            70,
+            71
+          ],
+          "kind" : "question",
+          "text" : "Can the remote control be designed to be used for multiple household functions beyond TV?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        78
+      ],
+      "stats" : {
+        "generateSeconds" : 11.892719083,
+        "generatedTokens" : 887,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.338641958,
+        "promptTokens" : 2142
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            78,
+            80,
+            81,
+            82,
+            83,
+            84
+          ],
+          "kind" : "action",
+          "text" : "Implement a feature that emits a beep or signal when the remote control is clapped or when it detects being in a dark spot (e.g., covered by a newspaper or behind a plant)."
+        },
+        {
+          "evidence" : [
+            86,
+            87,
+            90,
+            91,
+            100
+          ],
+          "kind" : "action",
+          "text" : "Include a light sensor that activates a light or beep signal when the remote is in a dark environment, such as behind a plant or under a sweater."
+        },
+        {
+          "evidence" : [
+            91,
+            92,
+            93,
+            94,
+            95,
+            96
+          ],
+          "kind" : "action",
+          "text" : "Develop a working design that incorporates both voice and clap-based activation, though these are considered less reliable and not sufficient on their own."
+        },
+        {
+          "evidence" : [
+            86,
+            87,
+            90,
+            91,
+            100
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should have a sensor to detect darkness and respond with a signal (light or beep) when hidden or covered."
+        },
+        {
+          "evidence" : [
+            101,
+            102,
+            103,
+            104,
+            105,
+            106
+          ],
+          "kind" : "decision",
+          "text" : "The next meeting will be in 30 minutes, and participants will receive notices via computer."
+        },
+        {
+          "evidence" : [
+            107,
+            108,
+            109,
+            110,
+            111,
+            112
+          ],
+          "kind" : "decision",
+          "text" : "The industrial designer is responsible for the working design, while the marketing manager will develop user requirement specifications (e.g., friendliness, usability, price)."
+        },
+        {
+          "evidence" : [
+            111,
+            112,
+            113,
+            114,
+            115,
+            116
+          ],
+          "kind" : "decision",
+          "text" : "The price of the remote control must be justified by sufficient features to ensure market competitiveness."
+        },
+        {
+          "evidence" : [
+            91,
+            92,
+            93,
+            94,
+            95,
+            96
+          ],
+          "kind" : "action",
+          "text" : "The team will work on a functional design that includes user-friendly features such as voice or clap response, but with limitations acknowledged."
+        },
+        {
+          "evidence" : [
+            112,
+            114,
+            115,
+            116,
+            117,
+            118
+          ],
+          "kind" : "action",
+          "text" : "Participants will receive specific instructions for the working and functional design phases."
+        },
+        {
+          "evidence" : [
+            101,
+            102,
+            103,
+            104,
+            105,
+            106
+          ],
+          "kind" : "action",
+          "text" : "The team will meet again in 30 minutes to review progress and discuss outcomes."
+        },
+        {
+          "evidence" : [
+            83,
+            84,
+            85,
+            86,
+            87,
+            88
+          ],
+          "kind" : "question",
+          "text" : "What specific trigger (clap, voice, light sensor) should be used to activate the remote's signal when lost or hidden?"
+        },
+        {
+          "evidence" : [
+            80,
+            81,
+            82,
+            83,
+            84,
+            85
+          ],
+          "kind" : "question",
+          "text" : "How can the remote be reliably found in dark or hidden locations without relying solely on voice or clap commands?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        78,
+        120
+      ],
+      "stats" : {
+        "generateSeconds" : 14.691567791,
+        "generatedTokens" : 1042,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.25588675,
+        "promptTokens" : 1526
+      }
+    }
+  ],
+  "contextTokens" : 4096,
+  "loadSeconds" : 0.282461209,
+  "model" : "qwen3-4b-instruct-2507-q4_k_m",
+  "peakFootprintBytes" : 782683112,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 117293056,
+  "totalSeconds" : 30.199331416,
+  "transcriptSegments" : 121,
+  "transcriptWords" : 1791
+}

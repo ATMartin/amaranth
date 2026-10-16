@@ -1,0 +1,14 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0001.wav",
+  "audioSeconds" : 5.925,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4391416,
+  "loadSeconds" : 0.646746542,
+  "peakFootprintBytes" : 125895496,
+  "processSeconds" : 1.452248375,
+  "realtimeFactor" : 0.24510521097046414,
+  "systemMemoryDeltaPeakBytes" : 923238400,
+  "words" : [
+
+  ]
+}

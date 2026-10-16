@@ -1,0 +1,119 @@
+{
+  "audioSeconds" : 1049.3546875,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            18
+          ],
+          "kind" : "decision",
+          "text" : "We will do some stuff, get to know each other a bit better, feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            19
+          ],
+          "kind" : "action",
+          "text" : "We will do tool training, talk about the project plan, discuss our own ideas and everything."
+        },
+        {
+          "evidence" : [
+            20
+          ],
+          "kind" : "decision",
+          "text" : "We want it to be original, something that people haven't thought of, it's not out in the shops, trendy, appealing to a wide market, but you know, not a hunk of metal."
+        },
+        {
+          "evidence" : [
+            20
+          ],
+          "kind" : "decision",
+          "text" : "We want it to be user friendly, grannies to kids, maybe even poochies should be able to use it."
+        },
+        {
+          "evidence" : [
+            24
+          ],
+          "kind" : "decision",
+          "text" : "We will practice with the pens and draw our favourite animal on the whiteboard."
+        },
+        {
+          "evidence" : [
+            32
+          ],
+          "kind" : "decision",
+          "text" : "We will guess what I'm trying to make."
+        },
+        {
+          "evidence" : [
+            47
+          ],
+          "kind" : "decision",
+          "text" : "We will make it a crocodile."
+        },
+        {
+          "evidence" : [
+            55
+          ],
+          "kind" : "decision",
+          "text" : "We will make it an eagle."
+        },
+        {
+          "evidence" : [
+            93
+          ],
+          "kind" : "decision",
+          "text" : "We will make it something usable by someone like me as well."
+        },
+        {
+          "evidence" : [
+            93
+          ],
+          "kind" : "decision",
+          "text" : "We will make it something usable by someone like me as well."
+        },
+        {
+          "evidence" : [
+            93
+          ],
+          "kind" : "decision",
+          "text" : "We will make it something usable by someone like me as well."
+        },
+        {
+          "evidence" : [
+            93
+          ],
+          "kind" : "decision",
+          "text" : "We will make it something usable by someone like me as well."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        135
+      ],
+      "stats" : {
+        "generateSeconds" : 4.972652875,
+        "generatedTokens" : 680,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.06829825,
+        "promptTokens" : 4135
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.260001792,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 1109871016,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 7.057929708,
+  "transcriptSegments" : 136,
+  "transcriptWords" : 2191
+}

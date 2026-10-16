@@ -1,0 +1,10 @@
+{"seconds":"195","segments":"196","step":"recorded"}
+{"completed":"true","step":"pipeline","wallSeconds":"24.955369291 seconds"}
+{"attempts":"1","error":"","seconds":"2.0","stage":"prepare","state":"succeeded","step":"job"}
+{"attempts":"1","error":"","seconds":"9.0","stage":"transcribe","state":"succeeded","step":"job"}
+{"attempts":"1","error":"","seconds":"13.0","stage":"diarize","state":"succeeded","step":"job"}
+{"attempts":"1","error":"","seconds":"1.0","stage":"reconcile","state":"succeeded","step":"job"}
+{"attempts":"1","error":"","seconds":"29.0","stage":"notes","state":"succeeded","step":"job"}
+{"micWER":"1.2%","micWords":"168","overlapWords":"18","speakers":"4","stage":"attributed","step":"transcript","systemWords":"452","unknownWords":"4"}
+{"actions":"0","decisions":"0","evidenceValid":"true","items":"9","limitations":"2","producer":"llama.cpp-b11669\/qwen3-4b-instruct-2507-q4_k_m","step":"notes"}
+{"result":"pass","test":"pipeline-e2e"}

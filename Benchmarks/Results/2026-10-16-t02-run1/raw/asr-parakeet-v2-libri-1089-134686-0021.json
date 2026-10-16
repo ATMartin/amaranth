@@ -1,0 +1,98 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0021.wav",
+  "audioSeconds" : 6.55,
+  "engine" : "parakeet-v2",
+  "footprintBeforeLoadBytes" : 4375032,
+  "loadSeconds" : 0.158630417,
+  "peakFootprintBytes" : 55788144,
+  "processSeconds" : 0.071040041,
+  "realtimeFactor" : 0.010845807786259543,
+  "systemMemoryDeltaPeakBytes" : 86507520,
+  "words" : [
+    {
+      "end" : 0.4,
+      "start" : 0.16,
+      "text" : "If"
+    },
+    {
+      "end" : 0.48000000000000004,
+      "start" : 0.4,
+      "text" : "a"
+    },
+    {
+      "end" : 1.04,
+      "start" : 0.48,
+      "text" : "layman,"
+    },
+    {
+      "end" : 1.2,
+      "start" : 1.04,
+      "text" : "in"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.2,
+      "text" : "giving"
+    },
+    {
+      "end" : 2.24,
+      "start" : 1.52,
+      "text" : "baptism,"
+    },
+    {
+      "end" : 2.5599999999999996,
+      "start" : 2.24,
+      "text" : "pour"
+    },
+    {
+      "end" : 2.72,
+      "start" : 2.56,
+      "text" : "the"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.72,
+      "text" : "water"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 3.12,
+      "text" : "before"
+    },
+    {
+      "end" : 3.92,
+      "start" : 3.6,
+      "text" : "saying"
+    },
+    {
+      "end" : 4.08,
+      "start" : 3.92,
+      "text" : "the"
+    },
+    {
+      "end" : 4.640000000000001,
+      "start" : 4.08,
+      "text" : "words,"
+    },
+    {
+      "end" : 4.88,
+      "start" : 4.64,
+      "text" : "is"
+    },
+    {
+      "end" : 5.04,
+      "start" : 4.88,
+      "text" : "the"
+    },
+    {
+      "end" : 5.44,
+      "start" : 5.04,
+      "text" : "child"
+    },
+    {
+      "end" : 6.16,
+      "start" : 5.44,
+      "text" : "baptized"
+    }
+  ]
+}

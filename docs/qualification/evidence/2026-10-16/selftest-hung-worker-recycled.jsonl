@@ -1,0 +1,2 @@
+{"firstWorkerPID":"44297","laterWorkerPID":"44328","pipelineCompleted":"true","prepareAttempts":"2","step":"hang","wall":"19.28783375 seconds"}
+{"result":"pass","test":"hung-worker-recycled"}

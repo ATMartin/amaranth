@@ -1,0 +1,83 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0010.wav",
+  "audioSeconds" : 4.405,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4243960,
+  "loadSeconds" : 0.124500541,
+  "peakFootprintBytes" : 38257264,
+  "processSeconds" : 0.066441708,
+  "realtimeFactor" : 0.015083248127128263,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.4,
+      "start" : 0.24,
+      "text" : "Well"
+    },
+    {
+      "end" : 0.8,
+      "start" : 0.48,
+      "text" : "now,"
+    },
+    {
+      "end" : 1.4400000000000002,
+      "start" : 0.8,
+      "text" : "Ennis,"
+    },
+    {
+      "end" : 1.5999999999999999,
+      "start" : 1.44,
+      "text" : "I"
+    },
+    {
+      "end" : 1.9200000000000002,
+      "start" : 1.6,
+      "text" : "declare"
+    },
+    {
+      "end" : 2.24,
+      "start" : 2.08,
+      "text" : "you"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2.24,
+      "text" : "have"
+    },
+    {
+      "end" : 2.48,
+      "start" : 2.4,
+      "text" : "a"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.48,
+      "text" : "head,"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.88,
+      "text" : "and"
+    },
+    {
+      "end" : 3.2800000000000002,
+      "start" : 3.12,
+      "text" : "so"
+    },
+    {
+      "end" : 3.4400000000000004,
+      "start" : 3.2800000000000002,
+      "text" : "has"
+    },
+    {
+      "end" : 3.6799999999999997,
+      "start" : 3.44,
+      "text" : "my"
+    },
+    {
+      "end" : 4.48,
+      "start" : 3.68,
+      "text" : "stick."
+    }
+  ]
+}

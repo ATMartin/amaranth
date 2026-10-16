@@ -1,0 +1,78 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0034.wav",
+  "audioSeconds" : 5.81,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4342264,
+  "loadSeconds" : 0.121518709,
+  "peakFootprintBytes" : 38879856,
+  "processSeconds" : 0.066250208,
+  "realtimeFactor" : 0.011402789672977627,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.48,
+      "start" : 0.24,
+      "text" : "The"
+    },
+    {
+      "end" : 1.04,
+      "start" : 0.48,
+      "text" : "Rector"
+    },
+    {
+      "end" : 1.52,
+      "start" : 1.04,
+      "text" : "paused,"
+    },
+    {
+      "end" : 1.76,
+      "start" : 1.52,
+      "text" : "and"
+    },
+    {
+      "end" : 2.24,
+      "start" : 1.76,
+      "text" : "then,"
+    },
+    {
+      "end" : 2.8000000000000003,
+      "start" : 2.24,
+      "text" : "shaking"
+    },
+    {
+      "end" : 2.9600000000000004,
+      "start" : 2.8000000000000003,
+      "text" : "his"
+    },
+    {
+      "end" : 3.68,
+      "start" : 2.96,
+      "text" : "clasped"
+    },
+    {
+      "end" : 4,
+      "start" : 3.68,
+      "text" : "hands"
+    },
+    {
+      "end" : 4.32,
+      "start" : 4,
+      "text" : "before"
+    },
+    {
+      "end" : 4.720000000000001,
+      "start" : 4.32,
+      "text" : "him,"
+    },
+    {
+      "end" : 5.2,
+      "start" : 4.72,
+      "text" : "went"
+    },
+    {
+      "end" : 5.44,
+      "start" : 5.2,
+      "text" : "on"
+    }
+  ]
+}

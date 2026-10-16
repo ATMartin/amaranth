@@ -1,0 +1,53 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0001.wav",
+  "audioSeconds" : 3.275,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4162040,
+  "loadSeconds" : 0.62304075,
+  "peakFootprintBytes" : 122782536,
+  "processSeconds" : 0.94821825,
+  "realtimeFactor" : 0.2895322900763359,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.7400000095367432,
+      "start" : 0.3400000035762787,
+      "text" : "\"'Stuff"
+    },
+    {
+      "end" : 0.8600000143051147,
+      "start" : 0.7400000095367432,
+      "text" : "it"
+    },
+    {
+      "end" : 1.0800000429153442,
+      "start" : 0.8600000143051147,
+      "text" : "into"
+    },
+    {
+      "end" : 1.4600000381469727,
+      "start" : 1.0800000429153442,
+      "text" : "you,'"
+    },
+    {
+      "end" : 1.7000000476837158,
+      "start" : 1.4600000381469727,
+      "text" : "his"
+    },
+    {
+      "end" : 2.059999942779541,
+      "start" : 1.7000000476837158,
+      "text" : "belly"
+    },
+    {
+      "end" : 2.5799999237060547,
+      "start" : 2.059999942779541,
+      "text" : "counselled"
+    },
+    {
+      "end" : 2.7200000286102295,
+      "start" : 2.5799999237060547,
+      "text" : "him."
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+name: Amaranth
+options:
+  bundleIdPrefix: com.alexmartin.amaranth
+  deploymentTarget:
+    macOS: "26.5"
+  createIntermediateGroups: true
+  groupSortPosition: top
+configFiles:
+  Debug: Config/Base.xcconfig
+  Release: Config/Base.xcconfig
+packages:
+  AmaranthKit:
+    path: .
+targets:
+  Amaranth:
+    type: application
+    platform: macOS
+    sources:
+      - path: App
+    dependencies:
+      - package: AmaranthKit
+        product: Domain
+      - package: AmaranthKit
+        product: DomainFixtures
+      - package: AmaranthKit
+        product: Capture
+      - package: AmaranthKit
+        product: Models
+      - package: AmaranthKit
+        product: Storage
+      - package: AmaranthKit
+        product: ProcessingCore
+      - package: AmaranthKit
+        product: Presentation
+      - package: AmaranthKit
+        product: Export
+      - target: InferenceWorker
+        embed: true
+        codeSign: true
+    entitlements:
+      path: App/Amaranth.entitlements
+      properties:
+        com.apple.security.device.audio-input: true
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Amaranth
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "26.5.2"
+        LSApplicationCategoryType: public.app-category.productivity
+        NSMicrophoneUsageDescription: Amaranth records your microphone during meetings you start, and keeps the audio on this Mac.
+        NSAudioCaptureUsageDescription: Amaranth records system audio (other meeting participants) during meetings you start, and keeps the audio on this Mac.
+        NSHumanReadableCopyright: "Local-only meeting recorder."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.alexmartin.amaranth
+        PRODUCT_NAME: Amaranth
+        GENERATE_INFOPLIST_FILE: NO
+  InferenceWorker:
+    type: xpc-service
+    platform: macOS
+    sources:
+      - path: InferenceWorker/Service
+    dependencies:
+      - package: AmaranthKit
+        product: Domain
+      - package: AmaranthKit
+        product: ProcessingCore
+      - package: AmaranthKit
+        product: ProcessingRuntime
+    info:
+      path: InferenceWorker/Info.plist
+      properties:
+        CFBundleDisplayName: Amaranth Inference Worker
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "26.5.2"
+        XPCService:
+          ServiceType: Application
+          RunLoopType: NSRunLoop
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.alexmartin.amaranth.InferenceWorker
+        PRODUCT_NAME: com.alexmartin.amaranth.InferenceWorker
+        GENERATE_INFOPLIST_FILE: NO

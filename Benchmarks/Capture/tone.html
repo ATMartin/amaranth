@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><title>Amaranth capture tone</title>
+<body style="font:16px system-ui;padding:2em">
+<p>Plays a 1234 Hz tone for capture qualification. <button id="b">Play</button></p>
+<script>
+function play(){ const c=new AudioContext(); const o=c.createOscillator(); const g=c.createGain();
+  o.frequency.value=1234; g.gain.value=0.2; o.connect(g).connect(c.destination); o.start(); setTimeout(()=>o.stop(),8000);
+  document.title='playing'; }
+document.getElementById('b').onclick=play;
+// Autoplay works only where policy allows it (scripted runs pass a no-gesture flag/pref).
+try { play(); } catch(e) {}
+</script>

@@ -1,0 +1,68 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0029.wav",
+  "audioSeconds" : 4.67,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4194808,
+  "loadSeconds" : 0.619724875,
+  "peakFootprintBytes" : 122585952,
+  "processSeconds" : 0.92555525,
+  "realtimeFactor" : 0.1981917023554604,
+  "systemMemoryDeltaPeakBytes" : 718372864,
+  "words" : [
+    {
+      "end" : 0.36000001430511475,
+      "start" : 0.1599999964237213,
+      "text" : "On"
+    },
+    {
+      "end" : 0.699999988079071,
+      "start" : 0.36000001430511475,
+      "text" : "Friday,"
+    },
+    {
+      "end" : 1.5,
+      "start" : 1.1399999856948853,
+      "text" : "confession"
+    },
+    {
+      "end" : 1.8799999952316284,
+      "start" : 1.5,
+      "text" : "will"
+    },
+    {
+      "end" : 2.0999999046325684,
+      "start" : 1.8799999952316284,
+      "text" : "be"
+    },
+    {
+      "end" : 2.5,
+      "start" : 2.0999999046325684,
+      "text" : "heard"
+    },
+    {
+      "end" : 2.700000047683716,
+      "start" : 2.5,
+      "text" : "all"
+    },
+    {
+      "end" : 2.9000000953674316,
+      "start" : 2.700000047683716,
+      "text" : "the"
+    },
+    {
+      "end" : 3.319999933242798,
+      "start" : 2.9000000953674316,
+      "text" : "afternoon"
+    },
+    {
+      "end" : 3.8399999141693115,
+      "start" : 3.319999933242798,
+      "text" : "after"
+    },
+    {
+      "end" : 4.21999979019165,
+      "start" : 3.8399999141693115,
+      "text" : "beads."
+    }
+  ]
+}

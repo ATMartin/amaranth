@@ -1,0 +1,48 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/121-121726-0006.wav",
+  "audioSeconds" : 3.895,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4211192,
+  "loadSeconds" : 0.1233745,
+  "peakFootprintBytes" : 38371976,
+  "processSeconds" : 0.061552958,
+  "realtimeFactor" : 0.015803070089858793,
+  "systemMemoryDeltaPeakBytes" : 65536,
+  "words" : [
+    {
+      "end" : 1.12,
+      "start" : 0.24,
+      "text" : "HEREDITI"
+    },
+    {
+      "end" : 1.9200000000000002,
+      "start" : 1.84,
+      "text" : "The"
+    },
+    {
+      "end" : 2.4000000000000004,
+      "start" : 2.08,
+      "text" : "cause"
+    },
+    {
+      "end" : 2.6399999999999997,
+      "start" : 2.4,
+      "text" : "of"
+    },
+    {
+      "end" : 2.88,
+      "start" : 2.64,
+      "text" : "all"
+    },
+    {
+      "end" : 3.12,
+      "start" : 2.88,
+      "text" : "our"
+    },
+    {
+      "end" : 3.9200000000000004,
+      "start" : 3.12,
+      "text" : "faults."
+    }
+  ]
+}

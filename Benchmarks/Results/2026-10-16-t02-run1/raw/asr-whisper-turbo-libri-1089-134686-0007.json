@@ -1,0 +1,53 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0007.wav",
+  "audioSeconds" : 4.275,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4211192,
+  "loadSeconds" : 0.616974333,
+  "peakFootprintBytes" : 124781384,
+  "processSeconds" : 0.940432167,
+  "realtimeFactor" : 0.21998413263157893,
+  "systemMemoryDeltaPeakBytes" : 729022464,
+  "words" : [
+    {
+      "end" : 0.5799999833106995,
+      "start" : 0.4399999976158142,
+      "text" : "A"
+    },
+    {
+      "end" : 1.100000023841858,
+      "start" : 0.5799999833106995,
+      "text" : "cold,"
+    },
+    {
+      "end" : 1.7400000095367432,
+      "start" : 1.440000057220459,
+      "text" : "lucid"
+    },
+    {
+      "end" : 2.5199999809265137,
+      "start" : 1.7400000095367432,
+      "text" : "indifference"
+    },
+    {
+      "end" : 3.0999999046325684,
+      "start" : 2.5199999809265137,
+      "text" : "reigned"
+    },
+    {
+      "end" : 3.2200000286102295,
+      "start" : 3.0999999046325684,
+      "text" : "in"
+    },
+    {
+      "end" : 3.3399999141693115,
+      "start" : 3.2200000286102295,
+      "text" : "his"
+    },
+    {
+      "end" : 3.759999990463257,
+      "start" : 3.3399999141693115,
+      "text" : "soul."
+    }
+  ]
+}

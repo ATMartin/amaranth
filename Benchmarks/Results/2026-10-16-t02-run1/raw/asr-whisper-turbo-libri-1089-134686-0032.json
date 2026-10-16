@@ -1,0 +1,68 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0032.wav",
+  "audioSeconds" : 4.09,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4227576,
+  "loadSeconds" : 0.609714292,
+  "peakFootprintBytes" : 122291040,
+  "processSeconds" : 0.960386917,
+  "realtimeFactor" : 0.23481342713936432,
+  "systemMemoryDeltaPeakBytes" : 722255872,
+  "words" : [
+    {
+      "end" : 0.5600000023841858,
+      "start" : 0.3199999928474426,
+      "text" : "He"
+    },
+    {
+      "end" : 0.8600000143051147,
+      "start" : 0.5600000023841858,
+      "text" : "is"
+    },
+    {
+      "end" : 1.1399999856948853,
+      "start" : 0.8600000143051147,
+      "text" : "called,"
+    },
+    {
+      "end" : 1.3600000143051147,
+      "start" : 1.2599999904632568,
+      "text" : "as"
+    },
+    {
+      "end" : 1.4800000190734863,
+      "start" : 1.3600000143051147,
+      "text" : "you"
+    },
+    {
+      "end" : 1.7799999713897705,
+      "start" : 1.4800000190734863,
+      "text" : "know,"
+    },
+    {
+      "end" : 2.240000009536743,
+      "start" : 1.840000033378601,
+      "text" : "the"
+    },
+    {
+      "end" : 2.880000114440918,
+      "start" : 2.240000009536743,
+      "text" : "Apostle"
+    },
+    {
+      "end" : 3.0799999237060547,
+      "start" : 2.880000114440918,
+      "text" : "of"
+    },
+    {
+      "end" : 3.200000047683716,
+      "start" : 3.0799999237060547,
+      "text" : "the"
+    },
+    {
+      "end" : 3.640000104904175,
+      "start" : 3.200000047683716,
+      "text" : "Indies."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# sandbox-exec -p '(version 1)(allow default)(deny network*)' amaranth-bench production-eval ModelStore Benchmarks/Fixtures/public <fresh results dir>   (asr-pipeline-v8, fresh caches)
+[prod] ES2004a Mix-Headset: speech without text after retries (coverage=failed): 7 regions, 11 s of 1049 s audio
+[prod] ES2004a Mix-Headset clean: WER 16.1% non-overlap 9.5% (388 words) questionable=0 ASR 11.1s | DER 22.2% (miss 150s FA 27s conf 29s) spk 4 overlaps 37 diar 5.4s | labelled 97.6% correct 98.3% of 1879 single-speaker words
+[prod] IS1009a Mix-Headset: speech without text after retries (coverage=failed): 9 regions, 16 s of 839 s audio
+[prod] IS1009a Mix-Headset clean: WER 20.8% non-overlap 15.2% (387 words) questionable=0 ASR 10.0s | DER 23.1% (miss 89s FA 32s conf 40s) spk 4 overlaps 31 diar 4.2s | labelled 97.5% correct 97.5% of 1421 single-speaker words
+[prod] EN2002a Mix-Headset: speech without text after retries (coverage=failed): 39 regions, 72 s of 2143 s audio
+[prod] EN2002a Mix-Headset clean: WER 31.4% non-overlap 16.2% (537 words) questionable=0 ASR 29.2s | DER 27.6% (miss 454s FA 57s conf 187s) spk 4 overlaps 153 diar 12.3s | labelled 96.3% correct 95.9% of 4170 single-speaker words
+[prod] ES2004a Array1-01: speech without text after retries (coverage=failed): 11 regions, 16 s of 1049 s audio
+[prod] ES2004a Array1-01 difficult: WER 24.0% non-overlap 20.9% (388 words) questionable=0 ASR 10.4s | DER 27.6% (miss 188s FA 33s conf 34s) spk 4 overlaps 24 diar 5.4s | labelled 97.1% correct 97.9% of 1773 single-speaker words
+[prod] clean aggregate: WER 26.5% non-overlap 13.9% | labelled 96.9% correct 96.8%
+[prod] control-silence: words=0 speakers=0
+[prod] control-noise: words=0 speakers=0
+[prod] control-music: words=0 speakers=0
+# network denial check:
+curl: (6) Could not resolve host: huggingface.co

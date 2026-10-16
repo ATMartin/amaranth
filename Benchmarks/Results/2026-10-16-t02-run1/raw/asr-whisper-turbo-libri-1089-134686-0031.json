@@ -1,0 +1,83 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0031.wav",
+  "audioSeconds" : 6.615,
+  "engine" : "whisper-turbo",
+  "footprintBeforeLoadBytes" : 4325880,
+  "loadSeconds" : 0.619519583,
+  "peakFootprintBytes" : 122536800,
+  "processSeconds" : 0.975290708,
+  "realtimeFactor" : 0.14743623703703704,
+  "systemMemoryDeltaPeakBytes" : 15564800,
+  "words" : [
+    {
+      "end" : 1.0199999809265137,
+      "start" : 0.5400000214576721,
+      "text" : "Stephen's"
+    },
+    {
+      "end" : 1.3600000143051147,
+      "start" : 1.0199999809265137,
+      "text" : "heart"
+    },
+    {
+      "end" : 1.6799999475479126,
+      "start" : 1.3600000143051147,
+      "text" : "began"
+    },
+    {
+      "end" : 2.4200000762939453,
+      "start" : 1.6799999475479126,
+      "text" : "slowly"
+    },
+    {
+      "end" : 2.6600000858306885,
+      "start" : 2.4200000762939453,
+      "text" : "to"
+    },
+    {
+      "end" : 3.2200000286102295,
+      "start" : 2.6600000858306885,
+      "text" : "fold"
+    },
+    {
+      "end" : 3.4000000953674316,
+      "start" : 3.2200000286102295,
+      "text" : "and"
+    },
+    {
+      "end" : 3.8399999141693115,
+      "start" : 3.4000000953674316,
+      "text" : "fade"
+    },
+    {
+      "end" : 3.9800000190734863,
+      "start" : 3.8399999141693115,
+      "text" : "with"
+    },
+    {
+      "end" : 4.480000019073486,
+      "start" : 3.9800000190734863,
+      "text" : "fear"
+    },
+    {
+      "end" : 5.019999980926514,
+      "start" : 4.480000019073486,
+      "text" : "like"
+    },
+    {
+      "end" : 5.099999904632568,
+      "start" : 5.019999980926514,
+      "text" : "a"
+    },
+    {
+      "end" : 5.519999980926514,
+      "start" : 5.099999904632568,
+      "text" : "withering"
+    },
+    {
+      "end" : 5.940000057220459,
+      "start" : 5.519999980926514,
+      "text" : "flower."
+    }
+  ]
+}

@@ -1,0 +1,910 @@
+{
+  "audioSeconds" : 7200,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            13,
+            19,
+            27,
+            31,
+            35,
+            39
+          ],
+          "kind" : "decision",
+          "text" : "We need to decide on the design of the meeting browser, including the use of a right-click menu and the integration of speaker characterization and summaries."
+        },
+        {
+          "evidence" : [
+            13,
+            19,
+            27,
+            31,
+            35,
+            39
+          ],
+          "kind" : "action",
+          "text" : "Implement a right-click menu with options for viewing all meetings, characterizing speakers, and searching for specific topics."
+        },
+        {
+          "evidence" : [
+            104,
+            107,
+            110
+          ],
+          "kind" : "decision",
+          "text" : "Determine whether to use single-channel audio files or integrate them for better interaction."
+        },
+        {
+          "evidence" : [
+            104,
+            107,
+            110
+          ],
+          "kind" : "action",
+          "text" : "Integrate single-channel audio files for use in the meeting browser."
+        },
+        {
+          "evidence" : [
+            128,
+            132,
+            138,
+            143,
+            144
+          ],
+          "kind" : "decision",
+          "text" : "Define the layout and functionality of the meeting browser, including the use of tabs or buttons for displaying transcripts and summaries."
+        },
+        {
+          "evidence" : [
+            128,
+            132,
+            138,
+            143,
+            144
+          ],
+          "kind" : "action",
+          "text" : "Implement a tab-based layout for displaying transcripts and summaries."
+        },
+        {
+          "evidence" : [
+            124,
+            125,
+            126,
+            151
+          ],
+          "kind" : "decision",
+          "text" : "Determine the best way to integrate speaker characterization and summaries into the meeting browser."
+        },
+        {
+          "evidence" : [
+            124,
+            125,
+            126,
+            151
+          ],
+          "kind" : "action",
+          "text" : "Integrate speaker characterization and summaries into the meeting browser for enhanced functionality."
+        },
+        {
+          "evidence" : [
+            153,
+            154,
+            155,
+            157,
+            158,
+            159
+          ],
+          "kind" : "decision",
+          "text" : "Plan for a prototype of the meeting browser with the ability to display transcripts, summaries, and speaker characterization."
+        },
+        {
+          "evidence" : [
+            153,
+            154,
+            155,
+            157,
+            158,
+            159
+          ],
+          "kind" : "action",
+          "text" : "Develop a prototype of the meeting browser with the ability to display transcripts, summaries, and speaker characterization."
+        },
+        {
+          "evidence" : [
+            156,
+            159
+          ],
+          "kind" : "decision",
+          "text" : "Determine the best approach for integrating the meeting browser with other components."
+        },
+        {
+          "evidence" : [
+            156,
+            159
+          ],
+          "kind" : "action",
+          "text" : "Integrate the meeting browser with other components for seamless functionality."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        170
+      ],
+      "stats" : {
+        "generateSeconds" : 6.962700917,
+        "generatedTokens" : 900,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.292180708,
+        "promptTokens" : 4987
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            177
+          ],
+          "kind" : "decision",
+          "text" : "We should email to us."
+        },
+        {
+          "evidence" : [
+            175
+          ],
+          "kind" : "decision",
+          "text" : "We should make the directory readable."
+        },
+        {
+          "evidence" : [
+            177
+          ],
+          "kind" : "decision",
+          "text" : "We should email to us."
+        },
+        {
+          "evidence" : [
+            220
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do."
+        },
+        {
+          "evidence" : [
+            308
+          ],
+          "kind" : "decision",
+          "text" : "We should set some milestones."
+        },
+        {
+          "evidence" : [
+            311
+          ],
+          "kind" : "decision",
+          "text" : "We should set a date for an interim prototype."
+        },
+        {
+          "evidence" : [
+            336
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already."
+        },
+        {
+          "evidence" : [
+            220
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do."
+        },
+        {
+          "evidence" : [
+            220
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do."
+        },
+        {
+          "evidence" : [
+            220
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do."
+        },
+        {
+          "evidence" : [
+            220
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do."
+        },
+        {
+          "evidence" : [
+            220
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        170,
+        354
+      ],
+      "stats" : {
+        "generateSeconds" : 4.845071583,
+        "generatedTokens" : 613,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.182287208,
+        "promptTokens" : 4999
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            422,
+            423,
+            424
+          ],
+          "kind" : "decision",
+          "text" : "We have to decide on the final design of the remote control."
+        },
+        {
+          "evidence" : [
+            422
+          ],
+          "kind" : "action",
+          "text" : "Start with functional design and individual work."
+        },
+        {
+          "evidence" : [
+            425
+          ],
+          "kind" : "action",
+          "text" : "Practice with pens and draw favorite animal on whiteboard."
+        },
+        {
+          "evidence" : [
+            427,
+            430,
+            437,
+            440,
+            443,
+            444
+          ],
+          "kind" : "decision",
+          "text" : "Choose between tiger, crocodile, or eagle."
+        },
+        {
+          "evidence" : [
+            422,
+            423,
+            424
+          ],
+          "kind" : "decision",
+          "text" : "Decide on the final design of the remote control."
+        },
+        {
+          "evidence" : [
+            422
+          ],
+          "kind" : "action",
+          "text" : "Discuss the project plan and own ideas."
+        },
+        {
+          "evidence" : [
+            422,
+            423,
+            424
+          ],
+          "kind" : "action",
+          "text" : "Develop a remote control with a universal remote and programming."
+        },
+        {
+          "evidence" : [
+            475,
+            477,
+            478,
+            479,
+            480,
+            481
+          ],
+          "kind" : "decision",
+          "text" : "Determine the target market and pricing."
+        },
+        {
+          "evidence" : [
+            470,
+            471,
+            472,
+            473,
+            474,
+            475
+          ],
+          "kind" : "decision",
+          "text" : "Decide on the design features for the remote control."
+        },
+        {
+          "evidence" : [
+            480,
+            481,
+            482,
+            483,
+            484,
+            485
+          ],
+          "kind" : "decision",
+          "text" : "Determine the cost implications of the design."
+        },
+        {
+          "evidence" : [
+            488,
+            490,
+            491,
+            492,
+            493,
+            494
+          ],
+          "kind" : "decision",
+          "text" : "Decide on the target market and accessibility."
+        },
+        {
+          "evidence" : [
+            500,
+            501,
+            502,
+            503,
+            504,
+            505
+          ],
+          "kind" : "decision",
+          "text" : "Determine the best way to incorporate menus into the remote control."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        354,
+        523
+      ],
+      "stats" : {
+        "generateSeconds" : 6.283338416,
+        "generatedTokens" : 803,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.169728459,
+        "promptTokens" : 4976
+      }
+    },
+    {
+      "chunk" : 3,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            523,
+            526,
+            598,
+            600,
+            601,
+            602
+          ],
+          "kind" : "decision",
+          "text" : "We need to make the remote control more compact and multifunctional."
+        },
+        {
+          "evidence" : [
+            598,
+            600,
+            601,
+            602,
+            618,
+            619
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should have a light sensor to help locate it when lost."
+        },
+        {
+          "evidence" : [
+            588,
+            589,
+            590,
+            591,
+            592,
+            593
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should be priced at 25 euros with a profit target of 50 million euros."
+        },
+        {
+          "evidence" : [
+            544,
+            545,
+            547,
+            548,
+            552,
+            553
+          ],
+          "kind" : "decision",
+          "text" : "We should focus on the functional design and user requirements for the remote control."
+        },
+        {
+          "evidence" : [
+            593,
+            594,
+            595,
+            596,
+            597,
+            598
+          ],
+          "kind" : "decision",
+          "text" : "We need to identify and address user concerns about the remote control's design and functionality."
+        },
+        {
+          "evidence" : [
+            598,
+            600,
+            601,
+            602,
+            618,
+            619
+          ],
+          "kind" : "decision",
+          "text" : "We should consider the use of a light sensor or beeper to help locate the remote control."
+        },
+        {
+          "evidence" : [
+            598,
+            600,
+            601,
+            602,
+            618,
+            619
+          ],
+          "kind" : "decision",
+          "text" : "We need to ensure the remote control is multifunctional and can be used for various purposes."
+        },
+        {
+          "evidence" : [
+            598,
+            600,
+            601,
+            602,
+            618,
+            619
+          ],
+          "kind" : "decision",
+          "text" : "We should consider the use of a beeper or light sensor to help locate the remote control."
+        },
+        {
+          "evidence" : [
+            588,
+            589,
+            590,
+            591,
+            592,
+            593
+          ],
+          "kind" : "decision",
+          "text" : "We need to ensure the remote control is priced at 25 euros with a profit target of 50 million euros."
+        },
+        {
+          "evidence" : [
+            544,
+            545,
+            547,
+            548,
+            552,
+            553
+          ],
+          "kind" : "decision",
+          "text" : "We should focus on the functional design and user requirements for the remote control."
+        },
+        {
+          "evidence" : [
+            593,
+            594,
+            595,
+            596,
+            597,
+            598
+          ],
+          "kind" : "decision",
+          "text" : "We need to identify and address user concerns about the remote control's design and functionality."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        523,
+        687
+      ],
+      "stats" : {
+        "generateSeconds" : 7.284835625,
+        "generatedTokens" : 932,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.20241375,
+        "promptTokens" : 4977
+      }
+    },
+    {
+      "chunk" : 4,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            693,
+            713,
+            714,
+            718,
+            719,
+            721
+          ],
+          "kind" : "decision",
+          "text" : "We should implement a right-click menu for browsing meetings."
+        },
+        {
+          "evidence" : [
+            690,
+            692,
+            693,
+            694,
+            695,
+            696
+          ],
+          "kind" : "decision",
+          "text" : "We should add a feature to search for meetings by user."
+        },
+        {
+          "evidence" : [
+            690,
+            692,
+            693,
+            694,
+            695,
+            696
+          ],
+          "kind" : "decision",
+          "text" : "We should integrate speaker characterization with browsing."
+        },
+        {
+          "evidence" : [
+            745,
+            746,
+            747,
+            748,
+            749,
+            750
+          ],
+          "kind" : "decision",
+          "text" : "We should consider using single-channel audio files."
+        },
+        {
+          "due" : "By the end of February",
+          "evidence" : [
+            796,
+            797,
+            798,
+            799,
+            800,
+            801
+          ],
+          "kind" : "decision",
+          "text" : "We should implement a prototype for the M browser."
+        },
+        {
+          "evidence" : [
+            812,
+            813,
+            814,
+            815,
+            816,
+            817
+          ],
+          "kind" : "decision",
+          "text" : "We should make the code accessible for integration."
+        },
+        {
+          "evidence" : [
+            824,
+            825,
+            826,
+            827,
+            828,
+            829
+          ],
+          "kind" : "decision",
+          "text" : "We should implement a folder structure for the M browser."
+        },
+        {
+          "evidence" : [
+            812,
+            813,
+            814,
+            815,
+            816,
+            817
+          ],
+          "kind" : "decision",
+          "text" : "We should consider using a GUI for the M browser."
+        },
+        {
+          "evidence" : [
+            690,
+            692,
+            693,
+            694,
+            695,
+            696
+          ],
+          "kind" : "decision",
+          "text" : "We should implement a search feature for meetings."
+        },
+        {
+          "evidence" : [
+            768,
+            769,
+            770,
+            771,
+            772,
+            773
+          ],
+          "kind" : "decision",
+          "text" : "We should implement a feature to display summaries in the same window."
+        },
+        {
+          "evidence" : [
+            792,
+            793,
+            794,
+            795,
+            796,
+            797
+          ],
+          "kind" : "decision",
+          "text" : "We should implement a feature to handle disfluencies in the transcript."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        687,
+        861
+      ],
+      "stats" : {
+        "generateSeconds" : 6.359337958,
+        "generatedTokens" : 824,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.159584667,
+        "promptTokens" : 4997
+      }
+    },
+    {
+      "chunk" : 5,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            867
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do? I mean, I don't know, see what you've done and see what we need. Yeah. What we know more what we need maybe. Next week sometime."
+        },
+        {
+          "evidence" : [
+            921
+          ],
+          "kind" : "decision",
+          "text" : "We should find any other ways to explore."
+        },
+        {
+          "evidence" : [
+            952
+          ],
+          "kind" : "decision",
+          "text" : "We should set ourselves some milestones."
+        },
+        {
+          "evidence" : [
+            966
+          ],
+          "kind" : "decision",
+          "text" : "We should decide on what kind of things we wanna be able to search for."
+        },
+        {
+          "evidence" : [
+            981
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already so we don't sort of have to do all the work again of just like figuring out stuff. Oh, just like the basics of like No already? What? Sorry? Just like accessing the corpus and stuff."
+        },
+        {
+          "evidence" : [
+            981
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already so we don't sort of have to do all the work again of just like figuring out stuff. Oh, just like the basics of like No already? What? Sorry? Just like accessing the corpus and stuff."
+        },
+        {
+          "evidence" : [
+            981
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already so we don't sort of have to do all the work again of just like figuring out stuff. Oh, just like the basics of like No already? What? Sorry? Just like accessing the corpus and stuff."
+        },
+        {
+          "evidence" : [
+            981
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already so we don't sort of have to do all the work again of just like figuring out stuff. Oh, just like the basics of like No already? What? Sorry? Just like accessing the corpus and stuff."
+        },
+        {
+          "evidence" : [
+            981
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already so we don't sort of have to do all the work again of just like figuring out stuff. Oh, just like the basics of like No already? What? Sorry? Just like accessing the corpus and stuff."
+        },
+        {
+          "evidence" : [
+            981
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already so we don't sort of have to do all the work again of just like figuring out stuff. Oh, just like the basics of like No already? What? Sorry? Just like accessing the corpus and stuff."
+        },
+        {
+          "evidence" : [
+            981
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already so we don't sort of have to do all the work again of just like figuring out stuff. Oh, just like the basics of like No already? What? Sorry? Just like accessing the corpus and stuff."
+        },
+        {
+          "evidence" : [
+            981
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and show what we know already so we don't sort of have to do all the work again of just like figuring out stuff. Oh, just like the basics of like No already? What? Sorry? Just like accessing the corpus and stuff."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        861,
+        1046
+      ],
+      "stats" : {
+        "generateSeconds" : 8.258564458,
+        "generatedTokens" : 1038,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 2.20006825,
+        "promptTokens" : 4996
+      }
+    },
+    {
+      "chunk" : 6,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            1046
+          ],
+          "kind" : "decision",
+          "text" : "Probably want to go with defaults."
+        },
+        {
+          "evidence" : [
+            1051
+          ],
+          "kind" : "decision",
+          "text" : "We need to tick the okay box, right?"
+        },
+        {
+          "evidence" : [
+            1072
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard."
+        },
+        {
+          "evidence" : [
+            1068
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna do some stuff, get to know each other a bit better, to feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            1068
+          ],
+          "kind" : "decision",
+          "text" : "We've got twenty five minutes to do that as far as I can understand."
+        },
+        {
+          "evidence" : [
+            1079
+          ],
+          "kind" : "decision",
+          "text" : "We want it to be original, something that people haven't thought of, that's not out in the shops, trendy, appealing to a wide market, but you know, not a hunk of metal, and user friendly, grannies to kids, maybe even pooches, should be able to use it."
+        },
+        {
+          "evidence" : [
+            1068
+          ],
+          "kind" : "decision",
+          "text" : "We'll do some stuff, get to know each other a bit better, to feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            1072
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard. I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            1075
+          ],
+          "kind" : "decision",
+          "text" : "We're running out of blue. Okay. I'm not gonna ask you to guess, I'm gonna tell you that's supposed to be a tiger. And I see them as majestic and independent and the Proud."
+        },
+        {
+          "evidence" : [
+            1068
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna do some stuff, get to know each other a bit better, to feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            1068
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna do some stuff, get to know each other a bit better, to feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            1068
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna do some stuff, get to know each other a bit better, to feel more comfortable with each other."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        1046,
+        1173
+      ],
+      "stats" : {
+        "generateSeconds" : 6.014028833,
+        "generatedTokens" : 819,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.813389542,
+        "promptTokens" : 4314
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.252373125,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 1115359632,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 61.144975459,
+  "transcriptSegments" : 1174,
+  "transcriptWords" : 17007
+}

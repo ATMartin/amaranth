@@ -1,0 +1,960 @@
+{
+  "audioSeconds" : 3600,
+  "chunkTokenBudget" : 2200,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "due" : "by the end of the meeting",
+          "evidence" : [
+            10,
+            70
+          ],
+          "kind" : "decision",
+          "owner" : "S6",
+          "text" : "We should try to do a right-click menu"
+        },
+        {
+          "due" : "by the end of the meeting",
+          "evidence" : [
+            10,
+            70
+          ],
+          "kind" : "action",
+          "owner" : "S6",
+          "text" : "Implement a right-click menu with speaker characterization"
+        },
+        {
+          "evidence" : [
+            40,
+            50,
+            56,
+            57,
+            59
+          ],
+          "kind" : "question",
+          "text" : "What is the purpose of the speaker characterization?"
+        },
+        {
+          "due" : "by the end of the meeting",
+          "evidence" : [
+            10,
+            70
+          ],
+          "kind" : "decision",
+          "owner" : "S6",
+          "text" : "We should implement a right-click menu with speaker characterization"
+        },
+        {
+          "due" : "by the end of the meeting",
+          "evidence" : [
+            10,
+            70
+          ],
+          "kind" : "action",
+          "owner" : "S6",
+          "text" : "Implement a right-click menu with speaker characterization"
+        },
+        {
+          "evidence" : [
+            40,
+            50,
+            56,
+            57,
+            59
+          ],
+          "kind" : "question",
+          "text" : "What is the purpose of the speaker characterization?"
+        },
+        {
+          "due" : "by the end of the meeting",
+          "evidence" : [
+            10,
+            70
+          ],
+          "kind" : "decision",
+          "owner" : "S6",
+          "text" : "We should implement a right-click menu with speaker characterization"
+        },
+        {
+          "due" : "by the end of the meeting",
+          "evidence" : [
+            10,
+            70
+          ],
+          "kind" : "action",
+          "owner" : "S6",
+          "text" : "Implement a right-click menu with speaker characterization"
+        },
+        {
+          "evidence" : [
+            40,
+            50,
+            56,
+            57,
+            59
+          ],
+          "kind" : "question",
+          "text" : "What is the purpose of the speaker characterization?"
+        },
+        {
+          "due" : "by the end of the meeting",
+          "evidence" : [
+            10,
+            70
+          ],
+          "kind" : "decision",
+          "owner" : "S6",
+          "text" : "We should implement a right-click menu with speaker characterization"
+        },
+        {
+          "due" : "by the end of the meeting",
+          "evidence" : [
+            10,
+            70
+          ],
+          "kind" : "action",
+          "owner" : "S6",
+          "text" : "Implement a right-click menu with speaker characterization"
+        },
+        {
+          "evidence" : [
+            40,
+            50,
+            56,
+            57,
+            59
+          ],
+          "kind" : "question",
+          "text" : "What is the purpose of the speaker characterization?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        72
+      ],
+      "stats" : {
+        "generateSeconds" : 5.041128292,
+        "generatedTokens" : 764,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.949602,
+        "promptTokens" : 2124
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            73,
+            76
+          ],
+          "kind" : "decision",
+          "text" : "We need to implement a right-click menu for topics to display all meetings containing that topic."
+        },
+        {
+          "evidence" : [
+            103,
+            107,
+            109
+          ],
+          "kind" : "decision",
+          "text" : "We should consider integrating single-channel audio files for audio processing."
+        },
+        {
+          "evidence" : [
+            124,
+            125,
+            127,
+            128
+          ],
+          "kind" : "decision",
+          "text" : "We need to provide a way to display summaries in a separate window or tab for better usability."
+        },
+        {
+          "evidence" : [
+            127,
+            128
+          ],
+          "kind" : "decision",
+          "text" : "We should consider the use of tabs for managing multiple windows."
+        },
+        {
+          "evidence" : [
+            81,
+            84,
+            88,
+            90,
+            92,
+            93
+          ],
+          "kind" : "decision",
+          "text" : "We need to determine the most common double-click action for the user interface."
+        },
+        {
+          "evidence" : [
+            118,
+            119,
+            121,
+            123,
+            125,
+            127
+          ],
+          "kind" : "decision",
+          "text" : "We should consider the impact of window clutter on user experience."
+        },
+        {
+          "evidence" : [
+            124,
+            125,
+            127,
+            128,
+            130,
+            131
+          ],
+          "kind" : "decision",
+          "text" : "We need to decide on the format for displaying summaries and transcriptions."
+        },
+        {
+          "evidence" : [
+            138
+          ],
+          "kind" : "decision",
+          "text" : "We should consider the use of buttons or toggle buttons for managing the summary window."
+        },
+        {
+          "evidence" : [
+            103,
+            107,
+            109
+          ],
+          "kind" : "decision",
+          "text" : "We need to determine the best way to handle the integration of single-channel audio files."
+        },
+        {
+          "evidence" : [
+            127,
+            128
+          ],
+          "kind" : "decision",
+          "text" : "We should consider the use of a tab-based interface for managing multiple windows."
+        },
+        {
+          "evidence" : [
+            124,
+            125,
+            127
+          ],
+          "kind" : "decision",
+          "text" : "We need to ensure that the user can easily access the summary window."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        72,
+        143
+      ],
+      "stats" : {
+        "generateSeconds" : 5.042975459,
+        "generatedTokens" : 751,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.8485545,
+        "promptTokens" : 2169
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            155
+          ],
+          "kind" : "decision",
+          "text" : "To create a prototype of the GUI"
+        },
+        {
+          "evidence" : [
+            155
+          ],
+          "kind" : "action",
+          "text" : "To produce a prototype of the GUI"
+        },
+        {
+          "evidence" : [
+            172
+          ],
+          "kind" : "decision",
+          "text" : "To make the directory accessible"
+        },
+        {
+          "evidence" : [
+            172
+          ],
+          "kind" : "action",
+          "text" : "To make the directory accessible"
+        },
+        {
+          "evidence" : [
+            143
+          ],
+          "kind" : "decision",
+          "text" : "To create a summary of the meeting"
+        },
+        {
+          "evidence" : [
+            143
+          ],
+          "kind" : "action",
+          "text" : "To create a summary of the meeting"
+        },
+        {
+          "evidence" : [
+            148
+          ],
+          "kind" : "decision",
+          "text" : "To create a transcript with disfluencies"
+        },
+        {
+          "evidence" : [
+            148
+          ],
+          "kind" : "action",
+          "text" : "To create a transcript with disfluencies"
+        },
+        {
+          "evidence" : [
+            148
+          ],
+          "kind" : "decision",
+          "text" : "To create a transcript without disfluencies"
+        },
+        {
+          "evidence" : [
+            148
+          ],
+          "kind" : "action",
+          "text" : "To create a transcript without disfluencies"
+        },
+        {
+          "evidence" : [
+            151
+          ],
+          "kind" : "decision",
+          "text" : "To create a summary of the meeting"
+        },
+        {
+          "evidence" : [
+            151
+          ],
+          "kind" : "action",
+          "text" : "To create a summary of the meeting"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        143,
+        212
+      ],
+      "stats" : {
+        "generateSeconds" : 4.04359625,
+        "generatedTokens" : 597,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.868451,
+        "promptTokens" : 2175
+      }
+    },
+    {
+      "chunk" : 3,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            219,
+            221,
+            222
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do."
+        },
+        {
+          "evidence" : [
+            228
+          ],
+          "kind" : "action",
+          "text" : "Integrate the GUI with the summarization data."
+        },
+        {
+          "evidence" : [
+            233,
+            234,
+            237,
+            238,
+            241,
+            243
+          ],
+          "kind" : "question",
+          "text" : "How does the NXT search work?"
+        },
+        {
+          "evidence" : [
+            225,
+            227,
+            253
+          ],
+          "kind" : "decision",
+          "text" : "We should work on the summarization data."
+        },
+        {
+          "evidence" : [
+            260
+          ],
+          "kind" : "action",
+          "text" : "Annotate the code."
+        },
+        {
+          "evidence" : [
+            286
+          ],
+          "kind" : "question",
+          "text" : "What courses should I have picked if we're not doing any work?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        212,
+        286
+      ],
+      "stats" : {
+        "generateSeconds" : 2.650820375,
+        "generatedTokens" : 375,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.861680125,
+        "promptTokens" : 2176
+      }
+    },
+    {
+      "chunk" : 4,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            286
+          ],
+          "kind" : "decision",
+          "text" : "What courses should I have picked if we're not doing any work?"
+        },
+        {
+          "evidence" : [
+            287
+          ],
+          "kind" : "decision",
+          "text" : "I'm doing communications. Which we had one exercise and I've done that like two weeks ago. And that's in two weeks."
+        },
+        {
+          "evidence" : [
+            291
+          ],
+          "kind" : "decision",
+          "text" : "I'm doing parallel programming languages and systems. Which we had one exercise as well and that's in like Friday."
+        },
+        {
+          "evidence" : [
+            293
+          ],
+          "kind" : "decision",
+          "text" : "I'm not doing any background readings, so you know"
+        },
+        {
+          "evidence" : [
+            296
+          ],
+          "kind" : "decision",
+          "text" : "I'll be happy when this week is over."
+        },
+        {
+          "evidence" : [
+            297
+          ],
+          "kind" : "decision",
+          "text" : "I'll be happy when this course is over."
+        },
+        {
+          "evidence" : [
+            312
+          ],
+          "kind" : "decision",
+          "text" : "Do we want to set a date for interim prototype? Specifically, a date."
+        },
+        {
+          "evidence" : [
+            317
+          ],
+          "kind" : "decision",
+          "text" : "The progress report is June 23, February of February."
+        },
+        {
+          "evidence" : [
+            321
+          ],
+          "kind" : "decision",
+          "text" : "We can write about it in the interim report."
+        },
+        {
+          "evidence" : [
+            323
+          ],
+          "kind" : "decision",
+          "text" : "We should decide on what kind of search we want to do over the weekend."
+        },
+        {
+          "evidence" : [
+            322
+          ],
+          "kind" : "decision",
+          "text" : "We should make the search interface exist."
+        },
+        {
+          "evidence" : [
+            319
+          ],
+          "kind" : "decision",
+          "text" : "We should set milestones for the project."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        286,
+        365
+      ],
+      "stats" : {
+        "generateSeconds" : 4.586235916,
+        "generatedTokens" : 668,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.841236459,
+        "promptTokens" : 2187
+      }
+    },
+    {
+      "chunk" : 5,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            424
+          ],
+          "kind" : "decision",
+          "text" : "We will do some stuff, get to know each other a bit better, to feel more comfortable with each other."
+        },
+        {
+          "evidence" : [
+            424
+          ],
+          "kind" : "action",
+          "text" : "We will do tool training, talk about the project plan, discuss our own ideas and everything."
+        },
+        {
+          "evidence" : [
+            407
+          ],
+          "kind" : "decision",
+          "text" : "We need to tick the okay box, right? If you're okay with uh having writing Signing off in it."
+        },
+        {
+          "evidence" : [
+            410
+          ],
+          "kind" : "action",
+          "text" : "We need to turn these off then or what? We're done now."
+        },
+        {
+          "evidence" : [
+            428
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard."
+        },
+        {
+          "evidence" : [
+            428
+          ],
+          "kind" : "action",
+          "text" : "I'll go first. And sum up the characteristics of that animal."
+        },
+        {
+          "evidence" : [
+            433
+          ],
+          "kind" : "decision",
+          "text" : "I'm going to tell you that it's supposed to be a tiger. And I see them as majestic and independent and proud."
+        },
+        {
+          "evidence" : [
+            428
+          ],
+          "kind" : "action",
+          "text" : "We will practice with the pens and draw our favorite animal on the whiteboard."
+        },
+        {
+          "evidence" : [
+            410
+          ],
+          "kind" : "decision",
+          "text" : "We need to turn these off then or what? We're done now."
+        },
+        {
+          "evidence" : [
+            428
+          ],
+          "kind" : "decision",
+          "text" : "We're gonna practice with the pens and draw our favorite animal on the whiteboard."
+        },
+        {
+          "evidence" : [
+            407
+          ],
+          "kind" : "decision",
+          "text" : "We need to tick the okay box, right? If you're okay with uh having writing Signing off in it."
+        },
+        {
+          "evidence" : [
+            410
+          ],
+          "kind" : "action",
+          "text" : "We need to turn these off then or what? We're done now."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        365,
+        444
+      ],
+      "stats" : {
+        "generateSeconds" : 4.880771167,
+        "generatedTokens" : 724,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.841586667,
+        "promptTokens" : 2181
+      }
+    },
+    {
+      "chunk" : 6,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            445
+          ],
+          "kind" : "decision",
+          "text" : "I'm going to leave me a space at the bottom, I'm little. I can get to the top."
+        },
+        {
+          "evidence" : [
+            446,
+            447
+          ],
+          "kind" : "decision",
+          "text" : "And also my drawing skill isn't that great. Well as you can see the quality of the work today is um I think it's outstandingly good."
+        },
+        {
+          "evidence" : [
+            448,
+            449
+          ],
+          "kind" : "decision",
+          "text" : "Okay, now I'm gonna have to change what it was originally gonna be because that looks like a beak now, so crocodile?"
+        },
+        {
+          "evidence" : [
+            450
+          ],
+          "kind" : "decision",
+          "text" : "Yeah, it can be a crocodile. It can be a crocodile. Well it was it was an attempt at the firstly it was an attempt at a T Rex and then it sort of changed into a pelican, but it can be a crocodile."
+        },
+        {
+          "evidence" : [
+            451
+          ],
+          "kind" : "decision",
+          "text" : "That's lovely."
+        },
+        {
+          "evidence" : [
+            452
+          ],
+          "kind" : "decision",
+          "text" : "Yeah, and uh I'll have to think on the spot of uh things that it is. Um"
+        },
+        {
+          "evidence" : [
+            453
+          ],
+          "kind" : "decision",
+          "text" : "Uh scary"
+        },
+        {
+          "evidence" : [
+            454
+          ],
+          "kind" : "decision",
+          "text" : "Uh strong. Yeah, that's about it, I think."
+        },
+        {
+          "evidence" : [
+            455
+          ],
+          "kind" : "decision",
+          "text" : "Okay."
+        },
+        {
+          "evidence" : [
+            466
+          ],
+          "kind" : "decision",
+          "text" : "I'm I'm very impressed with your artistic skills. Mine's are dreadful. Oops, this is now coming apart. Let me just put the top in."
+        },
+        {
+          "evidence" : [
+            460
+          ],
+          "kind" : "decision",
+          "text" : "Hopefully that'll stay on. Two-handed version. Okay."
+        },
+        {
+          "evidence" : [
+            461
+          ],
+          "kind" : "decision",
+          "text" : "Again this is off the top of my head. I was gonna do a big cat too. Um"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        444,
+        513
+      ],
+      "stats" : {
+        "generateSeconds" : 5.120756917,
+        "generatedTokens" : 754,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.872899333,
+        "promptTokens" : 2189
+      }
+    },
+    {
+      "chunk" : 7,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            566,
+            567
+          ],
+          "kind" : "decision",
+          "text" : "We should redesign the remote control after we finish the remote control."
+        },
+        {
+          "evidence" : [
+            544,
+            545,
+            546,
+            547,
+            548,
+            549
+          ],
+          "kind" : "action",
+          "text" : "Introduce ourselves and discuss roles."
+        },
+        {
+          "evidence" : [
+            554
+          ],
+          "kind" : "action",
+          "text" : "Design the new remote control as original, trendy, and user-friendly."
+        },
+        {
+          "evidence" : [
+            559,
+            560,
+            561,
+            562,
+            563,
+            564
+          ],
+          "kind" : "action",
+          "text" : "Conduct tool training and whiteboard session."
+        },
+        {
+          "evidence" : [
+            515,
+            518,
+            520,
+            522,
+            523,
+            525
+          ],
+          "kind" : "question",
+          "text" : "How can we ensure the remote control is user-friendly?"
+        },
+        {
+          "evidence" : [
+            527
+          ],
+          "kind" : "question",
+          "text" : "What are the cost implications of adding a flip top remote control?"
+        },
+        {
+          "evidence" : [
+            528
+          ],
+          "kind" : "question",
+          "text" : "How can we ensure the remote control is lightweight and not fashionable?"
+        },
+        {
+          "evidence" : [
+            546,
+            549
+          ],
+          "kind" : "question",
+          "text" : "What are the responsibilities of the industrial designer?"
+        },
+        {
+          "evidence" : [
+            515,
+            518,
+            520,
+            522,
+            523,
+            525
+          ],
+          "kind" : "question",
+          "text" : "What is the role of the user interface designer?"
+        },
+        {
+          "evidence" : [
+            550
+          ],
+          "kind" : "question",
+          "text" : "What is the role of the project manager?"
+        },
+        {
+          "evidence" : [
+            559,
+            560
+          ],
+          "kind" : "question",
+          "text" : "What is the purpose of the tool training and whiteboard session?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        513,
+        575
+      ],
+      "stats" : {
+        "generateSeconds" : 4.72999625,
+        "generatedTokens" : 696,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.866687833,
+        "promptTokens" : 2179
+      }
+    },
+    {
+      "chunk" : 8,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            576
+          ],
+          "kind" : "decision",
+          "text" : "Press so it works"
+        },
+        {
+          "evidence" : [
+            580
+          ],
+          "kind" : "action",
+          "text" : "Record the front scene"
+        },
+        {
+          "evidence" : [
+            581
+          ],
+          "kind" : "question",
+          "text" : "Am I supposed to wipe off that?"
+        },
+        {
+          "evidence" : [
+            590
+          ],
+          "kind" : "decision",
+          "text" : "Selling price is supposed to be twenty five euro"
+        },
+        {
+          "evidence" : [
+            590
+          ],
+          "kind" : "decision",
+          "text" : "Profit aim for the company is fifty million euro"
+        },
+        {
+          "evidence" : [
+            590
+          ],
+          "kind" : "decision",
+          "text" : "Production cost should not exceed hopefully should be less than twelve fifty euro"
+        },
+        {
+          "evidence" : [
+            591
+          ],
+          "kind" : "action",
+          "text" : "Keep everybody on their toes unchallenged"
+        },
+        {
+          "evidence" : [
+            594
+          ],
+          "kind" : "action",
+          "text" : "Remember things of course to survive"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        575,
+        594
+      ],
+      "stats" : {
+        "generateSeconds" : 2.525216792,
+        "generatedTokens" : 407,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.187091625,
+        "promptTokens" : 578
+      }
+    }
+  ],
+  "contextTokens" : 4096,
+  "loadSeconds" : 0.22646125,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 643696704,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 45.83431725,
+  "transcriptSegments" : 595,
+  "transcriptWords" : 8367
+}

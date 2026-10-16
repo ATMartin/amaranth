@@ -1,0 +1,68 @@
+{
+  "audio" : "\/Users\/alex\/sandbox\/amaranth-v2\/Benchmarks\/Results\/2026-10-16-t02-run1\/inputs\/1089-134686-0029.wav",
+  "audioSeconds" : 4.67,
+  "engine" : "parakeet-v3-int8v2",
+  "footprintBeforeLoadBytes" : 4276728,
+  "loadSeconds" : 0.121503875,
+  "peakFootprintBytes" : 39125640,
+  "processSeconds" : 0.063640584,
+  "realtimeFactor" : 0.013627534047109207,
+  "systemMemoryDeltaPeakBytes" : 0,
+  "words" : [
+    {
+      "end" : 0.32,
+      "start" : 0.08,
+      "text" : "On"
+    },
+    {
+      "end" : 0.7999999999999999,
+      "start" : 0.32,
+      "text" : "Friday"
+    },
+    {
+      "end" : 1.76,
+      "start" : 0.96,
+      "text" : "confession"
+    },
+    {
+      "end" : 2,
+      "start" : 1.76,
+      "text" : "will"
+    },
+    {
+      "end" : 2.16,
+      "start" : 2,
+      "text" : "be"
+    },
+    {
+      "end" : 2.48,
+      "start" : 2.16,
+      "text" : "heard"
+    },
+    {
+      "end" : 2.7199999999999998,
+      "start" : 2.48,
+      "text" : "all"
+    },
+    {
+      "end" : 2.8800000000000003,
+      "start" : 2.72,
+      "text" : "the"
+    },
+    {
+      "end" : 3.4400000000000004,
+      "start" : 2.88,
+      "text" : "afternoon"
+    },
+    {
+      "end" : 3.84,
+      "start" : 3.44,
+      "text" : "after"
+    },
+    {
+      "end" : 4.720000000000001,
+      "start" : 3.84,
+      "text" : "Bades."
+    }
+  ]
+}

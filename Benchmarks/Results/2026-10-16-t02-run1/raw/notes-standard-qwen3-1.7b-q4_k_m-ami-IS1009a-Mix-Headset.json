@@ -1,0 +1,119 @@
+{
+  "audioSeconds" : 838.8333125,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            0
+          ],
+          "kind" : "decision",
+          "text" : "The microphone should be to the right"
+        },
+        {
+          "evidence" : [
+            1
+          ],
+          "kind" : "decision",
+          "text" : "The other microphone is here"
+        },
+        {
+          "evidence" : [
+            2
+          ],
+          "kind" : "decision",
+          "text" : "Everyone is ready"
+        },
+        {
+          "evidence" : [
+            2
+          ],
+          "kind" : "decision",
+          "text" : "Introduce ourselves"
+        },
+        {
+          "evidence" : [
+            3
+          ],
+          "kind" : "decision",
+          "text" : "Start with Francena"
+        },
+        {
+          "evidence" : [
+            3
+          ],
+          "kind" : "decision",
+          "text" : "Eileen is the user interface designer"
+        },
+        {
+          "evidence" : [
+            9
+          ],
+          "kind" : "decision",
+          "text" : "Janvi is the industrial designer"
+        },
+        {
+          "evidence" : [
+            10
+          ],
+          "kind" : "decision",
+          "text" : "Betsy is the project manager"
+        },
+        {
+          "evidence" : [
+            17
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should be original, trendy, and user-friendly"
+        },
+        {
+          "evidence" : [
+            24
+          ],
+          "kind" : "decision",
+          "text" : "The functional design is individual work followed by discussion"
+        },
+        {
+          "evidence" : [
+            25
+          ],
+          "kind" : "decision",
+          "text" : "Three types of design: functional, conceptual, detailed"
+        },
+        {
+          "evidence" : [
+            70
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should be multi-functional"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        120
+      ],
+      "stats" : {
+        "generateSeconds" : 4.121387458,
+        "generatedTokens" : 563,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 1.396425917,
+        "promptTokens" : 3449
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.257346875,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 1110083960,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 0,
+  "totalSeconds" : 5.533370708,
+  "transcriptSegments" : 121,
+  "transcriptWords" : 1791
+}

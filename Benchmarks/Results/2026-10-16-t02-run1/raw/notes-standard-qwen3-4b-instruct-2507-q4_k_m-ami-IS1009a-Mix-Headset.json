@@ -1,0 +1,168 @@
+{
+  "audioSeconds" : 838.8333125,
+  "chunkTokenBudget" : 5000,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            20,
+            70,
+            71,
+            75,
+            76,
+            77
+          ],
+          "kind" : "decision",
+          "text" : "The remote control design will be a multi-functional gadget capable of controlling household devices such as TV, air conditioners, and heating systems."
+        },
+        {
+          "evidence" : [
+            19,
+            75,
+            76,
+            77
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should be original, trendy, and user-friendly with a focus on design elements such as shape, color, and materials."
+        },
+        {
+          "evidence" : [
+            34,
+            36,
+            37,
+            39,
+            40,
+            41
+          ],
+          "kind" : "action",
+          "owner" : "Eileen",
+          "text" : "Eileen and S3 will try out the whiteboard and demonstrate how to use it for presentations in the next meeting."
+        },
+        {
+          "evidence" : [
+            39,
+            43,
+            44,
+            45
+          ],
+          "kind" : "action",
+          "owner" : "S3",
+          "text" : "S3 will attempt to draw a cat or rabbit to demonstrate how the remote control's front scene might look."
+        },
+        {
+          "evidence" : [
+            53
+          ],
+          "kind" : "action",
+          "owner" : "S2",
+          "text" : "S2 will draw a snake as part of the remote control design concept."
+        },
+        {
+          "evidence" : [
+            78,
+            79,
+            80,
+            81,
+            84,
+            85
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should include a light or beep signal when it is hidden (e.g., behind a plant or under a sweater) to help users locate it."
+        },
+        {
+          "evidence" : [
+            85,
+            86,
+            87,
+            90
+          ],
+          "kind" : "decision",
+          "text" : "The remote control should have a sensor that detects darkness and triggers a signal (light or beep) when it is in a dark spot."
+        },
+        {
+          "evidence" : [
+            57,
+            58,
+            59,
+            61,
+            62,
+            63
+          ],
+          "kind" : "decision",
+          "text" : "The selling price of the remote control will be 25 euros, with a target profit of 50 million euros and an international market range."
+        },
+        {
+          "evidence" : [
+            59,
+            60,
+            63
+          ],
+          "kind" : "decision",
+          "text" : "The production cost should not exceed 12.50 euros to ensure profitability."
+        },
+        {
+          "evidence" : [
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ],
+          "kind" : "decision",
+          "text" : "The design process will include three stages: functional design, conceptual design, and detailed design, each involving individual work followed by group discussion."
+        },
+        {
+          "evidence" : [
+            9,
+            104,
+            105,
+            106,
+            107,
+            108
+          ],
+          "kind" : "action",
+          "owner" : "S4",
+          "text" : "S4 (industrial designer) will be responsible for the technical functional design and specifications of the remote control."
+        },
+        {
+          "evidence" : [
+            109,
+            110,
+            111,
+            112
+          ],
+          "kind" : "action",
+          "owner" : "S3",
+          "text" : "S3 (marketing person) will develop user requirement specifications, including friendliness, functionality, and price justification."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        120
+      ],
+      "stats" : {
+        "generateSeconds" : 14.850284916,
+        "generatedTokens" : 978,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 3.478851709,
+        "promptTokens" : 3445
+      }
+    }
+  ],
+  "contextTokens" : 8192,
+  "loadSeconds" : 0.312969125,
+  "model" : "qwen3-4b-instruct-2507-q4_k_m",
+  "peakFootprintBytes" : 1385450928,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 1567604736,
+  "totalSeconds" : 18.346395375,
+  "transcriptSegments" : 121,
+  "transcriptWords" : 1791
+}

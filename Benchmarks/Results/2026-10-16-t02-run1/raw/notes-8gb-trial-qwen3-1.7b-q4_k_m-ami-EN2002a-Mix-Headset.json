@@ -1,0 +1,646 @@
+{
+  "audioSeconds" : 2142.709375,
+  "chunkTokenBudget" : 2200,
+  "chunks" : [
+    {
+      "chunk" : 0,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            70
+          ],
+          "kind" : "decision",
+          "text" : "We should try to do a right-click menu"
+        },
+        {
+          "evidence" : [
+            71
+          ],
+          "kind" : "decision",
+          "text" : "We should try to do a right-click menu"
+        },
+        {
+          "evidence" : [
+            72
+          ],
+          "kind" : "decision",
+          "text" : "We should try to do a right-click menu"
+        },
+        {
+          "evidence" : [
+            70,
+            71,
+            72
+          ],
+          "kind" : "action",
+          "text" : "Implement a right-click menu for speaker characterization"
+        },
+        {
+          "evidence" : [
+            47,
+            51,
+            52
+          ],
+          "kind" : "action",
+          "text" : "Implement a menu for viewing all meetings of a user"
+        },
+        {
+          "evidence" : [
+            11
+          ],
+          "kind" : "action",
+          "text" : "Implement a summarization box in the transcription box"
+        },
+        {
+          "evidence" : [
+            14
+          ],
+          "kind" : "action",
+          "text" : "Implement a search feature for observations"
+        },
+        {
+          "evidence" : [
+            28
+          ],
+          "kind" : "action",
+          "text" : "Implement a speaker characterization pop-up window"
+        },
+        {
+          "evidence" : [
+            47,
+            51,
+            52
+          ],
+          "kind" : "action",
+          "text" : "Implement a menu for viewing all meetings of a user"
+        },
+        {
+          "evidence" : [
+            70,
+            71,
+            72
+          ],
+          "kind" : "action",
+          "text" : "Implement a right-click menu for speaker characterization"
+        },
+        {
+          "evidence" : [
+            47,
+            51,
+            52
+          ],
+          "kind" : "action",
+          "text" : "Implement a menu for viewing all meetings of a user"
+        },
+        {
+          "evidence" : [
+            11
+          ],
+          "kind" : "action",
+          "text" : "Implement a summarization box in the transcription box"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        0,
+        73
+      ],
+      "stats" : {
+        "generateSeconds" : 4.405654333,
+        "generatedTokens" : 635,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.986066667,
+        "promptTokens" : 2134
+      }
+    },
+    {
+      "chunk" : 1,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            74,
+            77
+          ],
+          "kind" : "decision",
+          "text" : "We need to implement right-click menu for topics to pop up all meetings containing that topic."
+        },
+        {
+          "evidence" : [
+            79,
+            80,
+            81
+          ],
+          "kind" : "decision",
+          "text" : "We should consider having a default double-click action for topics to open the default meeting."
+        },
+        {
+          "evidence" : [
+            104,
+            107,
+            108
+          ],
+          "kind" : "decision",
+          "text" : "We should integrate single-channel audio files for audio processing."
+        },
+        {
+          "evidence" : [
+            124,
+            125,
+            126,
+            127,
+            128
+          ],
+          "kind" : "decision",
+          "text" : "We need to provide a way to display summaries in a separate window for better usability."
+        },
+        {
+          "evidence" : [
+            128,
+            129
+          ],
+          "kind" : "decision",
+          "text" : "We should consider using tabs for viewing transcription and summary together."
+        },
+        {
+          "evidence" : [
+            108,
+            116
+          ],
+          "kind" : "decision",
+          "text" : "We should avoid integrating single-channel audio files due to increased data footprint."
+        },
+        {
+          "evidence" : [
+            133,
+            137,
+            138
+          ],
+          "kind" : "decision",
+          "text" : "We should consider having a toggle button for switching between transcription and summary."
+        },
+        {
+          "evidence" : [
+            121
+          ],
+          "kind" : "decision",
+          "text" : "We should not implement a full customizable interface due to complexity."
+        },
+        {
+          "evidence" : [
+            93,
+            94,
+            95,
+            96,
+            97,
+            98
+          ],
+          "kind" : "decision",
+          "text" : "We should consider the usability of double-click actions on touchpads."
+        },
+        {
+          "evidence" : [
+            88
+          ],
+          "kind" : "decision",
+          "text" : "We should evaluate the need for a window that displays speaker characterization."
+        },
+        {
+          "evidence" : [
+            118
+          ],
+          "kind" : "decision",
+          "text" : "We should consider the impact of windows cluttering the interface."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        73,
+        144
+      ],
+      "stats" : {
+        "generateSeconds" : 4.684899042,
+        "generatedTokens" : 692,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.851730042,
+        "promptTokens" : 2164
+      }
+    },
+    {
+      "chunk" : 2,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "due" : "By the end of February",
+          "evidence" : [
+            166
+          ],
+          "kind" : "decision",
+          "text" : "To create a prototype of the GUI"
+        },
+        {
+          "evidence" : [
+            172,
+            175,
+            177,
+            178,
+            181,
+            182
+          ],
+          "kind" : "action",
+          "text" : "To make the directory accessible"
+        },
+        {
+          "evidence" : [
+            185,
+            186,
+            187
+          ],
+          "kind" : "question",
+          "text" : "What is the purpose of the M browser?"
+        },
+        {
+          "evidence" : [
+            144,
+            145,
+            148,
+            150,
+            151,
+            152
+          ],
+          "kind" : "action",
+          "text" : "To create a summary of the meeting"
+        },
+        {
+          "evidence" : [
+            163,
+            169
+          ],
+          "kind" : "action",
+          "text" : "To integrate the GUI components"
+        },
+        {
+          "evidence" : [
+            200,
+            208,
+            209
+          ],
+          "kind" : "question",
+          "text" : "What is the purpose of the XML files?"
+        },
+        {
+          "evidence" : [
+            200,
+            202
+          ],
+          "kind" : "action",
+          "text" : "To create a file management system"
+        },
+        {
+          "evidence" : [
+            172,
+            175,
+            177,
+            178,
+            181,
+            182
+          ],
+          "kind" : "action",
+          "text" : "To make the directory accessible"
+        },
+        {
+          "evidence" : [
+            185,
+            186,
+            187
+          ],
+          "kind" : "action",
+          "text" : "To create a browser for meetings"
+        },
+        {
+          "evidence" : [
+            144,
+            145,
+            148,
+            150,
+            151,
+            152
+          ],
+          "kind" : "action",
+          "text" : "To create a summary of the meeting"
+        },
+        {
+          "evidence" : [
+            163,
+            169
+          ],
+          "kind" : "action",
+          "text" : "To integrate the GUI components"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        144,
+        212
+      ],
+      "stats" : {
+        "generateSeconds" : 4.767045958,
+        "generatedTokens" : 690,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.923762167,
+        "promptTokens" : 2165
+      }
+    },
+    {
+      "chunk" : 3,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            219,
+            221
+          ],
+          "kind" : "decision",
+          "text" : "We should meet up and see what we could do."
+        },
+        {
+          "evidence" : [
+            228
+          ],
+          "kind" : "action",
+          "text" : "Integrate the GUI with the summarization data."
+        },
+        {
+          "evidence" : [
+            233,
+            234,
+            237,
+            238,
+            240,
+            241
+          ],
+          "kind" : "question",
+          "text" : "How does the NXT search work?"
+        },
+        {
+          "evidence" : [
+            225,
+            227,
+            253
+          ],
+          "kind" : "decision",
+          "text" : "We should work on the summarization data."
+        },
+        {
+          "evidence" : [
+            260,
+            264,
+            265
+          ],
+          "kind" : "action",
+          "text" : "Annotate the code and comment out functions."
+        },
+        {
+          "evidence" : [
+            285
+          ],
+          "kind" : "question",
+          "text" : "What courses should I have picked if we're not doing any work?"
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        212,
+        285
+      ],
+      "stats" : {
+        "generateSeconds" : 2.7800682500000002,
+        "generatedTokens" : 384,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.8914705,
+        "promptTokens" : 2166
+      }
+    },
+    {
+      "chunk" : 4,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            285
+          ],
+          "kind" : "decision",
+          "text" : "What courses should I have picked if we're not doing any work?"
+        },
+        {
+          "evidence" : [
+            286
+          ],
+          "kind" : "decision",
+          "text" : "I'm doing communications. Which we had one exercise and I've done that like two weeks ago. And that's in two weeks."
+        },
+        {
+          "evidence" : [
+            290
+          ],
+          "kind" : "decision",
+          "text" : "I'm doing parallel programming languages and systems. Which we had one exercise as well and that's in like Friday."
+        },
+        {
+          "evidence" : [
+            292
+          ],
+          "kind" : "decision",
+          "text" : "I'm not doing any background readings, so you know"
+        },
+        {
+          "evidence" : [
+            295
+          ],
+          "kind" : "decision",
+          "text" : "I'll be happy when this week is over."
+        },
+        {
+          "evidence" : [
+            296
+          ],
+          "kind" : "decision",
+          "text" : "I'll be happy when this course is over."
+        },
+        {
+          "evidence" : [
+            297
+          ],
+          "kind" : "decision",
+          "text" : "We can always decide then."
+        },
+        {
+          "evidence" : [
+            308
+          ],
+          "kind" : "decision",
+          "text" : "We need to set ourselves some milestones."
+        },
+        {
+          "evidence" : [
+            311
+          ],
+          "kind" : "decision",
+          "text" : "We want to set a date for an interim prototype."
+        },
+        {
+          "evidence" : [
+            316
+          ],
+          "kind" : "decision",
+          "text" : "The progress report is June 23, February of February."
+        },
+        {
+          "evidence" : [
+            320
+          ],
+          "kind" : "decision",
+          "text" : "We can write about it in the interim report."
+        },
+        {
+          "evidence" : [
+            322
+          ],
+          "kind" : "decision",
+          "text" : "We need to decide on what kind of search we want to do."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        285,
+        364
+      ],
+      "stats" : {
+        "generateSeconds" : 4.455784084,
+        "generatedTokens" : 659,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.8598605,
+        "promptTokens" : 2188
+      }
+    },
+    {
+      "chunk" : 5,
+      "invalidEvidenceRefs" : 0,
+      "items" : [
+        {
+          "evidence" : [
+            364
+          ],
+          "kind" : "decision",
+          "text" : "We need to do the task in the computer room."
+        },
+        {
+          "evidence" : [
+            368
+          ],
+          "kind" : "decision",
+          "text" : "The computer room has a printer and a photocopy machine."
+        },
+        {
+          "evidence" : [
+            373
+          ],
+          "kind" : "decision",
+          "text" : "We should do the task after the class."
+        },
+        {
+          "evidence" : [
+            375
+          ],
+          "kind" : "decision",
+          "text" : "DNL G should not go late."
+        },
+        {
+          "evidence" : [
+            380
+          ],
+          "kind" : "decision",
+          "text" : "We should set the task for next week."
+        },
+        {
+          "evidence" : [
+            409
+          ],
+          "kind" : "decision",
+          "text" : "We should turn off the windows."
+        },
+        {
+          "evidence" : [
+            405
+          ],
+          "kind" : "decision",
+          "text" : "We should tick the 'okay' box for the task."
+        },
+        {
+          "evidence" : [
+            406
+          ],
+          "kind" : "decision",
+          "text" : "We should sign off in the task."
+        },
+        {
+          "evidence" : [
+            409
+          ],
+          "kind" : "decision",
+          "text" : "We should turn off the windows."
+        },
+        {
+          "evidence" : [
+            404
+          ],
+          "kind" : "decision",
+          "text" : "We should check if the task is done."
+        },
+        {
+          "evidence" : [
+            404
+          ],
+          "kind" : "decision",
+          "text" : "We should confirm if the task is done."
+        },
+        {
+          "evidence" : [
+            404
+          ],
+          "kind" : "decision",
+          "text" : "We should confirm if the task is done."
+        }
+      ],
+      "itemsWithoutEvidence" : 0,
+      "jsonValid" : true,
+      "segmentIDs" : [
+        364,
+        411
+      ],
+      "stats" : {
+        "generateSeconds" : 4.069231208,
+        "generatedTokens" : 611,
+        "hitTokenLimit" : false,
+        "prefillSeconds" : 0.414835,
+        "promptTokens" : 1284
+      }
+    }
+  ],
+  "contextTokens" : 4096,
+  "loadSeconds" : 0.224860125,
+  "model" : "qwen3-1.7b-q4_k_m",
+  "peakFootprintBytes" : 681347184,
+  "promptTemplate" : "chatml-manual-v1",
+  "promptVersion" : "t02-notes-extract-v2",
+  "systemMemoryDeltaPeakBytes" : 21889024,
+  "totalSeconds" : 30.148373417,
+  "transcriptSegments" : 412,
+  "transcriptWords" : 5599
+}
