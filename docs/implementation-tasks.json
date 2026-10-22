@@ -34,6 +34,15 @@
       "next_ready_task"
     ]
   },
+  "milestones": {
+    "A": "Prove feasibility: T01-T04 (validated)",
+    "B": "Reliable recorder: T05-T08 (validated)",
+    "C": "Complete usable workflow: T09-T11 (validated)",
+    "D": "Live text: T14",
+    "E": "Local model performance and delay reduction: T16-T21 (docs/milestone-e-performance-plan.md)",
+    "F": "Release qualification: T12, T13 (moved from D on 2026-10-22; measures the Milestone E pipeline)",
+    "Later": "T15"
+  },
   "tasks": [
     {
       "id": "T01",
@@ -379,8 +388,8 @@
     {
       "id": "T12",
       "title": "Qualify reliability, performance and offline guarantees",
-      "milestone": "D",
-      "status": "planned",
+      "milestone": "F",
+      "status": "planned (partial inputs: processing-timing self-test and evidence/2026-10-16/selftest-processing-timing-60min.jsonl; evidence/2026-10-22/first-real-meeting.json)",
       "optional": false,
       "depends_on": [
         "T02",
@@ -392,7 +401,9 @@
         "T08",
         "T09",
         "T10",
-        "T11"
+        "T11",
+        "T14",
+        "T21"
       ],
       "owner_role": "Release qualification",
       "module_scope": [
@@ -405,21 +416,24 @@
         "Inject permission revocation, disconnects, lock/sleep, kill, full disk, malformed models, worker hangs and cancellations.",
         "Run two-hour normal recordings, a four-hour soak, back-to-back meetings and cold/warm processing measurements.",
         "Verify offline operation with networking denied and separately inspect attempted outbound connections while enabled.",
-        "Publish machine-readable measurements and a readable release report listing tested, failed and unverified configurations."
+        "Publish machine-readable measurements and a readable release report listing tested, failed and unverified configurations.",
+        "Validate T14 live text in release builds on real calls: provisional-text latency from persisted samples, capture loss/memory/thermal with a real meeting app, and the live-to-final transition."
       ],
       "acceptance": [
         "All supported-profile gates in plan section 10 pass with raw evidence; no unsupported claim relies on M2 Max results alone.",
         "Zero silent data loss in the matrix; every induced discontinuity is visible.",
         "16 GB and 8 GB support decisions are separate. Unavailable hardware remains unverified.",
-        "No audio/transcript/notes leave the app through inference, logs, telemetry or automatic dependency downloads."
+        "No audio/transcript/notes leave the app through inference, logs, telemetry or automatic dependency downloads.",
+        "T14 gates (median < 5 s, p95 < 10 s outside pressure pauses; capture gates during a real call) pass on real recordings, or are reported as failed/unverified."
       ],
-      "fallback": "Fix the owning module and rerun affected gates. Explicitly revise a scope or budget decision with evidence; never relabel a failing test as passing."
+      "fallback": "Fix the owning module and rerun affected gates. Explicitly revise a scope or budget decision with evidence; never relabel a failing test as passing.",
+      "milestone_note": "Moved from D to F by user decision 2026-10-22 so release qualification measures the Milestone E pipeline."
     },
     {
       "id": "T13",
       "title": "Deliver an installable test build",
-      "milestone": "D",
-      "status": "planned",
+      "milestone": "F",
+      "status": "partly implemented (scripts/build-release.sh, notices, tester guide; never run as a packaged build; qualification pending)",
       "optional": false,
       "depends_on": [
         "T12"
@@ -440,15 +454,17 @@
         "Fresh install → permissions → model installation → offline real meeting → transcript → speaker correction → notes → export succeeds.",
         "Back-to-back capture and relaunch recovery pass in the packaged build, not only under Xcode.",
         "A human tester completes the workflow without developer tooling.",
-        "If signing credentials are absent, deliver a documented developer build and explicitly mark distribution qualification incomplete."
+        "If signing credentials are absent, deliver a documented developer build and explicitly mark distribution qualification incomplete.",
+        "Live text works in the packaged build during the fresh-install workflow."
       ],
-      "fallback": "Preserve a usable local build and explain the specific signing/distribution blocker. Do not claim notarization or clean-machine validation without evidence."
+      "fallback": "Preserve a usable local build and explain the specific signing/distribution blocker. Do not claim notarization or clean-machine validation without evidence.",
+      "milestone_note": "Moved from D to F by user decision 2026-10-22."
     },
     {
       "id": "T14",
       "title": "Optional provisional live transcription",
-      "milestone": "C",
-      "status": "implemented (latency gate met on M2 Max with synthetic replay; real calls and base-M2 unverified)",
+      "milestone": "D",
+      "status": "implemented, with deferrals (latency gate met on M2 Max with synthetic replay only; real calls and base-M2 unverified; reuse of live chunks after Stop not delivered; no provisional speakers)",
       "optional": false,
       "depends_on": [
         "T06",
@@ -476,7 +492,12 @@
         "If promoted, T12 and T13 must validate T14 before release."
       ],
       "fallback": "Use buffered near-live output or record-only degradation with visible status. Do not compromise saved audio for live text.",
-      "promotion_note": "Promoted into v0 by user decision 2026-10-15; T12/T13 must validate it."
+      "promotion_note": "Promoted into v0 by user decision 2026-10-15; T12/T13 (Milestone F) must validate it.",
+      "deferrals": [
+        "Persist finalized chunk results for reuse after Stop: not delivered (live/0001: live passes use an energy gate and no right context, so reuse would lower final quality). Superseded by T19, which runs the final pipeline during recording instead of reusing live output.",
+        "Provisional speakers: none are shown (live text carries MIC/SYS source tags only); Diarization/Live is not built. Speakers appear only in the final transcript.",
+        "Representative session set: one synthetic replay (LibriSpeech mic + 120 s of AMI EN2002a). Real-call latency is validated in Milestone F (T12); persisted latency samples are a T20 deliverable."
+      ]
     },
     {
       "id": "T15",
@@ -504,6 +525,170 @@
         "Any network-dependent extension is clearly separate from the local-only core."
       ],
       "fallback": "Defer until the recording and note-quality feedback justifies the added maintenance surface."
+    },
+    {
+      "id": "T16",
+      "title": "Measure the pipeline and automate validation",
+      "milestone": "E",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T14"
+      ],
+      "owner_role": "Performance qualification",
+      "module_scope": [
+        "Benchmarks/",
+        "InferenceWorker/",
+        "Tests/Benchmarks/",
+        "docs/qualification/"
+      ],
+      "deliverables": [
+        "Per-stage and sub-stage signposts and timing breakdown in the worker and scheduler.",
+        "amaranth-bench perf-suite: public suite plus the user corpus through the real XPC worker and scheduler, cold and warm, machine-readable measurements and a readable report.",
+        "Frozen v0 baseline outputs and metrics for every corpus file, stored in the gitignored corpus folder (Tests/Data/Recordings/); --compare fails on any guard breach.",
+        "Corpus ingestion: audio/video files and Amaranth-recorded meetings via manifest.csv; consent required; automatic dev/held-out split."
+      ],
+      "acceptance": [
+        "A written breakdown explains the gap between isolated model speed and in-pipeline stage time, with evidence.",
+        "perf-suite runs unattended end to end and its comparison fails on an injected regression.",
+        "Reports contain metrics and IDs only, never transcript text."
+      ],
+      "fallback": "If a sub-stage cannot be instrumented in a dependency, measure it from the outside and say so."
+    },
+    {
+      "id": "T17",
+      "title": "Remove pipeline overhead in transcription and diarization",
+      "milestone": "E",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T16"
+      ],
+      "owner_role": "Inference runtime",
+      "module_scope": [
+        "ASR/",
+        "Diarization/",
+        "InferenceWorker/",
+        "App/Worker/"
+      ],
+      "deliverables": [
+        "Fix the overheads T16 identifies (preparation, stage overlap, window and retry cost, I/O, compute-unit placement, warm start, scheduler gaps).",
+        "Core ML warm-up at install (tracked item 3)."
+      ],
+      "acceptance": [
+        "G1 batch target: Stop to final transcript with speakers <= 60 s for a 60-minute meeting on the M2 Max.",
+        "Pure refactors produce byte-identical transcripts; deliberate speed/quality trades stay within G5 quality guard vs the frozen v0 baseline (docs/milestone-e-performance-plan.md)."
+      ],
+      "fallback": "Keep the slower path for any configuration where the faster one breaches the guard."
+    },
+    {
+      "id": "T18",
+      "title": "Faster background notes",
+      "milestone": "E",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T16"
+      ],
+      "owner_role": "Notes runtime",
+      "module_scope": [
+        "Notes/",
+        "InferenceWorker/",
+        "Models/"
+      ],
+      "deliverables": [
+        "Batched verification, earlier item caps, terser grammar, KV reuse, flash attention/quantised KV, speculative decoding; smaller model only if quality holds.",
+        "Notes run at lower priority than any transcription work."
+      ],
+      "acceptance": [
+        "Notes for a 60-minute meeting <= 5 minutes after Stop, without delaying any transcript.",
+        "Notes quality guard holds: 100% valid evidence, planted coverage 6/6, injection 10/10, uncertain share <= baseline + 5 points."
+      ],
+      "fallback": "Keep the current notes path; speed is secondary to transcription for notes."
+    },
+    {
+      "id": "T19",
+      "title": "Process meetings incrementally during recording",
+      "milestone": "E",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T17"
+      ],
+      "owner_role": "Inference runtime",
+      "module_scope": [
+        "InferenceWorker/",
+        "ASR/",
+        "Diarization/",
+        "Notes/",
+        "App/"
+      ],
+      "deliverables": [
+        "Prepare, final-quality ASR and diarization features run during recording, about 30 s behind; only the tail and clustering remain at Stop.",
+        "Final windows replace provisional live text as they arrive.",
+        "Capture-health, thermal and memory back-off, plus a setting to restore the old pause-while-recording policy.",
+        "Memory-pressure trigger for live text and incremental work (live text pauses on thermal state only today)."
+      ],
+      "acceptance": [
+        "G1: Stop to final transcript with speakers <= 20 s for 60- and 120-minute meetings.",
+        "Back-to-back: a meeting's final transcript is ready while the next one is recording; the processing queue does not grow across two consecutive 60-minute meetings.",
+        "G6: zero missing-audio events and ring overruns, capture footprint unchanged, live text gate still met, under a simulated call load.",
+        "G5 quality guard vs the frozen v0 baseline (docs/milestone-e-performance-plan.md)."
+      ],
+      "fallback": "Roll back to pausing heavy work while recording (one setting) and keep the T17/T18 batch gains."
+    },
+    {
+      "id": "T20",
+      "title": "Lower live text latency",
+      "milestone": "E",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T19"
+      ],
+      "owner_role": "Streaming inference",
+      "module_scope": [
+        "ASR/Live/",
+        "App/Live/",
+        "Capture/"
+      ],
+      "deliverables": [
+        "Persist live latency samples per meeting (metrics only), so real-recording latency can be measured.",
+        "Measure the latency floor; try a shorter tick and commit interval for live reads only (durable segments stay the only input).",
+        "Padded final-window flush at Stop: the last spoken words reach the provisional transcript (tracked item 23)."
+      ],
+      "acceptance": [
+        "Live text median <= 2 s and p95 <= 4 s on real recordings."
+      ],
+      "fallback": "Keep the current live settings."
+    },
+    {
+      "id": "T21",
+      "title": "Qualify Milestone E",
+      "milestone": "E",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T16",
+        "T17",
+        "T18",
+        "T19",
+        "T20"
+      ],
+      "owner_role": "Performance qualification",
+      "module_scope": [
+        "Benchmarks/",
+        "docs/decisions/",
+        "docs/qualification/"
+      ],
+      "deliverables": [
+        "Full perf-suite run on release builds with all hashes; updated asr, diarization, notes, processing and live decision records."
+      ],
+      "acceptance": [
+        "Independent Sonnet validator verdict before commit.",
+        "Base-M2 results remain projections marked unverified."
+      ],
+      "fallback": "Report unmet gates explicitly; never relabel a failing gate as passing."
     }
   ]
 }

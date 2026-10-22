@@ -7,7 +7,7 @@ import Storage
 
 /// Drives live text while recording (T14). Every `interval` seconds it sends each source's newly committed segments
 /// (from `RecordingSession.snapshot()`, i.e. durable audio only) to the worker, one request in flight at a time, and
-/// merges the result. It pauses under thermal/memory pressure or when models are missing; capture is never affected.
+/// merges the result. It pauses under serious or critical thermal state or when models are missing (no memory-pressure trigger yet: T19); capture is never affected.
 @MainActor @Observable
 final class LiveTextModel {
     enum Status: Equatable { case off, running, paused(String), unavailable(String) }

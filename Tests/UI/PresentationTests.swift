@@ -83,6 +83,22 @@ struct PresentationLogicTests {
         var d = try #require(try MeetingDetail.load(store, f.meeting.id))
         #expect(d.notesState(notesModelInstalled: false) == .unavailable("Install the model pack to generate notes. Recording and transcripts don't need it."))
         #expect(d.notesState(notesModelInstalled: true) == .none)
+        // Words published, speakers still pending: wait rather than offer notes without speakers.
+        let attributed = d.transcript
+        d.transcript?.stage = .asr
+        d.jobs = [ProcessingJob(key: JobKey(meetingID: f.meeting.id, stage: .reconcile, inputHash: "h", configHash: "c"), createdAt: Date(), updatedAt: Date())]
+        #expect(d.notesState(notesModelInstalled: true) == .waiting("Notes start when speakers are identified"))
+        var diarize = ProcessingJob(key: JobKey(meetingID: f.meeting.id, stage: .diarize, inputHash: "h", configHash: "c"), createdAt: Date(), updatedAt: Date())
+        d.jobs = [diarize]
+        #expect(d.notesState(notesModelInstalled: true) == .waiting("Notes start when speakers are identified"))
+        try diarize.transition(to: .suspended, at: Date()); diarize.suspension = .recordingActive; d.jobs = [diarize]
+        #expect(d.notesState(notesModelInstalled: true) == .waiting("Notes start when speakers are identified"))
+        try diarize.transition(to: .queued, at: Date()); try diarize.transition(to: .running, at: Date())
+        try diarize.transition(to: .failed, at: Date()); d.jobs = [diarize]
+        #expect(d.notesState(notesModelInstalled: true) == .none) // diarization failed: generating from words is allowed
+        d.jobs = []
+        #expect(d.notesState(notesModelInstalled: true) == .none)
+        d.transcript = attributed
         var job = ProcessingJob(key: JobKey(meetingID: f.meeting.id, stage: .notes, inputHash: "h", configHash: "c"), createdAt: Date(), updatedAt: Date())
         d.jobs = [job]
         #expect(d.notesState(notesModelInstalled: true) == .waiting("Queued"))

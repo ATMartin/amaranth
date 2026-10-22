@@ -53,7 +53,7 @@ EN2002a (four speakers, heavy overlap). Live text runs through the real XPC work
 | Gate (T14) | live-latency | live-pressure (15 s simulated thermal pause) |
 |---|---|---|
 | Median provisional-text delay < 5 s | **2.18 s** (2.13 s in an earlier run) | 2.55 s |
-| p95 < 10 s | **4.99 s** (5.15 s) | 11.3 s (by design: words spoken during the pause wait for it to end) |
+| p95 < 10 s | **4.99 s** (5.15 s) | 11.3 s: gate not applicable during a pause (by design, words spoken during the pause wait for it to end; the self-test does not check p95) |
 | Provisional mic WER | 2.4% | 1.8% |
 | Capture: missing-audio events / ring overruns | 0 / 0 | 0 / 0 |
 | Peak footprint: app / worker | 91 / 45 MiB | 90 / 43 MiB |
@@ -72,4 +72,4 @@ Unit tests:
 | Median < 5 s and p95 < 10 s on the reference machine, on a representative measured session set | Met on M2 Max with synthetic replays. A *representative real session set* and the **base-M2 reference are unverified**. |
 | Simultaneous call plus live inference meets capture loss, memory and thermal gates | Met for synthetic sources: zero loss, zero overruns, app 91 MiB. A real call with a real meeting app is part of the manual capture checklist. |
 | Live/final transitions preserve user edits and show uncertainty | Met: edits are disabled on provisional text, there are no live speakers, and banners mark it provisional |
-| T12 and T13 validate T14 | Pending (Milestone D) |
+| T12 and T13 validate T14 | Pending (Milestone F, release qualification; decision 0004) |

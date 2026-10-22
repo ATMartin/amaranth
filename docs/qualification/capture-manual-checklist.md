@@ -26,6 +26,7 @@ muted or rerouted for you.
 | Google Meet in Chrome | Chrome (current, 119 crashes on macOS 26) | built-in | | |
 | Google Meet in Safari | Safari 26.5.2 | built-in | | |
 | Slack huddle | Slack 4.52.178 | built-in | | |
+| Local audio player (a recording played by the user) | not recorded | built-in output | **Pass (Debug build, local player only)** (2026-10-22) | System track captured to the end; start delays came from the open permission prompt and manual playback start and were shown as gaps. No missing audio after start. Live text ran (5 provisional revisions). `evidence/2026-10-22/first-real-meeting.json` |
 | Meeting app launched after recording started | any | built-in | | |
 | Mute/unmute in the meeting app mid-recording | any | built-in | | |
 

@@ -59,6 +59,12 @@ public struct MeetingDetail: Sendable {
         if let j = notesJob, j.state == .failed { return .failed(j.errorCode ?? "unknown error") }
         if !notesModelInstalled { return .unavailable("Install the model pack to generate notes. Recording and transcripts don't need it.") }
         if transcript == nil || showingProvisional { return .unavailable("Notes are generated after the final transcript is ready.") }
+        // Words are final but speakers are still coming: offering "Generate" here would build notes without speakers
+        // (stale on arrival) and hold up reconcile behind them. If diarization failed, nothing is pending and the user
+        // may generate from the words alone.
+        if transcript?.stage == .asr, jobs.contains(where: { [.diarize, .reconcile].contains($0.key.stage) && !$0.state.isTerminal }) {
+            return .waiting("Notes start when speakers are identified")
+        }
         return .none
     }
 

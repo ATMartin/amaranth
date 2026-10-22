@@ -1,0 +1,25 @@
+{
+  "note": "First user-run recording in the real app (Debug build, team-signed, 2026-10-22). Metrics only; no titles or transcript text. Source: the app's SQLite index and job work directories.",
+  "meetingID": "2a039474-8780-4d82-ad00-f57a66bef141",
+  "setup": "System audio: a local recording played by the user, started by hand a few seconds after Record. Mic: MacBook Pro Microphone, 48 kHz mono. System output tap: 48 kHz stereo. First recording after the signing change, so a TCC permission prompt was open at Record.",
+  "durationSeconds": 127.6,
+  "captureState": "capturedWithGaps",
+  "captureEvents": [
+    {"source": "microphone", "kind": "gap", "reason": "source.startDelayed", "startS": 0.0, "endS": 3.22},
+    {"source": "systemOutput", "kind": "sourceFault", "reason": "source.noAudio.detected", "startS": 0.0, "endS": 3.48},
+    {"source": "systemOutput", "kind": "gap", "reason": "source.startDelayed", "startS": 0.0, "endS": 9.81},
+    {"source": "systemOutput", "kind": "sourceFault", "reason": "source.noAudio", "startS": 0.0, "endS": 9.98},
+    {"source": "systemOutput", "kind": "sourceRecovered", "reason": "source.recovered", "startS": 9.98, "endS": 9.98}
+  ],
+  "captureInterpretation": "Both start delays fall while the permission prompt was open (capture/0001: tap and IOProc start block until the prompt is answered), and the system source then waited for playback. They are reported as explicit gaps, not hidden. No missing-audio events after start. Not usable as evidence for the 2 s first-frame gate.",
+  "segments": {"microphone": {"count": 63, "frames": 5970944, "startS": 3.22, "endS": 127.62}, "systemOutput": {"count": 59, "frames": 5655040, "startS": 9.81, "endS": 127.62}},
+  "liveText": {"provisionalRevisions": 5, "provisionalWordsAtStop": 312, "finalWords": 318, "latencySamplesPersisted": false},
+  "jobsSecondsAfterStop": {
+    "stopUTC": "2026-10-22T04:59:25Z",
+    "prepare": [0, 5], "transcribe": [5, 10], "diarize": [10, 17],
+    "notesRun1_onAsrOnlyTranscript": [17, 43], "reconcile_published": 43,
+    "notesRun2_onAttributedTranscript": [86, 110],
+    "resolution": "1 s (job timestamps)"
+  },
+  "finding": "Notes run 1 used the words-only (stage asr) revision. The scheduler queues notes only after reconcile, so it came from the notes pane's 'Generate Notes' button, which was offered while speakers were pending. The serial worker then ran it ahead of reconcile, delaying speakers by about 26 s, and the result was stale on arrival. Fixed 2026-10-22 (tracked item 21)."
+}

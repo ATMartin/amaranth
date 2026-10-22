@@ -25,3 +25,6 @@ Benchmarks/Results/**/*.wav
 Benchmarks/Results/**/*.caf
 .build-alt/
 .build-*/
+
+# Consented real-meeting corpus: private, never committed (plan §10; Milestone E)
+Tests/Data/Recordings/
