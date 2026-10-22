@@ -181,9 +181,16 @@ Recommendations:
   spans rather than whole meetings.
 - **Consent:** record `consent=yes` for every file; the harness skips files without it.
 
-`manifest.csv` columns: `file_or_amaranth_title, consent, speakers, setting (headset|laptop|room|speakerphone),
-language, reference (none|auto|verified), split (blank = automatic)`. The harness assigns tuning and held-out splits by
-meeting and keeps the held-out set fixed.
+`manifest.csv` columns:
+- `file_or_amaranth_title`, `consent` (yes), `speakers` (a number, `N+` or a range);
+- `setting`: remote (own devices, mixed call audio), headset, laptop, room, speakerphone or unknown;
+- `language`;
+- `reference` (none, auto or verified), `reference_file` (transcript), `notes_reference_file` (decisions and actions);
+- `split` (dev, heldout, or blank for automatic);
+- `duration_s`, `recorded`, `tracks` (mixed-stereo, or separate mic and system), `notes`.
+
+The held-out set stays fixed and is never used for tuning. The first corpus (2026-10-22) has 4 recordings, 2.8 h, all
+mixed single-track Google Meet calls. Two have Gemini auto-transcripts; one is held out (`hangout-ruby-session`).
 
 ## User decisions (2026-10-22; decision record 0004)
 1. **Processing during recording: allowed.** Plan §10 and processing/0001 paused heavy inference while recording.
