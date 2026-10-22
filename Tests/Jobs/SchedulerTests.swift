@@ -16,11 +16,18 @@ final class FakeExecutor: JobExecutor, @unchecked Sendable {
     var tokens: [JobID: Bool] = [:]
     var failing: [MeetingID: ProcessingStage] = [:]   // stage reports a permanent error for that meeting
     var coldStartDelay: Duration = .zero              // first job pays a model-load cost
+    var active: [JobID: ProcessingStage] = [:]
+    var overlaps: [Set<ProcessingStage>] = []         // stages running at once, recorded whenever a job starts beside others
     let reconcileRunner = StageRunner(models: ModelProvider { _ in throw ModelProvider.Error.missing("unused") })
 
     func execute(_ job: JobDescriptor, progress: @escaping @Sendable (WorkerProgress) -> Void) async throws -> WorkerResponse {
         let lost = lock.withLock { () -> Bool in defer { if workerLossesRemaining > 0 { workerLossesRemaining -= 1 } }; return workerLossesRemaining > 0 }
         if lost { throw JobFailure.workerLost("simulated") }
+        lock.withLock {
+            if !active.isEmpty { overlaps.append(Set(active.values).union([job.key.stage])) }
+            active[job.jobID] = job.key.stage
+        }
+        defer { lock.withLock { active[job.jobID] = nil } }
         let (cold, fails) = lock.withLock { () -> (Duration, Bool) in
             executed.append(job.key.stage); tokens[job.jobID] = false
             defer { coldStartDelay = .zero }
@@ -90,8 +97,9 @@ enum JobFixture {
         return (store, m, root)
     }
 
-    static func config() -> JobScheduler.Configuration {
-        JobScheduler.Configuration(asrConfigHash: "asr", diarizationConfigHash: "diar", retryBackoff: 0.05)
+    static func config(concurrentAnalysis: Bool = true, notes: Bool = false) -> JobScheduler.Configuration {
+        JobScheduler.Configuration(asrConfigHash: "asr", diarizationConfigHash: "diar", notesConfigHash: notes ? "notes" : nil,
+                                   retryBackoff: 0.05, concurrentAnalysis: concurrentAnalysis)
     }
 
     static func wait(_ timeout: Duration = .seconds(10), until cond: () throws -> Bool) async rethrows -> Bool {
@@ -412,5 +420,68 @@ struct SchedulerTests {
             return sp.contains { $0.displayName == "Dana" } && sp.contains { $0.displayName == "Lee" }
         })
         #expect(try store.jobs(meeting: m).contains { $0.key.stage == .reconcile && $0.errorCode == "stale.edits" })
+    }
+
+    // MARK: T17: transcription and diarization overlap
+
+    @Test func diarizationRunsWhileTranscriptionIsStillRunning() async throws {
+        let (store, m, root) = try JobFixture.storeWithMeeting()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let exec = FakeExecutor()
+        let gate = AsyncStream<Void>.makeStream()
+        exec.gate[.transcribe] = gate.stream
+        let s = JobScheduler(store: store, executor: exec, configuration: JobFixture.config())
+        try s.start()
+        defer { s.stop() }
+        try s.enqueuePipeline(m)
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .diarize && $0.state == .succeeded } },
+                "diarize does not wait for transcription")
+        #expect(try store.jobs(meeting: m).first { $0.key.stage == .transcribe }?.state == .running)
+        gate.continuation.yield()
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .reconcile && $0.state == .succeeded } })
+        #expect(exec.lock.withLock { exec.overlaps } == [[.transcribe, .diarize]])
+    }
+
+    @Test func stagesRunOneAtATimeWhenConcurrencyIsOff() async throws {
+        let (store, m, root) = try JobFixture.storeWithMeeting()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let exec = FakeExecutor()
+        let gate = AsyncStream<Void>.makeStream()
+        exec.gate[.transcribe] = gate.stream
+        let s = JobScheduler(store: store, executor: exec, configuration: JobFixture.config(concurrentAnalysis: false))
+        try s.start()
+        defer { s.stop() }
+        try s.enqueuePipeline(m)
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .transcribe && $0.state == .running } })
+        try await Task.sleep(for: .milliseconds(400))
+        #expect(try store.jobs(meeting: m).first { $0.key.stage == .diarize }?.state == .queued)
+        gate.continuation.yield()
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .reconcile && $0.state == .succeeded } })
+        #expect(exec.lock.withLock { exec.overlaps }.isEmpty)
+    }
+
+    @Test func onlyTranscriptionAndDiarizationEverOverlap() async throws {
+        let (store, m1, root) = try JobFixture.storeWithMeeting()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let m2 = MeetingID()
+        try store.upsertMeeting(Meeting(id: m2, title: "second", createdAt: Date(), captureState: .captured))
+        try store.insertSegments([AudioSegmentRecord(meetingID: m2, source: .systemOutput, epochID: EpochID(), sequence: 0,
+                                                     format: AudioFormat(sampleRate: 16_000, channelCount: 1, sampleFormat: .float32),
+                                                     firstFrameInEpoch: 0, frameCount: 32_000, interval: .seconds(0, 2), relativePath: "y.caf",
+                                                     sha256: String(repeating: "b", count: 64), state: .committed)])
+        let exec = FakeExecutor()
+        exec.delay = .milliseconds(80)
+        let s = JobScheduler(store: store, executor: exec, configuration: JobFixture.config(notes: true))
+        try s.start()
+        defer { s.stop() }
+        try s.enqueuePipeline(m1)
+        try s.enqueuePipeline(m2)
+        #expect(try await JobFixture.wait {
+            try [m1, m2].allSatisfy { m in try store.jobs(meeting: m).contains { $0.key.stage == .notes && $0.state == .succeeded } }
+        })
+        let overlaps = exec.lock.withLock { exec.overlaps }
+        #expect(!overlaps.isEmpty)
+        #expect(overlaps.allSatisfy { $0 == [.transcribe, .diarize] }, "\(overlaps)")
+        #expect(exec.lock.withLock { exec.executed }.count == 10)
     }
 }

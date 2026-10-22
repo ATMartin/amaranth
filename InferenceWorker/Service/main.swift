@@ -21,6 +21,16 @@ final class WorkerService: NSObject, InferenceWorkerXPC, @unchecked Sendable {
         switch decoded {
         case .ping:
             reply(try? WorkerIPCCodec.encode(WorkerResponse.pong(pid: getpid(), contractVersion: ContractVersion.current)), nil)
+        case .warmUp:
+            let runner = self.runner
+            Task {
+                do {
+                    try runner.warmUp()
+                    reply(try? WorkerIPCCodec.encode(WorkerResponse.acknowledged), nil)
+                } catch {
+                    reply(try? WorkerIPCCodec.encode(WorkerResponse.failed(jobID: JobID("warmUp"), errorCode: String(describing: error).prefix(300).description)), nil)
+                }
+            }
         case .injectFault(let fault):
             handleFault(fault, reply: reply)
         case .live(let request):

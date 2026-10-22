@@ -16,7 +16,7 @@ Date: 2026-10-16 · Task: T08 · Status: Accepted for v0.
 - Jobs are keyed by content: meeting, stage, input hash and config hash. Enqueue is idempotent.
 - The config hash includes `asr-pipeline-v7` and `diar-v1`, so a pipeline change re-runs only the affected stages.
 
-**Concurrency.** The loop runs **one stage at a time**, strictly serially, so in particular one heavy stage at a time.
+**Concurrency.** *(Amended by processing/0002, T17: transcription and diarization now overlap.)* The loop runs **one stage at a time**, strictly serially, so in particular one heavy stage at a time.
 Light stages (prepare, reconcile) are not run in parallel either. Models are cached in the worker between jobs and
 released when the worker exits.
 
@@ -78,6 +78,6 @@ installed model pack (no audio permission needed; synthetic replay of public aud
 
 - Models stay cached in the worker. Unloading ASR and diarization before the LLM loads (plan §10) is T09's
   responsibility once notes exist.
-- Core ML warm-up is not yet wired into the installer, so the first job after install pays about 16 s of compile time
-  (tracked item 3).
+- ~~Core ML warm-up is not yet wired into the installer~~ Done in T17 (processing/0002): the app asks the worker to
+  load the models after a pack installs (tracked item 3).
 - Processing-time gates on base-M2/16 GB are **unverified** (no hardware).

@@ -1,0 +1,24 @@
+[
+  {
+    "audioSeconds" : 3600,
+    "item" : {
+      "coldWorker" : true,
+      "id" : "timing-2src-60min",
+      "kind" : "audio",
+      "microphone" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/timing-2src-60min-mic-16k-mono.f32",
+        "sampleRate" : 16000
+      },
+      "notes" : true,
+      "repeatWarm" : true,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/timing-2src-60min-sys-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "timing",
+    "suite" : "public"
+  }
+]

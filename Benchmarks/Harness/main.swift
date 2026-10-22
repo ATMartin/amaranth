@@ -944,6 +944,8 @@ case "verify-pack" where args.count >= 5:
     // verify-pack <store-root> <sample.wav|flac> <reference text>
     let ok = await verifyPack(storeRoot: URL(filePath: args[2]), sampleAudio: URL(filePath: args[3]), sampleReference: args[4])
     exit(ok ? 0 : 1)
+case "asr-concurrency" where args.count >= 4:
+    try await AsrConcurrency.run(store: URL(filePath: args[2]), wav: URL(filePath: args[3]), seconds: Double(value("--seconds") ?? "600") ?? 600)
 case "perf-suite":
     exit(try await PerfSuite.main(Array(args.dropFirst(2))))
 case "corpus" where args.count >= 5:

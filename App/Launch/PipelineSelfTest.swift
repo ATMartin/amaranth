@@ -66,7 +66,8 @@ enum PipelineSelfTest {
                           pressure: @escaping @Sendable () -> JobScheduler.Pressure = { .none }) -> JobScheduler {
         JobScheduler(store: store, executor: WorkerExecutor(client: client, hangTimeout: hangTimeout),
                      configuration: JobScheduler.Configuration(asrConfigHash: PipelineVersions.asr, diarizationConfigHash: PipelineVersions.diarization,
-                                                               notesConfigHash: notes ? PipelineVersions.notes : nil),
+                                                               notesConfigHash: notes ? PipelineVersions.notes : nil,
+                                                               concurrentAnalysis: ProcessingModel.concurrentAnalysis),
                      pressure: pressure)
     }
 

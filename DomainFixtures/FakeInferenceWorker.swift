@@ -22,6 +22,8 @@ public actor FakeInferenceWorker {
         case .injectFault(let f):
             injected = f
             return .acknowledged
+        case .warmUp:
+            return .acknowledged
         case .run(let job):
             return try await run(job, progress: { _ in })
         case .live(let r):

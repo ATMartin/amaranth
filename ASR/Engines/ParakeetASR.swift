@@ -1,4 +1,4 @@
-import CoreML
+public import CoreML
 import FluidAudio
 public import Foundation
 public import Domain
@@ -18,10 +18,11 @@ public final class ParakeetASR: @unchecked Sendable {
     public let producer: ProducerInfo
 
     /// `directory` is the resolved `parakeet-tdt-0.6b-v3-coreml` manifest root from `LocalModelRegistry`.
-    public init(directory: URL, manifestID: ModelManifestID, revision: String) throws {
+    /// `encoderComputeUnits` nil keeps FluidAudio's default placement (production); other values are for measurement.
+    public init(directory: URL, manifestID: ModelManifestID, revision: String, encoderComputeUnits: MLComputeUnits? = nil) throws {
         ModelHub.offlineMode = true
         let t0 = ContinuousClock.now
-        let models = try AsrModels.loadLocal(from: directory, version: .v3, encoderPrecision: .int8)
+        let models = try AsrModels.loadLocal(from: directory, version: .v3, encoderPrecision: .int8, encoderComputeUnits: encoderComputeUnits)
         manager = AsrManager(config: .default, models: models)
         let d = ContinuousClock.now - t0
         loadSeconds = Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18

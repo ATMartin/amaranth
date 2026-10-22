@@ -16,7 +16,7 @@ struct AmaranthEntry {
 struct AmaranthApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @State private var worker: WorkerClient
-    @State private var models = ModelSetupModel()
+    @State private var models: ModelSetupModel
     @State private var recorder: RecorderModel
     @State private var processing: ProcessingModel
     @State private var library: LibraryModel
@@ -38,6 +38,10 @@ struct AmaranthApp: App {
         let modelsCheck = ModelSetupModel.isReady
         live.modelsReady = modelsCheck
         _live = State(initialValue: live)
+        let models = ModelSetupModel()
+        // Core ML compiles each model for this Mac on its first load (about 16 s for ASR): do it now, not on the first job.
+        models.onInstalled = { Task { _ = try? await worker.send(.warmUp, timeout: .seconds(600)) } }
+        _models = State(initialValue: models)
         _worker = State(initialValue: worker)
         _recorder = State(initialValue: recorder)
         _processing = State(initialValue: processing)

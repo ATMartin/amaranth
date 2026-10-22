@@ -292,6 +292,42 @@ struct ASREndToEndTests {
         #expect(again.allWords.map(\.text) == rev.allWords.map(\.text))
     }
 
+    /// T17: decoders and VADs work through the windows of both sources concurrently; the transcript must be exactly the
+    /// one a single decoder produces (windows are decoded independently, from a fresh decoder state).
+    @Test(.timeLimit(.minutes(5)))
+    func concurrentDecodersGiveTheSameTranscriptAsOne() async throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "amr-asr-pool-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let (speech, _) = try Replay.libriSpeech(count: 8)
+        let fmt = AudioFormat(sampleRate: 16_000, channelCount: 1, sampleFormat: .float32)
+        let delay = 16_000 * 7
+        let r = try await Replay.record([.systemOutput: (fmt, { @Sendable (i: Int64, _: Int) -> Float in i < speech.count ? speech[Int(i)] : 0 }),
+                                         .microphone: (fmt, { @Sendable (i: Int64, _: Int) -> Float in
+                                             i >= delay && Int(i) - delay < speech.count ? 0.5 * speech[Int(i) - delay] : 0 })],
+                                        seconds: Double(speech.count + delay) / 16_000 + 1, speed: 5, root: root)
+        let prepDir = root.appending(path: "prep")
+        let prepared = try AnalysisPreparer.prepare(meetingDirectory: r.directory, segments: r.segments, events: r.events, outputDirectory: prepDir)
+        let dir = Replay.modelStore.appending(path: "parakeet-tdt-0.6b-v3-coreml")
+        let vadFile = Replay.modelStore.appending(path: "silero-vad-coreml/silero-vad-unified-256ms-v6.2.1.mlmodelc")
+        func pipeline(_ n: Int, _ v: Int, _ name: String) throws -> TranscriptionPipeline {
+            TranscriptionPipeline(decoders: try (0..<n).map { _ in try ParakeetASR(directory: dir, manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: "7dd20fe6") },
+                                  vads: try (0..<v).map { _ in try SileroVAD(modelFile: vadFile) }, workDirectory: root.appending(path: name))
+        }
+        let one = try await pipeline(1, 1, "one").run(meetingID: r.meetingID, prepared: prepared, preparedDirectory: prepDir, cancellation: CancellationToken())
+        let seen = Counter()
+        let pool = try await pipeline(3, 2, "pool").run(meetingID: r.meetingID, prepared: prepared, preparedDirectory: prepDir,
+                                                       cancellation: CancellationToken()) { _, cp in seen.set(cp.completedUnits) }
+        #expect(Set(one.segments.map(\.source)) == [.systemOutput, .microphone])
+        // Word and segment IDs are random per run; everything else must match exactly.
+        func canonical(_ t: TranscriptRevision) -> [String] {
+            t.segments.map { seg in "\(seg.source.rawValue)|\(seg.interval)|" + seg.words.map { "\($0.text)@\($0.interval)#\($0.quality.map { "\($0.values)" } ?? "")" }.joined(separator: " ") }
+        }
+        #expect(canonical(pool) == canonical(one))
+        #expect(pool.coverage == one.coverage)
+        #expect(seen.value == (try FileManager.default.contentsOfDirectory(atPath: root.appending(path: "pool").path).filter { $0.contains("-w") }.count),
+                "progress counts every window once")
+    }
+
     /// Synthetic speech (macOS `say`, generated at test time) dense with dates, numbers and negations, decoded with
     /// small windows so many cuts fall inside flowing speech: nothing at a boundary may be lost or duplicated.
     @Test(.timeLimit(.minutes(3)))

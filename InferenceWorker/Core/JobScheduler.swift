@@ -11,8 +11,9 @@ public import Storage
 ///
 /// - Jobs are rows in SQLite keyed by content (input hash + model/config hash), so enqueueing is idempotent and results
 ///   commit idempotently (at-least-once execution).
-/// - One stage runs at a time (heavy stages hold models). Heavy stages are suspended while a recording is active and
-///   under serious thermal or memory pressure; suspended jobs show as `suspended(reason)`, never as stuck.
+/// - One stage runs at a time (heavy stages hold models), except that transcription and diarization may overlap
+///   (`concurrentAnalysis`, T17). Heavy stages are suspended while a recording is active and under serious thermal or
+///   memory pressure; suspended jobs show as `suspended(reason)`, never as stuck.
 /// - Running jobs hold a lease renewed by worker progress; on relaunch, jobs left `running` by a previous process are
 ///   requeued and resume from their checkpoints.
 /// - Worker loss is retried with backoff; stage errors once; permanent errors are not retried automatically.
@@ -29,12 +30,16 @@ public final class JobScheduler: @unchecked Sendable {
         public var leaseSeconds: TimeInterval
         public var maxWorkerLossRetries: Int
         public var retryBackoff: TimeInterval
+        /// T17: transcription and diarization may run at the same time (they are independent in the DAG and use
+        /// different models). Every other stage still runs alone. Off restores strictly one stage at a time.
+        public var concurrentAnalysis: Bool
         public init(asrConfigHash: String, diarizationConfigHash: String, reconcileConfigHash: String = "reconcile-v1",
                     notesConfigHash: String? = nil, microphoneMode: MicrophoneMode = .personal, leaseSeconds: TimeInterval = 30, maxWorkerLossRetries: Int = 3,
-                    retryBackoff: TimeInterval = 2) {
+                    retryBackoff: TimeInterval = 2, concurrentAnalysis: Bool = true) {
             self.asrConfigHash = asrConfigHash; self.diarizationConfigHash = diarizationConfigHash
             self.reconcileConfigHash = reconcileConfigHash; self.notesConfigHash = notesConfigHash; self.microphoneMode = microphoneMode
             self.leaseSeconds = leaseSeconds; self.maxWorkerLossRetries = maxWorkerLossRetries; self.retryBackoff = retryBackoff
+            self.concurrentAnalysis = concurrentAnalysis
         }
     }
 
@@ -58,7 +63,9 @@ public final class JobScheduler: @unchecked Sendable {
     private let pressure: @Sendable () -> Pressure
     private let lock = NSLock()
     private var loop: Task<Void, Never>?
-    private var running: (job: ProcessingJob, cancelledForPressure: Bool)?
+    private var running: [JobID: (job: ProcessingJob, cancelledForPressure: Bool)] = [:]
+    /// Jobs picked by the loop that have not finished (including the moment before they are marked running).
+    private var active: [JobID: ProcessingStage] = [:]
     private var wake = AsyncStream<Void>.makeStream()
     /// Fires after any job state change (UI refresh, tests).
     public var onChange: (@Sendable (ProcessingJob) -> Void)?
@@ -91,7 +98,7 @@ public final class JobScheduler: @unchecked Sendable {
     public func stop() {
         loop?.cancel()
         loop = nil
-        if let r = lock.withLock({ running }) { executor.cancel(r.job.id) }
+        for id in lock.withLock({ Array(running.keys) }) { executor.cancel(id) }
         poke()
     }
 
@@ -137,7 +144,7 @@ public final class JobScheduler: @unchecked Sendable {
     /// Cancels queued/running work for a meeting.
     public func cancel(_ meeting: MeetingID) throws {
         for var j in try store.jobs(meeting: meeting) where !j.state.isTerminal {
-            if lock.withLock({ running?.job.id == j.id }) { executor.cancel(j.id) }
+            if lock.withLock({ running[j.id] != nil }) { executor.cancel(j.id) }
             try j.transition(to: .cancelled, at: Date())
             try store.upsertJob(j)
             onChange?(j)
@@ -155,7 +162,7 @@ public final class JobScheduler: @unchecked Sendable {
     /// "Delete audio only": stops audio stages, then removes original audio and derivatives. Text and notes remain.
     public func deleteAudio(_ meeting: MeetingID) throws {
         for var j in try store.jobs(meeting: meeting) where !j.state.isTerminal && [.prepare, .transcribe, .diarize, .live].contains(j.key.stage) {
-            if lock.withLock({ running?.job.id == j.id }) { executor.cancel(j.id) }
+            if lock.withLock({ running[j.id] != nil }) { executor.cancel(j.id) }
             try j.transition(to: .cancelled, at: Date())
             j.errorCode = "audio.deleted"
             try store.upsertJob(j)
@@ -172,7 +179,12 @@ public final class JobScheduler: @unchecked Sendable {
         while !Task.isCancelled {
             do {
                 if let job = try nextRunnable() {
-                    await run(job)
+                    lock.withLock { active[job.id] = job.key.stage }
+                    Task { [weak self] in
+                        await self?.run(job)
+                        self?.lock.withLock { _ = self?.active.removeValue(forKey: job.id) }
+                        self?.poke()
+                    }
                     continue
                 }
             } catch {
@@ -188,11 +200,14 @@ public final class JobScheduler: @unchecked Sendable {
         }
     }
 
-    /// Oldest queued job whose prerequisites succeeded, honouring backoff and pressure.
+    /// Oldest queued job whose prerequisites succeeded and that may run beside the active jobs, honouring backoff and
+    /// pressure.
     func nextRunnable() throws -> ProcessingJob? {
         let all = try store.jobs()
         let p = pressure()
+        let busy = lock.withLock { active }
         for var j in all.filter({ $0.state == .queued || $0.state == .suspended }).sorted(by: { $0.createdAt < $1.createdAt }) {
+            if busy[j.id] != nil { continue }
             if let m = try store.meeting(j.key.meetingID), m.deletedAt != nil {
                 try j.transition(to: .cancelled, at: Date()); try store.upsertJob(j); continue
             }
@@ -206,10 +221,22 @@ public final class JobScheduler: @unchecked Sendable {
                 }
                 continue
             }
+            // A job that cannot run beside the active ones is skipped for now. Only transcribe/diarize can overtake it, and
+            // those exist only once their prepare (which runs alone) committed, so in practice this lets transcription
+            // work overtake older notes, never an older reconcile.
+            guard canRun(j.key.stage, beside: Array(busy.values)) else { continue }
             if j.state == .suspended { try j.transition(to: .queued, at: Date()) }
             return j
         }
         return nil
+    }
+
+    /// Transcription and diarization may overlap (one of each); every other stage runs alone.
+    func canRun(_ stage: ProcessingStage, beside active: [ProcessingStage]) -> Bool {
+        if active.isEmpty { return true }
+        let overlapping: Set<ProcessingStage> = [.transcribe, .diarize]
+        return configuration.concurrentAnalysis && overlapping.contains(stage)
+            && active.allSatisfy { overlapping.contains($0) && $0 != stage }
     }
 
     func suspension(_ p: Pressure) -> SuspensionReason? {
@@ -239,20 +266,20 @@ public final class JobScheduler: @unchecked Sendable {
             fail(&job, code: "input.\(error)", retry: false)
             return
         }
-        lock.withLock { running = (job, false) }
+        lock.withLock { running[job.id] = (job, false) }
         // Pressure watchdog: a heavy stage is interrupted at its next checkpoint when recording starts.
         let heavy = job.key.stage.isHeavy, runningID = job.id
         let watchdog = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .milliseconds(250))
                 guard let self, heavy, self.suspension(self.pressure()) != nil else { continue }
-                self.lock.withLock { self.running?.cancelledForPressure = true }
+                self.lock.withLock { self.running[runningID]?.cancelledForPressure = true }
                 self.executor.cancel(runningID)
                 return
             }
         }
         defer {
-            watchdog.cancel(); lock.withLock { running = nil }
+            watchdog.cancel(); lock.withLock { _ = running.removeValue(forKey: runningID) }
             // The meeting was deleted while this ran: remove anything the worker wrote after the purge.
             if (try? store.meeting(job.key.meetingID))??.deletedAt != nil { try? FileManager.default.removeItem(at: store.workDirectory(job.key.meetingID)) }
         }
@@ -275,7 +302,7 @@ public final class JobScheduler: @unchecked Sendable {
                 defer { commitSeconds = Perf.seconds(since: commitStart) }
                 try commit(&job, output: url, hash: hash)
             case .cancelled:
-                if lock.withLock({ running?.cancelledForPressure ?? false }) {
+                if lock.withLock({ running[jobID]?.cancelledForPressure ?? false }) {
                     try job.transition(to: .suspended, at: Date())
                     job.suspension = suspension(pressure()) ?? .recordingActive
                 } else if job.state != .cancelled {
@@ -303,12 +330,12 @@ public final class JobScheduler: @unchecked Sendable {
     }
 
     private func heartbeat(_ id: JobID, _ p: WorkerProgress) {
-        guard var j = lock.withLock({ running?.job }), j.id == id else { return }
+        guard var j = lock.withLock({ running[id]?.job }) else { return }
         j.progress = max(j.progress, p.progress)
         if let cp = p.checkpoint { j.checkpoint = cp }
         j.lease = JobLease(owner: owner, heartbeatAt: Date(), expiresAt: Date().addingTimeInterval(configuration.leaseSeconds))
         j.updatedAt = Date()
-        lock.withLock { running?.job = j }
+        lock.withLock { running[id]?.job = j }
         try? store.upsertJob(j)
         onChange?(j)
     }

@@ -6,6 +6,7 @@ struct SettingsView: View {
         .flatMap { try? String(contentsOf: $0, encoding: .utf8) } ?? "Notices file missing from this build."
     @Bindable var models: ModelSetupModel
     @AppStorage("microphoneMode") private var microphoneMode = MicrophoneMode.personal.rawValue
+    @AppStorage("concurrentAnalysis") private var concurrentAnalysis = true
 
     var body: some View {
         TabView {
@@ -19,6 +20,11 @@ struct SettingsView: View {
                 .pickerStyle(.radioGroup)
                 Text("Speaker separation uses this to decide whether to split the microphone track into several speakers. You can always correct speakers afterwards. Takes effect for meetings processed after the next launch.")
                     .font(.caption).foregroundStyle(.secondary)
+                Section("Processing") {
+                    Toggle("Find speakers while transcribing", isOn: $concurrentAnalysis)
+                    Text("Transcripts with speakers are ready sooner. Turn this off to process one step at a time if your Mac runs hot or short of memory. Takes effect after the next launch.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
                 Section("Privacy") {
                     Text("Audio, transcripts and notes are kept in ~/Library/Application Support/Amaranth until you delete them. Deleting a meeting removes its audio, text, notes and search entries; exported files you saved elsewhere are not affected.")
                         .font(.caption).foregroundStyle(.secondary)

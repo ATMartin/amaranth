@@ -21,6 +21,8 @@ final class ModelSetupModel {
     private var task: Task<Void, Never>?
     private var cancellation: CancellationToken?
     let store: ModelPackStore
+    /// Called after a pack installs and verifies (the app asks the worker to warm the models up).
+    var onInstalled: (() -> Void)?
 
     init(store: ModelPackStore = ModelPackStore(root: ModelPackStore.defaultRoot())) {
         self.store = store
@@ -67,6 +69,7 @@ final class ModelSetupModel {
                     Task { @MainActor in self.status = .installing(p) }
                 }
                 refresh()
+                if case .ready = status { onInstalled?() }
             } catch is CancellationError {
                 status = .recordOnly(reason: "Installation cancelled. Downloaded parts are kept and the next install resumes.")
             } catch ModelInstallError.insufficientSpace(let need, let have) {

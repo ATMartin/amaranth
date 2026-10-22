@@ -84,6 +84,10 @@ speed win, but only with the user's agreement:
 - **Exit:** a written breakdown that explains the 7× and 12× gaps, with evidence.
 
 ### T17: Remove pipeline overhead (no model changes)
+**Result (2026-10-22):** G1 and G3 met in batch, at 53–54 s for 60 minutes (v0: 105 s), with byte-identical output.
+Transcription and diarization now overlap, and ASR windows are decoded by 2 concurrent instances. See
+`docs/decisions/processing/0002-concurrent-analysis.md`.
+
 Candidate levers. **T16's breakdown decides which ones are real; none is assumed.**
 - **Prepare:** stream the resampling, or produce the 16 kHz derivative incrementally while recording (it is pure DSP).
 - **Overlap stages:**

@@ -6,13 +6,19 @@ public import Diarization
 public import Models
 public import Notes
 
-/// Supplies engines from verified local model files. Keeps one heavy model family resident at a time: loading the
-/// diarizer releases ASR and vice versa (plan §10: unload before loading the next heavy stage).
+/// Supplies engines from verified local model files. ASR and the diarizer may be resident together (T17: transcription
+/// and diarization run concurrently; together they stay under 1 GiB). The notes LLM is exclusive: loading it releases
+/// both, and loading either releases it (plan §10: unload before loading the LLM).
 public final class ModelProvider: @unchecked Sendable {
     public enum Error: Swift.Error { case missing(String) }
     private let lock = NSLock()
     private let resolveDirectory: @Sendable (String) throws -> (URL, String)
-    private var asr: (ParakeetASR, SileroVAD)?
+    private var asr: (decoders: [ParakeetASR], vads: [SileroVAD])?
+    /// Concurrent ASR decoders and VAD instances for batch transcription. Instances share the compiled Core ML models
+    /// (about 5 MiB each). Alone, throughput levels off at 3 decoders on the M2 Max; beside diarization, which shares
+    /// the Neural Engine, 2 finish the meeting soonest (T17, processing/0002).
+    public var decoderCount = 2
+    public var vadCount = 2
     private var diarizer: FluidDiarizer?
     private var notesModel: LlamaRunner?
     /// Manifest ID of the notes model (the pack's summary role).
@@ -26,10 +32,13 @@ public final class ModelProvider: @unchecked Sendable {
     /// Production: the active pack via `LocalModelRegistry` (sizes verified before every load, no network code).
     public static func installedPack(root: URL = ModelPackStore.defaultRoot()) -> ModelProvider {
         let registry = LocalModelRegistry(store: ModelPackStore(root: root))
-        return ModelProvider { id in
+        let provider = ModelProvider { id in
             let r = try registry.resolve(ModelManifestID(id))
             return (r.rootURL, r.manifest.sourceRevision)
         }
+        // Developer override for measurement (`defaults write com.alexmartin.amaranth asrDecoders -int N`); no UI.
+        if let n = UserDefaults(suiteName: "com.alexmartin.amaranth")?.integer(forKey: "asrDecoders"), n > 0 { provider.decoderCount = n }
+        return provider
     }
 
     /// Development/tests: a `ModelStore/` directory laid out by manifest ID.
@@ -41,25 +50,33 @@ public final class ModelProvider: @unchecked Sendable {
         }
     }
 
+    /// The first decoder and VAD (live text and single-instance callers).
     public func transcription() throws -> (ParakeetASR, SileroVAD) {
+        let pool = try transcriptionPool()
+        return (pool.decoders[0], pool.vads[0])
+    }
+
+    public func transcriptionPool() throws -> (decoders: [ParakeetASR], vads: [SileroVAD]) {
         try lock.withLock {
             if let asr { return asr }
-            diarizer = nil; notesModel = nil
+            notesModel = nil
             let (dir, rev) = try resolveDirectory("parakeet-tdt-0.6b-v3-coreml")
             let (vadDir, _) = try resolveDirectory("silero-vad-coreml")
-            let pair = try Perf.measure("model.load.asr") {
-                (try ParakeetASR(directory: dir, manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: rev),
-                 try SileroVAD(modelFile: vadDir.appending(path: "silero-vad-unified-256ms-v6.2.1.mlmodelc")))
+            let pool = try Perf.measure("model.load.asr") {
+                (decoders: try (0..<max(1, decoderCount)).map { _ in
+                    try ParakeetASR(directory: dir, manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: rev) },
+                 vads: try (0..<max(1, vadCount)).map { _ in
+                    try SileroVAD(modelFile: vadDir.appending(path: "silero-vad-unified-256ms-v6.2.1.mlmodelc")) })
             }
-            asr = pair
-            return pair
+            asr = pool
+            return pool
         }
     }
 
     public func diarization() throws -> FluidDiarizer {
         try lock.withLock {
             if let diarizer { return diarizer }
-            asr = nil; notesModel = nil
+            notesModel = nil
             let (dir, rev) = try resolveDirectory("speaker-diarization-coreml")
             let d = try Perf.measure("model.load.diarization") {
                 try FluidDiarizer(directory: dir, manifestID: ModelManifestID("speaker-diarization-coreml"), revision: rev)
@@ -96,6 +113,11 @@ public final class StageRunner: @unchecked Sendable {
     public func live(_ r: LiveRequest) async throws -> LiveResponse {
         let (asr, _) = try models.transcription()
         return try await LiveTranscriber(asr: asr).process(r)
+    }
+
+    /// Loads (and so compiles, on first use on this Mac) the transcription and diarization models.
+    public func warmUp() throws {
+        _ = try Perf.measure("model.warmUp") { try models.transcriptionPool(); try models.diarization() }
     }
 
     /// Process start, for the worker age recorded in `timing.json` (cold vs warm).
@@ -139,10 +161,10 @@ public final class StageRunner: @unchecked Sendable {
             let cov = try Data(contentsOf: dir.appending(path: "coverage.json"))
             output = .prepared(PreparedAudio(directory: dir, coverageSHA256: StageFiles.sha256(cov)))
         case .transcribe(let i):
-            let (asr, vad) = try models.transcription()
+            let pool = try models.transcriptionPool()
             let prepared = try ContractCoding.decode(AnalysisPreparer.Output.self,
                                                      from: Data(contentsOf: i.prepared.directory.appending(path: "coverage.json")))
-            let pipeline = TranscriptionPipeline(asr: asr, vad: vad, workDirectory: job.workDirectory.appending(path: "windows"))
+            let pipeline = TranscriptionPipeline(decoders: pool.decoders, vads: pool.vads, workDirectory: job.workDirectory.appending(path: "windows"))
             let rev = try await pipeline.run(meetingID: i.meetingID, prepared: prepared, preparedDirectory: i.prepared.directory,
                                              cancellation: cancellation) { p, cp in
                 progress(WorkerProgress(jobID: job.jobID, progress: p, checkpoint: cp))

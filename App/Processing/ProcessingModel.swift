@@ -21,12 +21,18 @@ final class ProcessingModel {
         MicrophoneMode(rawValue: UserDefaults.standard.string(forKey: "microphoneMode") ?? "") ?? .personal
     }
 
+    /// T17 rollback switch: off runs transcription and speaker separation one after the other, as before.
+    static var concurrentAnalysis: Bool {
+        UserDefaults.standard.object(forKey: "concurrentAnalysis") as? Bool ?? true
+    }
+
     init(store: MeetingStore?, worker: WorkerClient) {
         self.store = store
         guard let store else { return }
         let flags = self.flags
         let config = JobScheduler.Configuration(asrConfigHash: PipelineVersions.asr, diarizationConfigHash: PipelineVersions.diarization,
-                                                notesConfigHash: PipelineVersions.notes, microphoneMode: Self.microphoneMode)
+                                                notesConfigHash: PipelineVersions.notes, microphoneMode: Self.microphoneMode,
+                                                concurrentAnalysis: Self.concurrentAnalysis)
         let s = JobScheduler(store: store, executor: WorkerExecutor(client: worker), configuration: config) {
             .current(recording: flags.recording, thermal: ProcessInfo.processInfo.thermalState, memoryPressure: flags.memoryPressure)
         }

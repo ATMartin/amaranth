@@ -559,7 +559,7 @@
       "id": "T17",
       "title": "Remove pipeline overhead in transcription and diarization",
       "milestone": "E",
-      "status": "planned",
+      "status": "implemented (G1 batch met: 53–54 s for 60 min, byte-identical to v0; decision record processing/0002; Debug package optimisation not possible per-package, not done; milestone validation at T21)",
       "optional": false,
       "depends_on": [
         "T16"

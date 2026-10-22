@@ -49,6 +49,9 @@ public enum WorkerRequest: Hashable, Sendable, Codable {
     case injectFault(WorkerFault)
     /// Provisional live text for newly committed audio of one source (T14). Stateless: the request carries everything.
     case live(LiveRequest)
+    /// Loads the transcription and diarization models so Core ML compiles them for this Mac now, not on the first job
+    /// (tracked item 3; sent after a model pack is installed). Replies `acknowledged`.
+    case warmUp
 }
 
 /// Live text input: committed segments of one source from shortly before `stableUntil`, plus that stable point.

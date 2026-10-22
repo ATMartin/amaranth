@@ -60,18 +60,27 @@ public final class TranscriptionPipeline: @unchecked Sendable {
     public static let contextPadding = 0.3
 
     let asr: ParakeetASR
-    let vad: SileroVAD
+    /// Decoder instances used concurrently (`asr` is the first). Windows are decoded independently from a fresh decoder
+    /// state, so the output does not depend on how many there are; only the wall time does (T17, processing/0002).
+    let decoders: [ParakeetASR]
+    let vads: [SileroVAD]
     let workDirectory: URL
     let policy: WindowPolicy
     var maxWindow: Double { policy.maxInput }
     var minWindow: Double { policy.minWindow }
 
-    public init(asr: ParakeetASR, vad: SileroVAD, workDirectory: URL, policy: WindowPolicy = .default) {
+    public convenience init(asr: ParakeetASR, vad: SileroVAD, workDirectory: URL, policy: WindowPolicy = .default) {
+        self.init(decoders: [asr], vads: [vad], workDirectory: workDirectory, policy: policy)
+    }
+
+    public init(decoders: [ParakeetASR], vads: [SileroVAD], workDirectory: URL, policy: WindowPolicy = .default) {
+        precondition(!decoders.isEmpty && !vads.isEmpty, "at least one decoder and one VAD")
         precondition(policy.maxInput <= ParakeetASR.maxInputSeconds
                      && policy.maxInput > max(policy.forcedLeft + policy.forcedRight, 2 * policy.pauseContext) + policy.minWindow,
                      "engine input must stay single-pass")
-        self.asr = asr
-        self.vad = vad
+        self.asr = decoders[0]
+        self.decoders = decoders
+        self.vads = vads
         self.workDirectory = workDirectory
         self.policy = policy
     }
@@ -87,22 +96,37 @@ public final class TranscriptionPipeline: @unchecked Sendable {
             let audio = AnalysisAudio(url: preparedDirectory.appending(path: cov.derivativeFile))
             plans.append((cov, audio, try await Perf.measure("asr.plan") { try await planWindows(cov, audio, cancellation: cancellation) }))
         }
-        let total = max(1, plans.map(\.2.count).reduce(0, +))
-        var done = 0
+        // Every window of every source goes to one shared queue; each decoder takes the next window when it is free.
+        let plan = plans, work = plans.enumerated().flatMap { p, plan in plan.2.indices.map { (p, $0) } }
+        let total = max(1, work.count)
+        let queue = WorkQueue(count: work.count)
+        var results = plans.map { [WindowResult?](repeating: nil, count: $0.2.count) }
+        try await withoutActuallyEscaping(progress) { progress in
+        try await withThrowingTaskGroup(of: [(Int, Int, WindowResult)].self) { group in
+            for engine in decoders.prefix(max(1, work.count)) {
+                group.addTask {
+                    var out: [(Int, Int, WindowResult)] = []
+                    while let n = queue.next() {
+                        try cancellation.check(); try Task.checkCancellation()   // a sibling failed: stop early
+                        let (p, i) = work[n]
+                        out.append((p, i, try await self.transcribe(plan[p].2[i], source: plan[p].0.source, audio: plan[p].1, engine: engine)))
+                        let done = queue.finished()
+                        progress(Double(done) / Double(total), JobCheckpoint(completedUnits: done, totalUnits: total))
+                    }
+                    return out
+                }
+            }
+            for try await batch in group { for (p, i, r) in batch { results[p][i] = r } }
+        }
+        }
         var segments: [TranscriptSegment] = []
         var coverage: [CoverageRegion] = []
-        for (cov, audio, windows) in plans {
-            var results: [WindowResult] = []
-            for w in windows {
-                try cancellation.check()
-                results.append(try await transcribe(w, source: cov.source, audio: audio))
-                done += 1
-                progress(Double(done) / Double(total), JobCheckpoint(completedUnits: done, totalUnits: total))
-            }
+        for ((cov, _, windows), rs) in zip(plans, results) {
+            let rs = rs.map { $0! }
             Perf.measure("asr.assemble") {
-                let words = Self.stitch(results)
-                segments += Self.segment(words, source: cov.source, results: results)
-                coverage += Self.coverage(cov, windows: windows, results: results)
+                let words = Self.stitch(rs)
+                segments += Self.segment(words, source: cov.source, results: rs)
+                coverage += Self.coverage(cov, windows: windows, results: rs)
             }
         }
         segments.sort { $0.interval.start < $1.interval.start }
@@ -117,23 +141,40 @@ public final class TranscriptionPipeline: @unchecked Sendable {
     func planWindows(_ cov: SourceCoverage, _ audio: AnalysisAudio, cancellation: CancellationToken) async throws -> [Window] {
         let planURL = workDirectory.appending(path: "\(Self.pipelineVersion)-\(policy.name)-plan-\(cov.source.rawValue).json")
         if let d = try? Data(contentsOf: planURL), let p = try? ContractCoding.decode([Window].self, from: d) { return p }
-        var speech: [(Double, Double)] = []
+        // VAD in 600 s chunks (5 s overlap), spread over the VAD instances; each chunk is independent.
         let chunk = 600.0, overlap = 5.0
+        var chunks: [(Double, Double)] = []
         for region in cov.recorded {
             var t = region.start.seconds
             while t < region.end.seconds {
-                try cancellation.check()
                 let e = min(region.end.seconds, t + chunk)
-                let samples = try Perf.measure("asr.vad.read") { try audio.read(SessionInterval(unchecked: .seconds(t), .seconds(e))) }
-                speech += try await Perf.measure("asr.vad.infer") {
-                    try await vad.speech(samples, padding: Self.contextPadding, maxSegment: 14).map { ($0.0 + t, $0.1 + t) }
-                }
+                chunks.append((t, e))
                 if e >= region.end.seconds { break }
                 t = e - overlap
             }
         }
+        let queue = WorkQueue(count: chunks.count), vadChunks = chunks
+        var speech: [(Double, Double)] = try await withThrowingTaskGroup(of: [(Double, Double)].self) { group in
+            for vad in vads.prefix(max(1, chunks.count)) {
+                group.addTask {
+                    var out: [(Double, Double)] = []
+                    while let n = queue.next() {
+                        try cancellation.check(); try Task.checkCancellation()   // a sibling failed: stop early
+                        let (t, e) = vadChunks[n]
+                        let samples = try Perf.measure("asr.vad.read") { try audio.read(SessionInterval(unchecked: .seconds(t), .seconds(e))) }
+                        out += try await Perf.measure("asr.vad.infer") {
+                            try await vad.speech(samples, padding: Self.contextPadding, maxSegment: 14).map { ($0.0 + t, $0.1 + t) }
+                        }
+                    }
+                    return out
+                }
+            }
+            var all: [(Double, Double)] = []
+            for try await part in group { all += part }
+            return all
+        }
         // Merge overlapping VAD regions (chunk overlaps); silence midpoints between them are the candidate cut points.
-        speech.sort { $0.0 < $1.0 }
+        speech.sort { $0.0 < $1.0 || ($0.0 == $1.0 && $0.1 < $1.1) }
         var merged: [(Double, Double)] = []
         for sp in speech {
             if let last = merged.last, sp.0 <= last.1 { merged[merged.count - 1].1 = max(last.1, sp.1) } else { merged.append(sp) }
@@ -177,7 +218,8 @@ public final class TranscriptionPipeline: @unchecked Sendable {
 
     // MARK: Per-window ASR with checkpoint
 
-    func transcribe(_ w: Window, source: SourceKind, audio: AnalysisAudio) async throws -> WindowResult {
+    func transcribe(_ w: Window, source: SourceKind, audio: AnalysisAudio, engine: ParakeetASR? = nil) async throws -> WindowResult {
+        let asr = engine ?? asr
         let url = workDirectory.appending(path: "\(Self.pipelineVersion)-\(policy.name)-\(source.rawValue)-w\(w.index).json")
         if let d = try? Perf.measure("asr.checkpoint.read", { try Data(contentsOf: url) }),
            let r = try? ContractCoding.decode(WindowResult.self, from: d) { Perf.count("asr.windows.resumed"); return r }
@@ -376,4 +418,14 @@ public enum GarbleDetector {
         }
         return false
     }
+}
+
+/// Hands out work item indices to concurrent workers and counts completions.
+final class WorkQueue: @unchecked Sendable {
+    private let lock = NSLock()
+    private let count: Int
+    private var nextIndex = 0, done = 0
+    init(count: Int) { self.count = count }
+    func next() -> Int? { lock.withLock { guard nextIndex < count else { return nil }; defer { nextIndex += 1 }; return nextIndex } }
+    func finished() -> Int { lock.withLock { done += 1; return done } }
 }
