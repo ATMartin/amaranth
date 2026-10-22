@@ -63,10 +63,13 @@ public final class JobScheduler: @unchecked Sendable {
     private let pressure: @Sendable () -> Pressure
     private let lock = NSLock()
     private var loop: Task<Void, Never>?
-    private var running: [JobID: (job: ProcessingJob, cancelledForPressure: Bool)] = [:]
+    private var running: [JobID: (job: ProcessingJob, cancelledForPressure: Bool, yieldedToTranscripts: Bool)] = [:]
     /// Jobs picked by the loop that have not finished (including the moment before they are marked running).
     private var active: [JobID: ProcessingStage] = [:]
-    private var wake = AsyncStream<Void>.makeStream()
+    private let wake = WakeSignal()
+    /// Loop passes that looked for work (tests: an idle scheduler must not spin).
+    private var passes = 0
+    var loopPasses: Int { lock.withLock { passes } }
     /// Fires after any job state change (UI refresh, tests).
     public var onChange: (@Sendable (ProcessingJob) -> Void)?
 
@@ -103,7 +106,7 @@ public final class JobScheduler: @unchecked Sendable {
     }
 
     /// Nudges the loop (new work, pressure change).
-    public func poke() { wake.continuation.yield() }
+    public func poke() { wake.signal() }
 
     // MARK: Public operations
 
@@ -177,6 +180,7 @@ public final class JobScheduler: @unchecked Sendable {
 
     private func runLoop() async {
         while !Task.isCancelled {
+            lock.withLock { passes += 1 }
             do {
                 if let job = try nextRunnable() {
                     lock.withLock { active[job.id] = job.key.stage }
@@ -191,12 +195,7 @@ public final class JobScheduler: @unchecked Sendable {
                 // Storage hiccup: back off briefly and retry.
             }
             // Idle: wait for a poke or a short timeout (backoff/pressure re-check).
-            await withTaskGroup(of: Void.self) { g in
-                g.addTask { [wake] in for await _ in wake.stream { return } }
-                g.addTask { try? await Task.sleep(for: .milliseconds(500)) }
-                await g.next()
-                g.cancelAll()
-            }
+            await wake.wait(timeout: .milliseconds(500))
         }
     }
 
@@ -225,10 +224,18 @@ public final class JobScheduler: @unchecked Sendable {
             // those exist only once their prepare (which runs alone) committed, so in practice this lets transcription
             // work overtake older notes, never an older reconcile.
             guard canRun(j.key.stage, beside: Array(busy.values)) else { continue }
+            // T18: notes have the lowest priority. They wait while any transcript work is queued or running, for any meeting.
+            if j.key.stage == .notes, all.contains(where: Self.blocksNotes) { continue }
             if j.state == .suspended { try j.transition(to: .queued, at: Date()) }
             return j
         }
         return nil
+    }
+
+    /// Transcript work (any stage but notes) that is queued, running or suspended. While it exists, notes don't start, and
+    /// running notes yield at their next model call.
+    static func blocksNotes(_ j: ProcessingJob) -> Bool {
+        j.key.stage != .notes && [.queued, .running, .suspended].contains(j.state) && j.suspension != .userPaused
     }
 
     /// Transcription and diarization may overlap (one of each); every other stage runs alone.
@@ -266,14 +273,20 @@ public final class JobScheduler: @unchecked Sendable {
             fail(&job, code: "input.\(error)", retry: false)
             return
         }
-        lock.withLock { running[job.id] = (job, false) }
+        lock.withLock { running[job.id] = (job, false, false) }
         // Pressure watchdog: a heavy stage is interrupted at its next checkpoint when recording starts.
         let heavy = job.key.stage.isHeavy, runningID = job.id
+        // T18: running notes yield to new transcript work the same way and are requeued to resume from their checkpoints.
+        let isNotes = job.key.stage == .notes
         let watchdog = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .milliseconds(250))
-                guard let self, heavy, self.suspension(self.pressure()) != nil else { continue }
-                self.lock.withLock { self.running[runningID]?.cancelledForPressure = true }
+                guard let self else { return }
+                if heavy, self.suspension(self.pressure()) != nil {
+                    self.lock.withLock { self.running[runningID]?.cancelledForPressure = true }
+                } else if isNotes, (try? self.store.jobs().contains(where: Self.blocksNotes)) == true {
+                    self.lock.withLock { self.running[runningID]?.yieldedToTranscripts = true }
+                } else { continue }
                 self.executor.cancel(runningID)
                 return
             }
@@ -305,6 +318,9 @@ public final class JobScheduler: @unchecked Sendable {
                 if lock.withLock({ running[jobID]?.cancelledForPressure ?? false }) {
                     try job.transition(to: .suspended, at: Date())
                     job.suspension = suspension(pressure()) ?? .recordingActive
+                } else if lock.withLock({ running[jobID]?.yieldedToTranscripts ?? false }) {
+                    try job.transition(to: .queued, at: Date())
+                    job.attempt -= 1   // yielding is not a failed attempt; keep the retry budget
                 } else if job.state != .cancelled {
                     try job.transition(to: .cancelled, at: Date())
                 }
@@ -497,5 +513,49 @@ public final class JobScheduler: @unchecked Sendable {
                                     "\(edits.count)", configuration.microphoneMode.rawValue])
         try store.enqueue(ProcessingJob(key: JobKey(meetingID: m, stage: .reconcile, inputHash: hash, configHash: configuration.reconcileConfigHash),
                                         createdAt: Date(), updatedAt: Date()))
+    }
+}
+
+/// Wakes the scheduler loop. A signal while the loop waits resumes it; a signal while it works makes its next wait return
+/// at once. (It replaced an `AsyncStream` raced against a sleep: cancelling the stream's consumer at each timeout
+/// terminated the stream, after which every wait returned immediately and the idle loop spun on the job table.)
+final class WakeSignal: @unchecked Sendable {
+    private let lock = NSLock()
+    private var pending = false
+    private var waiter: (id: UInt64, continuation: CheckedContinuation<Void, Never>)?
+    private var nextID: UInt64 = 0
+
+    func signal() {
+        let c = lock.withLock { () -> CheckedContinuation<Void, Never>? in
+            guard let w = waiter else { pending = true; return nil }
+            waiter = nil
+            return w.continuation
+        }
+        c?.resume()
+    }
+
+    func wait(timeout: Duration) async {
+        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in
+            let id = lock.withLock { () -> UInt64? in
+                if pending { pending = false; return nil }
+                nextID += 1
+                waiter = (nextID, c)
+                return nextID
+            }
+            guard let id else { c.resume(); return }
+            Task { [weak self] in
+                try? await Task.sleep(for: timeout)
+                self?.expire(id)
+            }
+        }
+    }
+
+    private func expire(_ id: UInt64) {
+        let c = lock.withLock { () -> CheckedContinuation<Void, Never>? in
+            guard let w = waiter, w.id == id else { return nil }
+            waiter = nil
+            return w.continuation
+        }
+        c?.resume()
     }
 }

@@ -15,6 +15,7 @@
 | [diarization/0001](diarization/0001-diarization-and-attribution.md) | Overlap-retaining offline diarization, blockwise > 1 h, intersection attribution, reversible echo, rebased edits | Accepted (T07); DER gate not met on clean AMI |
 | [processing/0001](processing/0001-orchestration.md) | App-side scheduler, XPC worker, content-keyed DAG, leases, pressure suspension, stale-result guards | Accepted (T08) |
 | [notes/0001](notes/0001-evidence-backed-notes.md) | Local notes: line-numbered transcript, chunked extraction, deterministic evidence checks, model verification, computed limitations | Accepted (T09); human evaluation pending |
+| [notes/0002](notes/0002-faster-notes.md) | Batched notes generation (16 sequences, shared KV), compact JSON (`notes-v2`), notes yield to transcription and resume; scheduler idle-spin fix; draft model and Qwen3-1.7B measured, not used | Accepted (T18) |
 | [ui/0001](ui/0001-recording-and-review-ui.md) | SwiftUI recorder/library/review UI, menu bar, quit guard, Presentation module | Accepted (T10); hands-on pass pending |
 | [data/0001](data/0001-search-export-deletion.md) | FTS5 search, TXT/MD/JSON export, audio-only and full deletion with byte-level guarantees | Accepted (T11) |
 | [live/0001](live/0001-live-text.md) | Live provisional text from committed audio, stateless worker passes, under-yield guard, pause under pressure | Accepted (T14); real calls/base M2 unverified |

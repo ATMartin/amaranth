@@ -4,5 +4,5 @@
 public enum PipelineVersions {
     public static let asr = "asr-pipeline-v8"
     public static let diarization = "diar-v1"
-    public static let notes = "notes-v1"
+    public static let notes = "notes-v2"
 }

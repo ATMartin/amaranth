@@ -39,7 +39,8 @@ enum PerfSelfTest {
                         try writeOutputs(r, meeting: m, store: store, to: dir)
                         log(["step": "done", "id": item.id, "run": label, "completed": "\(r.completed)",
                              "stopToTranscript": r.stopToTranscriptSeconds.map { String(format: "%.1f", $0) } ?? "-",
-                             "stopToNotes": r.stopToNotesSeconds.map { String(format: "%.1f", $0) } ?? "-", "failure": r.failure ?? ""])
+                             "stopToNotes": r.stopToNotesSeconds.map { String(format: "%.1f", $0) } ?? "-",
+                             "backgroundNotes": r.backgroundNotesSeconds.map { String(format: "%.1f", $0) } ?? "-", "failure": r.failure ?? ""])
                         ok = ok && r.completed
                     }
                 } catch {
@@ -121,15 +122,20 @@ enum PerfSelfTest {
             return (try copyMeeting(MeetingID(id), from: source, to: store), nil)
         case .notesTranscript:
             guard let path = item.transcript else { throw CocoaError(.fileReadInvalidFileName) }
-            var tr = try ContractCoding.decode(TranscriptRevision.self, from: Data(contentsOf: URL(filePath: path)))
-            let m = MeetingID()
-            tr.meetingID = m
-            let end = tr.coverage.map(\.interval.end).max() ?? .zero
-            try store.upsertMeeting(Meeting(id: m, title: item.id, createdAt: Date(), captureState: .captured, duration: end - .zero))
-            try store.insertTranscriptRevision(tr)
-            try store.publishTranscript(tr)
-            return (m, nil)
+            return (try ingestTranscript(path, title: item.id, store: store), nil)
         }
+    }
+
+    /// A meeting whose published transcript is the given `TranscriptRevision` JSON (no audio).
+    static func ingestTranscript(_ path: String, title: String, store: MeetingStore) throws -> MeetingID {
+        var tr = try ContractCoding.decode(TranscriptRevision.self, from: Data(contentsOf: URL(filePath: path)))
+        let m = MeetingID()
+        tr.meetingID = m
+        let end = tr.coverage.map(\.interval.end).max() ?? .zero
+        try store.upsertMeeting(Meeting(id: m, title: title, createdAt: Date(), captureState: .captured, duration: end - .zero))
+        try store.insertTranscriptRevision(tr)
+        try store.publishTranscript(tr)
+        return m
     }
 
     /// Raw interleaved float32 audio, memory-mapped (file-backed, so it does not inflate the app's footprint).
@@ -204,23 +210,47 @@ enum PerfSelfTest {
     static func process(_ m: MeetingID, item: PerfRun.Item, label: String, store: MeetingStore, client: WorkerClient) async throws -> PerfRun.ItemResult {
         guard case .pong(let pid, _)? = try? await client.send(.ping) else { throw CocoaError(.executableLoad) }
         let thermalStart = ProcessInfo.processInfo.thermalState.label
-        let s = PipelineSelfTest.scheduler(store: store, client: client, hangTimeout: .seconds(1800), notes: item.notes)
+        let s = PipelineSelfTest.scheduler(store: store, client: client, hangTimeout: .seconds(1800), notes: item.notes || item.duringNotesOf != nil)
         try s.start()
         defer { s.stop() }
+        // T18 priority check: notes of another meeting are generating when this one arrives.
+        var background: MeetingID?, backgroundStarts = 0, backgroundRunning = false
+        func backgroundNotes() throws -> ProcessingJob? {
+            try background.flatMap { b in try store.jobs(meeting: b).first { $0.key.stage == .notes } }
+        }
+        if let path = item.duringNotesOf {
+            let b = try ingestTranscript(path, title: "\(item.id)-background-notes", store: store)
+            background = b
+            guard try s.enqueueNotes(b) != nil else { throw CocoaError(.featureUnsupported) }
+            let started = ContinuousClock.now + .seconds(600)
+            while try backgroundNotes()?.state != .running {
+                guard ContinuousClock.now < started else { throw CocoaError(.executableLoad) }
+                try await Task.sleep(for: .milliseconds(100))
+            }
+            backgroundStarts = 1; backgroundRunning = true
+            try await Task.sleep(for: .seconds(20))   // past model load: generating
+        }
         let t0 = Date()
         if item.kind == .notesTranscript { try s.enqueueNotes(m) } else { try s.enqueuePipeline(m) }
         var peakApp: UInt64 = 0, peakWorker: UInt64 = 0, pids: [Int32] = [pid]
-        var completed = false, failure: String?
+        var completed = false, failure: String?, backgroundSeconds: Double?
         let deadline = ContinuousClock.now + .seconds(4 * 3600)
         while ContinuousClock.now < deadline {
             try await Task.sleep(for: .milliseconds(500))
+            if let bj = try backgroundNotes() {
+                if bj.state == .running, !backgroundRunning { backgroundStarts += 1 }
+                backgroundRunning = bj.state == .running
+                if bj.state == .succeeded, backgroundSeconds == nil { backgroundSeconds = Date().timeIntervalSince(t0) }
+                if bj.state == .failed, bj.notBefore == nil { failure = "background notes: \(bj.errorCode ?? "")"; break }
+            }
             if case .connected(let p) = client.state, !pids.contains(p) { pids.append(p) }
             peakApp = max(peakApp, ProcessMetrics.physicalFootprint())
             peakWorker = max(peakWorker, pids.map { LiveSelfTest.footprint(pid: $0) }.max() ?? 0)
             let jobs = try store.jobs(meeting: m)
             func succeeded(_ st: ProcessingStage) -> Bool { jobs.contains { $0.key.stage == st && $0.state == .succeeded } }
             if let f = jobs.first(where: { $0.state == .failed && $0.notBefore == nil }) { failure = "\(f.key.stage.rawValue): \(f.errorCode ?? "")"; break }
-            if item.kind == .notesTranscript ? succeeded(.notes) : succeeded(.reconcile) && (!item.notes || succeeded(.notes)) { completed = true; break }
+            if item.kind == .notesTranscript ? succeeded(.notes) : succeeded(.reconcile) && (!item.notes || succeeded(.notes)),
+               background == nil || backgroundSeconds != nil { completed = true; break }
         }
         if !completed && failure == nil { failure = "timeout" }
         var stages: [PerfRun.StageResult] = []
@@ -234,10 +264,12 @@ enum PerfSelfTest {
             stages.last { $0.stage == st && $0.state == "succeeded" }?.scheduler.map { $0.finishedAt - t0.timeIntervalSince1970 }
         }
         let audio = try store.segments(m).map(\.interval.end.seconds).max() ?? 0
-        return PerfRun.ItemResult(id: item.id, run: label, completed: completed, failure: failure, audioSeconds: audio, recordWallSeconds: nil,
+        var result = PerfRun.ItemResult(id: item.id, run: label, completed: completed, failure: failure, audioSeconds: audio, recordWallSeconds: nil,
                                   missingAudioEvents: 0, stopToTranscriptSeconds: finished("reconcile"), stopToNotesSeconds: finished("notes"),
                                   stages: stages, peakAppMiB: Double(peakApp) / 1_048_576, peakWorkerMiB: Double(peakWorker) / 1_048_576,
                                   workerPIDs: pids, thermalStart: thermalStart, thermalEnd: ProcessInfo.processInfo.thermalState.label)
+        if background != nil { result.backgroundNotesSeconds = backgroundSeconds; result.backgroundNotesStarts = backgroundStarts }
+        return result
     }
 
     static func writeOutputs(_ r: PerfRun.ItemResult, meeting m: MeetingID, store: MeetingStore, to dir: URL) throws {

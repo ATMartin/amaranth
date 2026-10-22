@@ -105,6 +105,13 @@ Candidate levers. **T16's breakdown decides which ones are real; none is assumed
   stay within G5.
 
 ### T18: Faster notes
+**Result (2026-10-22):** G2 met at 144–149 s for 60 minutes (v0: 248–252 s); 120-minute notes 266 s (v0: 536 s).
+G5 notes checks pass (evidence 100%, planted 8/8, injection 10/10, uncertain 33.0% vs 38.6%). Notes are generated
+16 sequences at a time with compact JSON output, and they yield to transcription work and resume from checkpoints
+(a meeting arriving during notes: transcript 8.5 s vs 7.8 s alone). Draft-model speculation, quantised KV and
+Qwen3-1.7B (fails planted 3/8 and injection 8/10) were measured and not used. See
+`docs/decisions/notes/0002-faster-notes.md`.
+
 - Profile first (T16). The 60-minute notes job is about 3 extraction chunks plus up to 120 verification calls.
 - **Levers, cheapest first:**
   - batch verification (several items per call against shared cited lines);

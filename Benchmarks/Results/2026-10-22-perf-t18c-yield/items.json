@@ -1,0 +1,20 @@
+[
+  {
+    "audioSeconds" : 838.8333125,
+    "item" : {
+      "coldWorker" : true,
+      "duringNotesOf" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/yield-background-notes.json",
+      "id" : "yield-ami-IS1009a-during-notes",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/yield-ami-IS1009a-during-notes-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "yield",
+    "suite" : "yield"
+  }
+]

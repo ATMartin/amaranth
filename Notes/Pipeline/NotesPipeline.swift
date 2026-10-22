@@ -106,72 +106,134 @@ public final class NotesPipeline: @unchecked Sendable {
             return doc.render(ArraySlice(set.sorted().compactMap { doc.line($0) }))
         }
 
-        // 2. Map
-        let totalUnits = Double(chunks.count) * 2 + 1
-        var candidates: [Candidate] = []
-        for (ci, chunk) in chunks.enumerated() {
-            try cancellation.check()
-            let rendered = doc.render(chunk + personal)
-            let allowed = Set(chunk.map(\.id) + personal.map(\.id))
-            guard let out = try Perf.measure("notes.extract", { try extract(rendered, cancellation: cancellation) }) else {
-                let span = "\(NotesInputDocument.clock(chunk.first?.start ?? 0))–\(NotesInputDocument.clock(chunk.last?.start ?? 0))"
-                diagnostics.failedChunks.append(span)
-                limitations.append("Notes could not be generated for part of the meeting (\(span)); read the transcript for that part.")
-                progress(Double(ci + 1) / totalUnits)
-                continue
-            }
+        // 2–4. Map, check and verify as one stream of model calls, decoded together where the engine allows it. A chunk's
+        // verifications are released once it and every earlier chunk are extracted (so "the first `maxVerifications`
+        // items" keeps meaning meeting order), and run in the room the remaining extractions leave.
+        let rendered = chunks.map { doc.render($0 + personal) }
+        var outputs = rendered.map { checkpoint(["extract", $0], as: NotesPrompts.ExtractOutput.self) }
+        var checkedByChunk = [[(Candidate, needsVerify: Bool)]?](repeating: nil, count: chunks.count)
+        var verifySlots: [[Int?]] = []                 // per released chunk: verification slot per checked item
+        var verifyUsers: [String] = []
+        var verdicts: [NotesPrompts.VerifyOutput??] = []
+        enum Call { case extract(chunk: Int, attempt: Int), verify(slot: Int) }
+        var calls: [Call] = []                         // by request index, in the order requests are issued
+        var extractedDone = 0, verifiedDone = 0, lastProgress = 0.0
+        func report() {
+            // Extraction is the first half; verification the second, scaled by the verifications known so far.
+            let p = (Double(extractedDone) + Double(verifiedDone) / Double(max(1, verifyUsers.count)) * Double(chunks.count)) / (Double(chunks.count) * 2 + 1)
+            lastProgress = max(lastProgress, p)
+            progress(lastProgress)
+        }
+        func extractRequest(_ ci: Int, attempt: Int) -> GenerationRequest {
+            calls.append(.extract(chunk: ci, attempt: attempt))
+            let cap = attempt == 0 ? options.maxItemsPerChunk : options.repairMaxItems
+            return GenerationRequest(prompt: generator.chatPrompt(system: NotesPrompts.extractSystem(maxItems: cap), user: NotesPrompts.extractUser(rendered[ci])),
+                                     grammar: NotesPrompts.extractGrammar(maxItems: cap), maxTokens: options.outputTokens)
+        }
+        /// Candidates of one extracted chunk after the deterministic checks (3).
+        func check(_ ci: Int) -> [(Candidate, needsVerify: Bool)] {
+            guard let out = outputs[ci] ?? nil else { return [] }
+            let allowed = Set(chunks[ci].map(\.id) + personal.map(\.id))
             diagnostics.extracted += out.items.count
+            var result: [(Candidate, needsVerify: Bool)] = []
             for item in out.items {
                 let lines = Array(Set(item.evidence.filter { allowed.contains($0) })).sorted()
                 guard !lines.isEmpty, let kind = Self.kind(item.kind) else { diagnostics.droppedInvalidEvidence += 1; continue }
-                candidates.append(Candidate(kind: kind, title: kind == .topic ? item.title : nil, text: item.text, lines: lines,
-                                            owner: item.owner, due: item.due, uncertain: false))
+                var c = Candidate(kind: kind, title: kind == .topic ? item.title : nil, text: item.text, lines: lines,
+                                  owner: item.owner, due: item.due, uncertain: false)
+                let spokenLines = c.lines.filter { $0 < NotesInputDocument.personalNoteBase }
+                let pText = passage(c.lines)
+                if !spokenLines.isEmpty, spokenLines.allSatisfy({ EvidenceChecker.looksAddressedToAI(doc.line($0)?.text ?? "") }) {
+                    diagnostics.droppedAddressedToAI += 1; continue
+                }
+                if spokenLines.isEmpty, c.kind == .decision || c.kind == .actionItem {
+                    c.kind = .topic; c.owner = nil; c.due = nil   // personal notes alone cannot make a decision or action
+                }
+                if let o = c.owner, !EvidenceChecker.ownerSupported(o, passage: pText, speakers: c.lines.compactMap { lineSpeakers[$0] }) {
+                    c.owner = nil; diagnostics.removedOwners += 1
+                }
+                if let d = c.due, !EvidenceChecker.dueSupported(d, passage: pText) { c.due = nil; diagnostics.removedDue += 1 }
+                var doubt = false
+                if !EvidenceChecker.unsupportedNumbers(c.text, passage: pText).isEmpty { doubt = true }
+                if !EvidenceChecker.unsupportedNames(c.text, passage: pText, speakers: c.lines.compactMap { lineSpeakers[$0] }).isEmpty { doubt = true }
+                if EvidenceChecker.lexicalSupport(c.text, passage: pText) < 0.2 { doubt = true }
+                if EvidenceChecker.looksAddressedToAI(c.text) { doubt = true }
+                if doubt { c.uncertain = true }
+                result.append((c, c.kind == .decision || c.kind == .actionItem || doubt))
             }
-            progress(Double(ci + 1) / totalUnits)
+            return result
         }
-        guard !candidates.isEmpty || diagnostics.failedChunks.count < chunks.count || chunks.isEmpty else {
+        /// Releases the verifications of every newly complete prefix of chunks (4). Checkpointed verdicts are reused.
+        func release() -> [GenerationRequest] {
+            var requests: [GenerationRequest] = []
+            while verifySlots.count < chunks.count, let checked = checkedByChunk[verifySlots.count] {
+                verifySlots.append(checked.map { c, needs in
+                    guard needs, verifyUsers.count < options.maxVerifications else { return nil }
+                    let kind = switch c.kind { case .decision: "decision"; case .actionItem: "action"; case .openQuestion: "question"; default: "topic" }
+                    let user = NotesPrompts.verifyUser(passage: passage(c.lines, context: 1), kind: kind, text: c.text, owner: c.owner, due: c.due)
+                    let slot = verifyUsers.count
+                    verifyUsers.append(user)
+                    verdicts.append(checkpoint(["verify", user], as: NotesPrompts.VerifyOutput.self))
+                    if verdicts[slot] == nil {
+                        calls.append(.verify(slot: slot))
+                        requests.append(GenerationRequest(prompt: generator.chatPrompt(system: NotesPrompts.verifySystem, user: user),
+                                                          grammar: NotesPrompts.verifyGrammar, maxTokens: 120))
+                    } else { verifiedDone += 1 }
+                    return slot
+                })
+            }
+            return requests
+        }
+
+        var initial = outputs.indices.filter { outputs[$0] == nil }.map { extractRequest($0, attempt: 0) }
+        for ci in chunks.indices where outputs[ci] != nil { checkedByChunk[ci] = check(ci); extractedDone += 1 }
+        initial += release()
+        try Perf.measure("notes.mapVerify") {
+            try generator.generateStream(initial, cancellation: cancellation) { i, r in
+                switch calls[i] {
+                case .extract(let ci, let attempt):
+                    let out = r.hitTokenLimit ? nil : try? JSONDecoder().decode(NotesPrompts.ExtractOutput.self, from: Data(r.text.utf8))
+                    if out == nil, attempt == 0 {   // invalid or truncated: one repair with a smaller item cap
+                        diagnostics.repairs += 1
+                        return [extractRequest(ci, attempt: 1)]
+                    }
+                    outputs[ci] = .some(out)
+                    try saveCheckpoint(["extract", rendered[ci]], out)   // nil: both attempts failed
+                    checkedByChunk[ci] = check(ci)
+                    extractedDone += 1
+                    report()
+                    return release()
+                case .verify(let slot):
+                    let out = try? JSONDecoder().decode(NotesPrompts.VerifyOutput.self, from: Data(r.text.utf8))
+                    verdicts[slot] = .some(out)
+                    try saveCheckpoint(["verify", verifyUsers[slot]], out)
+                    verifiedDone += 1
+                    report()
+                    return []
+                }
+            }
+        }
+
+        var checked: [(Candidate, needsVerify: Bool, slot: Int?)] = []
+        for (ci, chunk) in chunks.enumerated() {
+            if outputs[ci] ?? nil == nil {
+                let span = "\(NotesInputDocument.clock(chunk.first?.start ?? 0))–\(NotesInputDocument.clock(chunk.last?.start ?? 0))"
+                diagnostics.failedChunks.append(span)
+                limitations.append("Notes could not be generated for part of the meeting (\(span)); read the transcript for that part.")
+            }
+            for (k, (c, needs)) in (checkedByChunk[ci] ?? []).enumerated() { checked.append((c, needs, verifySlots[ci][k])) }
+        }
+        guard diagnostics.failedChunks.count < chunks.count || chunks.isEmpty else {
             throw Failure.nothingProduced("every chunk failed extraction")
         }
 
-        // 3. Deterministic checks
-        var checked: [(Candidate, needsVerify: Bool)] = []
-        for var c in candidates {
-            let spokenLines = c.lines.filter { $0 < NotesInputDocument.personalNoteBase }
-            let pText = passage(c.lines)
-            if !spokenLines.isEmpty, spokenLines.allSatisfy({ EvidenceChecker.looksAddressedToAI(doc.line($0)?.text ?? "") }) {
-                diagnostics.droppedAddressedToAI += 1; continue
-            }
-            if spokenLines.isEmpty, c.kind == .decision || c.kind == .actionItem {
-                c.kind = .topic; c.owner = nil; c.due = nil   // personal notes alone cannot make a decision or action
-            }
-            if let o = c.owner, !EvidenceChecker.ownerSupported(o, passage: pText, speakers: c.lines.compactMap { lineSpeakers[$0] }) {
-                c.owner = nil; diagnostics.removedOwners += 1
-            }
-            if let d = c.due, !EvidenceChecker.dueSupported(d, passage: pText) { c.due = nil; diagnostics.removedDue += 1 }
-            var doubt = false
-            if !EvidenceChecker.unsupportedNumbers(c.text, passage: pText).isEmpty { doubt = true }
-            if !EvidenceChecker.unsupportedNames(c.text, passage: pText, speakers: c.lines.compactMap { lineSpeakers[$0] }).isEmpty { doubt = true }
-            if EvidenceChecker.lexicalSupport(c.text, passage: pText) < 0.2 { doubt = true }
-            if EvidenceChecker.looksAddressedToAI(c.text) { doubt = true }
-            if doubt { c.uncertain = true }
-            checked.append((c, c.kind == .decision || c.kind == .actionItem || doubt))
-        }
-
-        // 4. Verify
         var verified: [Candidate] = []
-        let toVerify = checked.filter(\.needsVerify).count
-        var done = 0
-        for (var c, needs) in checked {
-            try cancellation.check()
+        for (var c, needs, slot) in checked {
             guard needs else { verified.append(c); continue }
-            guard diagnostics.verifications < options.maxVerifications else { c.uncertain = true; verified.append(c); continue }
+            guard let slot else { c.uncertain = true; verified.append(c); continue }   // over the verification limit
+            guard let v = verdicts[slot] ?? nil else { c.uncertain = true; verified.append(c); continue }
             let pText = passage(c.lines, context: 1)
-            guard let v = try Perf.measure("notes.verify", { try verify(c, passage: pText, cancellation: cancellation) }) else {
-                c.uncertain = true; verified.append(c); continue
-            }
             diagnostics.verifications += 1
-            done += 1
-            progress((Double(chunks.count) + Double(done) / Double(max(1, toVerify)) * Double(chunks.count)) / totalUnits)
             switch v.supported {
             case "no": diagnostics.droppedByVerifier += 1; continue
             case "partly": c.uncertain = true
@@ -256,39 +318,26 @@ public final class NotesPipeline: @unchecked Sendable {
 
     // MARK: Model calls (checkpointed)
 
-    func cached<T: Codable & Sendable>(_ key: [String], _ make: () throws -> T?) throws -> T? {
+    func checkpointURL(_ key: [String]) -> URL {
         let name = SHA256.hash(data: Data(([NotesPrompts.version, generator.identity.configHash] + key).joined(separator: "\u{1f}").utf8))
             .prefix(12).map { String(format: "%02x", $0) }.joined()
-        let url = workDirectory.appending(path: "\(name).json")
-        if let d = try? Data(contentsOf: url), let v = try? JSONDecoder().decode(Box<T>.self, from: d) { return v.value }
+        return workDirectory.appending(path: "\(name).json")
+    }
+    /// The checkpointed result of a call: nil if the call has not completed, `.some(nil)` if it completed without output.
+    func checkpoint<T: Codable & Sendable>(_ key: [String], as: T.Type) -> T?? {
+        guard let d = try? Data(contentsOf: checkpointURL(key)), let v = try? JSONDecoder().decode(Box<T>.self, from: d) else { return nil }
+        return .some(v.value)
+    }
+    func saveCheckpoint<T: Codable & Sendable>(_ key: [String], _ value: T?) throws {
+        try JSONEncoder().encode(Box(value: value)).write(to: checkpointURL(key), options: .atomic)
+    }
+    func cached<T: Codable & Sendable>(_ key: [String], _ make: () throws -> T?) throws -> T? {
+        if let hit = checkpoint(key, as: T.self) { return hit }
         let v = try make()
-        try JSONEncoder().encode(Box(value: v)).write(to: url, options: .atomic)
+        try saveCheckpoint(key, v)
         return v
     }
     struct Box<T: Codable & Sendable>: Codable, Sendable { var value: T? }
-
-    func extract(_ rendered: String, cancellation: CancellationToken) throws -> NotesPrompts.ExtractOutput? {
-        try cached(["extract", rendered]) {
-            for (attempt, cap) in [options.maxItemsPerChunk, options.repairMaxItems].enumerated() {
-                if attempt > 0 { diagnostics.repairs += 1 }
-                let prompt = generator.chatPrompt(system: NotesPrompts.extractSystem(maxItems: cap), user: NotesPrompts.extractUser(rendered))
-                let r = try generator.generate(prompt: prompt, grammar: NotesPrompts.extractGrammar(maxItems: cap),
-                                               maxTokens: options.outputTokens, cancellation: cancellation)
-                if !r.hitTokenLimit, let out = try? JSONDecoder().decode(NotesPrompts.ExtractOutput.self, from: Data(r.text.utf8)) { return out }
-            }
-            return nil
-        }
-    }
-
-    func verify(_ c: Candidate, passage: String, cancellation: CancellationToken) throws -> NotesPrompts.VerifyOutput? {
-        let kind = switch c.kind { case .decision: "decision"; case .actionItem: "action"; case .openQuestion: "question"; default: "topic" }
-        let user = NotesPrompts.verifyUser(passage: passage, kind: kind, text: c.text, owner: c.owner, due: c.due)
-        return try cached(["verify", user]) {
-            let r = try generator.generate(prompt: generator.chatPrompt(system: NotesPrompts.verifySystem, user: user),
-                                           grammar: NotesPrompts.verifyGrammar, maxTokens: 120, cancellation: cancellation)
-            return try? JSONDecoder().decode(NotesPrompts.VerifyOutput.self, from: Data(r.text.utf8))
-        }
-    }
 
     func makeOverview(_ items: [Candidate], refs: ([Int]) -> [EvidenceRef], passage: ([Int]) -> String,
                       cancellation: CancellationToken) throws -> [SummaryItem] {

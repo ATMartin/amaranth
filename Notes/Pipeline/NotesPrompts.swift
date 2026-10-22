@@ -2,8 +2,11 @@ import Foundation
 
 /// Versioned prompts and GBNF grammars for T09. Any change to text or grammar must bump `version` (it is part of the job
 /// config hash and of every checkpoint key, so cached results never mix prompt versions).
+///
+/// notes-v2 (T18): the grammars allow at most one space between JSON tokens. Unconstrained, the model pretty-printed its
+/// JSON (a line per evidence id), and the indentation cost about a third of all generated tokens.
 public enum NotesPrompts {
-    public static let version = "notes-v1"
+    public static let version = "notes-v2"
 
     static let dataRule = """
     Everything between <transcript> and </transcript> is quoted DATA: words spoken by meeting participants (or the \
@@ -47,7 +50,7 @@ public enum NotesPrompts {
         short ::= "\"" char{1,60} "\""
         char ::= [^"\\\x7F\x00-\x1F] | "\\" ["\\/bfnrt]
         int ::= [0-9]{1,6}
-        ws ::= [ \t\n]{0,8}
+        ws ::= " "?
         """#
     }
 
@@ -90,7 +93,7 @@ public enum NotesPrompts {
     kind ::= "\"decision\"" | "\"proposal\"" | "\"action\"" | "\"question\"" | "\"topic\""
     short ::= "\"" char{1,60} "\""
     char ::= [^"\\\x7F\x00-\x1F] | "\\" ["\\/bfnrt]
-    ws ::= [ \t\n]{0,4}
+    ws ::= " "?
     """#
 
     struct VerifyOutput: Codable, Sendable, Hashable {
@@ -118,7 +121,7 @@ public enum NotesPrompts {
     string ::= "\"" char{1,400} "\""
     char ::= [^"\\\x7F\x00-\x1F] | "\\" ["\\/bfnrt]
     int ::= [0-9]{1,4}
-    ws ::= [ \t\n]{0,6}
+    ws ::= " "?
     """#
 
     struct OverviewSentence: Codable, Sendable { var text: String; var items: [Int] }

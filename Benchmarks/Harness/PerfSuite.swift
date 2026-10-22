@@ -8,7 +8,7 @@ import Scoring
 
 /// T16 `amaranth-bench perf-suite` (docs/milestone-e-performance-plan.md):
 ///
-///     perf-suite run --app <Amaranth.app> [--suites public,corpus,notes] [--only id,…] [--speed 20] [--results <dir>]
+///     perf-suite run --app <Amaranth.app> [--suites public,corpus,notes[,yield]] [--only id,…] [--speed 20] [--results <dir>]
 ///                    [--compare <baseline>] [--require-identical]
 ///     perf-suite score <results> [--compare <baseline>] [--inject-regression] [--require-identical]
 ///     perf-suite freeze <results> <baseline> [--noise <second results>]
@@ -76,6 +76,7 @@ enum PerfSuite {
         if suites.contains("public") { out += try publicItems() }
         if suites.contains("corpus") { out += try await corpusItems() }
         if suites.contains("notes") { out += try notesItems() }
+        if suites.contains("yield") { out += try yieldItems() }
         return out
     }
 
@@ -301,6 +302,18 @@ enum PerfSuite {
                                  suite: "notes", set: "notes-injection", audioSeconds: 600, reference: keyword))
         }
         return out
+    }
+
+    /// T18 priority check (not in the default suites, not part of G5): a 14-minute AMI meeting arrives while notes for
+    /// the 120-minute planted transcript are generating. Compare its transcript time with `ami-IS1009a-mix`.
+    static func yieldItems() throws -> [SuiteItem] {
+        let notes = try NotesFixtures.planted(cut: 7200, fixtures: fixtures)
+        let url = cache.appending(path: "yield-background-notes.json")
+        try ContractCoding.encode(notes).write(to: url)
+        let id = "yield-ami-IS1009a-during-notes"
+        let s = try BenchAudio.load16kMono(fixtures.appending(path: "ami/IS1009a/IS1009a.Mix-Headset.wav"))
+        return [SuiteItem(item: PerfRun.Item(id: id, kind: .audio, system: try raw16k(s, id: id), notes: false, duringNotesOf: url.path),
+                          suite: "yield", set: "yield", audioSeconds: Double(s.count) / 16_000)]
     }
 
     // MARK: Run

@@ -4,7 +4,7 @@ import Testing
 import Domain
 
 /// Scripted generator: dispatches on the grammar in use (extraction / verification / overview).
-final class ScriptedGenerator: TextGenerator, @unchecked Sendable {
+class ScriptedGenerator: TextGenerator, @unchecked Sendable {
     let identity = ProducerInfo(component: "scripted", configHash: "s1")
     let contextTokens = 8192
     let lock = NSLock()
@@ -28,6 +28,16 @@ final class ScriptedGenerator: TextGenerator, @unchecked Sendable {
         return GenerationResult(text: text, promptTokens: countTokens(prompt), generatedTokens: countTokens(text), hitTokenLimit: false)
     }
     func count(_ k: String) -> Int { lock.withLock { calls[k, default: 0] } }
+    // Declared here (not only the protocol default) so subclasses can override batching.
+    func generateStream(_ requests: [GenerationRequest], cancellation: CancellationToken,
+                        onResult: (Int, GenerationResult) throws -> [GenerationRequest]) throws {
+        var queue = requests, i = 0
+        while i < queue.count {
+            let r = queue[i]
+            queue += try onResult(i, try generate(prompt: r.prompt, grammar: r.grammar, maxTokens: r.maxTokens, cancellation: cancellation))
+            i += 1
+        }
+    }
 }
 
 /// Builds an attributed transcript: one segment per (speaker, text) line, `step` seconds apart.
@@ -306,6 +316,63 @@ struct NotesPipelineTests {
         let p = NotesPipeline(generator: g2, workDirectory: work, options: opts)
         _ = try p.run(meetingID: T.meeting, transcript: T.transcript(lines), editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
         #expect(g2.count("extract") == p.diagnostics.chunks - 2, "the 2 chunks completed before the cancel are not re-run")
+    }
+
+    /// T18: a batching engine finishes requests in any order and may be cancelled mid-batch. Results must not depend on
+    /// completion order, and every request that finished before the cancel is checkpointed.
+    @Test func batchedCallsGiveTheSameNotesAndCheckpointAsTheyFinish() throws {
+        let lines: [(String, String)] = (0..<300).map { ("Speaker \($0 % 3 + 1)", "line \($0) we agreed to ship the plan by Friday") }
+        var opts = NotesPipeline.Options(); opts.chunkTokens = 800
+        func script(_ g: ScriptedGenerator) {
+            // One decision per chunk, quoting its middle line (distinct numbers, so nothing merges), plus one topic.
+            g.extract = { user in
+                let lines = user.split(separator: "\n").compactMap { line -> (Int, String)? in
+                    guard let open = line.firstIndex(of: "["), let close = line.firstIndex(of: "]"),
+                          let id = Int(line[line.index(after: open)..<close]) else { return nil }
+                    return (id, String(line.split(separator: ")").last!).trimmingCharacters(in: .whitespaces))
+                }
+                guard !lines.isEmpty else { return T.items([]) }
+                let mid = lines[lines.count / 2]
+                return T.items([T.item("decision", mid.1, [mid.0]), T.item("topic", "The plan", [lines[0].0], title: "Plan")])
+            }
+        }
+        let sequential = ScriptedGenerator(); script(sequential)
+        let reference = try NotesPipeline(generator: sequential, workDirectory: T.work(), options: opts)
+            .run(meetingID: T.meeting, transcript: T.transcript(lines), editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
+        #expect(reference.content.decisions.count > 1)
+
+        let work = T.work()
+        let interrupted = ReversingBatchGenerator(); script(interrupted); interrupted.cancelAfterResults = 3
+        #expect(throws: CancellationError.self) {
+            _ = try NotesPipeline(generator: interrupted, workDirectory: work, options: opts)
+                .run(meetingID: T.meeting, transcript: T.transcript(lines), editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
+        }
+        let resumed = ReversingBatchGenerator(); script(resumed)
+        let p = NotesPipeline(generator: resumed, workDirectory: work, options: opts)
+        let rev = try p.run(meetingID: T.meeting, transcript: T.transcript(lines), editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
+        #expect(resumed.count("extract") == p.diagnostics.chunks - 3, "the 3 chunks that finished before the cancel are not re-run")
+        #expect(rev.content.allItems.map(\.text) == reference.content.allItems.map(\.text))
+        #expect(rev.content.allItems.map(\.evidence) == reference.content.allItems.map(\.evidence))
+    }
+}
+
+/// Completes everything queued so far in reverse order (follow-ups join the next round), optionally cancelling after a
+/// number of results.
+final class ReversingBatchGenerator: ScriptedGenerator, @unchecked Sendable {
+    var cancelAfterResults: Int?
+    override func generateStream(_ requests: [GenerationRequest], cancellation: CancellationToken,
+                                 onResult: (Int, GenerationResult) throws -> [GenerationRequest]) throws {
+        var queue = requests, done = 0
+        while done < queue.count {
+            let round = Array(done..<queue.count)
+            let results = try round.map { try generate(prompt: queue[$0].prompt, grammar: queue[$0].grammar, maxTokens: queue[$0].maxTokens,
+                                                       cancellation: cancellation) }
+            for (k, i) in round.enumerated().reversed() {
+                if let n = cancelAfterResults { guard n > 0 else { throw CancellationError() }; cancelAfterResults = n - 1 }
+                queue += try onResult(i, results[k])
+            }
+            done = round.last! + 1
+        }
     }
 }
 

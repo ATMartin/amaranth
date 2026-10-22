@@ -1,0 +1,3 @@
+{"id":"yield-ami-IS1009a-during-notes","kind":"audio","step":"item"}
+{"backgroundNotes":"263.9","completed":"true","failure":"","id":"yield-ami-IS1009a-during-notes","run":"cold","step":"done","stopToNotes":"-","stopToTranscript":"8.5"}
+{"result":"pass","test":"perf-run"}

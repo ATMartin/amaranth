@@ -73,7 +73,7 @@ let package = Package(
                                .product(name: "FluidAudio", package: "FluidAudio"),
                                .product(name: "WhisperKit", package: "argmax-oss-swift")],
                 path: "Benchmarks/Engines"),
-        .executableTarget(name: "amaranth-bench", dependencies: ["BenchEngines", "Scoring", "Domain", "Models", "ASR", "Diarization", "Notes"],
+        .executableTarget(name: "amaranth-bench", dependencies: ["BenchEngines", "Scoring", "Domain", "Models", "ASR", "Diarization", "Notes", "llama"],
                           path: "Benchmarks/Harness"),
         .testTarget(name: "ScoringTests", dependencies: ["Scoring"], path: "Tests/Benchmarks", swiftSettings: strict),
         .executableTarget(name: "amaranth-recorder-child", dependencies: ["Capture", "Domain", "Storage"], path: "Tests/RecoveryChild"),

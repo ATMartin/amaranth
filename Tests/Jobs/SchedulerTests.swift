@@ -10,6 +10,7 @@ import Storage
 final class FakeExecutor: JobExecutor, @unchecked Sendable {
     let lock = NSLock()
     var delay: Duration = .milliseconds(30)
+    var stageDelay: [ProcessingStage: Duration] = [:]  // overrides `delay` for a stage
     var workerLossesRemaining = 0
     var executed: [ProcessingStage] = []
     var gate: [ProcessingStage: AsyncStream<Void>] = [:]   // stage waits for a signal when present
@@ -36,8 +37,9 @@ final class FakeExecutor: JobExecutor, @unchecked Sendable {
         if cold > .zero { try await Task.sleep(for: cold) }
         if fails { throw JobFailure.permanent("simulated stage failure") }
         if job.key.stage != .reconcile, let g = lock.withLock({ gate[job.key.stage] }) { for await _ in g { break } }
+        let stageDelay = lock.withLock { self.stageDelay[job.key.stage] ?? delay }
         for i in 1...4 {
-            try await Task.sleep(for: delay / 4)
+            try await Task.sleep(for: stageDelay / 4)
             if lock.withLock({ tokens[job.jobID] == true }) { return .cancelled(jobID: job.jobID) }
             progress(WorkerProgress(jobID: job.jobID, progress: Double(i) / 4, checkpoint: JobCheckpoint(completedUnits: i, totalUnits: 4)))
         }
@@ -483,5 +485,62 @@ struct SchedulerTests {
         #expect(!overlaps.isEmpty)
         #expect(overlaps.allSatisfy { $0 == [.transcribe, .diarize] }, "\(overlaps)")
         #expect(exec.lock.withLock { exec.executed }.count == 10)
+    }
+
+    @Test func runningNotesYieldToNewTranscriptionWorkAndResume() async throws {
+        let (store, m1, root) = try JobFixture.storeWithMeeting()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let exec = FakeExecutor()
+        exec.stageDelay[.notes] = .seconds(4)
+        let s = JobScheduler(store: store, executor: exec, configuration: JobFixture.config(notes: true))
+        try s.start()
+        defer { s.stop() }
+        try s.enqueuePipeline(m1)
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m1).contains { $0.key.stage == .notes && $0.state == .running } })
+        // Meeting 2 stops while meeting 1's notes run: its transcript must not wait for them.
+        let m2 = MeetingID()
+        try store.upsertMeeting(Meeting(id: m2, title: "second", createdAt: Date(), captureState: .captured))
+        try store.insertSegments([AudioSegmentRecord(meetingID: m2, source: .systemOutput, epochID: EpochID(), sequence: 0,
+                                                     format: AudioFormat(sampleRate: 16_000, channelCount: 1, sampleFormat: .float32),
+                                                     firstFrameInEpoch: 0, frameCount: 32_000, interval: .seconds(0, 2), relativePath: "y.caf",
+                                                     sha256: String(repeating: "b", count: 64), state: .committed)])
+        let enqueued = ContinuousClock.now
+        try s.enqueuePipeline(m2)
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m2).contains { $0.key.stage == .reconcile && $0.state == .succeeded } })
+        #expect(ContinuousClock.now - enqueued < .seconds(2.5), "transcription did not wait for the 4 s notes job")
+        let notes1 = try #require(try store.jobs(meeting: m1).first { $0.key.stage == .notes })
+        #expect(notes1.state == .queued || notes1.state == .running, "yielded notes are requeued, not failed or cancelled")
+        exec.stageDelay[.notes] = .milliseconds(30)
+        #expect(try await JobFixture.wait {
+            try [m1, m2].allSatisfy { m in try store.jobs(meeting: m).contains { $0.key.stage == .notes && $0.state == .succeeded } }
+        })
+        #expect(try store.jobs(meeting: m1).first { $0.key.stage == .notes }?.attempt == 1, "yielding does not use up the retry budget")
+        let order = exec.lock.withLock { exec.executed }
+        #expect(order.filter { $0 == .notes }.count == 3, "meeting 1's notes ran, yielded, ran again; then meeting 2's: \(order)")
+        #expect(exec.lock.withLock { exec.overlaps }.allSatisfy { !$0.contains(.notes) }, "notes never run beside other work")
+    }
+
+    @Test func idleSchedulerWaitsInsteadOfSpinning() async throws {
+        let (store, m, root) = try JobFixture.storeWithMeeting()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let s = JobScheduler(store: store, executor: FakeExecutor(), configuration: JobFixture.config())
+        try s.start()
+        defer { s.stop() }
+        try s.enqueuePipeline(m)
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .reconcile && $0.state == .succeeded } })
+        try await Task.sleep(for: .milliseconds(300))
+        let before = s.loopPasses
+        try await Task.sleep(for: .seconds(2))
+        // Idle passes come from the 500 ms re-check only (about 4 in 2 s), not a busy loop.
+        #expect(s.loopPasses - before <= 8, "\(s.loopPasses - before) passes in 2 s while idle")
+        // A poke still wakes it at once.
+        let m2 = MeetingID()
+        try store.upsertMeeting(Meeting(id: m2, title: "second", createdAt: Date(), captureState: .captured))
+        try store.insertSegments([AudioSegmentRecord(meetingID: m2, source: .systemOutput, epochID: EpochID(), sequence: 0,
+                                                     format: AudioFormat(sampleRate: 16_000, channelCount: 1, sampleFormat: .float32),
+                                                     firstFrameInEpoch: 0, frameCount: 32_000, interval: .seconds(0, 2), relativePath: "y.caf",
+                                                     sha256: String(repeating: "b", count: 64), state: .committed)])
+        try s.enqueuePipeline(m2)
+        #expect(try await JobFixture.wait(.seconds(3)) { try store.jobs(meeting: m2).contains { $0.key.stage == .reconcile && $0.state == .succeeded } })
     }
 }

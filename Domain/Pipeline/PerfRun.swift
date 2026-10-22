@@ -44,10 +44,14 @@ public enum PerfRun {
         public var coldWorker: Bool
         /// Process an identical copy again right after (warm worker).
         public var repeatWarm: Bool
+        /// T18 priority check: notes for this `TranscriptRevision` JSON start first, and this item arrives while they are
+        /// generating. Its transcript must not wait for them; the notes must still finish.
+        public var duringNotesOf: String?
         public init(id: String, kind: Kind, system: RawAudio? = nil, microphone: RawAudio? = nil, library: String? = nil, meetingID: String? = nil,
-                    transcript: String? = nil, notes: Bool, coldWorker: Bool = false, repeatWarm: Bool = false) {
+                    transcript: String? = nil, notes: Bool, coldWorker: Bool = false, repeatWarm: Bool = false, duringNotesOf: String? = nil) {
             self.id = id; self.kind = kind; self.system = system; self.microphone = microphone; self.library = library
             self.meetingID = meetingID; self.transcript = transcript; self.notes = notes; self.coldWorker = coldWorker; self.repeatWarm = repeatWarm
+            self.duringNotesOf = duringNotesOf
         }
     }
 
@@ -88,6 +92,9 @@ public enum PerfRun {
         public var workerPIDs: [Int32]
         public var thermalStart: String
         public var thermalEnd: String
+        /// `duringNotesOf`: this item's arrival → the background notes finished, and how often those notes were started.
+        public var backgroundNotesSeconds: Double?
+        public var backgroundNotesStarts: Int?
         public init(id: String, run: String, completed: Bool, failure: String?, audioSeconds: Double, recordWallSeconds: Double?,
                     missingAudioEvents: Int, stopToTranscriptSeconds: Double?, stopToNotesSeconds: Double?, stages: [StageResult],
                     peakAppMiB: Double, peakWorkerMiB: Double, workerPIDs: [Int32], thermalStart: String, thermalEnd: String) {

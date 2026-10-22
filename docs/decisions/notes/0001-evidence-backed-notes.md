@@ -2,6 +2,7 @@
 
 Date: 2026-10-16 · Task: T09 · Status: Accepted for v0 (`notes-v1`). **The plan §10 human quality gates have not been
 evaluated.** Review sheets are prepared for a human reviewer. The automatic proxies below are not those gates.
+Pipeline steps 2–4 and speed amended by [notes/0002](0002-faster-notes.md) (T18).
 
 ## Decision
 

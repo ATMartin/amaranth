@@ -6,6 +6,7 @@ import Models
 import Scoring
 import ASR
 import Diarization
+import Notes
 
 // amaranth-bench — T02 release-mode replay harness.
 //
@@ -946,6 +947,29 @@ case "verify-pack" where args.count >= 5:
     exit(ok ? 0 : 1)
 case "asr-concurrency" where args.count >= 4:
     try await AsrConcurrency.run(store: URL(filePath: args[2]), wav: URL(filePath: args[3]), seconds: Double(value("--seconds") ?? "600") ?? 600)
+case "llm-probe" where args.count >= 4:
+    try LlmProbe.run(gguf: URL(filePath: args[2]), text: URL(filePath: args[3]), promptTokens: Int(value("--prompt") ?? "5000") ?? 5000,
+                     genTokens: Int(value("--gen") ?? "128") ?? 128,
+                     seqCounts: (value("--seqs") ?? "1,2,4").split(separator: ",").compactMap { Int($0) },
+                     configs: (value("--configs") ?? "f16,q8,nofa").split(separator: ",").map(String.init))
+case "notes-trace" where args.count >= 5:
+    var engine = LlamaRunner.Configuration()
+    if let p = value("--parallel").flatMap(Int.init) { engine.parallel = p }
+    if let k = value("--kv").flatMap(Int.init) { engine.kvTokens = k }
+    try NotesTrace.run(gguf: URL(filePath: args[2]), transcript: URL(filePath: args[3]), output: URL(filePath: args[4]),
+                       work: value("--work").map { URL(filePath: $0) }, configuration: engine, nonThinking: args.contains("--non-thinking"),
+                       summary: value("--summary").map { URL(filePath: $0) })
+case "spec-sim" where args.count >= 4:
+    try SpecSim.run(gguf: URL(filePath: args[2]), trace: URL(filePath: args[3]), maxDraft: Int(value("--k") ?? "8") ?? 8,
+                    maxNgram: Int(value("--ngram") ?? "3") ?? 3)
+case "draft-sim" where args.count >= 4:
+    try DraftSim.run(gguf: URL(filePath: args[2]), trace: URL(filePath: args[3]), nonThinking: args.contains("--non-thinking"))
+case "notes-gate" where args.count >= 4:
+    var gateEngine = LlamaRunner.Configuration()
+    if let p = value("--parallel").flatMap(Int.init) { gateEngine.parallel = p }
+    if let k = value("--kv").flatMap(Int.init) { gateEngine.kvTokens = k }
+    try NotesGate.run(gguf: URL(filePath: args[2]), results: URL(filePath: args[3]), configuration: gateEngine,
+                      nonThinking: args.contains("--non-thinking"), only: value("--only").map { Set($0.split(separator: ",").map(String.init)) })
 case "perf-suite":
     exit(try await PerfSuite.main(Array(args.dropFirst(2))))
 case "corpus" where args.count >= 5:

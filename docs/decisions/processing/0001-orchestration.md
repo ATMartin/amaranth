@@ -1,6 +1,7 @@
 # Processing 0001: Isolated, resumable orchestration (T08)
 
 Date: 2026-10-16 · Task: T08 · Status: Accepted for v0.
+Notes priority (notes yield to transcription work) amended by [notes/0002](../notes/0002-faster-notes.md) (T18).
 
 ## Decision
 

@@ -585,7 +585,7 @@
       "id": "T18",
       "title": "Faster background notes",
       "milestone": "E",
-      "status": "planned",
+      "status": "implemented (G2 met: 144-149 s for 60 min, G5 notes checks pass; batched generation, compact output, notes yield to transcription; Qwen3-1.7B measured, fails quality, not shipped; decision record notes/0002; milestone validation at T21)",
       "optional": false,
       "depends_on": [
         "T16"
