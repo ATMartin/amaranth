@@ -28,3 +28,5 @@ Benchmarks/Results/**/*.caf
 
 # Consented real-meeting corpus: private, never committed (plan §10; Milestone E)
 Tests/Data/Recordings/
+# perf-suite outputs hold transcripts and notes (corpus content is private, plan §10); reports hold metrics only.
+Benchmarks/Results/*/outputs/

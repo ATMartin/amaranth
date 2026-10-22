@@ -85,7 +85,7 @@ public final class TranscriptionPipeline: @unchecked Sendable {
         for cov in prepared.coverage {
             try cancellation.check()
             let audio = AnalysisAudio(url: preparedDirectory.appending(path: cov.derivativeFile))
-            plans.append((cov, audio, try await planWindows(cov, audio, cancellation: cancellation)))
+            plans.append((cov, audio, try await Perf.measure("asr.plan") { try await planWindows(cov, audio, cancellation: cancellation) }))
         }
         let total = max(1, plans.map(\.2.count).reduce(0, +))
         var done = 0
@@ -99,9 +99,11 @@ public final class TranscriptionPipeline: @unchecked Sendable {
                 done += 1
                 progress(Double(done) / Double(total), JobCheckpoint(completedUnits: done, totalUnits: total))
             }
-            let words = Self.stitch(results)
-            segments += Self.segment(words, source: cov.source, results: results)
-            coverage += Self.coverage(cov, windows: windows, results: results)
+            Perf.measure("asr.assemble") {
+                let words = Self.stitch(results)
+                segments += Self.segment(words, source: cov.source, results: results)
+                coverage += Self.coverage(cov, windows: windows, results: results)
+            }
         }
         segments.sort { $0.interval.start < $1.interval.start }
         let revision = TranscriptRevision(meetingID: meetingID, kind: .final, stage: .asr, createdAt: Date(),
@@ -122,8 +124,10 @@ public final class TranscriptionPipeline: @unchecked Sendable {
             while t < region.end.seconds {
                 try cancellation.check()
                 let e = min(region.end.seconds, t + chunk)
-                let samples = try audio.read(SessionInterval(unchecked: .seconds(t), .seconds(e)))
-                speech += try await vad.speech(samples, padding: Self.contextPadding, maxSegment: 14).map { ($0.0 + t, $0.1 + t) }
+                let samples = try Perf.measure("asr.vad.read") { try audio.read(SessionInterval(unchecked: .seconds(t), .seconds(e))) }
+                speech += try await Perf.measure("asr.vad.infer") {
+                    try await vad.speech(samples, padding: Self.contextPadding, maxSegment: 14).map { ($0.0 + t, $0.1 + t) }
+                }
                 if e >= region.end.seconds { break }
                 t = e - overlap
             }
@@ -175,19 +179,23 @@ public final class TranscriptionPipeline: @unchecked Sendable {
 
     func transcribe(_ w: Window, source: SourceKind, audio: AnalysisAudio) async throws -> WindowResult {
         let url = workDirectory.appending(path: "\(Self.pipelineVersion)-\(policy.name)-\(source.rawValue)-w\(w.index).json")
-        if let d = try? Data(contentsOf: url), let r = try? ContractCoding.decode(WindowResult.self, from: d) { return r }
+        if let d = try? Perf.measure("asr.checkpoint.read", { try Data(contentsOf: url) }),
+           let r = try? ContractCoding.decode(WindowResult.self, from: d) { Perf.count("asr.windows.resumed"); return r }
+        Perf.count("asr.windows")
         // Digital silence (zero-filled missing audio) cannot contain speech: skip it.
-        let own = try audio.read(SessionInterval(unchecked: .seconds(w.start), .seconds(w.end)))
+        let own = try Perf.measure("asr.window.read") { try audio.read(SessionInterval(unchecked: .seconds(w.start), .seconds(w.end))) }
         let peak = own.reduce(Float(0)) { max($0, abs($1)) }
         if peak < 1e-4 {
+            Perf.count("asr.windows.silent")
             let r = WindowResult(window: w, words: [], questionable: false, retried: false)
-            try ContractCoding.encode(r).write(to: url, options: .atomic)
+            try Perf.measure("asr.checkpoint.write") { try ContractCoding.encode(r).write(to: url, options: .atomic) }
             return r
         }
         func run(left: Double, right: Double) async throws -> [ParakeetASR.Word] {
             let a = max(0, w.start - left)
-            let samples = try audio.read(SessionInterval(unchecked: .seconds(a), .seconds(w.end + right)))
-            return try await asr.transcribe(samples).compactMap {
+            let samples = try Perf.measure("asr.window.read") { try audio.read(SessionInterval(unchecked: .seconds(a), .seconds(w.end + right))) }
+            Perf.add("asr.decode.audioSeconds", seconds: Double(samples.count) / Double(AnalysisAudio.sampleRate), count: 0)
+            return try await Perf.measure("asr.decode") { try await asr.transcribe(samples) }.compactMap {
                 let word = ParakeetASR.Word(text: $0.text, start: $0.start + a, end: $0.end + a, tokenConfidence: $0.tokenConfidence)
                 let mid = (word.start + word.end) / 2
                 return mid >= w.start && mid < w.end ? word : nil   // each word belongs to exactly one window
@@ -196,11 +204,16 @@ public final class TranscriptionPipeline: @unchecked Sendable {
         // Parakeet (greedy TDT) occasionally skips a whole stretch of clear speech, content-dependently (measured: an
         // 11 s span returned only the 3 words of its right context). Detect it against VAD speech and re-decode with
         // other contexts inside the same single-pass budget; keep the best-covered non-garbled result. Never invents.
+        let first = ContinuousClock.now
         var words = try await run(left: w.leftContext, right: w.rightContext)
+        Perf.add("asr.decode.first", seconds: Perf.seconds(since: first))
         var questionable = GarbleDetector.isQuestionable(words.map(\.text))
         var uncovered = Self.uncoveredSpeech(w.speech, words)
         var retried = false
         if questionable || uncovered >= Self.underYieldSeconds {
+            let retryStart = ContinuousClock.now
+            defer { Perf.add("asr.decode.retries", seconds: Perf.seconds(since: retryStart)) }
+            Perf.count(questionable ? "asr.windows.retried.garbled" : "asr.windows.retried.underYield")
             let budget = maxWindow - (w.end - w.start)
             let p = policy
             var variants: [(Double, Double)] = [(min(0.3, budget / 2), min(0.3, budget / 2)), (0, 0),
@@ -221,7 +234,7 @@ public final class TranscriptionPipeline: @unchecked Sendable {
             }
         }
         let r = WindowResult(window: w, words: words, questionable: questionable, retried: retried, uncoveredSpeech: uncovered)
-        try ContractCoding.encode(r).write(to: url, options: .atomic)
+        try Perf.measure("asr.checkpoint.write") { try ContractCoding.encode(r).write(to: url, options: .atomic) }
         return r
     }
 

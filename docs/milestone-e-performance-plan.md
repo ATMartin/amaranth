@@ -19,7 +19,9 @@ Validation is automated, so the user's ongoing role is limited to supplying reco
 
 ## Where the time goes today (M2 Max, 60-minute two-source meeting)
 
-From `docs/qualification/evidence/2026-10-16/processing-timing-60min.json` (cold and warm runs agree within 1 s):
+From `docs/qualification/evidence/2026-10-16/processing-timing-60min.json` (cold and warm runs agree within 1 s).
+**T16 (2026-10-22): these figures came from a Debug build.** On Release, the same meeting gives its transcript in 105 s
+and notes in about 260 s; see `docs/qualification/milestone-e-t16-breakdown.md`.
 
 | Stage | Seconds after Stop | Same work in isolation (models/0001, asr/0001) | Gap |
 |---|---|---|---|

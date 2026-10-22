@@ -103,6 +103,10 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
         var full = [llama_token_data](repeating: llama_token_data(id: 0, logit: 0, p: 0), count: nVocab)
         var offset = shared
         defer { if offset < tokens.count { cached = []; llama_memory_clear(llama_get_memory(ctx), true) } }   // interrupted prefill
+        Perf.count("llm.calls")
+        Perf.count("llm.promptTokens", tokens.count)
+        Perf.count("llm.reusedPromptTokens", shared)
+        let prefillStart = ContinuousClock.now
         while offset < tokens.count {
             try cancellation.check()
             let n = min(2048, tokens.count - offset)
@@ -111,6 +115,13 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
             cached += tokens[offset..<(offset + n)]
             offset += n
         }
+        Perf.add("llm.prefill", seconds: Perf.seconds(since: prefillStart))
+        let generateStart = ContinuousClock.now
+        var sampleSeconds = 0.0
+        defer {
+            Perf.add("llm.generate", seconds: Perf.seconds(since: generateStart))
+            Perf.add("llm.generate.sampling", seconds: sampleSeconds)
+        }
         var out = ""
         var generated = 0
         var piece = [CChar](repeating: 0, count: 256)
@@ -118,6 +129,7 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
         while generated < maxTokens {
             if cancellation.isCancelled { cached = []; llama_memory_clear(llama_get_memory(ctx), true); throw CancellationError() }
             guard let logits = llama_get_logits_ith(ctx, -1) else { throw Error.engine("no logits") }
+            let sampleStart = ContinuousClock.now
             var best = 0
             for i in 1..<nVocab where logits[i] > logits[best] { best = i }
             var tok = llama_token(best)
@@ -140,6 +152,7 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
                 }
                 llama_sampler_accept(g, tok)
             }
+            sampleSeconds += Perf.seconds(since: sampleStart)
             if llama_vocab_is_eog(vocab, tok) { hitLimit = false; break }
             let len = llama_token_to_piece(vocab, tok, &piece, Int32(piece.count), 0, false)
             if len > 0 { out += String(decoding: piece.prefix(Int(len)).map { UInt8(bitPattern: $0) }, as: UTF8.self) }
@@ -148,6 +161,7 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
             guard rc == 0 else { cached = []; llama_memory_clear(llama_get_memory(ctx), true); throw Error.engine("decode \(rc)") }
             cached.append(tok)
         }
+        Perf.count("llm.generatedTokens", generated)
         return GenerationResult(text: out, promptTokens: tokens.count, generatedTokens: generated, hitTokenLimit: hitLimit)
     }
 }

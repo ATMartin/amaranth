@@ -47,8 +47,10 @@ public final class ModelProvider: @unchecked Sendable {
             diarizer = nil; notesModel = nil
             let (dir, rev) = try resolveDirectory("parakeet-tdt-0.6b-v3-coreml")
             let (vadDir, _) = try resolveDirectory("silero-vad-coreml")
-            let pair = (try ParakeetASR(directory: dir, manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: rev),
-                        try SileroVAD(modelFile: vadDir.appending(path: "silero-vad-unified-256ms-v6.2.1.mlmodelc")))
+            let pair = try Perf.measure("model.load.asr") {
+                (try ParakeetASR(directory: dir, manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: rev),
+                 try SileroVAD(modelFile: vadDir.appending(path: "silero-vad-unified-256ms-v6.2.1.mlmodelc")))
+            }
             asr = pair
             return pair
         }
@@ -59,7 +61,9 @@ public final class ModelProvider: @unchecked Sendable {
             if let diarizer { return diarizer }
             asr = nil; notesModel = nil
             let (dir, rev) = try resolveDirectory("speaker-diarization-coreml")
-            let d = try FluidDiarizer(directory: dir, manifestID: ModelManifestID("speaker-diarization-coreml"), revision: rev)
+            let d = try Perf.measure("model.load.diarization") {
+                try FluidDiarizer(directory: dir, manifestID: ModelManifestID("speaker-diarization-coreml"), revision: rev)
+            }
             diarizer = d
             return d
         }
@@ -73,7 +77,7 @@ public final class ModelProvider: @unchecked Sendable {
             let (dir, rev) = try resolveDirectory(Self.notesManifestID)
             guard let gguf = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
                 .first(where: { $0.pathExtension == "gguf" }) else { throw Error.missing("\(Self.notesManifestID) gguf") }
-            let r = try LlamaRunner(gguf: gguf, manifestID: ModelManifestID(Self.notesManifestID), revision: rev)
+            let r = try Perf.measure("model.load.notes") { try LlamaRunner(gguf: gguf, manifestID: ModelManifestID(Self.notesManifestID), revision: rev) }
             notesModel = r
             return r
         }
@@ -94,15 +98,44 @@ public final class StageRunner: @unchecked Sendable {
         return try await LiveTranscriber(asr: asr).process(r)
     }
 
+    /// Process start, for the worker age recorded in `timing.json` (cold vs warm).
+    static let processStart = Date()
+
+    /// Runs the stage under a fresh `PerfTrace` and writes `timing.json` beside the output (T16). Timing is best-effort
+    /// and never affects the stage result.
     public func run(_ job: JobDescriptor, cancellation: CancellationToken,
                     progress: @escaping @Sendable (WorkerProgress) -> Void) async throws -> WorkerResponse {
-        let (input, _) = try StageFiles.read(StageInput.self, from: job.workDirectory.appending(path: StageFiles.input))
+        let trace = PerfTrace(), t0 = ContinuousClock.now, started = Date()
+        let thermal = ProcessInfo.processInfo.thermalState.label
+        let response = try await PerfTrace.$current.withValue(trace) { try await runStage(job, cancellation: cancellation, progress: progress) }
+        let timing = StageTiming(stage: job.key.stage.rawValue, wallSeconds: Perf.seconds(since: t0), trace: trace.snapshot,
+                                 workerPID: getpid(), workerUptimeSeconds: started.timeIntervalSince(Self.processStart),
+                                 qos: Self.qosLabel(), thermalStart: thermal, thermalEnd: ProcessInfo.processInfo.thermalState.label,
+                                 build: _isDebugAssertConfiguration() ? "debug" : "release")
+        try? ContractCoding.encode(timing).write(to: job.workDirectory.appending(path: StageTiming.fileName), options: .atomic)
+        return response
+    }
+
+    static func qosLabel() -> String {
+        switch qos_class_self() {
+        case QOS_CLASS_USER_INTERACTIVE: "userInteractive"
+        case QOS_CLASS_USER_INITIATED: "userInitiated"
+        case QOS_CLASS_DEFAULT: "default"
+        case QOS_CLASS_UTILITY: "utility"
+        case QOS_CLASS_BACKGROUND: "background"
+        default: "unspecified"
+        }
+    }
+
+    func runStage(_ job: JobDescriptor, cancellation: CancellationToken,
+                  progress: @escaping @Sendable (WorkerProgress) -> Void) async throws -> WorkerResponse {
+        let (input, _) = try Perf.measure("stage.readInput") { try StageFiles.read(StageInput.self, from: job.workDirectory.appending(path: StageFiles.input)) }
         let output: StageOutput
         switch input {
         case .prepare(let i):
             let dir = job.workDirectory.appending(path: "prepared")
-            _ = try AnalysisPreparer.prepare(meetingDirectory: i.meetingDirectory, segments: i.segments, events: i.events,
-                                             outputDirectory: dir, cancellation: cancellation)
+            _ = try Perf.measure("prepare.total") { try AnalysisPreparer.prepare(meetingDirectory: i.meetingDirectory, segments: i.segments, events: i.events,
+                                             outputDirectory: dir, cancellation: cancellation) }
             let cov = try Data(contentsOf: dir.appending(path: "coverage.json"))
             output = .prepared(PreparedAudio(directory: dir, coverageSHA256: StageFiles.sha256(cov)))
         case .transcribe(let i):
@@ -135,8 +168,8 @@ public final class StageRunner: @unchecked Sendable {
             var echo: Double?
             if let mic = prepared.coverage.first(where: { $0.source == .microphone }),
                let sys = prepared.coverage.first(where: { $0.source == .systemOutput }) {
-                echo = try EchoAnalyzer.estimateDelay(mic: AnalysisAudio(url: i.prepared.directory.appending(path: mic.derivativeFile)),
-                                                      system: AnalysisAudio(url: i.prepared.directory.appending(path: sys.derivativeFile)))
+                echo = try Perf.measure("diarize.echo") { try EchoAnalyzer.estimateDelay(mic: AnalysisAudio(url: i.prepared.directory.appending(path: mic.derivativeFile)),
+                                                      system: AnalysisAudio(url: i.prepared.directory.appending(path: sys.derivativeFile))) }
             }
             output = .diarization(DiarizeOutput(results: results, echoDelay: echo))
         case .notes(let i):
@@ -153,7 +186,7 @@ public final class StageRunner: @unchecked Sendable {
                                                         edits: i.edits))
         }
         let url = job.workDirectory.appending(path: StageFiles.output)
-        let hash = try StageFiles.write(output, to: url)
+        let hash = try Perf.measure("stage.writeOutput") { try StageFiles.write(output, to: url) }
         return .completed(jobID: job.jobID, outputURL: url, outputSHA256: hash)
     }
 }

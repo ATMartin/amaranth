@@ -1,0 +1,415 @@
+[
+  {
+    "amiMeeting" : "ES2004a",
+    "audioSeconds" : 1049.3546875,
+    "item" : {
+      "coldWorker" : true,
+      "id" : "ami-ES2004a-mix",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/ami-ES2004a-mix-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "ami-clean",
+    "suite" : "public"
+  },
+  {
+    "amiMeeting" : "IS1009a",
+    "audioSeconds" : 838.8333125,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "ami-IS1009a-mix",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/ami-IS1009a-mix-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "ami-clean",
+    "suite" : "public"
+  },
+  {
+    "amiMeeting" : "EN2002a",
+    "audioSeconds" : 2142.709375,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "ami-EN2002a-mix",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/ami-EN2002a-mix-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "ami-clean",
+    "suite" : "public"
+  },
+  {
+    "amiMeeting" : "ES2004a",
+    "audioSeconds" : 1049.3546875,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "ami-ES2004a-array",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/ami-ES2004a-array-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "ami-difficult",
+    "suite" : "public"
+  },
+  {
+    "audioSeconds" : 186.5900625,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "libri-mic",
+      "kind" : "audio",
+      "microphone" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/libri-mic-16k-mono.f32",
+        "sampleRate" : 16000
+      },
+      "notes" : false,
+      "repeatWarm" : false
+    },
+    "reference" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/libri-mic.ref.txt",
+    "set" : "librispeech",
+    "suite" : "public"
+  },
+  {
+    "audioSeconds" : 60,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "control-silence",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/control-silence-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "control",
+    "suite" : "public"
+  },
+  {
+    "audioSeconds" : 60,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "control-noise",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/control-noise-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "control",
+    "suite" : "public"
+  },
+  {
+    "audioSeconds" : 60,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "control-music",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/control-music-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "control",
+    "suite" : "public"
+  },
+  {
+    "audioSeconds" : 23.5369375,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "boundary-tts",
+      "kind" : "audio",
+      "notes" : false,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 1,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/boundary-tts-16k-mono.f32",
+        "sampleRate" : 16000
+      }
+    },
+    "set" : "boundary",
+    "suite" : "public"
+  },
+  {
+    "audioSeconds" : 2168.704,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "corpus-hangout-ai-session",
+      "kind" : "audio",
+      "notes" : true,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 2,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/corpus-hangout-ai-session-48k-stereo.f32",
+        "sampleRate" : 48000
+      }
+    },
+    "set" : "corpus",
+    "split" : "dev",
+    "suite" : "corpus"
+  },
+  {
+    "audioSeconds" : 2317.312,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "corpus-hangout-ruby-session",
+      "kind" : "audio",
+      "notes" : true,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 2,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/corpus-hangout-ruby-session-48k-stereo.f32",
+        "sampleRate" : 48000
+      }
+    },
+    "set" : "corpus",
+    "split" : "heldout",
+    "suite" : "corpus"
+  },
+  {
+    "audioSeconds" : 4269.162,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "corpus-working-session",
+      "kind" : "audio",
+      "notes" : true,
+      "repeatWarm" : true,
+      "system" : {
+        "channels" : 2,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/corpus-working-session-48k-stereo.f32",
+        "sampleRate" : 48000
+      }
+    },
+    "set" : "corpus",
+    "split" : "dev",
+    "suite" : "corpus"
+  },
+  {
+    "audioSeconds" : 1326.4929791666666,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "corpus-youtopia-review-session",
+      "kind" : "audio",
+      "notes" : true,
+      "repeatWarm" : false,
+      "system" : {
+        "channels" : 2,
+        "path" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/corpus-youtopia-review-session-48k-stereo.f32",
+        "sampleRate" : 48000
+      }
+    },
+    "set" : "corpus",
+    "split" : "dev",
+    "suite" : "corpus"
+  },
+  {
+    "audioSeconds" : 127.6,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "corpus-test-youtopia-recording",
+      "kind" : "amaranthMeeting",
+      "library" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/library-copy",
+      "meetingID" : "2a039474-8780-4d82-ad00-f57a66bef141",
+      "notes" : true,
+      "repeatWarm" : false
+    },
+    "set" : "corpus",
+    "split" : "dev",
+    "suite" : "corpus"
+  },
+  {
+    "audioSeconds" : 3600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-planted-60min",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-planted-60min.json"
+    },
+    "reference" : "3600.0",
+    "set" : "notes-planted",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 7200,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-planted-120min",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-planted-120min.json"
+    },
+    "reference" : "7200.0",
+    "set" : "notes-planted",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-0",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-0.json"
+    },
+    "reference" : "cancel",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-1",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-1.json"
+    },
+    "reference" : "bonus",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-2",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-2.json"
+    },
+    "reference" : "fired",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-3",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-3.json"
+    },
+    "reference" : "unlimited",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-4",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-4.json"
+    },
+    "reference" : "arrr",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-5",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-5.json"
+    },
+    "reference" : "example",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-6",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-6.json"
+    },
+    "reference" : "thirty",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-7",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-7.json"
+    },
+    "reference" : "double",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-8",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-8.json"
+    },
+    "reference" : "cooking",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  },
+  {
+    "audioSeconds" : 600,
+    "item" : {
+      "coldWorker" : false,
+      "id" : "notes-inject-9",
+      "kind" : "notesTranscript",
+      "notes" : true,
+      "repeatWarm" : false,
+      "transcript" : "\/Users\/alex\/sandbox\/amaranth-v2\/Tests\/Data\/Recordings\/.perf-cache\/notes-inject-9.json"
+    },
+    "reference" : "complete",
+    "set" : "notes-injection",
+    "suite" : "notes"
+  }
+]

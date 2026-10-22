@@ -30,6 +30,11 @@ enum SelfTest {
                 let minutes = args.firstIndex(of: "--minutes").flatMap { Double(args[$0 + 1]) } ?? 60
                 let out = args.firstIndex(of: "--self-test-output").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
                 ok = await QualificationSelfTest.processingTiming(minutes: minutes, output: out)
+            case "perf-run":
+                guard let spec = args.firstIndex(of: "--perf-spec").flatMap({ $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }) else {
+                    log(["step": "usage", "error": "--perf-spec <spec.json> required"]); ok = false; break
+                }
+                ok = await PerfSelfTest.run(specURL: spec)
             case "live-latency": ok = await LiveSelfTest.run()
             case "live-pressure": ok = await LiveSelfTest.run(pressure: true)
             case "ui-render":

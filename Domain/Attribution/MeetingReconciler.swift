@@ -54,20 +54,26 @@ public struct MeetingReconciler: Reconciler {
             w.candidates = []
             let dur = max(0.01, w.interval.duration.seconds)
             var scores: [SpeakerID: Double] = [:]
+            var seen: [SpeakerID] = []   // first-seen order: the deterministic tie-break (dictionary order is per-process)
             var inOverlap = false
             for d in diarization where d.source == w.source {
                 for t in d.turns where t.interval.overlaps(w.interval) {
                     let ov = t.interval.intersection(w.interval)?.duration.seconds ?? 0
-                    if let s = clusterSpeaker[key(d.id, t.cluster)] { scores[s, default: 0] += ov / dur }
+                    if let s = clusterSpeaker[key(d.id, t.cluster)] {
+                        if scores[s] == nil { seen.append(s) }
+                        scores[s, default: 0] += ov / dur
+                    }
                 }
                 if d.overlaps.contains(where: { $0.overlaps(w.interval) }) { inOverlap = true }
                 // Boundary jitter: a word just outside a turn (≤ 0.3 s) inherits the nearest turn's cluster.
                 if scores.isEmpty, let near = d.turns.min(by: { gap($0.interval, w.interval) < gap($1.interval, w.interval) }),
                    gap(near.interval, w.interval) <= 0.3, let s = clusterSpeaker[key(d.id, near.cluster)] {
                     scores[s] = 0.01
+                    seen.append(s)
                 }
             }
-            let ranked = scores.sorted { $0.value > $1.value }
+            let ranked = seen.map { (key: $0, value: scores[$0]!) }.enumerated()
+                .sorted { $0.element.value != $1.element.value ? $0.element.value > $1.element.value : $0.offset < $1.offset }.map(\.element)
             w.candidates = ranked.map { SpeakerCandidate(speaker: $0.key, rawScore: $0.value) }
             if ranked.isEmpty {
                 w.speaker = (w.source == .microphone ? micSpeaker.map { .speaker($0) } : nil) ?? .unknown

@@ -71,14 +71,19 @@ public final class FluidDiarizer: @unchecked Sendable {
         if total <= options.fullFileLimit {
             do {
                 let url = audio.url
-                let r = try await EngineCall.run(cancellation: cancellation, budget: EngineCall.budget(audioSeconds: total), tick: tick) {
-                    try await self.manager.process(url)
+                let r = try await Perf.measure("diarize.engine") {
+                    try await EngineCall.run(cancellation: cancellation, budget: EngineCall.budget(audioSeconds: total), tick: tick) {
+                        try await self.manager.process(url)
+                    }
                 }
+                Self.record(r.timings)
+                Perf.note("diarize.path", "full-file")
                 turns = r.segments.map { RawTurn(start: Double($0.startTimeSeconds), end: Double($0.endTimeSeconds), cluster: "c\($0.speakerId)") }
             } catch OfflineDiarizationError.noSpeechDetected {
                 turns = [] // silence/music/no speech: zero speakers is the correct answer
             }
         } else {
+            Perf.note("diarize.path", "blockwise")
             turns = try await blockwise(audio: audio, total: total, cancellation: cancellation, tick: tick)
         }
         return Self.result(meetingID: meetingID, source: source, producer: producer, turns: turns)
@@ -91,9 +96,12 @@ public final class FluidDiarizer: @unchecked Sendable {
         while start < total {
             try cancellation.check()
             let end = min(total, start + options.blockSeconds)
-            let samples = try audio.read(SessionInterval(unchecked: .seconds(start), .seconds(end)))
-            guard let r = try await EngineCall.run(cancellation: cancellation, budget: EngineCall.budget(audioSeconds: end - start), tick: tick,
-                                                   { try await self.runBlock(samples) }) else { start = end; continue } // no speech in this block
+            let samples = try Perf.measure("diarize.read") { try audio.read(SessionInterval(unchecked: .seconds(start), .seconds(end))) }
+            guard let r = try await Perf.measure("diarize.engine", {
+                try await EngineCall.run(cancellation: cancellation, budget: EngineCall.budget(audioSeconds: end - start), tick: tick,
+                                         { try await self.runBlock(samples) })
+            }) else { start = end; continue } // no speech in this block
+            Self.record(r.timings)
             // Block centroids: prefer the engine's speaker database; otherwise duration-weighted mean of segment embeddings.
             var centroids: [String: ([Float], Float)] = [:]
             if let db = r.speakerDatabase { for (k, v) in db { centroids[k] = (v, 1) } }
@@ -139,6 +147,17 @@ public final class FluidDiarizer: @unchecked Sendable {
         struct Segment { let speakerId: String; let embedding: [Float]; let startTimeSeconds: Float; let endTimeSeconds: Float }
         let segments: [Segment]
         let speakerDatabase: [String: [Float]]?
+        let timings: PipelineTimings?
+    }
+
+    /// FluidAudio's own sub-stage timings (T16): the engine is a dependency, so these are its numbers, not ours.
+    static func record(_ t: PipelineTimings?) {
+        guard let t else { return }
+        Perf.add("diarize.engine.audioLoading", seconds: t.audioLoadingSeconds)
+        Perf.add("diarize.engine.segmentation", seconds: t.segmentationSeconds)
+        Perf.add("diarize.engine.embeddings", seconds: t.embeddingExtractionSeconds)
+        Perf.add("diarize.engine.clustering", seconds: t.speakerClusteringSeconds)
+        Perf.add("diarize.engine.postProcessing", seconds: t.postProcessingSeconds)
     }
 
     func runBlock(_ samples: [Float]) async throws -> BlockResult? {
@@ -152,7 +171,7 @@ public final class FluidDiarizer: @unchecked Sendable {
                 let r = try await blockManager.process(audio: samples)
                 return BlockResult(segments: r.segments.map { .init(speakerId: $0.speakerId, embedding: $0.embedding,
                                                                      startTimeSeconds: $0.startTimeSeconds, endTimeSeconds: $0.endTimeSeconds) },
-                                   speakerDatabase: r.speakerDatabase)
+                                   speakerDatabase: r.speakerDatabase, timings: r.timings)
             } catch OfflineDiarizationError.noSpeechDetected {
                 return nil
             }

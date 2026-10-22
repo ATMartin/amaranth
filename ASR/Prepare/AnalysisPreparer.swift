@@ -48,8 +48,8 @@ public enum AnalysisPreparer {
         var converterRate = 0
         for seg in segments {
             try cancellation?.check()
-            let decoded = try CAFFile.decode(Data(contentsOf: meetingDirectory.appending(path: seg.relativePath)))
-            let mono = downmix(decoded.samples, channels: decoded.format.channelCount, rate: decoded.format.sampleRate)
+            let decoded = try Perf.measure("prepare.readSegment") { try CAFFile.decode(Data(contentsOf: meetingDirectory.appending(path: seg.relativePath))) }
+            let mono = Perf.measure("prepare.downmix") { downmix(decoded.samples, channels: decoded.format.channelCount, rate: decoded.format.sampleRate) }
             if converterEpoch != seg.epochID || converterRate != decoded.format.sampleRate {
                 let input = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(decoded.format.sampleRate), channels: 1, interleaved: false)!
                 converter = AVAudioConverter(from: input, to: target)
@@ -58,12 +58,13 @@ public enum AnalysisPreparer {
                 converterRate = decoded.format.sampleRate
             }
             guard let conv = converter else { continue }
-            let resampled = try convert(mono, rate: decoded.format.sampleRate, with: conv, target: target)
+            let resampled = try Perf.measure("prepare.resample") { try convert(mono, rate: decoded.format.sampleRate, with: conv, target: target) }
             let start = normalizer.time(segment: seg, frame: 0)
             let index = Int(start.nanoseconds * Int64(AnalysisAudio.sampleRate) / 1_000_000_000)
-            try writer.write(resampled, at: index)
+            try Perf.measure("prepare.write") { try writer.write(resampled, at: index) }
         }
-        try writer.finish(totalSamples: totalSamples)
+        try Perf.measure("prepare.write") { try writer.finish(totalSamples: totalSamples) }
+        Perf.count("prepare.segments", segments.count)
     }
 
     /// Anti-phase-safe downmix (see type docs).

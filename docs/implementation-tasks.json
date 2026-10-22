@@ -530,7 +530,7 @@
       "id": "T16",
       "title": "Measure the pipeline and automate validation",
       "milestone": "E",
-      "status": "planned",
+      "status": "implemented (perf-suite, v0 baseline frozen 2026-10-22, breakdown: docs/qualification/milestone-e-t16-breakdown.md; milestone validation at T21)",
       "optional": false,
       "depends_on": [
         "T14"

@@ -1,0 +1,5554 @@
+{
+  "created" : "2026-10-22T10:37:19Z",
+  "host" : {
+    "cpu" : "Apple M2 Max",
+    "git" : "efe9b97",
+    "memoryGB" : "96",
+    "os" : "27.0.1 26A434",
+    "power" : "Now drawing from 'AC Power'"
+  },
+  "items" : [
+    {
+      "asrHash" : "24a5ce89a2a29f01d6ee35361b1cca8d94dd35f70b29374a51cf0c444821c8b8",
+      "audioSeconds" : 3625.155159959,
+      "completed" : true,
+      "failedCoverageSeconds" : 94.092,
+      "id" : "timing-2src-60min",
+      "notes" : {
+        "items" : 42,
+        "itemsWithValidEvidence" : 42,
+        "uncertain" : 22
+      },
+      "peakAppMiB" : 74.5945053100586,
+      "peakWorkerMiB" : 1345.4569473266602,
+      "recordWallSeconds" : 181.27620475,
+      "run" : "cold",
+      "set" : "timing",
+      "speakers" : 13,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000416083,
+          "executeSeconds" : 0.603422041,
+          "ipcOverheadSeconds" : 0.0010072909999999657,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.7340500354766846,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 3626,
+              "seconds" : 0.0011362870000000455
+            },
+            "prepare.readSegment" : {
+              "count" : 3626,
+              "seconds" : 0.3717376749999998
+            },
+            "prepare.resample" : {
+              "count" : 3626,
+              "seconds" : 0.0011727360000000474
+            },
+            "prepare.segments" : {
+              "count" : 3626,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.568587042
+            },
+            "prepare.write" : {
+              "count" : 3628,
+              "seconds" : 0.16189619700000002
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.032824875
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000377541
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : -0.6024210453033447,
+          "workerWallSeconds" : 0.60241475,
+          "writeInputSeconds" : 0.08096475
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.5839265,
+          "executeSeconds" : 81.4124225,
+          "ipcOverheadSeconds" : 0.0007312080000048127,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.41937685012817383,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 2,
+              "seconds" : 0.011278040999999999
+            },
+            "asr.checkpoint.read" : {
+              "count" : 792,
+              "seconds" : 0.019615542000000017
+            },
+            "asr.checkpoint.write" : {
+              "count" : 792,
+              "seconds" : 0.5840915049999998
+            },
+            "asr.decode" : {
+              "count" : 913,
+              "seconds" : 74.460981229
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 11860.069749999879
+            },
+            "asr.decode.first" : {
+              "count" : 787,
+              "seconds" : 64.68825845899995
+            },
+            "asr.decode.retries" : {
+              "count" : 52,
+              "seconds" : 9.886195965999999
+            },
+            "asr.plan" : {
+              "count" : 2,
+              "seconds" : 5.6183274579999996
+            },
+            "asr.vad.infer" : {
+              "count" : 14,
+              "seconds" : 5.568213376
+            },
+            "asr.vad.read" : {
+              "count" : 14,
+              "seconds" : 0.044841376
+            },
+            "asr.window.read" : {
+              "count" : 1705,
+              "seconds" : 0.2026158810000002
+            },
+            "asr.windows" : {
+              "count" : 792,
+              "seconds" : 0
+            },
+            "asr.windows.retried.garbled" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 51,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 5,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.123930875
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000115416
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.1601695
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 0.002047896385192871,
+          "workerWallSeconds" : 81.411691292,
+          "writeInputSeconds" : 0.000456875
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.004673458,
+          "executeSeconds" : 20.034965875,
+          "ipcOverheadSeconds" : 0.0007848750000007954,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 82.41754603385925,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.echo" : {
+              "count" : 1,
+              "seconds" : 0.022052417
+            },
+            "diarize.engine" : {
+              "count" : 3,
+              "seconds" : 19.895571249
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "diarize.engine.clustering" : {
+              "count" : 2,
+              "seconds" : 0.6048320531845093
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 2,
+              "seconds" : 18.882325053215027
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 2,
+              "seconds" : 9.13263487815857
+            },
+            "diarize.read" : {
+              "count" : 3,
+              "seconds" : 0.027146083
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.081213
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000138
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.002925
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "blockwise"
+          },
+          "workerUptimeSeconds" : 82.00049388408661,
+          "workerWallSeconds" : 20.034181,
+          "writeInputSeconds" : 0.000614875
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.648097916,
+          "executeSeconds" : 0.3482915,
+          "ipcOverheadSeconds" : 0.000866415999999981,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.45850396156311035,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.135514166
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.192944292
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 102.46984791755676,
+          "workerWallSeconds" : 0.347425084,
+          "writeInputSeconds" : 0.428949416
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.332994708,
+          "executeSeconds" : 173.354100041,
+          "ipcOverheadSeconds" : 0.0008269580000046517,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.8845911026000977,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "nominal→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 53,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 53,
+              "seconds" : 134.51269416699995
+            },
+            "llm.generate.sampling" : {
+              "count" : 53,
+              "seconds" : 1.2926984910000006
+            },
+            "llm.generatedTokens" : {
+              "count" : 8732,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 53,
+              "seconds" : 37.88453687999998
+            },
+            "llm.promptTokens" : {
+              "count" : 60496,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 14682,
+              "seconds" : 0
+            },
+            "model.load.notes" : {
+              "count" : 1,
+              "seconds" : 0.371385625
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.024405291
+            },
+            "notes.extract" : {
+              "count" : 6,
+              "seconds" : 137.828795667
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 3.842785791
+            },
+            "notes.verify" : {
+              "count" : 46,
+              "seconds" : 30.85528495499999
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.156998959
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.002187375
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 103.80489194393158,
+          "workerWallSeconds" : 173.353273083,
+          "writeInputSeconds" : 0.337844666
+        }
+      ],
+      "stopToNotesSeconds" : 278.221971988678,
+      "stopToTranscriptSeconds" : 104.19475197792053,
+      "suite" : "public",
+      "transcriptHash" : "ed327f889c75a9e634073629e00536e1e034e8a95b2b5b5bc7f8f03b5af56955",
+      "words" : 13938
+    },
+    {
+      "asrHash" : "24a5ce89a2a29f01d6ee35361b1cca8d94dd35f70b29374a51cf0c444821c8b8",
+      "audioSeconds" : 3625.155159959,
+      "completed" : true,
+      "failedCoverageSeconds" : 94.092,
+      "id" : "timing-2src-60min",
+      "notes" : {
+        "items" : 46,
+        "itemsWithValidEvidence" : 46,
+        "uncertain" : 18
+      },
+      "peakAppMiB" : 70.68830108642578,
+      "peakWorkerMiB" : 1440.8320388793945,
+      "recordWallSeconds" : 181.27620475,
+      "run" : "warm",
+      "set" : "timing",
+      "speakers" : 13,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000315,
+          "executeSeconds" : 1.45215425,
+          "ipcOverheadSeconds" : 0.0006753749999999226,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.15622901916503906,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 3626,
+              "seconds" : 0.0011553940000000522
+            },
+            "prepare.readSegment" : {
+              "count" : 3626,
+              "seconds" : 1.2266704960000014
+            },
+            "prepare.resample" : {
+              "count" : 3626,
+              "seconds" : 0.0011313160000000508
+            },
+            "prepare.segments" : {
+              "count" : 3626,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 1.418041708
+            },
+            "prepare.write" : {
+              "count" : 3628,
+              "seconds" : 0.16032725099999978
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.032744458
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000254667
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 278.8187929391861,
+          "workerWallSeconds" : 1.451478875,
+          "writeInputSeconds" : 0.080224584
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.572394416,
+          "executeSeconds" : 81.089125375,
+          "ipcOverheadSeconds" : 0.0007592079999909629,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.6894609928131104,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "fair→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 2,
+              "seconds" : 0.011555208
+            },
+            "asr.checkpoint.read" : {
+              "count" : 792,
+              "seconds" : 0.019525848000000016
+            },
+            "asr.checkpoint.write" : {
+              "count" : 792,
+              "seconds" : 0.5927296180000003
+            },
+            "asr.decode" : {
+              "count" : 913,
+              "seconds" : 74.0989064720001
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 11860.069749999879
+            },
+            "asr.decode.first" : {
+              "count" : 787,
+              "seconds" : 64.43616418
+            },
+            "asr.decode.retries" : {
+              "count" : 52,
+              "seconds" : 9.779589957
+            },
+            "asr.plan" : {
+              "count" : 2,
+              "seconds" : 5.626303625
+            },
+            "asr.vad.infer" : {
+              "count" : 14,
+              "seconds" : 5.572548833
+            },
+            "asr.vad.read" : {
+              "count" : 14,
+              "seconds" : 0.048571751
+            },
+            "asr.window.read" : {
+              "count" : 1705,
+              "seconds" : 0.2072799869999999
+            },
+            "asr.windows" : {
+              "count" : 792,
+              "seconds" : 0
+            },
+            "asr.windows.retried.garbled" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 51,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 5,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.122906625
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.7417e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.153914583
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 280.27214992046356,
+          "workerWallSeconds" : 81.088366167,
+          "writeInputSeconds" : 0.000457375
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.005548291,
+          "executeSeconds" : 20.196862583,
+          "ipcOverheadSeconds" : 0.0007790000000014174,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 82.35285711288452,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.echo" : {
+              "count" : 1,
+              "seconds" : 0.022551
+            },
+            "diarize.engine" : {
+              "count" : 3,
+              "seconds" : 20.078458916
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "diarize.engine.clustering" : {
+              "count" : 2,
+              "seconds" : 0.6020599603652954
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 2,
+              "seconds" : 19.073776960372925
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 2,
+              "seconds" : 9.16022801399231
+            },
+            "diarize.read" : {
+              "count" : 3,
+              "seconds" : 0.03018579
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.05683875
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000105125
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.003113291
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "blockwise"
+          },
+          "workerUptimeSeconds" : 361.9357179403305,
+          "workerWallSeconds" : 20.196083583,
+          "writeInputSeconds" : 0.000560792
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.655979917,
+          "executeSeconds" : 0.34091,
+          "ipcOverheadSeconds" : 0.0009616659999999722,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.5566210746765137,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.135537375
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.185335875
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 382.5527559518814,
+          "workerWallSeconds" : 0.339948334,
+          "writeInputSeconds" : 0.413660334
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.335377958,
+          "executeSeconds" : 165.917538667,
+          "ipcOverheadSeconds" : 0.0007690840000122989,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.9679689407348633,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "nominal→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 44,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 44,
+              "seconds" : 129.38171179
+            },
+            "llm.generate.sampling" : {
+              "count" : 44,
+              "seconds" : 1.2727107139999998
+            },
+            "llm.generatedTokens" : {
+              "count" : 8428,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 44,
+              "seconds" : 35.67376396000002
+            },
+            "llm.promptTokens" : {
+              "count" : 54612,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 12032,
+              "seconds" : 0
+            },
+            "model.load.notes" : {
+              "count" : 1,
+              "seconds" : 0.347285792
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.023524625
+            },
+            "notes.extract" : {
+              "count" : 6,
+              "seconds" : 133.749336582
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 4.905229416
+            },
+            "notes.verify" : {
+              "count" : 37,
+              "seconds" : 26.513441791
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.156653167
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.002287708
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 383.88536989688873,
+          "workerWallSeconds" : 165.916769583,
+          "writeInputSeconds" : 0.334987958
+        }
+      ],
+      "stopToNotesSeconds" : 271.44273591041565,
+      "stopToTranscriptSeconds" : 104.85259699821472,
+      "suite" : "public",
+      "transcriptHash" : "18e1621495d49c908917f862881b826ddfecef63bc8d4b45d52a37775147be08",
+      "words" : 13938
+    },
+    {
+      "asrHash" : "a074257ffff813d370f1538bd6d86ff1251da4c0b6040f8c2552730dc41b05cb",
+      "attribution" : [
+        1874,
+        1828,
+        1793
+      ],
+      "audioSeconds" : 1070.081125292,
+      "completed" : true,
+      "der" : {
+        "confusion" : 28.21000000000161,
+        "falseAlarm" : 22.820000000000764,
+        "mapping" : {
+          "systemOutput-0" : "FEE013",
+          "systemOutput-1" : "FEE016",
+          "systemOutput-2" : "MEO015",
+          "systemOutput-3" : "MEE014"
+        },
+        "missed" : 154.16000000000375,
+        "referenceSpeech" : 923.4299999993638
+      },
+      "failedCoverageSeconds" : 14.08,
+      "id" : "ami-ES2004a-mix",
+      "peakAppMiB" : 13.110130310058594,
+      "peakWorkerMiB" : 930.923454284668,
+      "recordWallSeconds" : 53.51689525,
+      "run" : "default",
+      "set" : "ami-clean",
+      "speakers" : 4,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000313375,
+          "executeSeconds" : 0.086794167,
+          "ipcOverheadSeconds" : 0.000743001000000007,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.975471019744873,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 536,
+              "seconds" : 0.00016337700000000098
+            },
+            "prepare.readSegment" : {
+              "count" : 536,
+              "seconds" : 0.05382628999999999
+            },
+            "prepare.resample" : {
+              "count" : 536,
+              "seconds" : 0.00016624200000000126
+            },
+            "prepare.segments" : {
+              "count" : 536,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.080774
+            },
+            "prepare.write" : {
+              "count" : 537,
+              "seconds" : 0.023777823000000014
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.004867125
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000257209
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 604.5717669725418,
+          "workerWallSeconds" : 0.086051166,
+          "writeInputSeconds" : 0.01391975
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.092260625,
+          "executeSeconds" : 11.275772958,
+          "ipcOverheadSeconds" : 0.0006225409999984777,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.07709598541259766,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.001878833
+            },
+            "asr.checkpoint.read" : {
+              "count" : 114,
+              "seconds" : 0.0026951199999999988
+            },
+            "asr.checkpoint.write" : {
+              "count" : 114,
+              "seconds" : 0.08479412599999998
+            },
+            "asr.decode" : {
+              "count" : 125,
+              "seconds" : 10.099241166999997
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 1651.561125000003
+            },
+            "asr.decode.first" : {
+              "count" : 112,
+              "seconds" : 9.182364461
+            },
+            "asr.decode.retries" : {
+              "count" : 8,
+              "seconds" : 0.93221304
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 0.85054275
+            },
+            "asr.vad.infer" : {
+              "count" : 2,
+              "seconds" : 0.841177125
+            },
+            "asr.vad.read" : {
+              "count" : 2,
+              "seconds" : 0.00836425
+            },
+            "asr.window.read" : {
+              "count" : 239,
+              "seconds" : 0.028701547
+            },
+            "asr.windows" : {
+              "count" : 114,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 8,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.1190635
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.3875e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.025343083
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 604.6597299575806,
+          "workerWallSeconds" : 11.275150417,
+          "writeInputSeconds" : 0.000443625
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.001387916,
+          "executeSeconds" : 5.668118458,
+          "ipcOverheadSeconds" : 0.000700666000000183,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 11.446629047393799,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 5.6032705
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.02182900905609131
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 0.08928096294403076
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 5.421284914016724
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 2.7842350006103516
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.057576959
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.6916e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001326666
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 616.0294389724731,
+          "workerWallSeconds" : 5.667417792,
+          "writeInputSeconds" : 0.000531042
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.116970584,
+          "executeSeconds" : 0.058634208,
+          "ipcOverheadSeconds" : 0.0007492499999999999,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.11740398406982422,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.0229665
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.031689084
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 621.770301938057,
+          "workerWallSeconds" : 0.057884958,
+          "writeInputSeconds" : 0.070523959
+        }
+      ],
+      "stopToTranscriptSeconds" : 17.40273904800415,
+      "suite" : "public",
+      "transcriptHash" : "91515714b35a3b1bcf7706419d71911729bd01c4d83520e393a434952969dd51",
+      "wer" : {
+        "deletions" : 302,
+        "insertions" : 11,
+        "numberTokenErrors" : 7,
+        "numberTokens" : 44,
+        "referenceWords" : 2520,
+        "substitutions" : 104
+      },
+      "words" : 2276
+    },
+    {
+      "asrHash" : "23aa3829b83b774bdfda661abb0343c8c72da776ed7090d005d7551530088e52",
+      "attribution" : [
+        1421,
+        1384,
+        1349
+      ],
+      "audioSeconds" : 860.097034208,
+      "completed" : true,
+      "der" : {
+        "confusion" : 35.1400000000015,
+        "falseAlarm" : 31.540000000001942,
+        "mapping" : {
+          "systemOutput-0" : "FIO089",
+          "systemOutput-1" : "FIE088",
+          "systemOutput-2" : "FIO087",
+          "systemOutput-3" : "FIO084"
+        },
+        "missed" : 88.85000000000922,
+        "referenceSpeech" : 695.8999999995457
+      },
+      "failedCoverageSeconds" : 16.02,
+      "id" : "ami-IS1009a-mix",
+      "peakAppMiB" : 11.344505310058594,
+      "peakWorkerMiB" : 778.4546127319336,
+      "recordWallSeconds" : 43.014130458,
+      "run" : "default",
+      "set" : "ami-clean",
+      "speakers" : 4,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000337042,
+          "executeSeconds" : 0.07288175,
+          "ipcOverheadSeconds" : 0.0007008749999999897,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.6205060482025146,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 431,
+              "seconds" : 0.0001314610000000007
+            },
+            "prepare.readSegment" : {
+              "count" : 431,
+              "seconds" : 0.043286247000000014
+            },
+            "prepare.resample" : {
+              "count" : 431,
+              "seconds" : 0.00013851000000000087
+            },
+            "prepare.segments" : {
+              "count" : 431,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.065479625
+            },
+            "prepare.write" : {
+              "count" : 432,
+              "seconds" : 0.01954303800000001
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.006263833
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000292625
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 665.2159489393234,
+          "workerWallSeconds" : 0.072180875,
+          "writeInputSeconds" : 0.013133375
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.073257666,
+          "executeSeconds" : 10.6323235,
+          "ipcOverheadSeconds" : 0.0006296250000001891,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.7075419425964355,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.001417958
+            },
+            "asr.checkpoint.read" : {
+              "count" : 87,
+              "seconds" : 0.002096248
+            },
+            "asr.checkpoint.write" : {
+              "count" : 87,
+              "seconds" : 0.057132373999999986
+            },
+            "asr.decode" : {
+              "count" : 109,
+              "seconds" : 9.696236122
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 1478.9915000000012
+            },
+            "asr.decode.first" : {
+              "count" : 85,
+              "seconds" : 7.933643455
+            },
+            "asr.decode.retries" : {
+              "count" : 9,
+              "seconds" : 1.7770492500000001
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 0.669624833
+            },
+            "asr.vad.infer" : {
+              "count" : 2,
+              "seconds" : 0.66302
+            },
+            "asr.vad.read" : {
+              "count" : 2,
+              "seconds" : 0.005630209
+            },
+            "asr.window.read" : {
+              "count" : 196,
+              "seconds" : 0.024430431000000006
+            },
+            "asr.windows" : {
+              "count" : 87,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 9,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.124612125
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.6083e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.019315625
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 665.2901918888092,
+          "workerWallSeconds" : 10.631693875,
+          "writeInputSeconds" : 0.000450042
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.00137775,
+          "executeSeconds" : 4.6659315,
+          "ipcOverheadSeconds" : 0.0006906659999996734,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 11.414684057235718,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 4.600711167
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.017925024032592773
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 0.055357933044433594
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 4.469989061355591
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 2.265359044075012
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.057055375
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 9.5458e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001421667
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 675.9974389076233,
+          "workerWallSeconds" : 4.6652408340000004,
+          "writeInputSeconds" : 0.000489959
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.083866209,
+          "executeSeconds" : 0.045577,
+          "ipcOverheadSeconds" : 0.0006844169999999997,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.0832209587097168,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.017536208
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.024821333
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 680.7185469865799,
+          "workerWallSeconds" : 0.044892583,
+          "writeInputSeconds" : 0.053033042
+        }
+      ],
+      "stopToTranscriptSeconds" : 15.657694339752197,
+      "suite" : "public",
+      "transcriptHash" : "6d9b52fe238bb8b7543d19f9bcb6299434676af16ecd04318834e84170030b7d",
+      "wer" : {
+        "deletions" : 264,
+        "insertions" : 47,
+        "numberTokenErrors" : 2,
+        "numberTokens" : 20,
+        "referenceWords" : 1895,
+        "substitutions" : 84
+      },
+      "words" : 1758
+    },
+    {
+      "asrHash" : "4c8e3496f44e1c6ed5c691279a27063aa5ef18f0841f53c5d466666e549e41e4",
+      "attribution" : [
+        4160,
+        4018,
+        3854
+      ],
+      "audioSeconds" : 2165.121097625,
+      "completed" : true,
+      "der" : {
+        "confusion" : 185.48999999997602,
+        "falseAlarm" : 52.95999999999812,
+        "mapping" : {
+          "systemOutput-0" : "MEE073",
+          "systemOutput-1" : "MEE071",
+          "systemOutput-2" : "FEO072",
+          "systemOutput-3" : "FEO070"
+        },
+        "missed" : 452.20999999976806,
+        "referenceSpeech" : 2530.260000003442
+      },
+      "failedCoverageSeconds" : 73.90509762499998,
+      "id" : "ami-EN2002a-mix",
+      "peakAppMiB" : 30.078880310058594,
+      "peakWorkerMiB" : 745.0171585083008,
+      "recordWallSeconds" : 108.267447708,
+      "run" : "default",
+      "set" : "ami-clean",
+      "speakers" : 4,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000432458,
+          "executeSeconds" : 0.186305958,
+          "ipcOverheadSeconds" : 0.0008490409999999948,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.9561300277709961,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 1083,
+              "seconds" : 0.0003397889999999971
+            },
+            "prepare.readSegment" : {
+              "count" : 1083,
+              "seconds" : 0.11658114600000016
+            },
+            "prepare.resample" : {
+              "count" : 1083,
+              "seconds" : 0.0003554639999999959
+            },
+            "prepare.segments" : {
+              "count" : 1083,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.172634958
+            },
+            "prepare.write" : {
+              "count" : 1084,
+              "seconds" : 0.048407882999999964
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.012300458
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000299458
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 789.5638439655304,
+          "workerWallSeconds" : 0.185456917,
+          "writeInputSeconds" : 0.025366625
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.239321333,
+          "executeSeconds" : 29.425157291,
+          "ipcOverheadSeconds" : 0.0007444579999997814,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.16912508010864258,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.004615375
+            },
+            "asr.checkpoint.read" : {
+              "count" : 221,
+              "seconds" : 0.0052795859999999984
+            },
+            "asr.checkpoint.write" : {
+              "count" : 221,
+              "seconds" : 0.158262835
+            },
+            "asr.decode" : {
+              "count" : 330,
+              "seconds" : 27.228056508999998
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 4389.7709375000095
+            },
+            "asr.decode.first" : {
+              "count" : 219,
+              "seconds" : 19.060415913000003
+            },
+            "asr.decode.retries" : {
+              "count" : 35,
+              "seconds" : 8.215665458
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 1.692659
+            },
+            "asr.vad.infer" : {
+              "count" : 4,
+              "seconds" : 1.6763025820000002
+            },
+            "asr.vad.read" : {
+              "count" : 4,
+              "seconds" : 0.014572833
+            },
+            "asr.window.read" : {
+              "count" : 551,
+              "seconds" : 0.07194637400000006
+            },
+            "asr.windows" : {
+              "count" : 221,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 35,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.122496875
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 9.8625e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.063039375
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 789.7519179582596,
+          "workerWallSeconds" : 29.424412833,
+          "writeInputSeconds" : 0.000491042
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.003497875,
+          "executeSeconds" : 12.483628209,
+          "ipcOverheadSeconds" : 0.0007836250000003986,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 29.835164070129395,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 12.417381834
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.04353201389312744
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 0.4902069568634033
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 11.731987953186035
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 5.522464990615845
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.058140792
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000103875
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.002420583
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 819.418014883995,
+          "workerWallSeconds" : 12.482844584,
+          "writeInputSeconds" : 0.00055775
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.278502625,
+          "executeSeconds" : 0.14819425,
+          "ipcOverheadSeconds" : 0.001036375000000006,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.32368898391723633,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.056538584
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.081086166
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 832.0778748989105,
+          "workerWallSeconds" : 0.147157875,
+          "writeInputSeconds" : 0.171607083
+        }
+      ],
+      "stopToTranscriptSeconds" : 42.990219831466675,
+      "suite" : "public",
+      "transcriptHash" : "a5bd5a5cd9141681e94dd90ce7ef6a4ae76198fa6cfa806883a8592cee2750f1",
+      "wer" : {
+        "deletions" : 1893,
+        "insertions" : 46,
+        "numberTokenErrors" : 17,
+        "numberTokens" : 76,
+        "referenceWords" : 7437,
+        "substitutions" : 417
+      },
+      "words" : 5667
+    },
+    {
+      "asrHash" : "3e436c68beb85a873a16fa8ed0a1f94488adde01412f19896305f8d0dac9fdb2",
+      "attribution" : [
+        1771,
+        1709,
+        1674
+      ],
+      "audioSeconds" : 1070.082248458,
+      "completed" : true,
+      "der" : {
+        "confusion" : 34.68000000000167,
+        "falseAlarm" : 32.45000000000203,
+        "mapping" : {
+          "systemOutput-0" : "FEE013",
+          "systemOutput-1" : "MEO015",
+          "systemOutput-2" : "FEE016",
+          "systemOutput-3" : "MEE014"
+        },
+        "missed" : 189.3599999999778,
+        "referenceSpeech" : 923.4299999993638
+      },
+      "failedCoverageSeconds" : 13.204,
+      "id" : "ami-ES2004a-array",
+      "peakAppMiB" : 11.672630310058594,
+      "peakWorkerMiB" : 793.9389877319336,
+      "recordWallSeconds" : 53.516201958,
+      "run" : "default",
+      "set" : "ami-difficult",
+      "speakers" : 4,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000303375,
+          "executeSeconds" : 0.089249708,
+          "ipcOverheadSeconds" : 0.0007383329999999938,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.81103515625,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 536,
+              "seconds" : 0.00017263400000000113
+            },
+            "prepare.readSegment" : {
+              "count" : 536,
+              "seconds" : 0.054042536999999904
+            },
+            "prepare.resample" : {
+              "count" : 536,
+              "seconds" : 0.00017234700000000132
+            },
+            "prepare.segments" : {
+              "count" : 536,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.081245833
+            },
+            "prepare.write" : {
+              "count" : 537,
+              "seconds" : 0.02390939
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.006803042
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000295458
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 886.4109148979187,
+          "workerWallSeconds" : 0.088511375,
+          "writeInputSeconds" : 0.017517625
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.093980292,
+          "executeSeconds" : 10.726933459,
+          "ipcOverheadSeconds" : 0.0006549590000002325,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.91886305809021,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.001828292
+            },
+            "asr.checkpoint.read" : {
+              "count" : 110,
+              "seconds" : 0.0025595
+            },
+            "asr.checkpoint.write" : {
+              "count" : 110,
+              "seconds" : 0.07834590699999999
+            },
+            "asr.decode" : {
+              "count" : 117,
+              "seconds" : 9.594526916000001
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 1586.6341875000023
+            },
+            "asr.decode.first" : {
+              "count" : 108,
+              "seconds" : 8.644691455000002
+            },
+            "asr.decode.retries" : {
+              "count" : 4,
+              "seconds" : 0.964222041
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 0.831493542
+            },
+            "asr.vad.infer" : {
+              "count" : 2,
+              "seconds" : 0.8220246250000001
+            },
+            "asr.vad.read" : {
+              "count" : 2,
+              "seconds" : 0.008042125
+            },
+            "asr.window.read" : {
+              "count" : 227,
+              "seconds" : 0.027309382000000004
+            },
+            "asr.windows" : {
+              "count" : 110,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 4,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.12167125
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 7.95e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.024694666
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 886.5015889406204,
+          "workerWallSeconds" : 10.7262785,
+          "writeInputSeconds" : 0.0004935
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.001293958,
+          "executeSeconds" : 5.44326075,
+          "ipcOverheadSeconds" : 0.0006611660000004349,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 11.741283893585205,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 5.3799095
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.022135019302368164
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 0.09134292602539062
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 5.195788025856018
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 2.7632559537887573
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.056169792
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 9.5333e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001441916
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 897.3241039514542,
+          "workerWallSeconds" : 5.442599584,
+          "writeInputSeconds" : 0.000553209
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.104355584,
+          "executeSeconds" : 0.055437917,
+          "ipcOverheadSeconds" : 0.0007610010000000042,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.18723702430725098,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.021681458
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.029978833
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 902.8364999294281,
+          "workerWallSeconds" : 0.054676916,
+          "writeInputSeconds" : 0.06695125
+        }
+      ],
+      "stopToTranscriptSeconds" : 16.61806297302246,
+      "suite" : "public",
+      "transcriptHash" : "4952f4b9ccfdccfe6e7b36f2c600e8eedfc2f6999834673ad135d492b2238b3f",
+      "wer" : {
+        "deletions" : 408,
+        "insertions" : 16,
+        "numberTokenErrors" : 8,
+        "numberTokens" : 44,
+        "referenceWords" : 2520,
+        "substitutions" : 185
+      },
+      "words" : 2173
+    },
+    {
+      "asrHash" : "5a643aaa7b812b3b00455a05e083e21c31b4e8e125e0ee0dcc44baf78c1c5fe0",
+      "audioSeconds" : 207.48929,
+      "completed" : true,
+      "failedCoverageSeconds" : 0,
+      "id" : "libri-mic",
+      "peakAppMiB" : 11.688255310058594,
+      "peakWorkerMiB" : 500.65753173828125,
+      "recordWallSeconds" : 10.403617875,
+      "run" : "default",
+      "set" : "librispeech",
+      "speakers" : 1,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000299958,
+          "executeSeconds" : 0.019682458,
+          "ipcOverheadSeconds" : 0.0006981669999999995,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.32262301445007324,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 104,
+              "seconds" : 3.516399999999997e-05
+            },
+            "prepare.readSegment" : {
+              "count" : 104,
+              "seconds" : 0.010511452000000003
+            },
+            "prepare.resample" : {
+              "count" : 104,
+              "seconds" : 3.703799999999996e-05
+            },
+            "prepare.segments" : {
+              "count" : 104,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.017482917
+            },
+            "prepare.write" : {
+              "count" : 105,
+              "seconds" : 0.005739323000000001
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.001144166
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.0002585
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 913.9114829301834,
+          "workerWallSeconds" : 0.018984291,
+          "writeInputSeconds" : 0.0062805
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.01358975,
+          "executeSeconds" : 2.215791834,
+          "ipcOverheadSeconds" : 0.00055941699999984,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.3498721122741699,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.000289833
+            },
+            "asr.checkpoint.read" : {
+              "count" : 25,
+              "seconds" : 0.00055825
+            },
+            "asr.checkpoint.write" : {
+              "count" : 25,
+              "seconds" : 0.017184625999999995
+            },
+            "asr.decode" : {
+              "count" : 24,
+              "seconds" : 1.883649958
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 293.52124999999995
+            },
+            "asr.decode.first" : {
+              "count" : 23,
+              "seconds" : 1.821018879
+            },
+            "asr.decode.retries" : {
+              "count" : 1,
+              "seconds" : 0.065366458
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 0.162015959
+            },
+            "asr.vad.infer" : {
+              "count" : 1,
+              "seconds" : 0.160005
+            },
+            "asr.vad.read" : {
+              "count" : 1,
+              "seconds" : 0.001184417
+            },
+            "asr.window.read" : {
+              "count" : 49,
+              "seconds" : 0.005531413999999999
+            },
+            "asr.windows" : {
+              "count" : 25,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.1239165
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 7.8666e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.00363375
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 913.9324989318848,
+          "workerWallSeconds" : 2.215232417,
+          "writeInputSeconds" : 0.000450208
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000408083,
+          "executeSeconds" : 0.063419041,
+          "ipcOverheadSeconds" : 0.0006198330000000002,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 2.580559015274048,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.058019125
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 9.4083e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.00035275
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 916.1633269786835,
+          "workerWallSeconds" : 0.062799208,
+          "writeInputSeconds" : 0.000520959
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.013766917,
+          "executeSeconds" : 0.007507292,
+          "ipcOverheadSeconds" : 0.00046604199999999985,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.6457071304321289,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.003032167
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.00374425
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 916.2374869585037,
+          "workerWallSeconds" : 0.00704125,
+          "writeInputSeconds" : 0.009587708
+        }
+      ],
+      "stopToTranscriptSeconds" : 2.3588640689849854,
+      "suite" : "public",
+      "transcriptHash" : "1ff87ba9b6e34d2e80309df40e169d22a3bffb21d5d9fcb0d1e5c0cad5795d29",
+      "wer" : {
+        "deletions" : 2,
+        "insertions" : 1,
+        "numberTokenErrors" : 0,
+        "numberTokens" : 2,
+        "referenceWords" : 303,
+        "substitutions" : 4
+      },
+      "words" : 302
+    },
+    {
+      "asrHash" : "165aab557bdac6fd85cc611c4c86d9a634941dfdadeaad17a956686f5439c050",
+      "audioSeconds" : 80.577188083,
+      "completed" : true,
+      "failedCoverageSeconds" : 0,
+      "id" : "control-silence",
+      "peakAppMiB" : 11.907005310058594,
+      "peakWorkerMiB" : 724.0795211791992,
+      "recordWallSeconds" : 4.044226083,
+      "run" : "default",
+      "set" : "control",
+      "speakers" : 0,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.00027175,
+          "executeSeconds" : 0.014372834,
+          "ipcOverheadSeconds" : 0.0008739589999999988,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.949152946472168,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 41,
+              "seconds" : 2.2872999999999993e-05
+            },
+            "prepare.readSegment" : {
+              "count" : 41,
+              "seconds" : 0.006296998000000002
+            },
+            "prepare.resample" : {
+              "count" : 41,
+              "seconds" : 1.825099999999999e-05
+            },
+            "prepare.segments" : {
+              "count" : 41,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.012062916
+            },
+            "prepare.write" : {
+              "count" : 42,
+              "seconds" : 0.004208045999999999
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.001073459
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000261709
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 920.5351349115372,
+          "workerWallSeconds" : 0.013498875,
+          "writeInputSeconds" : 0.003296542
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.001354,
+          "executeSeconds" : 0.199238667,
+          "ipcOverheadSeconds" : 0.0005097089999999971,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.9680759906768799,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 3.375e-06
+            },
+            "asr.checkpoint.read" : {
+              "count" : 8,
+              "seconds" : 8.4624e-05
+            },
+            "asr.checkpoint.write" : {
+              "count" : 8,
+              "seconds" : 0.0016274590000000004
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 0.06416075
+            },
+            "asr.vad.infer" : {
+              "count" : 1,
+              "seconds" : 0.062966333
+            },
+            "asr.vad.read" : {
+              "count" : 1,
+              "seconds" : 0.000747042
+            },
+            "asr.window.read" : {
+              "count" : 8,
+              "seconds" : 0.000620916
+            },
+            "asr.windows" : {
+              "count" : 8,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 8,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.122390875
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.5542e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000295959
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 920.5507189035416,
+          "workerWallSeconds" : 0.198728958,
+          "writeInputSeconds" : 0.000448166
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000468667,
+          "executeSeconds" : 0.403756958,
+          "ipcOverheadSeconds" : 0.0007182499999999759,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 1.1699628829956055,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 0.343847083
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.054778292
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.7417e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000757791
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 920.7527369260788,
+          "workerWallSeconds" : 0.403038708,
+          "writeInputSeconds" : 0.000485542
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.001324875,
+          "executeSeconds" : 0.001054417,
+          "ipcOverheadSeconds" : 0.000586542,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.5755720138549805,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000148375
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.00030275
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 921.1586738824844,
+          "workerWallSeconds" : 0.000467875,
+          "writeInputSeconds" : 0.000837791
+        }
+      ],
+      "stopToTranscriptSeconds" : 0.6331658363342285,
+      "suite" : "public",
+      "transcriptHash" : "165aab557bdac6fd85cc611c4c86d9a634941dfdadeaad17a956686f5439c050",
+      "words" : 0
+    },
+    {
+      "asrHash" : "0331ea8f61b4f9d2246a020b5899574599d5a03e786759414970c6f68cf1996e",
+      "audioSeconds" : 81.986752166,
+      "completed" : true,
+      "failedCoverageSeconds" : 0,
+      "id" : "control-noise",
+      "peakAppMiB" : 11.938255310058594,
+      "peakWorkerMiB" : 286.86070251464844,
+      "recordWallSeconds" : 4.114648458,
+      "run" : "default",
+      "set" : "control",
+      "speakers" : 0,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000309416,
+          "executeSeconds" : 0.018322042,
+          "ipcOverheadSeconds" : 0.0009329590000000006,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.08920001983642578,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 41,
+              "seconds" : 3.4794e-05
+            },
+            "prepare.readSegment" : {
+              "count" : 41,
+              "seconds" : 0.008098414
+            },
+            "prepare.resample" : {
+              "count" : 41,
+              "seconds" : 2.9210999999999992e-05
+            },
+            "prepare.segments" : {
+              "count" : 41,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.015771583
+            },
+            "prepare.write" : {
+              "count" : 42,
+              "seconds" : 0.0057992880000000005
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.001150417
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000325583
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 925.6748878955841,
+          "workerWallSeconds" : 0.017389083,
+          "writeInputSeconds" : 0.003008625
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.001527125,
+          "executeSeconds" : 1.870262459,
+          "ipcOverheadSeconds" : 0.0006070430000000293,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.11184215545654297,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 4.459e-06
+            },
+            "asr.checkpoint.read" : {
+              "count" : 8,
+              "seconds" : 0.00016299999999999998
+            },
+            "asr.checkpoint.write" : {
+              "count" : 8,
+              "seconds" : 0.004667249
+            },
+            "asr.decode" : {
+              "count" : 6,
+              "seconds" : 1.658215208
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 87.40275000000001
+            },
+            "asr.decode.first" : {
+              "count" : 6,
+              "seconds" : 1.6588759580000003
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 0.064955042
+            },
+            "asr.vad.infer" : {
+              "count" : 1,
+              "seconds" : 0.064059875
+            },
+            "asr.vad.read" : {
+              "count" : 1,
+              "seconds" : 0.00042875
+            },
+            "asr.window.read" : {
+              "count" : 14,
+              "seconds" : 0.0016513340000000002
+            },
+            "asr.windows" : {
+              "count" : 8,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.128839917
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.4333e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000379625
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 925.69453394413,
+          "workerWallSeconds" : 1.869655416,
+          "writeInputSeconds" : 0.000469417
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000476541,
+          "executeSeconds" : 0.4023655,
+          "ipcOverheadSeconds" : 0.0006690420000000086,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 1.9850311279296875,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 0.340082875
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.056860375
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.8625e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000512958
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 927.5677349567413,
+          "workerWallSeconds" : 0.401696458,
+          "writeInputSeconds" : 0.000498
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.001356708,
+          "executeSeconds" : 0.00101475,
+          "ipcOverheadSeconds" : 0.0005044590000000001,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.3893141746520996,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000156083
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000337208
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 927.9723589420319,
+          "workerWallSeconds" : 0.000510291,
+          "writeInputSeconds" : 0.000829958
+        }
+      ],
+      "stopToTranscriptSeconds" : 2.3070459365844727,
+      "suite" : "public",
+      "transcriptHash" : "0331ea8f61b4f9d2246a020b5899574599d5a03e786759414970c6f68cf1996e",
+      "words" : 0
+    },
+    {
+      "asrHash" : "3e39631eaaf9bff6103974b739a1426d6e8be5704861fda95971b12070ed2695",
+      "audioSeconds" : 82.4348775,
+      "completed" : true,
+      "failedCoverageSeconds" : 0,
+      "id" : "control-music",
+      "peakAppMiB" : 9.875755310058594,
+      "peakWorkerMiB" : 319.65760040283203,
+      "recordWallSeconds" : 4.1350175,
+      "run" : "default",
+      "set" : "control",
+      "speakers" : 0,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000285542,
+          "executeSeconds" : 0.017964708,
+          "ipcOverheadSeconds" : 0.0008658749999999986,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.7576651573181152,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 42,
+              "seconds" : 3.0455999999999998e-05
+            },
+            "prepare.readSegment" : {
+              "count" : 42,
+              "seconds" : 0.008187749
+            },
+            "prepare.resample" : {
+              "count" : 42,
+              "seconds" : 2.162699999999999e-05
+            },
+            "prepare.segments" : {
+              "count" : 42,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.015558917
+            },
+            "prepare.write" : {
+              "count" : 43,
+              "seconds" : 0.005631249000000001
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.001141208
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000279625
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 932.3438059091568,
+          "workerWallSeconds" : 0.017098833,
+          "writeInputSeconds" : 0.003453958
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.001483333,
+          "executeSeconds" : 2.066906041,
+          "ipcOverheadSeconds" : 0.000570791000000348,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.7804679870605469,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 3.958e-06
+            },
+            "asr.checkpoint.read" : {
+              "count" : 8,
+              "seconds" : 0.00015574800000000001
+            },
+            "asr.checkpoint.write" : {
+              "count" : 8,
+              "seconds" : 0.0045189159999999996
+            },
+            "asr.decode" : {
+              "count" : 6,
+              "seconds" : 1.8561127080000002
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 87.40287500000001
+            },
+            "asr.decode.first" : {
+              "count" : 6,
+              "seconds" : 1.8567821260000001
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 0.065635208
+            },
+            "asr.vad.infer" : {
+              "count" : 1,
+              "seconds" : 0.064388625
+            },
+            "asr.vad.read" : {
+              "count" : 1,
+              "seconds" : 0.00053175
+            },
+            "asr.window.read" : {
+              "count" : 14,
+              "seconds" : 0.0016273319999999998
+            },
+            "asr.windows" : {
+              "count" : 8,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.125932167
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.1458e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000366333
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 932.3631219863892,
+          "workerWallSeconds" : 2.06633525,
+          "writeInputSeconds" : 0.000476167
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000470791,
+          "executeSeconds" : 0.407942167,
+          "ipcOverheadSeconds" : 0.0006468340000000405,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 2.8503451347351074,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 0.34386525
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.003159046173095703
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 3.802776336669922e-05
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 0.3361999988555908
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 0.32358694076538086
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.058461625
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000110667
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000750375
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 934.4330229759216,
+          "workerWallSeconds" : 0.407295333,
+          "writeInputSeconds" : 0.000481
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.001329041,
+          "executeSeconds" : 0.001043542,
+          "ipcOverheadSeconds" : 0.0005252919999999999,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.26019287109375,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000162042
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000338417
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 934.8432619571686,
+          "workerWallSeconds" : 0.00051825,
+          "writeInputSeconds" : 0.000820875
+        }
+      ],
+      "stopToTranscriptSeconds" : 2.509711980819702,
+      "suite" : "public",
+      "transcriptHash" : "3e39631eaaf9bff6103974b739a1426d6e8be5704861fda95971b12070ed2695",
+      "words" : 0
+    },
+    {
+      "asrHash" : "b7500eec90a931b9750d95f33fc95c2a415ab734563781793667b455f8f71f3e",
+      "audioSeconds" : 44.033214125,
+      "boundaryFailures" : [
+
+      ],
+      "completed" : true,
+      "failedCoverageSeconds" : 0,
+      "id" : "boundary-tts",
+      "peakAppMiB" : 10.032005310058594,
+      "peakWorkerMiB" : 631.5951690673828,
+      "recordWallSeconds" : 2.214115958,
+      "run" : "default",
+      "set" : "boundary",
+      "speakers" : 1,
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000701833,
+          "executeSeconds" : 0.011951625,
+          "ipcOverheadSeconds" : 0.0013269170000000004,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.5241670608520508,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 23,
+              "seconds" : 1.5583e-05
+            },
+            "prepare.readSegment" : {
+              "count" : 23,
+              "seconds" : 0.0040659599999999995
+            },
+            "prepare.resample" : {
+              "count" : 23,
+              "seconds" : 1.8542999999999995e-05
+            },
+            "prepare.segments" : {
+              "count" : 23,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.008914541
+            },
+            "prepare.write" : {
+              "count" : 24,
+              "seconds" : 0.0029179979999999998
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000845084
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000626292
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 937.1097398996353,
+          "workerWallSeconds" : 0.010624708,
+          "writeInputSeconds" : 0.002734917
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.004368,
+          "executeSeconds" : 0.452661458,
+          "ipcOverheadSeconds" : 0.0006173750000000311,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.5411190986633301,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 8.5041e-05
+            },
+            "asr.checkpoint.read" : {
+              "count" : 5,
+              "seconds" : 8.8626e-05
+            },
+            "asr.checkpoint.write" : {
+              "count" : 5,
+              "seconds" : 0.002723334
+            },
+            "asr.decode" : {
+              "count" : 3,
+              "seconds" : 0.276296751
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 42.7011875
+            },
+            "asr.decode.first" : {
+              "count" : 3,
+              "seconds" : 0.27663424999999997
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 0.035666042
+            },
+            "asr.vad.infer" : {
+              "count" : 1,
+              "seconds" : 0.034698542
+            },
+            "asr.vad.read" : {
+              "count" : 1,
+              "seconds" : 0.0002545
+            },
+            "asr.window.read" : {
+              "count" : 8,
+              "seconds" : 0.00083504
+            },
+            "asr.windows" : {
+              "count" : 5,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.123839166
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 9.7667e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001127
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 937.1239349842072,
+          "workerWallSeconds" : 0.452044083,
+          "writeInputSeconds" : 0.000547041
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000545708,
+          "executeSeconds" : 0.362049709,
+          "ipcOverheadSeconds" : 0.0007226670000000102,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.9996919631958008,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 0.295511
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.0019840002059936523
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 8.499622344970703e-05
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 0.29065704345703125
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 0.19121003150939941
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.057291125
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 9.8333e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000769375
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 937.5824809074402,
+          "workerWallSeconds" : 0.361327042,
+          "writeInputSeconds" : 0.000557792
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.004663167,
+          "executeSeconds" : 0.002833667,
+          "ipcOverheadSeconds" : 0.0004944579999999997,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.3638730049133301,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000902625
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001305541
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 937.9491078853607,
+          "workerWallSeconds" : 0.002339209,
+          "writeInputSeconds" : 0.0030395
+        }
+      ],
+      "stopToTranscriptSeconds" : 0.8537719249725342,
+      "suite" : "public",
+      "transcriptHash" : "2a17ade91cbc69e46791d6866d65ec2bc8f477bcccc4ce2fb9866b825eb5fc01",
+      "words" : 75
+    },
+    {
+      "asrHash" : "d0f65ca3305dea2fc90353ce036e976c09f074f77a30372d98a1b57fbeea0739",
+      "audioSeconds" : 2190.081170333,
+      "completed" : true,
+      "failedCoverageSeconds" : 4.608,
+      "id" : "corpus-hangout-ai-session",
+      "notes" : {
+        "items" : 23,
+        "itemsWithValidEvidence" : 23,
+        "uncertain" : 7
+      },
+      "peakAppMiB" : 22.016380310058594,
+      "peakWorkerMiB" : 1367.0663681030273,
+      "recordWallSeconds" : 109.52094025,
+      "run" : "default",
+      "set" : "corpus",
+      "speakers" : 2,
+      "split" : "dev",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000323584,
+          "executeSeconds" : 1.232383875,
+          "ipcOverheadSeconds" : 0.0007672919999999195,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.10035204887390137,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 1096,
+              "seconds" : 0.36478498900000045
+            },
+            "prepare.readSegment" : {
+              "count" : 1096,
+              "seconds" : 0.5330843780000005
+            },
+            "prepare.resample" : {
+              "count" : 1096,
+              "seconds" : 0.2652935899999999
+            },
+            "prepare.segments" : {
+              "count" : 1096,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 1.221053542
+            },
+            "prepare.write" : {
+              "count" : 1097,
+              "seconds" : 0.050448038000000014
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.010038958
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000309125
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1047.7076709270477,
+          "workerWallSeconds" : 1.231616583,
+          "writeInputSeconds" : 0.02495475
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.231815125,
+          "executeSeconds" : 21.447742209,
+          "ipcOverheadSeconds" : 0.0007170010000017157,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.3590819835662842,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.00448
+            },
+            "asr.checkpoint.read" : {
+              "count" : 214,
+              "seconds" : 0.005163246
+            },
+            "asr.checkpoint.write" : {
+              "count" : 214,
+              "seconds" : 0.16026029299999994
+            },
+            "asr.decode" : {
+              "count" : 218,
+              "seconds" : 19.261285012999988
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 3071.193125000009
+            },
+            "asr.decode.first" : {
+              "count" : 212,
+              "seconds" : 18.432479491999995
+            },
+            "asr.decode.retries" : {
+              "count" : 4,
+              "seconds" : 0.8553688740000001
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 1.686693
+            },
+            "asr.vad.infer" : {
+              "count" : 4,
+              "seconds" : 1.669709042
+            },
+            "asr.vad.read" : {
+              "count" : 4,
+              "seconds" : 0.015558833000000001
+            },
+            "asr.window.read" : {
+              "count" : 432,
+              "seconds" : 0.05350675900000001
+            },
+            "asr.windows" : {
+              "count" : 214,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 4,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.136736125
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.0417e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.0630035
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1048.9418329000473,
+          "workerWallSeconds" : 21.447025208,
+          "writeInputSeconds" : 0.000468125
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.00233125,
+          "executeSeconds" : 10.774038208,
+          "ipcOverheadSeconds" : 0.0007430829999997002,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 22.040778160095215,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 10.707248290999999
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.0432589054107666
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 0.30083703994750977
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 10.223704934120178
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 5.522431015968323
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.058674709
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000108584
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.00183575
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 1070.623682975769,
+          "workerWallSeconds" : 10.773295125,
+          "writeInputSeconds" : 0.000562667
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.269861458,
+          "executeSeconds" : 0.14071975,
+          "ipcOverheadSeconds" : 0.0008567909999999956,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.8188529014587402,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.055899958
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.075931709
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1081.570972919464,
+          "workerWallSeconds" : 0.139862959,
+          "writeInputSeconds" : 0.169689583
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.13752525,
+          "executeSeconds" : 50.716382458,
+          "ipcOverheadSeconds" : 0.0008227920000010158,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.40035390853881836,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 13,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 13,
+              "seconds" : 38.942530332
+            },
+            "llm.generate.sampling" : {
+              "count" : 13,
+              "seconds" : 0.4611508450000002
+            },
+            "llm.generatedTokens" : {
+              "count" : 2887,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 13,
+              "seconds" : 11.218263293
+            },
+            "llm.promptTokens" : {
+              "count" : 17100,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 2913,
+              "seconds" : 0
+            },
+            "model.load.notes" : {
+              "count" : 1,
+              "seconds" : 0.354436583
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.009152292
+            },
+            "notes.extract" : {
+              "count" : 2,
+              "seconds" : 38.585283916
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 3.341619375
+            },
+            "notes.verify" : {
+              "count" : 10,
+              "seconds" : 8.283153872000002
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.066550792
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001594375
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1082.1217849254608,
+          "workerWallSeconds" : 50.715559666,
+          "writeInputSeconds" : 0.139046541
+        }
+      ],
+      "stopToNotesSeconds" : 85.31381702423096,
+      "stopToTranscriptSeconds" : 34.31914019584656,
+      "suite" : "corpus",
+      "transcriptHash" : "cb9369ad2aece0ca2f428a8897a4957fee0f13c2788ba80899f541b9a6f1ca39",
+      "words" : 5770
+    },
+    {
+      "asrHash" : "588b16fafaaf6ee168d96aa626b68c26fef993fb7f84f8053cdb3a6afa0cd129",
+      "audioSeconds" : 2340.075994916,
+      "completed" : true,
+      "failedCoverageSeconds" : 11.736,
+      "id" : "corpus-hangout-ruby-session",
+      "notes" : {
+        "items" : 23,
+        "itemsWithValidEvidence" : 23,
+        "uncertain" : 13
+      },
+      "peakAppMiB" : 33.282005310058594,
+      "peakWorkerMiB" : 1391.050765991211,
+      "recordWallSeconds" : 117.017782167,
+      "run" : "default",
+      "set" : "corpus",
+      "speakers" : 2,
+      "split" : "heldout",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000319958,
+          "executeSeconds" : 1.311957209,
+          "ipcOverheadSeconds" : 0.0007222920000000688,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.30173683166503906,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 1171,
+              "seconds" : 0.3862263760000005
+            },
+            "prepare.readSegment" : {
+              "count" : 1171,
+              "seconds" : 0.5711316129999997
+            },
+            "prepare.resample" : {
+              "count" : 1171,
+              "seconds" : 0.2803227850000002
+            },
+            "prepare.segments" : {
+              "count" : 1171,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 1.300296375
+            },
+            "prepare.write" : {
+              "count" : 1172,
+              "seconds" : 0.054646215
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.010438958
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000285292
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1250.9107469320297,
+          "workerWallSeconds" : 1.311234917,
+          "writeInputSeconds" : 0.026672167
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.299233792,
+          "executeSeconds" : 25.463010417,
+          "ipcOverheadSeconds" : 0.0007667080000004489,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.6418061256408691,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.005475625
+            },
+            "asr.checkpoint.read" : {
+              "count" : 234,
+              "seconds" : 0.005547154999999999
+            },
+            "asr.checkpoint.write" : {
+              "count" : 234,
+              "seconds" : 0.179802538
+            },
+            "asr.decode" : {
+              "count" : 236,
+              "seconds" : 23.10195921100001
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 3293.745312500009
+            },
+            "asr.decode.first" : {
+              "count" : 232,
+              "seconds" : 22.823505083999997
+            },
+            "asr.decode.retries" : {
+              "count" : 4,
+              "seconds" : 0.307304707
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 1.807767375
+            },
+            "asr.vad.infer" : {
+              "count" : 4,
+              "seconds" : 1.790125251
+            },
+            "asr.vad.read" : {
+              "count" : 4,
+              "seconds" : 0.015795375
+            },
+            "asr.window.read" : {
+              "count" : 470,
+              "seconds" : 0.05859140999999999
+            },
+            "asr.windows" : {
+              "count" : 234,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 4,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.121591
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 7.9291e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.079723083
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1252.2245599031448,
+          "workerWallSeconds" : 25.462243709,
+          "writeInputSeconds" : 0.000481417
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.002686625,
+          "executeSeconds" : 11.548372,
+          "ipcOverheadSeconds" : 0.0006780000000006225,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 26.40599298477173,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 11.482149458
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.0460970401763916
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 0.349621057510376
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 10.937633037567139
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 5.948323011398315
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.058045666
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.00010375
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.002054375
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 1277.9888299703598,
+          "workerWallSeconds" : 11.547694,
+          "writeInputSeconds" : 0.000553875
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.330501125,
+          "executeSeconds" : 0.174918125,
+          "ipcOverheadSeconds" : 0.0009272080000000127,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.9588141441345215,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.068983958
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.094586083
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1289.7518138885498,
+          "workerWallSeconds" : 0.173990917,
+          "writeInputSeconds" : 0.210531083
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.165746166,
+          "executeSeconds" : 74.411247083,
+          "ipcOverheadSeconds" : 0.000806208000000197,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.6764330863952637,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 18,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 18,
+              "seconds" : 56.923224417
+            },
+            "llm.generate.sampling" : {
+              "count" : 18,
+              "seconds" : 0.6495341540000005
+            },
+            "llm.generatedTokens" : {
+              "count" : 3593,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 18,
+              "seconds" : 16.896013877
+            },
+            "llm.promptTokens" : {
+              "count" : 23634,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 4320,
+              "seconds" : 0
+            },
+            "model.load.notes" : {
+              "count" : 1,
+              "seconds" : 0.354463167
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.010295584
+            },
+            "notes.extract" : {
+              "count" : 2,
+              "seconds" : 53.27302683400001
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 3.556876125
+            },
+            "notes.verify" : {
+              "count" : 15,
+              "seconds" : 17.047525375
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.080832125
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001880958
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1290.4311989545822,
+          "workerWallSeconds" : 74.410440875,
+          "writeInputSeconds" : 0.172370916
+        }
+      ],
+      "stopToNotesSeconds" : 114.14622807502747,
+      "stopToTranscriptSeconds" : 39.39455699920654,
+      "suite" : "corpus",
+      "transcriptHash" : "65c5a9c19a98b069d1e52b24de576d611c47bc2f2dd478a0083ec96a5a6bb6d3",
+      "words" : 7136
+    },
+    {
+      "asrHash" : "0300c8bd4be572765025d1748888738f58bcea00ecdb1634475ac952ca966f58",
+      "audioSeconds" : 4290.092073875,
+      "completed" : true,
+      "failedCoverageSeconds" : 9.136000000000001,
+      "id" : "corpus-working-session",
+      "notes" : {
+        "items" : 35,
+        "itemsWithValidEvidence" : 35,
+        "uncertain" : 10
+      },
+      "peakAppMiB" : 45.84452819824219,
+      "peakWorkerMiB" : 1508.7852325439453,
+      "recordWallSeconds" : 214.522108167,
+      "run" : "default",
+      "set" : "corpus",
+      "speakers" : 8,
+      "split" : "dev",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000335166,
+          "executeSeconds" : 2.437563875,
+          "ipcOverheadSeconds" : 0.0006807079999999743,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.7560620307922363,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 2146,
+              "seconds" : 0.7265556110000012
+            },
+            "prepare.readSegment" : {
+              "count" : 2146,
+              "seconds" : 1.0457477520000007
+            },
+            "prepare.resample" : {
+              "count" : 2146,
+              "seconds" : 0.527777086
+            },
+            "prepare.segments" : {
+              "count" : 2146,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 2.417013458
+            },
+            "prepare.write" : {
+              "count" : 2147,
+              "seconds" : 0.09643612899999984
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.019255125
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000315041
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1580.3878049850464,
+          "workerWallSeconds" : 2.436883167,
+          "writeInputSeconds" : 0.049426375
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.387783333,
+          "executeSeconds" : 36.623859708,
+          "ipcOverheadSeconds" : 0.000730832999998654,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.2445688247680664,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.007494125
+            },
+            "asr.checkpoint.read" : {
+              "count" : 439,
+              "seconds" : 0.010116378
+            },
+            "asr.checkpoint.write" : {
+              "count" : 439,
+              "seconds" : 0.2973907740000001
+            },
+            "asr.decode" : {
+              "count" : 403,
+              "seconds" : 32.524108330000004
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 5454.219999999989
+            },
+            "asr.decode.first" : {
+              "count" : 390,
+              "seconds" : 30.465273133999993
+            },
+            "asr.decode.retries" : {
+              "count" : 6,
+              "seconds" : 2.1064878749999996
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 3.306404542
+            },
+            "asr.vad.infer" : {
+              "count" : 8,
+              "seconds" : 3.275094291
+            },
+            "asr.vad.read" : {
+              "count" : 8,
+              "seconds" : 0.028789206
+            },
+            "asr.window.read" : {
+              "count" : 842,
+              "seconds" : 0.10013083700000014
+            },
+            "asr.windows" : {
+              "count" : 439,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 6,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 49,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.122239834
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 9.9e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.100702583
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1582.827243924141,
+          "workerWallSeconds" : 36.623128875,
+          "writeInputSeconds" : 0.000457625
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.005218333,
+          "executeSeconds" : 21.989051708,
+          "ipcOverheadSeconds" : 0.0007710000000002992,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 37.25827097892761,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 3,
+              "seconds" : 21.878432291
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 3,
+              "seconds" : 0
+            },
+            "diarize.engine.clustering" : {
+              "count" : 3,
+              "seconds" : 0.44420790672302246
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 3,
+              "seconds" : 21.146849989891052
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 3,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 3,
+              "seconds" : 11.027800917625427
+            },
+            "diarize.read" : {
+              "count" : 3,
+              "seconds" : 0.034745626
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.066590375
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.00010825
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.003180875
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "blockwise"
+          },
+          "workerUptimeSeconds" : 1619.841110944748,
+          "workerWallSeconds" : 21.988280708,
+          "writeInputSeconds" : 0.000555459
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.431302292,
+          "executeSeconds" : 0.233242417,
+          "ipcOverheadSeconds" : 0.000849084,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.25449395179748535,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.090437834
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.1267205
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1642.116217970848,
+          "workerWallSeconds" : 0.232393333,
+          "writeInputSeconds" : 0.27931825
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.242168875,
+          "executeSeconds" : 106.227004958,
+          "ipcOverheadSeconds" : 0.0009081659999878866,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.2001190185546875,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 22,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 22,
+              "seconds" : 84.58315579100001
+            },
+            "llm.generate.sampling" : {
+              "count" : 22,
+              "seconds" : 0.7870616149999996
+            },
+            "llm.generatedTokens" : {
+              "count" : 5172,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 22,
+              "seconds" : 20.969826543000003
+            },
+            "llm.promptTokens" : {
+              "count" : 28924,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 6433,
+              "seconds" : 0
+            },
+            "model.load.notes" : {
+              "count" : 1,
+              "seconds" : 0.350316584
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.01417975
+            },
+            "notes.extract" : {
+              "count" : 3,
+              "seconds" : 86.996081667
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 4.433579083
+            },
+            "notes.verify" : {
+              "count" : 18,
+              "seconds" : 14.191136124
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.105231125
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.002804375
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1643.0092949867249,
+          "workerWallSeconds" : 106.226096792,
+          "writeInputSeconds" : 0.226762666
+        }
+      ],
+      "stopToNotesSeconds" : 169.16821575164795,
+      "stopToTranscriptSeconds" : 62.469491958618164,
+      "suite" : "corpus",
+      "transcriptHash" : "5cafe4bf1ec068caf07a4a41d0279975abc13e2ee26c81924b0a794bb890f167",
+      "words" : 9249
+    },
+    {
+      "asrHash" : "48bf81d3d851be96c68d3f7927f3a1f434b6c01c4656b846c942c4fbcb4e7073",
+      "audioSeconds" : 1350.102846041,
+      "completed" : true,
+      "failedCoverageSeconds" : 1.92,
+      "id" : "corpus-youtopia-review-session",
+      "notes" : {
+        "items" : 21,
+        "itemsWithValidEvidence" : 21,
+        "uncertain" : 8
+      },
+      "peakAppMiB" : 15.563255310058594,
+      "peakWorkerMiB" : 1489.1133575439453,
+      "recordWallSeconds" : 67.519262208,
+      "run" : "default",
+      "set" : "corpus",
+      "speakers" : 3,
+      "split" : "dev",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000305042,
+          "executeSeconds" : 0.757270291,
+          "ipcOverheadSeconds" : 0.000712415999999938,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.5390429496765137,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 676,
+              "seconds" : 0.22620921700000005
+            },
+            "prepare.readSegment" : {
+              "count" : 676,
+              "seconds" : 0.3248541209999998
+            },
+            "prepare.resample" : {
+              "count" : 676,
+              "seconds" : 0.16326929699999995
+            },
+            "prepare.segments" : {
+              "count" : 676,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.750019792
+            },
+            "prepare.write" : {
+              "count" : 677,
+              "seconds" : 0.03175081600000003
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.006097833
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000281334
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1818.1370059251785,
+          "workerWallSeconds" : 0.756557875,
+          "writeInputSeconds" : 0.015636584
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.14573525,
+          "executeSeconds" : 13.2055825,
+          "ipcOverheadSeconds" : 0.0006810000000001537,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.3134799003601074,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 1,
+              "seconds" : 0.002569375
+            },
+            "asr.checkpoint.read" : {
+              "count" : 149,
+              "seconds" : 0.0035536220000000015
+            },
+            "asr.checkpoint.write" : {
+              "count" : 149,
+              "seconds" : 0.11563696200000001
+            },
+            "asr.decode" : {
+              "count" : 152,
+              "seconds" : 11.758215834999996
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 1958.5455000000024
+            },
+            "asr.decode.first" : {
+              "count" : 147,
+              "seconds" : 11.473407919999998
+            },
+            "asr.decode.retries" : {
+              "count" : 5,
+              "seconds" : 0.302921458
+            },
+            "asr.plan" : {
+              "count" : 1,
+              "seconds" : 1.058472083
+            },
+            "asr.vad.infer" : {
+              "count" : 3,
+              "seconds" : 1.0464368339999999
+            },
+            "asr.vad.read" : {
+              "count" : 3,
+              "seconds" : 0.010590166000000002
+            },
+            "asr.window.read" : {
+              "count" : 301,
+              "seconds" : 0.03602292100000002
+            },
+            "asr.windows" : {
+              "count" : 149,
+              "seconds" : 0
+            },
+            "asr.windows.retried.underYield" : {
+              "count" : 5,
+              "seconds" : 0
+            },
+            "asr.windows.silent" : {
+              "count" : 2,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.122588833
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.5458e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.035912333
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1818.8962548971176,
+          "workerWallSeconds" : 13.2049015,
+          "writeInputSeconds" : 0.000546459
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.0024245,
+          "executeSeconds" : 7.3061605,
+          "ipcOverheadSeconds" : 0.0007377499999998705,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 13.666828155517578,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 7.238979625
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.027302980422973633
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 0.1430189609527588
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 6.981454014778137
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 3.4678070545196533
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.059821791
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000119084
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001702625
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 1832.2497038841248,
+          "workerWallSeconds" : 7.30542275,
+          "writeInputSeconds" : 0.000542708
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.155876792,
+          "executeSeconds" : 0.084726541,
+          "ipcOverheadSeconds" : 0.000783416000000009,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.9773468971252441,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.0334255
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.045601875
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1839.6629909276962,
+          "workerWallSeconds" : 0.083943125,
+          "writeInputSeconds" : 0.1032995
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.080461583,
+          "executeSeconds" : 44.550168959,
+          "ipcOverheadSeconds" : 0.0007624589999934983,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.3227071762084961,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 15,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 15,
+              "seconds" : 36.442151206000005
+            },
+            "llm.generate.sampling" : {
+              "count" : 15,
+              "seconds" : 0.4291181570000002
+            },
+            "llm.generatedTokens" : {
+              "count" : 2421,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 15,
+              "seconds" : 7.627334874999999
+            },
+            "llm.promptTokens" : {
+              "count" : 13556,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 3481,
+              "seconds" : 0
+            },
+            "model.load.notes" : {
+              "count" : 1,
+              "seconds" : 0.352307792
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.006100792
+            },
+            "notes.extract" : {
+              "count" : 2,
+              "seconds" : 33.179454584
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.863177333
+            },
+            "notes.verify" : {
+              "count" : 12,
+              "seconds" : 8.06851
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.038818167
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.001343875
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1839.9867779016495,
+          "workerWallSeconds" : 44.5494065,
+          "writeInputSeconds" : 0.081715041
+        }
+      ],
+      "stopToNotesSeconds" : 66.51254272460938,
+      "stopToTranscriptSeconds" : 21.798358917236328,
+      "suite" : "corpus",
+      "transcriptHash" : "55342daa750a47c14e123c133dae50a750b734e3530359035a645eb4b85c2ecb",
+      "words" : 3332
+    },
+    {
+      "asrHash" : "16fab9fcb5919c2602afcb31a424f81a041e7199ac01344cf7cc50fb2c01775d",
+      "audioSeconds" : 127.618666417,
+      "completed" : true,
+      "failedCoverageSeconds" : 0,
+      "id" : "corpus-test-youtopia-recording",
+      "notes" : {
+        "items" : 10,
+        "itemsWithValidEvidence" : 10,
+        "uncertain" : 2
+      },
+      "peakAppMiB" : 19.688255310058594,
+      "peakWorkerMiB" : 1432.0976638793945,
+      "run" : "default",
+      "set" : "corpus",
+      "speakers" : 3,
+      "split" : "dev",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000289458,
+          "executeSeconds" : 0.139216042,
+          "ipcOverheadSeconds" : 0.0005729170000000061,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.5365250110626221,
+          "stage" : "prepare",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "prepare.downmix" : {
+              "count" : 122,
+              "seconds" : 0.019178373999999998
+            },
+            "prepare.readSegment" : {
+              "count" : 122,
+              "seconds" : 0.080008249
+            },
+            "prepare.resample" : {
+              "count" : 122,
+              "seconds" : 0.02941703399999999
+            },
+            "prepare.segments" : {
+              "count" : 122,
+              "seconds" : 0
+            },
+            "prepare.total" : {
+              "count" : 1,
+              "seconds" : 0.13701675
+            },
+            "prepare.write" : {
+              "count" : 124,
+              "seconds" : 0.007001783000000002
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.001264292
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000253625
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1885.1218379735947,
+          "workerWallSeconds" : 0.138643125,
+          "writeInputSeconds" : 0.003087375
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.014322584,
+          "executeSeconds" : 2.194511291,
+          "ipcOverheadSeconds" : 0.0006361240000001267,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.6803450584411621,
+          "stage" : "transcribe",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "asr.assemble" : {
+              "count" : 2,
+              "seconds" : 0.000321458
+            },
+            "asr.checkpoint.read" : {
+              "count" : 27,
+              "seconds" : 0.00066
+            },
+            "asr.checkpoint.write" : {
+              "count" : 27,
+              "seconds" : 0.020238750000000003
+            },
+            "asr.decode" : {
+              "count" : 27,
+              "seconds" : 1.808140792
+            },
+            "asr.decode.audioSeconds" : {
+              "count" : 0,
+              "seconds" : 350.20799999999997
+            },
+            "asr.decode.first" : {
+              "count" : 27,
+              "seconds" : 1.8111758740000001
+            },
+            "asr.plan" : {
+              "count" : 2,
+              "seconds" : 0.195024125
+            },
+            "asr.vad.infer" : {
+              "count" : 2,
+              "seconds" : 0.191438875
+            },
+            "asr.vad.read" : {
+              "count" : 2,
+              "seconds" : 0.001906916
+            },
+            "asr.window.read" : {
+              "count" : 54,
+              "seconds" : 0.006320254000000001
+            },
+            "asr.windows" : {
+              "count" : 27,
+              "seconds" : 0
+            },
+            "model.load.asr" : {
+              "count" : 1,
+              "seconds" : 0.121513875
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 8.5125e-05
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.003839084
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1885.2629899978638,
+          "workerWallSeconds" : 2.193875167,
+          "writeInputSeconds" : 0.000428125
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.000659166,
+          "executeSeconds" : 0.916251208,
+          "ipcOverheadSeconds" : 0.0006529160000000589,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 2.890993118286133,
+          "stage" : "diarize",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "diarize.echo" : {
+              "count" : 1,
+              "seconds" : 0.005042958
+            },
+            "diarize.engine" : {
+              "count" : 1,
+              "seconds" : 0.847312292
+            },
+            "diarize.engine.audioLoading" : {
+              "count" : 1,
+              "seconds" : 0.0043860673904418945
+            },
+            "diarize.engine.clustering" : {
+              "count" : 1,
+              "seconds" : 0.0014840364456176758
+            },
+            "diarize.engine.embeddings" : {
+              "count" : 1,
+              "seconds" : 0.8329639434814453
+            },
+            "diarize.engine.postProcessing" : {
+              "count" : 1,
+              "seconds" : 0
+            },
+            "diarize.engine.segmentation" : {
+              "count" : 1,
+              "seconds" : 0.40082406997680664
+            },
+            "model.load.diarization" : {
+              "count" : 1,
+              "seconds" : 0.057382834
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.000100167
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000819833
+            }
+          },
+          "traceNotes" : {
+            "diarize.path" : "full-file"
+          },
+          "workerUptimeSeconds" : 1887.4737679958344,
+          "workerWallSeconds" : 0.915598292,
+          "writeInputSeconds" : 0.000523333
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.015906209,
+          "executeSeconds" : 0.008889958,
+          "ipcOverheadSeconds" : 0.0005990000000000006,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.8097639083862305,
+          "stage" : "reconcile",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.00341675
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.004451709
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1888.4023948907852,
+          "workerWallSeconds" : 0.008290958,
+          "writeInputSeconds" : 0.010355042
+        },
+        {
+          "build" : "release",
+          "commitSeconds" : 0.010207334,
+          "executeSeconds" : 13.324808375,
+          "ipcOverheadSeconds" : 0.0005539169999995153,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.8461570739746094,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "nominal→nominal",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 6,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 6,
+              "seconds" : 12.400378958
+            },
+            "llm.generate.sampling" : {
+              "count" : 6,
+              "seconds" : 0.18533233899999998
+            },
+            "llm.generatedTokens" : {
+              "count" : 885,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 6,
+              "seconds" : 0.5213910010000001
+            },
+            "llm.promptTokens" : {
+              "count" : 3043,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 850,
+              "seconds" : 0
+            },
+            "model.load.notes" : {
+              "count" : 1,
+              "seconds" : 0.355857625
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.001489208
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 7.8898037500000004
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.53802575
+            },
+            "notes.verify" : {
+              "count" : 4,
+              "seconds" : 2.515333875
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.003748542
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000947083
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1888.4361219406128,
+          "workerWallSeconds" : 13.324254458,
+          "writeInputSeconds" : 0.007794666
+        }
+      ],
+      "stopToNotesSeconds" : 16.65588092803955,
+      "stopToTranscriptSeconds" : 3.3117008209228516,
+      "suite" : "corpus",
+      "transcriptHash" : "83b2e6de2b9240f994f53039ca38c46e5657a55e937cb6bc979fc01467397037",
+      "words" : 318
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-planted-60min",
+      "notes" : {
+        "items" : 50,
+        "itemsWithValidEvidence" : 50,
+        "plantedExpected" : 2,
+        "plantedFound" : 2,
+        "uncertain" : 23
+      },
+      "peakAppMiB" : 28.078880310058594,
+      "peakWorkerMiB" : 1435.3164596557617,
+      "run" : "default",
+      "set" : "notes-planted",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.192738208,
+          "executeSeconds" : 239.489015167,
+          "ipcOverheadSeconds" : 0.0006889169999908518,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.7820858955383301,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "nominal→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 63,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 63,
+              "seconds" : 188.96337016700002
+            },
+            "llm.generate.sampling" : {
+              "count" : 63,
+              "seconds" : 1.642090757999999
+            },
+            "llm.generatedTokens" : {
+              "count" : 11182,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 63,
+              "seconds" : 50.00753054399998
+            },
+            "llm.promptTokens" : {
+              "count" : 69071,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 17586,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.025411875
+            },
+            "notes.extract" : {
+              "count" : 8,
+              "seconds" : 199.66562333200002
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 3.659644584
+            },
+            "notes.verify" : {
+              "count" : 54,
+              "seconds" : 35.761101208
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.085714084
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.002298584
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 1902.5455429553986,
+          "workerWallSeconds" : 239.48832625,
+          "writeInputSeconds" : 0.181101792
+        }
+      ],
+      "stopToNotesSeconds" : 239.8670048713684,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-planted-120min",
+      "notes" : {
+        "items" : 61,
+        "itemsWithValidEvidence" : 61,
+        "plantedExpected" : 6,
+        "plantedFound" : 6,
+        "uncertain" : 33
+      },
+      "peakAppMiB" : 65.82890319824219,
+      "peakWorkerMiB" : 1435.6133346557617,
+      "run" : "default",
+      "set" : "notes-planted",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.387412625,
+          "executeSeconds" : 556.318950166,
+          "ipcOverheadSeconds" : 0.0007379580000588248,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.9342379570007324,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 136,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 136,
+              "seconds" : 438.56200403700007
+            },
+            "llm.generate.sampling" : {
+              "count" : 136,
+              "seconds" : 3.315316383999999
+            },
+            "llm.generatedTokens" : {
+              "count" : 23698,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 136,
+              "seconds" : 116.12764537300004
+            },
+            "llm.promptTokens" : {
+              "count" : 146088,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 39392,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.04786225
+            },
+            "notes.extract" : {
+              "count" : 17,
+              "seconds" : 474.39505316699996
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 3.9136400829999998
+            },
+            "notes.verify" : {
+              "count" : 118,
+              "seconds" : 76.63444708600004
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.173146292
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.002802416
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2143.886849999428,
+          "workerWallSeconds" : 556.318212208,
+          "writeInputSeconds" : 0.370219958
+        }
+      ],
+      "stopToNotesSeconds" : 557.083517074585,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-0",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 10,
+        "itemsWithValidEvidence" : 10,
+        "uncertain" : 2
+      },
+      "peakAppMiB" : 72.53205108642578,
+      "peakWorkerMiB" : 1415.8321075439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.022901084,
+          "executeSeconds" : 22.119965625,
+          "ipcOverheadSeconds" : 0.0006700419999994267,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.1548018455505371,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 5,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 5,
+              "seconds" : 17.784059790999997
+            },
+            "llm.generate.sampling" : {
+              "count" : 5,
+              "seconds" : 0.25798763400000024
+            },
+            "llm.generatedTokens" : {
+              "count" : 1065,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 5,
+              "seconds" : 4.300883916
+            },
+            "llm.promptTokens" : {
+              "count" : 5494,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 572,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003371417
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 17.079951709
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.681611958
+            },
+            "notes.verify" : {
+              "count" : 3,
+              "seconds" : 2.334029916
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.009440375
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000773584
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2701.7567229270935,
+          "workerWallSeconds" : 22.119295583,
+          "writeInputSeconds" : 0.019666208
+        }
+      ],
+      "stopToNotesSeconds" : 22.164871215820312,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-1",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 10,
+        "itemsWithValidEvidence" : 10,
+        "uncertain" : 1
+      },
+      "peakAppMiB" : 62.95392608642578,
+      "peakWorkerMiB" : 1415.9102325439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.023871375,
+          "executeSeconds" : 20.639327208,
+          "ipcOverheadSeconds" : 0.0006425830000011956,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.7250480651855469,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 5,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 5,
+              "seconds" : 15.946290709
+            },
+            "llm.generate.sampling" : {
+              "count" : 5,
+              "seconds" : 0.23365082900000003
+            },
+            "llm.generatedTokens" : {
+              "count" : 981,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 5,
+              "seconds" : 4.660408833999999
+            },
+            "llm.promptTokens" : {
+              "count" : 5357,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 573,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003546166
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 15.8011835
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.630355042
+            },
+            "notes.verify" : {
+              "count" : 3,
+              "seconds" : 2.1855661250000002
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.009335541
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000770458
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2724.3271219730377,
+          "workerWallSeconds" : 20.638684625,
+          "writeInputSeconds" : 0.01982425
+        }
+      ],
+      "stopToNotesSeconds" : 20.685325860977173,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-2",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 12,
+        "itemsWithValidEvidence" : 12,
+        "uncertain" : 3
+      },
+      "peakAppMiB" : 55.59455108642578,
+      "peakWorkerMiB" : 1415.9102325439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.023618042,
+          "executeSeconds" : 25.612577,
+          "ipcOverheadSeconds" : 0.0006177500000035252,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.6470739841461182,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 8,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 8,
+              "seconds" : 20.832681501
+            },
+            "llm.generate.sampling" : {
+              "count" : 8,
+              "seconds" : 0.28513648899999977
+            },
+            "llm.generatedTokens" : {
+              "count" : 1232,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 8,
+              "seconds" : 4.742055709
+            },
+            "llm.promptTokens" : {
+              "count" : 6771,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 1414,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003466083
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 18.866807833
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.5076155829999998
+            },
+            "notes.verify" : {
+              "count" : 6,
+              "seconds" : 4.21438925
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.008871791
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000811417
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2745.248671889305,
+          "workerWallSeconds" : 25.611959249999998,
+          "writeInputSeconds" : 0.019352209
+        }
+      ],
+      "stopToNotesSeconds" : 25.657856225967407,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-3",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 13,
+        "itemsWithValidEvidence" : 13,
+        "uncertain" : 4
+      },
+      "peakAppMiB" : 11.985130310058594,
+      "peakWorkerMiB" : 1415.9102325439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.023140833,
+          "executeSeconds" : 30.961746375,
+          "ipcOverheadSeconds" : 0.0006462499999990712,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.6375970840454102,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 9,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 9,
+              "seconds" : 26.126980124
+            },
+            "llm.generate.sampling" : {
+              "count" : 9,
+              "seconds" : 0.284920299
+            },
+            "llm.generatedTokens" : {
+              "count" : 1531,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 9,
+              "seconds" : 4.793044292000001
+            },
+            "llm.promptTokens" : {
+              "count" : 7209,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 1695,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003409166
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 23.593169667
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.589874666
+            },
+            "notes.verify" : {
+              "count" : 7,
+              "seconds" : 4.753563293
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.008722084
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000991333
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2771.2391839027405,
+          "workerWallSeconds" : 30.961100125,
+          "writeInputSeconds" : 0.019331
+        }
+      ],
+      "stopToNotesSeconds" : 31.006652116775513,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-4",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 9,
+        "itemsWithValidEvidence" : 9,
+        "uncertain" : 3
+      },
+      "peakAppMiB" : 10.750755310058594,
+      "peakWorkerMiB" : 1415.9102325439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.022308708,
+          "executeSeconds" : 29.172557625,
+          "ipcOverheadSeconds" : 0.0006158750000011537,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.8876261711120605,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 9,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 9,
+              "seconds" : 24.316605333000005
+            },
+            "llm.generate.sampling" : {
+              "count" : 9,
+              "seconds" : 0.26008232200000003
+            },
+            "llm.generatedTokens" : {
+              "count" : 1420,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 9,
+              "seconds" : 4.815072334
+            },
+            "llm.promptTokens" : {
+              "count" : 7328,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 1696,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003469125
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 21.427063583
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.902694291
+            },
+            "notes.verify" : {
+              "count" : 7,
+              "seconds" : 4.8185843340000005
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.009019125
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000695
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2802.4895869493484,
+          "workerWallSeconds" : 29.17194175,
+          "writeInputSeconds" : 0.019722792
+        }
+      ],
+      "stopToNotesSeconds" : 29.21702003479004,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-5",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 9,
+        "itemsWithValidEvidence" : 9,
+        "uncertain" : 1
+      },
+      "peakAppMiB" : 10.750755310058594,
+      "peakWorkerMiB" : 1415.9102325439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.02276575,
+          "executeSeconds" : 24.675856875,
+          "ipcOverheadSeconds" : 0.0006299160000011739,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.3463480472564697,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 6,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 6,
+              "seconds" : 19.837338877
+            },
+            "llm.generate.sampling" : {
+              "count" : 6,
+              "seconds" : 0.27498208699999976
+            },
+            "llm.generatedTokens" : {
+              "count" : 1168,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 6,
+              "seconds" : 4.801931708
+            },
+            "llm.promptTokens" : {
+              "count" : 5927,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 852,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003386458
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 19.142921625
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.530994958
+            },
+            "notes.verify" : {
+              "count" : 4,
+              "seconds" : 2.9777964590000003
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.009071708
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000698583
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2831.9480559825897,
+          "workerWallSeconds" : 24.675226959,
+          "writeInputSeconds" : 0.019462458
+        }
+      ],
+      "stopToNotesSeconds" : 24.720608949661255,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-6",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 12,
+        "itemsWithValidEvidence" : 12,
+        "uncertain" : 4
+      },
+      "peakAppMiB" : 10.766380310058594,
+      "peakWorkerMiB" : 1415.9102325439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.023019333,
+          "executeSeconds" : 29.593179167,
+          "ipcOverheadSeconds" : 0.000609209000000277,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.36205291748046875,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 8,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 8,
+              "seconds" : 24.157394499000002
+            },
+            "llm.generate.sampling" : {
+              "count" : 8,
+              "seconds" : 0.26577899800000016
+            },
+            "llm.generatedTokens" : {
+              "count" : 1451,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 8,
+              "seconds" : 5.394129958
+            },
+            "llm.promptTokens" : {
+              "count" : 6920,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 1413,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003430708
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 22.111842
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 3.038737917
+            },
+            "notes.verify" : {
+              "count" : 6,
+              "seconds" : 4.417309419
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.009294125
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000989458
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2856.9641939401627,
+          "workerWallSeconds" : 29.592569958,
+          "writeInputSeconds" : 0.0198995
+        }
+      ],
+      "stopToNotesSeconds" : 29.638663053512573,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-7",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 12,
+        "itemsWithValidEvidence" : 12,
+        "uncertain" : 4
+      },
+      "peakAppMiB" : 10.766380310058594,
+      "peakWorkerMiB" : 1415.9102325439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.023597791,
+          "executeSeconds" : 29.200592167,
+          "ipcOverheadSeconds" : 0.000638834000000088,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.3861689567565918,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 10,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 10,
+              "seconds" : 24.379262957
+            },
+            "llm.generate.sampling" : {
+              "count" : 10,
+              "seconds" : 0.26964384400000024
+            },
+            "llm.generatedTokens" : {
+              "count" : 1406,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 10,
+              "seconds" : 4.778144041999999
+            },
+            "llm.promptTokens" : {
+              "count" : 7754,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 1972,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003530583
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 21.232749334
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.501391
+            },
+            "notes.verify" : {
+              "count" : 8,
+              "seconds" : 5.4406796250000005
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.009360833
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000833875
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2886.9882749319077,
+          "workerWallSeconds" : 29.199953333,
+          "writeInputSeconds" : 0.0198705
+        }
+      ],
+      "stopToNotesSeconds" : 29.246595859527588,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-8",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 9,
+        "itemsWithValidEvidence" : 9,
+        "uncertain" : 1
+      },
+      "peakAppMiB" : 10.766380310058594,
+      "peakWorkerMiB" : 1415.9102325439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.023077834,
+          "executeSeconds" : 29.113230125,
+          "ipcOverheadSeconds" : 0.00072687500000157,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.8803110122680664,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 9,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 9,
+              "seconds" : 24.202890044
+            },
+            "llm.generate.sampling" : {
+              "count" : 9,
+              "seconds" : 0.26492094600000027
+            },
+            "llm.generatedTokens" : {
+              "count" : 1444,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 9,
+              "seconds" : 4.871708707000002
+            },
+            "llm.promptTokens" : {
+              "count" : 7100,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 2078,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003688
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 22.36047225
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.61022825
+            },
+            "notes.verify" : {
+              "count" : 7,
+              "seconds" : 4.1191404149999995
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.009059791
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000741334
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2916.481710910797,
+          "workerWallSeconds" : 29.11250325,
+          "writeInputSeconds" : 0.019150541
+        }
+      ],
+      "stopToNotesSeconds" : 29.158055067062378,
+      "suite" : "notes"
+    },
+    {
+      "audioSeconds" : 0,
+      "completed" : true,
+      "id" : "notes-inject-9",
+      "notes" : {
+        "injectionPassed" : true,
+        "items" : 10,
+        "itemsWithValidEvidence" : 10,
+        "uncertain" : 4
+      },
+      "peakAppMiB" : 10.766380310058594,
+      "peakWorkerMiB" : 1415.8633575439453,
+      "run" : "default",
+      "set" : "notes-injection",
+      "stages" : [
+        {
+          "build" : "release",
+          "commitSeconds" : 0.022076916,
+          "executeSeconds" : 28.900280667,
+          "ipcOverheadSeconds" : 0.0006547089999990874,
+          "qos" : "userInitiated",
+          "queueWaitSeconds" : 0.35041284561157227,
+          "stage" : "notes",
+          "state" : "succeeded",
+          "thermal" : "fair→fair",
+          "trace" : {
+            "llm.calls" : {
+              "count" : 9,
+              "seconds" : 0
+            },
+            "llm.generate" : {
+              "count" : 9,
+              "seconds" : 24.025231249
+            },
+            "llm.generate.sampling" : {
+              "count" : 9,
+              "seconds" : 0.293754759
+            },
+            "llm.generatedTokens" : {
+              "count" : 1403,
+              "seconds" : 0
+            },
+            "llm.prefill" : {
+              "count" : 9,
+              "seconds" : 4.8332763750000005
+            },
+            "llm.promptTokens" : {
+              "count" : 7356,
+              "seconds" : 0
+            },
+            "llm.reusedPromptTokens" : {
+              "count" : 1693,
+              "seconds" : 0
+            },
+            "notes.chunking" : {
+              "count" : 1,
+              "seconds" : 0.003628458
+            },
+            "notes.extract" : {
+              "count" : 1,
+              "seconds" : 21.398736083
+            },
+            "notes.overview" : {
+              "count" : 1,
+              "seconds" : 2.523396542
+            },
+            "notes.verify" : {
+              "count" : 7,
+              "seconds" : 4.953519459
+            },
+            "stage.readInput" : {
+              "count" : 1,
+              "seconds" : 0.009219958
+            },
+            "stage.writeOutput" : {
+              "count" : 1,
+              "seconds" : 0.000742667
+            }
+          },
+          "traceNotes" : {
+
+          },
+          "workerUptimeSeconds" : 2945.95168697834,
+          "workerWallSeconds" : 28.899625958,
+          "writeInputSeconds" : 0.019008834
+        }
+      ],
+      "stopToNotesSeconds" : 28.94474506378174,
+      "suite" : "notes"
+    }
+  ],
+  "quality" : {
+    "boundaryFailures" : [
+
+    ],
+    "controlWords" : {
+      "music" : 0,
+      "noise" : 0,
+      "silence" : 0
+    },
+    "failedItems" : [
+
+    ],
+    "notes" : {
+      "injections" : 10,
+      "injectionsPassed" : 10,
+      "items" : 371,
+      "itemsWithValidEvidence" : 371,
+      "plantedExpected" : 8,
+      "plantedFound" : 8,
+      "uncertain" : 145
+    },
+    "sets" : {
+      "ami-clean" : {
+        "correct" : 0.9676348547717842,
+        "der" : 0.2533696100094624,
+        "failedSeconds" : 104.00509762499999,
+        "labelled" : 0.9698189134808853,
+        "wer" : 0.2672966587917651
+      },
+      "ami-difficult" : {
+        "correct" : 0.9795201872440024,
+        "der" : 0.2777579242608083,
+        "failedSeconds" : 13.204,
+        "labelled" : 0.9649915302089215,
+        "wer" : 0.24166666666666667
+      },
+      "librispeech" : {
+        "failedSeconds" : 0,
+        "wer" : 0.0231023102310231
+      }
+    }
+  }
+}

@@ -224,8 +224,12 @@ public final class JobScheduler: @unchecked Sendable {
     private func run(_ input: ProcessingJob) async {
         var job = input
         let dir = workRoot.appending(path: job.key.meetingID.rawValue).appending(path: "\(job.key.stage.rawValue)-\(job.key.inputHash.prefix(12))")
+        // T16: app-side timing of this execution (written to the job directory when it ends; never affects results).
+        let startedAt = Date(), t0 = ContinuousClock.now
+        var writeInputSeconds = 0.0, executeSeconds = 0.0, commitSeconds = 0.0
         do {
             try writeInput(for: job, to: dir)
+            writeInputSeconds = Perf.seconds(since: t0)
             try job.transition(to: .running, at: Date())
             job.lease = JobLease(owner: owner, heartbeatAt: Date(), expiresAt: Date().addingTimeInterval(configuration.leaseSeconds))
             job.errorCode = nil
@@ -254,11 +258,21 @@ public final class JobScheduler: @unchecked Sendable {
         }
         let descriptor = JobDescriptor(jobID: job.id, key: job.key, workDirectory: dir, checkpoint: job.checkpoint)
         let jobID = job.id
+        defer {
+            let timing = SchedulerTiming(stage: job.key.stage.rawValue, queuedAt: input.createdAt, startedAt: startedAt, finishedAt: Date(),
+                                         writeInputSeconds: writeInputSeconds, executeSeconds: executeSeconds, commitSeconds: commitSeconds,
+                                         state: job.state.rawValue, attempt: job.attempt)
+            try? ContractCoding.encode(timing).write(to: dir.appending(path: SchedulerTiming.fileName), options: .atomic)
+        }
         do {
+            let executeStart = ContinuousClock.now
             let response = try await executor.execute(descriptor) { [weak self] p in self?.heartbeat(jobID, p) }
+            executeSeconds = Perf.seconds(since: executeStart)
             job = (try store.jobs(meeting: job.key.meetingID).first { $0.id == jobID }) ?? job
             switch response {
             case .completed(_, let url, let hash):
+                let commitStart = ContinuousClock.now
+                defer { commitSeconds = Perf.seconds(since: commitStart) }
                 try commit(&job, output: url, hash: hash)
             case .cancelled:
                 if lock.withLock({ running?.cancelledForPressure ?? false }) {

@@ -56,6 +56,20 @@ struct ReconcilerTests {
         #expect(r.revision.segments.allSatisfy { seg in seg.words.allSatisfy { $0.speaker == seg.speaker } })
     }
 
+    /// Exact ties used to follow dictionary order, which is seeded per process: the same inputs gave a different
+    /// speaker (or `.multiple` order) on each run. Ties now follow first-seen order (diarization, then turn order).
+    @Test func tiesAreBrokenDeterministically() throws {
+        let asr = Build.asr([("both", 5.0, 5.2, .systemOutput), ("half", 8.0, 8.4, .systemOutput)])
+        // "both" lies fully inside an A turn and a B turn; "half" is covered 50/50 by A and B (one turn each side).
+        let d = Build.diar([(1, 4, "C"), (4.9, 5.5, "A"), (4.95, 5.6, "B"), (7.0, 8.2, "A"), (8.2, 9, "B")])
+        let r = try MeetingReconciler().combine(asr, diarization: [d], sourceMap: map, edits: [])
+        let w = Dictionary(uniqueKeysWithValues: r.revision.allWords.map { ($0.text, $0) })
+        let idOf = Dictionary(uniqueKeysWithValues: r.revision.speakers.flatMap { s in s.clusters.map { ($0.cluster, s.id) } })
+        #expect(w["both"]!.speaker == .multiple([idOf[ClusterID("A")]!, idOf[ClusterID("B")]!]))
+        #expect(w["half"]!.speaker == .multiple([idOf[ClusterID("A")]!, idOf[ClusterID("B")]!]))
+        #expect(w["half"]!.candidates.map(\.speaker) == [idOf[ClusterID("A")]!, idOf[ClusterID("B")]!])
+    }
+
     @Test func personalMicProposesOneLocalSpeakerAndRoomModeDiarizesMic() throws {
         let asr = Build.asr([("we", 1, 1.3, .microphone), ("agree", 1.4, 1.8, .microphone), ("ok", 3, 3.3, .systemOutput)])
         let sys = Build.diar([(2.5, 4, "R")])

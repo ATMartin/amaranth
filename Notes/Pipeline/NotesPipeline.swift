@@ -93,7 +93,7 @@ public final class NotesPipeline: @unchecked Sendable {
         if personal.count < doc.lines.filter(\.isPersonalNote).count {
             limitations.append("Only the first part of your included personal notes fit in the notes model's context.")
         }
-        let chunks = makeChunks(spoken, doc: doc, reserve: personalTokens)
+        let chunks = Perf.measure("notes.chunking") { makeChunks(spoken, doc: doc, reserve: personalTokens) }
         diagnostics.chunks = chunks.count
         let lineSpeakers = Dictionary(doc.lines.map { ($0.id, $0.speaker) }, uniquingKeysWith: { a, _ in a })
         func passage(_ ids: [Int], context: Int = 0) -> String {
@@ -113,7 +113,7 @@ public final class NotesPipeline: @unchecked Sendable {
             try cancellation.check()
             let rendered = doc.render(chunk + personal)
             let allowed = Set(chunk.map(\.id) + personal.map(\.id))
-            guard let out = try extract(rendered, cancellation: cancellation) else {
+            guard let out = try Perf.measure("notes.extract", { try extract(rendered, cancellation: cancellation) }) else {
                 let span = "\(NotesInputDocument.clock(chunk.first?.start ?? 0))–\(NotesInputDocument.clock(chunk.last?.start ?? 0))"
                 diagnostics.failedChunks.append(span)
                 limitations.append("Notes could not be generated for part of the meeting (\(span)); read the transcript for that part.")
@@ -166,7 +166,9 @@ public final class NotesPipeline: @unchecked Sendable {
             guard needs else { verified.append(c); continue }
             guard diagnostics.verifications < options.maxVerifications else { c.uncertain = true; verified.append(c); continue }
             let pText = passage(c.lines, context: 1)
-            guard let v = try verify(c, passage: pText, cancellation: cancellation) else { c.uncertain = true; verified.append(c); continue }
+            guard let v = try Perf.measure("notes.verify", { try verify(c, passage: pText, cancellation: cancellation) }) else {
+                c.uncertain = true; verified.append(c); continue
+            }
             diagnostics.verifications += 1
             done += 1
             progress((Double(chunks.count) + Double(done) / Double(max(1, toVerify)) * Double(chunks.count)) / totalUnits)
@@ -189,7 +191,8 @@ public final class NotesPipeline: @unchecked Sendable {
 
         // 5. Reduce
         var reduced = reduce(verified, doc: doc)
-        reduced.sort { $0.firstLine < $1.firstLine }
+        // Ties (same first line, different kinds) need a fixed order: it is the overview prompt's order.
+        reduced.sort { ($0.firstLine, $0.kind.rawValue) < ($1.firstLine, $1.kind.rawValue) }
         diagnostics.uncertain = reduced.filter(\.uncertain).count
 
         // 6. Overview + assemble
@@ -211,7 +214,7 @@ public final class NotesPipeline: @unchecked Sendable {
                                      evidence: refs(c.lines), owner: c.owner, ownerEvidence: refs(ownerLines(c)),
                                      due: c.due.map { DueDate(originalText: $0) }, uncertain: c.uncertain))
         }
-        let overview = try makeOverview(reduced, refs: refs, passage: { passage($0) }, cancellation: cancellation)
+        let overview = try Perf.measure("notes.overview") { try makeOverview(reduced, refs: refs, passage: { passage($0) }, cancellation: cancellation) }
         progress(1)
         limitations += computedLimitations(transcript: transcript, doc: doc, scratchpadIncluded: scratchID != nil)
         let limitationItems = limitations.enumerated().map { SummaryItem(id: SummaryItemID("limitation-\($0.offset)"), kind: .limitation, text: $0.element, evidence: []) }
@@ -339,7 +342,7 @@ public final class NotesPipeline: @unchecked Sendable {
         }
         // Per-kind caps, spread across the meeting rather than truncating at the end.
         var kept: [Candidate] = []
-        for (kind, group) in Dictionary(grouping: out, by: \.kind) {
+        for (kind, group) in Dictionary(grouping: out, by: \.kind).sorted(by: { $0.key.rawValue < $1.key.rawValue }) {
             let cap = options.caps[kind.rawValue] ?? Int.max
             guard group.count > cap else { kept += group; continue }
             let ordered = group.sorted { $0.firstLine < $1.firstLine }
