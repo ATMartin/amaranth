@@ -6,6 +6,7 @@
 | [0002](0002-domain-contracts.md) | Frozen domain contracts v1 | Accepted (T01) |
 | [0003](0003-confirmed-scope.md) | User-confirmed scope, including live text promotion | Accepted (T01) |
 | [0004](0004-milestones-and-performance-priority.md) | Milestone D reduced to T14; T12/T13 moved to final Milestone F; performance Milestone E; processing during recording; speed first for transcription | Accepted (2026-10-22) |
+| [0005](0005-design-review-2026-10-23.md) | Design review of 2026-10-23: UI direction, milestones G–N (T22–T55), topics removed from notes, folders not tags, ask-anything search, order G → T21 → H–N → F | Accepted (2026-10-23) |
 | [capture/0001](capture/0001-capture-design.md) | Core Audio process tap + HAL mic + C realtime ring + CAF segment writer | Accepted (T03); manual app/device matrix pending |
 | [models/candidates](models/candidates.md) | Pinned package and model candidates (research) | Input to T02 |
 | [models/0001](models/0001-model-selection.md) | Default model pack; 16 GB GO (projected), 8 GB unverified | Accepted, provisional (T02) |

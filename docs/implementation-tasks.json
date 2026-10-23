@@ -10,7 +10,8 @@
     "stretch_memory_target_gb": 8,
     "user_test_machine": "M2 Max, macOS 26.5.2",
     "speakers": "Editable anonymous labels",
-    "retention": "Until explicit user deletion"
+    "retention": "Until explicit user deletion",
+    "design_review_2026_10_23": "No tags (folders only); no accounts, spaces, invitations or cloud; Recording tab unchanged; export unchanged; no live speaker count; topics removed from notes; ask-anything is the search direction"
   },
   "assumptions": {
     "language": "English",
@@ -32,16 +33,27 @@
       "hardware_and_os",
       "remaining_failures",
       "next_ready_task"
-    ]
+    ],
+    "milestone_order_2026_10_23": "G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
+    "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
+    "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md"
   },
   "milestones": {
     "A": "Prove feasibility: T01-T04 (validated)",
     "B": "Reliable recorder: T05-T08 (validated)",
     "C": "Complete usable workflow: T09-T11 (validated)",
     "D": "Live text: T14",
-    "E": "Local model performance and delay reduction: T16-T21 (docs/milestone-e-performance-plan.md)",
-    "F": "Release qualification: T12, T13 (moved from D on 2026-10-22; measures the Milestone E pipeline)",
-    "Later": "T15"
+    "E": "Local model performance and delay reduction: T16-T21 (docs/milestone-e-performance-plan.md). T21 runs after Milestone G (user decision 2026-10-23)",
+    "F": "Release qualification: T12, T13 (moved from D on 2026-10-22; runs after Milestone N by user decision 2026-10-23)",
+    "Later": "T15",
+    "G": "Design-review quick wins (notes and transcript noise, rename, cards, focus, tooltips): T22-T29. Runs before T21",
+    "H": "Recorder simplification (sidebar = meetings only, toolbar Record): T30-T34",
+    "I": "Transcript reading view and density: T35-T38",
+    "J": "Folders (single level, no tags): T39-T42",
+    "K": "Light mode and lightweight visual language: T43-T45",
+    "L": "Notes templates: T46-T48",
+    "M": "Calendar and people placeholders: T49-T51",
+    "N": "Ask anything over meetings (local, evidence-backed): T52-T55"
   },
   "tasks": [
     {
@@ -691,6 +703,1099 @@
         "Base-M2 results remain projections marked unverified."
       ],
       "fallback": "Report unmet gates explicitly; never relabel a failing gate as passing."
+    },
+    {
+      "id": "T22",
+      "title": "Add a global “Details” toggle and hide note evidence links by default",
+      "milestone": "G",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T10"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/MeetingDetailView.swift",
+        "App/Notes/NotesPane.swift",
+        "Presentation/MeetingDetail.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Current behaviour: every generated note item in NotesPane.swift (NoteItemRow) shows a row of blue time links (evidence into the transcript) under its text, and an orange question-mark when the item is uncertain. The user likes attribution but finds the links hard to read and sometimes over-broad; they want them hidden by default and switchable on when they want to trace a claim. The same switch will later drive the transcript's skim/detail mode (T25) and the header badges (T27), so build it as one shared, persisted state, not a notes-only flag.",
+      "deliverables": [
+        "Add `@AppStorage(\"reviewShowDetails\") var showDetails = false` exposed through the environment (or a small observable `ReviewPreferences` object injected in MainView) so NotesPane, TranscriptPane and the header can all read it. The toggle is one global, persisted preference (not per meeting).",
+        "Add a compact toggle control in MeetingDetailView.header, right-aligned on the same line as the Notes/Transcript/Recording segmented picker: an icon button (SF Symbol `info.circle` / `info.circle.fill` when on) with tooltip “Show details: where each note came from, transcript gaps and flags (⌘D)”. Add the ⌘D shortcut here (T29 only adds a View-menu item that calls the same action; never register ⌘D twice).",
+        "In NoteItemRow, render the evidence links row (the `HStack` of time buttons and the “your private note” label) only when `showDetails` is true. Keep the uncertain marker (question-mark icon) visible in both modes; it is a quality warning, not attribution.",
+        "Keep `jump(_:)` to the transcript working when details are on. No change to SummaryRevision, storage or export."
+      ],
+      "acceptance": [
+        "Fresh launch: Notes tab shows items without time links; toggling on shows them; the choice survives relaunch.",
+        "`Amaranth.app --self-test ui-render` renders the notes pane in both states without AppKit warnings.",
+        "A unit test in Tests/ (Presentation or App tests, whichever already renders MeetingDetail) covers the default value and the key name, so a later rename cannot silently reset users.",
+        "Exports and JSON are byte-identical to before (run the existing Export tests)."
+      ],
+      "fallback": "If a shared environment value is awkward in the current view tree, a single `@AppStorage` read in each view with the same key is acceptable for this task; note it for T25.",
+      "review_timestamps": [
+        "00:07–00:38"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-notes-evidence-links.png"
+      ]
+    },
+    {
+      "id": "T23",
+      "title": "Remove Topics from generated notes (UI, prompt and export)",
+      "milestone": "G",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T18"
+      ],
+      "owner_role": "Notes pipeline",
+      "module_scope": [
+        "Notes/Pipeline/NotesPrompts.swift",
+        "Notes/Pipeline/NotesPipeline.swift",
+        "App/Notes/NotesPane.swift",
+        "Export/Exporter.swift",
+        "Benchmarks/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user said “Topics we don't really need” and, when asked, chose to stop generating them, not only hide them (faster notes). Today the notes pipeline extracts overview, topics, decisions, action items, open questions and limitations (`SummaryContent` in Domain/Summary/Summary.swift) and NotesPane shows a Topics section. Notes quality is guarded by the Milestone E checks (100% valid evidence, planted coverage 6/6, injection suite 10/10, uncertain share ≤ baseline + 5 points; see docs/milestone-e-performance-plan.md and docs/decisions/notes/0002-faster-notes.md). Decision record 0005 lists this change.",
+      "deliverables": [
+        "Stop requesting topics in the extraction prompt(s) in NotesPrompts.swift and drop the topic stage from NotesPipeline.swift. `SummaryContent.topics` must remain in the Domain contract (frozen; older revisions decode it) but new revisions write an empty array.",
+        "Remove the Topics section from NotesPane.generated(_:). Exporter.text/markdown/json: omit the Topics section when the array is empty (keep it for old revisions that have topics).",
+        "Bump the notes prompt version (`promptVersion`) and `PipelineVersions.notes` only if the existing stale-detection rules require it; existing notes must NOT all become “stale” just because topics were removed. Document which you chose and why in docs/decisions/notes/0002-faster-notes.md (append a dated section).",
+        "Re-run the notes checks and the 60-minute corpus notes timing (perf-suite, Release build, compare against the latest baseline) and record the time delta in docs/qualification/."
+      ],
+      "acceptance": [
+        "Notes checks pass: 100% valid evidence, planted coverage 6/6, injection 10/10, uncertain share within bound.",
+        "No Topics section appears for newly generated notes in the UI or in TXT/MD exports; an old revision with topics still renders and exports.",
+        "Stop → notes time for the 60-minute corpus meeting is no slower than before (report the number)."
+      ],
+      "fallback": "If removing topics measurably hurts another section's quality (planted coverage drops), keep topic extraction internal as an intermediate step but never store or show it; report the finding.",
+      "review_timestamps": [
+        "00:38–00:46"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-notes-evidence-links.png"
+      ]
+    },
+    {
+      "id": "T24",
+      "title": "Collapse “Your notes” and “Private scratchpad” by default",
+      "milestone": "G",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T10"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Notes/NotesPane.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. NotesPane shows two always-open editors under the generated notes: “Your notes” (user Markdown, never overwritten by regeneration) and “Private scratchpad” (with the “Use these private notes when generating notes” switch). The user does not use them yet and finds them visual noise, but wants the features kept. Goal: when opening a meeting the generated notes are all that is visible unless the user expands these.",
+      "deliverables": [
+        "Wrap each editor in a `DisclosureGroup` (or equivalent collapsible section) collapsed by default. Persist expansion per editor with `@AppStorage(\"notesUserNotesExpanded\")` and `@AppStorage(\"notesScratchpadExpanded\")`.",
+        "When collapsed and the editor has content, show a subtle indicator in the header (for example “Your notes · 120 words” or a filled dot) so saved text is never invisible.",
+        "Collapsing must call `flushPendingSave()` so a debounced edit is written; keep every existing save path (meeting switch, disappear, quit).",
+        "The include-in-notes switch stays inside the scratchpad section (visible only when expanded). The ‘These notes also used your private scratchpad’ label above the generated notes stays where it is in both states."
+      ],
+      "acceptance": [
+        "Fresh launch shows generated notes only; expanding either section and relaunching restores the expansion state.",
+        "Typing then collapsing within one second still saves (add a test around the debounce/flush path if one does not exist; see `pending` in NotesPane).",
+        "`--self-test ui-render` passes in collapsed and expanded states."
+      ],
+      "fallback": "If DisclosureGroup animation conflicts with the TextEditor height, use a plain toggle button with a conditional view instead.",
+      "review_timestamps": [
+        "01:04–01:31"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-notes-evidence-links.png"
+      ]
+    },
+    {
+      "id": "T25",
+      "title": "Transcript skim mode: hide gap rows and flag text unless Details is on",
+      "milestone": "G",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T22"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Transcript/TranscriptPane.swift",
+        "Presentation/TranscriptRows.swift",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The transcript List shows orange rows such as “00:17–00:19 · Speech here could not be transcribed” and “00:00–00:09 · Audio was not recorded” (TranscriptRows builds `.gap` rows) plus orange text flags on rows (overlap, speaker uncertain, echo?, check text, edited) and a MIC/SYS badge. In long meetings these dominate the page. The user wants a lightweight default “skim” view and a detail mode (the T22 toggle) that shows everything. Plan principle still applies: never present missing audio as if nothing happened, so skim mode must keep a minimal, inspectable trace.",
+      "deliverables": [
+        "Read the T22 `showDetails` state in TranscriptPane. When false: (a) `.gap` rows are not rendered as text rows; instead render a 1-pt hairline divider in the row slot with a tooltip and accessibility label such as “Audio missing 00:17–00:19 (speech could not be transcribed)”; (b) row flags render as icon-only (no caption text) with the existing tooltips; (c) the MIC/SYS badge is hidden. When true: current rendering.",
+        "Keep row identity (`TranscriptRow.id`) identical in both modes so evidence jumps (`library.focusRowID`) and the context menu keep working; filtering belongs in the view or in a `TranscriptRows.build(..., includeGaps:)` parameter, not in the stored rows.",
+        "Keep the ‘Live text (provisional)’ banner and the ‘edits could not be re-applied’ banner in both modes.",
+        "Add unit tests in Tests/ for the row-building/filtering helper: gaps collapse in skim mode, speech rows unchanged, IDs stable."
+      ],
+      "acceptance": [
+        "With details off, a transcript with many gaps shows only speech rows and hairlines; with details on it matches today's rendering.",
+        "Clicking an evidence link from the Notes tab scrolls to the right row in both modes.",
+        "VoiceOver still announces every gap (hairline has an accessibility label).",
+        "`--self-test ui-render` passes in both modes."
+      ],
+      "fallback": "If hairlines are visually lost in the List, use a 4-pt tinted strip without text; do not drop the gap entirely.",
+      "review_timestamps": [
+        "02:45–03:34"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-transcript-gap-rows.png",
+        "docs/design-review/2026-10-23/amaranth-transcript-flat.png"
+      ]
+    },
+    {
+      "id": "T26",
+      "title": "Rename meetings from the sidebar context menu; make the title header static",
+      "milestone": "G",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T10"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "App/Library/MeetingDetailView.swift",
+        "App/Transcript/TranscriptPane.swift",
+        "docs/qualification/ui-manual-checklist.md",
+        "App/Shared/EditTextSheet.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The meeting title at the top of MeetingDetailView is a borderless `TextField` (`.textFieldStyle(.plain)`), so users cannot tell it is editable (see amaranth-title-field-selected.png: the only hint is a selection highlight after clicking). The user wants: the header title static; “Rename…” next to “Delete” in the meeting's right-click menu in the sidebar; renames reflected everywhere (`LibraryModel.rename(_:to:)` already exists).",
+      "deliverables": [
+        "Replace the header TextField with a non-editable `Text(detail.meeting.title)` (same font). Remove the `title` state and `onSubmit` rename path.",
+        "Move `EditTextSheet` out of TranscriptPane.swift into a shared file (e.g. App/Shared/EditTextSheet.swift) and reuse it for a “Rename Meeting” sheet: pre-filled with the current title; Save calls `library.rename`; an empty or whitespace-only title keeps the old title.",
+        "Add “Rename…” as the first item of the MeetingRow context menu in LibrarySidebar (above “Delete Audio Only…”). Do not add it to the detail toolbar: the sidebar card is the management surface, per the review.",
+        "Update docs/qualification/ui-manual-checklist.md: add a context-menu rename step (there is no inline-rename step today)."
+      ],
+      "acceptance": [
+        "Renaming from the sidebar updates the card, the header and search results (FTS title entry) immediately.",
+        "The header no longer takes keyboard focus or shows an edit cursor.",
+        "Unit test: `LibraryModel.rename` with an empty string leaves the title unchanged (add if missing)."
+      ],
+      "fallback": "None needed; the rename API exists.",
+      "review_timestamps": [
+        "03:54–04:44"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-title-field-selected.png",
+        "docs/design-review/2026-10-23/amaranth-sidebar-recorder-and-cards.png"
+      ]
+    },
+    {
+      "id": "T27",
+      "title": "Lightweight meeting cards: title, date, duration and one status glyph with a tooltip",
+      "milestone": "G",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T22"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "App/Library/MeetingDetailView.swift",
+        "Presentation/MeetingDetail.swift",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Each sidebar card (MeetingRow) shows title, date, duration, an AudioBadge line (“Audio saved · 2,450 s missing”) and a ProcessingBadge line (“Processed”). The user wants cards to be just title, time and duration, plus one small indicator: a spinner (or similar) while something is processing, a warning glyph when attention is needed, a check (or nothing) when complete; each with a tooltip explaining it. The detail header shows the same two badges; keep them there only when the T22 Details toggle is on.",
+      "deliverables": [
+        "Add a `MeetingStatusGlyph` view mapping `MeetingStatus` (audio + processing headlines, see AudioBadge/ProcessingBadge cases) to exactly one glyph + tooltip: recording → red `record.circle`; queued/running/suspended → small `ProgressView` (or `hourglass` when suspended) with the existing `waiting(_:)`/stage text as tooltip; failed → red `exclamationmark.triangle` (“Transcribing failed — retry available”); complete with audio intact → secondary `checkmark.circle` (“Processed · audio saved”); complete but audio missing/interrupted → orange `exclamationmark.circle` (“Processed · 2,450 s of audio missing — see Recording tab”); audio deleted → secondary `trash` (“Audio deleted; transcript and notes kept”); not processed → secondary `circle.dashed` (“Not processed”); audio `paused`/`saving`/`notStarted` and processing `cancelled` must also map (paused → `pause.circle`, saving → `arrow.down.circle`, cancelled → `stop.circle` “Processing stopped — retry available”). Enumerate every `MeetingStatus.AudioHeadline` and `ProcessingHeadline` case in LibraryView.swift; the test fails on an unmapped case.",
+        "MeetingRow: title (headline), one caption line “Oct 23, 2026 at 10:01 AM · 49:36”, glyph trailing on the title line. Remove the two badge lines.",
+        "MeetingDetailView.header: show the same glyph by default; show the full AudioBadge + ProcessingBadge only when `showDetails` is on. Keep the Retry/Process buttons visible regardless.",
+        "Put the mapping in Presentation (e.g. `MeetingStatusPresentation`) so Tests/ can enumerate every `MeetingStatus` combination and assert a glyph and non-empty tooltip exist; VoiceOver label = tooltip text."
+      ],
+      "acceptance": [
+        "Every status case has a glyph and tooltip (unit test enumerates cases).",
+        "Sidebar cards are three lines or fewer at the default text size; the list of two meetings in the review screenshot fits in under half the previous height.",
+        "`--self-test ui-render` passes."
+      ],
+      "fallback": "If `ProgressView` in a List row is costly for 500 meetings, use a static `arrow.triangle.2.circlepath` glyph instead of an animated spinner.",
+      "review_timestamps": [
+        "04:44–05:37"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-sidebar-recorder-and-cards.png"
+      ]
+    },
+    {
+      "id": "T28",
+      "title": "Make editable fields visibly editable: focus ring and contrasting cursor",
+      "milestone": "G",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T26"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/",
+        "docs/qualification/ui-manual-checklist.md"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user cannot tell which fields are editable (meeting title was the worst case; T26 removes it). Granola has the same problem, but at least shows a cursor. Rule requested: any editable field that cannot be made obviously editable must show a clear contrast-colored insertion cursor and focus ring when focused, and a placeholder when empty.",
+      "deliverables": [
+        "Audit every `TextField`/`TextEditor` in App/: recorder title (until T31 moves it), ‘Your notes’, ‘Private scratchpad’, scratchpad-while-recording, rename and correct-text sheets, search field, Settings fields. List them in the checklist.",
+        "Apply a consistent focused style: accent-colored focus ring (`.focusEffectDisabled(false)`/default ring kept where macOS already draws one; for `.plain` styles add a 1-pt accent border when focused) and an accent insertion point for `TextEditor` (NSTextView `insertionPointColor`, via an `NSViewRepresentable` wrapper or `introspect`-free appearance hook; no new dependencies).",
+        "Every editable field has placeholder text when empty."
+      ],
+      "acceptance": [
+        "Checklist lists each field with ‘focus ring visible’ and ‘cursor visible’ ticked, with screenshots in docs/qualification/evidence/<date>/ (dark mode now; light mode re-checked in T44).",
+        "No field uses `.textFieldStyle(.plain)` without a focus indicator."
+      ],
+      "fallback": "If a custom insertion-point color is not achievable without AppKit subclassing, keep the system cursor and rely on the focus ring; record which fields.",
+      "review_timestamps": [
+        "12:43–13:03"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-title-field-selected.png"
+      ]
+    },
+    {
+      "id": "T29",
+      "title": "Tooltips with keyboard shortcuts on every main action",
+      "milestone": "G",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T10"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/AmaranthApp.swift",
+        "App/Library/MeetingDetailView.swift",
+        "App/Recorder/QuickRecorderView.swift",
+        "App/Library/LibraryView.swift",
+        "docs/qualification/ui-manual-checklist.md"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user liked Granola's tooltips that show the keyboard shortcut (‘New note ⌘N’) and wants the same. Existing shortcuts: Record ⌘⇧R, Pause/Resume ⌘⇧P, Stop ⌘⇧S, Space = play/pause. Toolbar buttons (Models, Export menu, Delete menu, sidebar toggle) and the Notes/Transcript/Recording picker have no shortcuts and partial tooltips. Record/Pause/Stop shortcuts currently live on buttons in `RecorderPanel` (QuickRecorderView.swift), which T31 deletes; do not spend effort on tooltips there.",
+      "deliverables": [
+        "Add shortcuts: Notes ⌘1, Transcript ⌘2, Recording ⌘3; Export Markdown ⌘E; focus the search/ask field ⌘K (T52 keeps ⌘K when it moves search); a View-menu item “Show Details” that calls the T22 action (the ⌘D shortcut itself is registered in T22, not here). Register them in a `.commands { CommandMenu(\"Meeting\") … }` in AmaranthApp.swift so they appear in the menu bar as well.",
+        "Only controls that survive T31 (toolbar, detail header, tabs, menus) get `.help(\"Action (shortcut)\")` using the ⌘ ⇧ ⌥ glyphs, e.g. “Record (⌘⇧R)”, “Stop and save (⌘⇧S)”.",
+        "Document the shortcut list in docs/release/TESTER-GUIDE.md (a short table) and in the UI checklist."
+      ],
+      "acceptance": [
+        "Hovering each control shows a tooltip with its shortcut; each shortcut works with the main window focused and does not fire while a sheet is open.",
+        "No duplicate shortcut registrations (Xcode runtime warning free)."
+      ],
+      "fallback": "If a SwiftUI segmented Picker cannot take per-segment shortcuts, use `.keyboardShortcut` on hidden buttons that set `tab`.",
+      "review_timestamps": [
+        "09:35–09:47"
+      ]
+    },
+    {
+      "id": "T30",
+      "title": "Recording defaults live in Settings",
+      "milestone": "H",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T10"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Settings/SettingsView.swift",
+        "App/Recorder/RecorderModel.swift",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Today the sidebar recorder form asks for title, source selection (mic + system / mic only / system only) and microphone for every recording. The user wants these to be defaults in the app Settings so that a single Record click starts a meeting; per-meeting overrides come in T31. RecorderModel already has `selection`, `microphoneUID`, `inputs`.",
+      "deliverables": [
+        "Settings → new “Recording” section: Sources picker (default: Microphone + system audio), Microphone picker listing `RecorderModel.inputs` plus “System default”. Persist with the keys RecorderModel already reads: `defaultSources` (SourceSelection raw value) and `microphoneUID` (String?) in UserDefaults (RecorderModel.swift lines 12–13), so existing users keep their choice; do not invent new keys.",
+        "RecorderModel reads the defaults at init and before each `start()`. Remove the two `UserDefaults.standard.set` writes in `start()` (lines 77–78) so a per-recording override (T31) never overwrites the Settings defaults; keep `selection`/`microphoneUID` as the per-recording values.",
+        "If the saved microphone is not currently connected, fall back to System default for that recording and surface a one-line notice (`recoveryMessage` or a new `notice`) once; do not block recording.",
+        "Keep the existing processing toggles untouched. Settings copy: plain language, one sentence each, like the existing sections."
+      ],
+      "acceptance": [
+        "Changing defaults in Settings changes what the next Record uses without touching the recorder form.",
+        "Unit test: missing device → system default fallback with a notice; present device → used.",
+        "`--self-test capture` (App/Launch/CaptureSelfTest.swift) still passes."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "05:37–06:13"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-sidebar-recorder-and-cards.png"
+      ]
+    },
+    {
+      "id": "T31",
+      "title": "Replace the sidebar recorder form with a toolbar Record split button and a compact recording strip",
+      "milestone": "H",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T30",
+        "T27",
+        "T29"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "App/Recorder/QuickRecorderView.swift",
+        "App/Recorder/RecorderModel.swift",
+        "App/AmaranthApp.swift",
+        "docs/qualification/ui-manual-checklist.md"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The sidebar currently hosts `RecorderPanel` (title, source pickers, meters, Record button, consent sentence, last-result text, recovery message) above the meeting list (see amaranth-sidebar-recorder-and-cards.png). The user wants the sidebar to be only the meeting list, and a lightweight Record control “somewhere on the header”: click once to record with defaults, or open a dropdown to change settings for this meeting (a split button). While recording, show a compact strip instead of the form. Granola's ‘New note’ in the top-right is the reference (granola-home-sidebar.png). The MenuBarExtra recorder (MenuBarContent) stays.",
+      "deliverables": [
+        "Remove the `safeAreaInset` RecorderPanel from MainView; LibrarySidebar becomes search + Meetings list only.",
+        "Add a toolbar split button (leading placement, before the Models button): primary action “Record” (`record.circle`, ⌘⇧R) starts immediately with the T30 defaults and an automatic title “Meeting — Oct 23, 2026 10:01” whenever the dropdown Title field is blank (this replaces today's empty-title default; user can rename later via T26); the dropdown shows: Title field, Sources picker, Microphone picker for this meeting only, and “Recording Settings…” opening Settings. Tooltip: “Record a new meeting (⌘⇧R). Amaranth records only when you press Record; let participants know.”",
+        "While `recorder.state.isActive`, replace the split button with a recording strip in the toolbar: red dot + elapsed (monospaced), one small health glyph per active source (green = OK, grey = silent, orange = clipping/degraded, red = failed/permission denied; tooltip = existing `statusText` + device name + saved-up-to), Pause/Resume (⌘⇧P), “Stop and Save” (⌘⇧S). Low-disk warning becomes an orange glyph with the existing text as tooltip. Detailed popover is T34.",
+        "Move the consent sentence to the Record tooltip and OnboardingView; move `lastResult`/`recoveryMessage`/`error` to a dismissable banner at the top of the detail pane (errors red, others secondary).",
+        "Keep every keyboard shortcut and the quit guard (`applicationShouldTerminate` path) unchanged. Update the UI manual checklist steps that mention the sidebar form."
+      ],
+      "acceptance": [
+        "A new meeting starts with one click and no form; the sidebar shows only meetings; the live transcript appears in the detail pane (T32 refines the focus rule).",
+        "All SourceHealth statuses and the disk warning are visible as glyphs with tooltips; permission denied still offers “Open Privacy Settings…” (banner).",
+        "`--self-test capture` and `--self-test ui-render` pass; the MenuBarExtra still records/stops.",
+        "Independent Sonnet validator hands-on pass of the recorder checklist before the milestone closes."
+      ],
+      "fallback": "If a true split button is awkward in SwiftUI toolbars, use a Record button plus an adjacent chevron Menu with the same contents.",
+      "review_timestamps": [
+        "05:37–07:13"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-sidebar-recorder-and-cards.png",
+        "docs/design-review/2026-10-23/granola-home-sidebar.png"
+      ]
+    },
+    {
+      "id": "T32",
+      "title": "Default tab rules: transcript while recording, notes once they exist",
+      "milestone": "H",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T31"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/MeetingDetailView.swift",
+        "App/Library/LibraryModel.swift",
+        "Presentation/MeetingDetail.swift",
+        "Tests/",
+        "App/Library/LibraryView.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user wants the live transcript front and center while recording (never hidden behind a modal like Granola does: granola-new-note-recording.png), and the Notes tab when opening a meeting after it has been processed; optionally transition to Notes automatically when the notes arrive. Today `tab` is `@State` starting at `.notes` and only `focusRowID` changes it. MainView already shows LiveTranscriptView while recording. `MainView` (LibraryView.swift) decides between LiveTranscriptView and MeetingDetailView.",
+      "deliverables": [
+        "Define the rule in Presentation (`MeetingDetail.defaultTab`): recording or provisional/pending transcript → Transcript; summary exists → Notes; transcript final but no notes yet → Transcript; notes model not installed (`ModelSetupModel.status` not `.ready`) → Transcript, never auto-switch.",
+        "On Record: select the new meeting (`library.selection = recorder.meetingID`) so the detail pane is the live view and the window is key.",
+        "After Stop: stay on Transcript. When the first `SummaryRevision` for that meeting arrives while the user is still viewing it and has not manually changed tab since Stop, switch to Notes once. Track ‘user changed tab’ per meeting in LibraryModel (not persisted).",
+        "Opening any meeting from the list applies `defaultTab` unless the user already chose a tab for that meeting in this session."
+      ],
+      "acceptance": [
+        "Unit tests for `defaultTab` across the four states and for the ‘switch once, never fight the user’ rule.",
+        "Record → live transcript visible with no clicks; Stop → final transcript replaces it; notes arrive → Notes tab shown once."
+      ],
+      "fallback": "If the automatic switch feels intrusive in use, keep it behind a Settings toggle defaulting on and note it.",
+      "review_timestamps": [
+        "06:24–06:39",
+        "09:47–10:24"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/granola-new-note-recording.png"
+      ]
+    },
+    {
+      "id": "T33",
+      "title": "Scratchpad during recording moves behind a button",
+      "milestone": "H",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T31"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Live/LiveTranscriptView.swift",
+        "App/Recorder/RecorderModel.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. RecorderPanel shows a multi-line “Private scratchpad (only on this Mac)” field while recording. The user does not use it now but wants it kept and hidden by default.",
+      "deliverables": [
+        "Add a “Scratchpad” button (`note.text`, tooltip “Private scratchpad for this meeting (⌘⇧N)”) to the recording strip or the top of LiveTranscriptView; it toggles an inline editor above the live transcript (not a modal). Hidden by default; remember the open state for the session.",
+        "Text keeps flowing into `RecorderModel.scratchpad` and is saved at Stop exactly as today."
+      ],
+      "acceptance": [
+        "Scratchpad text typed during recording appears in the meeting's Private scratchpad after Stop (existing behaviour; add a test if none).",
+        "The live transcript is unobstructed when the scratchpad is closed."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "01:04–01:15",
+        "06:51–07:13"
+      ]
+    },
+    {
+      "id": "T34",
+      "title": "Recording health popover",
+      "milestone": "H",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T31"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Recorder/QuickRecorderView.swift",
+        "App/Recorder/RecorderModel.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. After T31 the detailed per-source information (device name, level meter, status text, ‘saved up to’, ‘saving delayed’, disk estimate, segment path) has no home. The user wants it available on demand, not permanently on screen.",
+      "deliverables": [
+        "Clicking the health glyph in the recording strip opens a popover: per source a row with the existing `MeterBar`, device name, `statusText`, saved-up-to; the disk warning line; and the recorder's current meeting folder path (the “Saved N segments to …” text) as selectable secondary text.",
+        "Reuse `SourceHealthRow`/`MeterBar` rather than duplicating them; keep the 10 Hz meter polling only while the popover is open if that is cheap to do, otherwise unchanged."
+      ],
+      "acceptance": [
+        "Every piece of information the old RecorderPanel showed is reachable from the popover or a banner; list the mapping in the task's result note.",
+        "`--self-test ui-render` renders the popover content."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "05:37–06:01"
+      ]
+    },
+    {
+      "id": "T35",
+      "title": "Grouped three-column transcript (time · speaker · text) with speaker initials discs",
+      "milestone": "I",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T25"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "Presentation/TranscriptRows.swift",
+        "App/Transcript/TranscriptPane.swift",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The transcript is a two-column list (time | speaker line + text line). The user wants a three-column layout with the speaker pulled out to the side, and consecutive rows by the same speaker grouped so the name is shown once per run (“speaker one, then the text, and when we change speakers we add the extra speaker”). Each row must stay individually addressable (play-from time, correct text, reassign speaker, evidence jump). A colored initials disc per speaker prepares for avatars later.",
+      "deliverables": [
+        "In Presentation add run-building: `TranscriptRows.runs(_ rows:)` grouping consecutive speech rows with the same `assignment` (gaps and source changes break a run; `.unknown` rows group with each other). Stable speaker colors: hash of SpeakerID into an 8-colour palette that reads in dark and light mode.",
+        "TranscriptPane renders three columns: time (60 pt, per row, clickable play), speaker (140 pt; disc with initials of `shownName` + name, shown only on the first row of a run; blank for continuation rows), text. Column widths fixed so text aligns across rows. Keep `List` virtualization and per-row `.id`/`.tag` so `focusRowID` scrolling works.",
+        "Flags, MIC/SYS and gap hairlines from T25 unchanged; keep the SpeakerBar visible in both modes for now; T38 moves its actions to the speaker disc and then hides the bar in skim mode.",
+        "Accessibility: continuation rows still carry the speaker in their accessibility label."
+      ],
+      "acceptance": [
+        "Unit tests: run building for same-speaker runs, speaker change, unknown, multiple (overlap), gap breaking a run.",
+        "A 2-hour corpus transcript scrolls without hitches (manual check; note the meeting used).",
+        "`--self-test ui-render` passes; evidence jump highlights the right row."
+      ],
+      "fallback": "If fixed columns truncate long speaker names, truncate with middle ellipsis and show the full name in a tooltip.",
+      "review_timestamps": [
+        "01:31–02:45"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/amaranth-transcript-flat.png"
+      ]
+    },
+    {
+      "id": "T36",
+      "title": "Compact type scale and a text-size setting",
+      "milestone": "I",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T27"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/",
+        "Presentation/",
+        "App/Settings/SettingsView.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Compared with Granola the user finds Amaranth's text large and the screen under-used; they want a denser, lighter UI by default with smaller text, and a setting to enlarge it for accessibility.",
+      "deliverables": [
+        "Introduce a small typography/spacing token set (e.g. `AppStyle` in App/ or Presentation/): body 12–13 pt for transcript and notes text, 11 pt captions, 8-pt spacing grid. Replace ad-hoc `.font(.body)`/`.title3` uses in sidebar rows, transcript, notes, headers.",
+        "Settings → “Appearance” section (shared with T43/T44): “Text size” picker Smaller / Default / Larger, implemented with `.dynamicTypeSize` or a scale factor in the environment, persisted in `@AppStorage(\"textSize\")`.",
+        "Before/after screenshots of the Notes, Transcript and sidebar at a 1280×826 window in docs/qualification/evidence/<date>/."
+      ],
+      "acceptance": [
+        "All three sizes render without clipped or truncated controls at 1280 px width; the default shows at least 30% more transcript rows than a screenshot taken before this task of the same meeting (the 49-minute “Build Carolina check-in” in the user library, or the corpus equivalent) in the same 1280×826 window.",
+        "Setting persists; `--self-test ui-render` passes at each size."
+      ],
+      "fallback": "If a global scale breaks AppKit-backed controls, limit the setting to transcript and notes content.",
+      "review_timestamps": [
+        "07:54–08:20"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/granola-home-sidebar.png"
+      ]
+    },
+    {
+      "id": "T37",
+      "title": "Conversation-bubble transcript style (exploration)",
+      "milestone": "I",
+      "status": "planned",
+      "optional": true,
+      "depends_on": [
+        "T35"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Transcript/TranscriptPane.swift",
+        "App/Settings/SettingsView.swift",
+        "docs/decisions/ui/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user likes Granola's chat-bubble live transcript (granola-live-transcript-bubbles.png) and asked to explore it, while recognising that meetings with many speakers make bubbles hard. This is an exploration behind a setting; the T35 columns view stays the default unless the user decides otherwise.",
+      "deliverables": [
+        "Settings → Appearance → “Transcript style: Columns / Bubbles”. Bubbles: microphone rows (the user) right-aligned in the accent tint; system-audio speakers left-aligned, bubble tint = the T35 speaker colour, speaker name above the first bubble of a run; time on hover or as a small caption.",
+        "Evaluate with the 4-speaker corpus meeting and the 2-minute test meeting; take screenshots; write a half-page note in docs/decisions/ui/ with the recommendation."
+      ],
+      "acceptance": [
+        "Both styles support play-from, correct text, reassign, evidence jump, skim/detail mode.",
+        "Decision note written; default unchanged unless the user says so."
+      ],
+      "fallback": "If it does not read well with 4+ speakers, keep it available but recommend Columns; do not spend more than the scoped time polishing.",
+      "review_timestamps": [
+        "01:44–02:01",
+        "10:09–10:19"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/granola-live-transcript-bubbles.png"
+      ]
+    },
+    {
+      "id": "T38",
+      "title": "Speaker actions from the speaker column",
+      "milestone": "I",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T35"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Transcript/TranscriptPane.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Today renaming and merging speakers happens in the SpeakerBar menus above the transcript; the user explicitly likes being able to select a speaker and rename them. With T35 the speaker disc/name is in every run, so the actions can live there and the bar can be hidden in skim mode.",
+      "deliverables": [
+        "Clicking the speaker disc/name opens the same menu as SpeakerBar (Rename…, Merge Into ▸) plus “Assign this line to…” from the existing row menu.",
+        "SpeakerBar is shown only in detail mode (T22) as the overview of all speakers."
+      ],
+      "acceptance": [
+        "Rename/merge from the column produce the same `UserEdit`s as the bar (existing EditComposer tests cover the edits; add a view-model test if a new helper is introduced)."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "11:35–11:39"
+      ]
+    },
+    {
+      "id": "T39",
+      "title": "Folder model and storage (single level, no tags)",
+      "milestone": "J",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T11"
+      ],
+      "owner_role": "Storage",
+      "module_scope": [
+        "Domain/Meeting/Meeting.swift",
+        "Storage/Schema.swift",
+        "Storage/",
+        "Export/Exporter.swift",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user wants to organise meetings into folders (“for a client”, “for a project”): a single-level directory hierarchy, explicitly NOT tags, no nesting yet. Domain contracts are frozen (docs/decisions/0002-domain-contracts.md): add fields additively with defaults; see the contract rule below. Contract rule (docs/decisions/0002-domain-contracts.md, Domain/Core/Contract.swift): `ContractVersion.current = 1` is bumped only on an incompatible change; readers reject newer versions. These fields are additive with defaults, so do NOT bump the version; add a SQLite migration only.",
+      "deliverables": [
+        "Domain: `Folder { id: FolderID, name: String, createdAt: Date, sortOrder: Int }`; `Meeting.folderID: FolderID?` (nil = unfiled). Codable with defaults so old data decodes.",
+        "Storage: migration adding a `folders` table and `meetings.folder_id` with an index; MeetingStore API: `folders()`, `createFolder(name:)`, `renameFolder(_:to:)`, `deleteFolder(_:)` (meetings become unfiled; never deletes meetings), `moveMeeting(_:to:)`; `meetings(in:)`. Folder names unique, case-insensitive, trimmed, non-empty.",
+        "Export: JSON export includes `folder: {name}` when set; TXT/MD unaffected.",
+        "Tests: migration from the current schema version; CRUD; delete-folder keeps meetings; rename uniqueness."
+      ],
+      "acceptance": [
+        "All storage tests pass, including opening a pre-migration database fixture.",
+        "Deleting a folder never deletes or alters a meeting's audio, transcript or notes (test asserts byte-identical meeting rows)."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "11:39–12:25"
+      ]
+    },
+    {
+      "id": "T40",
+      "title": "Folders in the sidebar: create, rename, delete, move meetings",
+      "milestone": "J",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T39",
+        "T31"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "App/Library/LibraryModel.swift",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Sidebar becomes a folder tree with one level: each folder is a collapsible section listing its meetings; unfiled meetings under “Meetings”. Management happens directly in the sidebar, like a browser's bookmarks sidebar.",
+      "deliverables": [
+        "LibraryModel: load folders + per-folder meeting lists; actions create/rename/delete/move with error surfacing via the existing `error` alert.",
+        "Sidebar: folder sections with disclosure, folder name, count; “New Folder” via a `+` footer button and the sidebar background context menu; folder context menu: Rename…, Delete Folder… (confirmation says meetings stay). Meeting context menu: “Move to Folder ▸” submenu listing folders + “New Folder…”, and “Remove from Folder” when filed.",
+        "Search results (in whichever search UI exists at the time: the sidebar field now, the T52 panel later) show the folder name under the meeting title when filed.",
+        "Selection and `library.selection` keep working across folders; collapse state persisted per folder in AppStorage."
+      ],
+      "acceptance": [
+        "Create → move → rename → delete flow works with keyboard and mouse; counts update; relaunch preserves folders and collapse state.",
+        "`--self-test ui-render` renders a sidebar with two folders and unfiled meetings (extend the render fixture)."
+      ],
+      "fallback": "If `List` sections with selection misbehave, use `OutlineGroup`.",
+      "review_timestamps": [
+        "11:39–12:43"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/granola-note-header-folder-icon.png"
+      ]
+    },
+    {
+      "id": "T41",
+      "title": "Drag and drop meetings into folders",
+      "milestone": "J",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T40"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "Domain/Meeting/Meeting.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user's mental model: “create a folder and drag tabs into it”. Keyboard/menu moves exist from T40; this adds drag and drop.",
+      "deliverables": [
+        "Make `MeetingID` draggable (`Transferable` with a custom UTType, e.g. `com.alexmartin.amaranth.meeting-id`); folder headers and the “Meetings” header accept drops (`dropDestination`), highlight on hover, and call `moveMeeting`.",
+        "Multi-selection drag if the List supports it cheaply; otherwise single."
+      ],
+      "acceptance": [
+        "Dragging a meeting onto a folder moves it; dropping on “Meetings” unfiles it; invalid drops are rejected without error dialogs.",
+        "Manual checklist step added; `--self-test ui-render` unaffected."
+      ],
+      "fallback": "If drop targets on section headers are unreliable in `List`, add an explicit drop zone row at the top of each folder section.",
+      "review_timestamps": [
+        "12:30–12:43"
+      ]
+    },
+    {
+      "id": "T42",
+      "title": "Default folder for new recordings and folder filter in search",
+      "milestone": "J",
+      "status": "planned",
+      "optional": true,
+      "depends_on": [
+        "T40",
+        "T31",
+        "T52"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Settings/SettingsView.swift",
+        "App/Recorder/RecorderModel.swift",
+        "App/Library/LibraryModel.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Small conveniences once folders exist.",
+      "deliverables": [
+        "Record dropdown (T31) and Settings → Recording: “Save to folder” picker (default: none).",
+        "Search (the T52 panel): a “Search in <folder>” scope option when a folder is selected, filtering hits to that folder."
+      ],
+      "acceptance": [
+        "New meetings land in the chosen folder; scoped search returns only that folder's hits (test on LibraryModel)."
+      ],
+      "fallback": "Skip the search scope if the FTS query plumbing makes it more than a day's work; keep the default folder."
+    },
+    {
+      "id": "T43",
+      "title": "Semantic colours and an Appearance setting (System / Light / Dark)",
+      "milestone": "K",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T36"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/",
+        "Presentation/",
+        "App/Settings/SettingsView.swift",
+        "App/Launch/UIRenderSelfTest.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Amaranth only runs in dark mode today (the app has no appearance override, so it follows the system; the user's Mac is dark). The user wants a light mode with reasonable contrast taken from standard macOS conventions; exact colours are at our discretion. This task makes every screen correct in both appearances; T44 adds the toggle.",
+      "deliverables": [
+        "Audit all colour uses in App/ and Presentation/ (`Color.green/.orange/.red/.blue`, `.quaternary.opacity`, hard-coded tints, the T35 speaker palette). Replace with semantic/system colours (`.primary`, `.secondary`, `Color(nsColor: .controlBackgroundColor)` etc.) or asset-catalog colours with light and dark variants; status colours keep their meaning (red = failed, orange = attention, green = OK) with ≥ 4.5:1 contrast on their backgrounds in both modes.",
+        "Settings → Appearance: “Appearance: Match system / Light / Dark”, persisted (`@AppStorage(\"appearance\")`) and applied with `NSApp.appearance` at launch and on change (also for the MenuBarExtra and Settings windows).",
+        "Extend `--self-test ui-render` to render every screen in both appearances and save PNGs to docs/qualification/evidence/<date>/appearance/."
+      ],
+      "acceptance": [
+        "Every screen (sidebar, recorder strip, notes, transcript in both modes, recording tab, settings, onboarding, model sheet, menu bar) is legible in light mode with no dark-only artefacts (screenshots attached).",
+        "A small script (scripts/check-contrast.py or a Swift test) computing WCAG contrast over the palette shows ≥ 4.5:1 for text and ≥ 3:1 for glyphs."
+      ],
+      "fallback": "If a third-party control cannot adapt, document it as a known limitation in the decision note.",
+      "review_timestamps": [
+        "13:03–13:54"
+      ]
+    },
+    {
+      "id": "T44",
+      "title": "Sun/moon appearance toggle in the toolbar",
+      "milestone": "K",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T43"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "App/AmaranthApp.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user wants a toggle “somewhere easily found on the screen”, something like a sun/moon icon, kept light-weight.",
+      "deliverables": [
+        "Toolbar button (trailing, before Export): SF Symbol `sun.max` in dark mode, `moon` in light mode; click switches the T43 appearance setting between Light and Dark (leaving “Match system” means the first click picks the opposite of the current effective appearance). Tooltip “Switch to light mode (⌘⇧L)” / “Switch to dark mode (⌘⇧L)”; shortcut and a View-menu item.",
+        "Settings still offers “Match system”."
+      ],
+      "acceptance": [
+        "Toggle visible on the main window in both modes; persists across launches; menu item and shortcut work.",
+        "`--self-test ui-render` covers the toggled state."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "13:27–14:11"
+      ]
+    },
+    {
+      "id": "T45",
+      "title": "Lightweight visual language pass: icons over text badges, less chrome",
+      "milestone": "K",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T43",
+        "T27"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/",
+        "docs/decisions/ui/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user asked for a “less skeuomorphic, lighter weight” look: smaller text, lots of small informative icons (SF Symbols or emoji stand-ins are fine, no custom SVGs yet), fewer heavy boxes. Several earlier tasks each do a piece; this is the consolidating pass.",
+      "deliverables": [
+        "Replace remaining text badges with icon + tooltip where meaning survives (flags, source badges, notes banners' icons), reduce `GroupBox`/background chrome in NotesPane and the recording strip, align spacing to the T36 grid, and unify icon sizes (11–13 pt).",
+        "Write docs/decisions/ui/0002-visual-language.md: the token set, icon conventions, what stays textual (anything safety-relevant: missing audio, permission denied, failed processing).",
+        "Before/after screenshots of each screen in light and dark."
+      ],
+      "acceptance": [
+        "No safety-relevant state became icon-only without a tooltip and an accessibility label.",
+        "Decision note merged; independent Sonnet validator hands-on pass of the whole UI checklist (ui-manual-checklist.md) in both appearances closes Milestone K."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "08:05–08:20",
+        "14:00–14:11"
+      ]
+    },
+    {
+      "id": "T46",
+      "title": "Notes templates: model, storage and editor",
+      "milestone": "L",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T23"
+      ],
+      "owner_role": "Notes pipeline",
+      "module_scope": [
+        "Domain/Summary/Summary.swift",
+        "Storage/",
+        "App/Settings/SettingsView.swift",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user wants to write their own notes template: a list of sections (“here's the subsections I want”) from which the notes stage infers what to extract. Today sections are fixed (overview, decisions, action items, open questions, limitations after T23). Granola's ‘/ for templates’ is the reference. The user accepts that custom templates may make notes slower; measure it (T47).",
+      "deliverables": [
+        "Domain: `NotesTemplate { id, name, sections: [TemplateSection { key, title, instruction: String, kind: .list | .paragraph | .actionItems }], isBuiltIn }`. Built-in “Default” template reproduces today's sections exactly.",
+        "Storage: `notes_templates` table (JSON blob per template is fine) with CRUD in MeetingStore; the Default template is seeded and read-only.",
+        "Settings → “Notes templates”: list, duplicate Default, edit name and sections in a plain-text editor using Markdown headings (`## Section title` followed by a one-line instruction), with live validation (non-empty, ≤ 8 sections, unique titles).",
+        "Tests: parsing/serialising the Markdown form round-trips; Default template equality with today's prompt sections."
+      ],
+      "acceptance": [
+        "Templates persist across launches; the Default template cannot be edited or deleted; editor validation prevents saving an invalid template."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "00:46–01:04"
+      ]
+    },
+    {
+      "id": "T47",
+      "title": "Template-driven notes generation with the existing evidence checks",
+      "milestone": "L",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T46"
+      ],
+      "owner_role": "Notes pipeline",
+      "module_scope": [
+        "Notes/Pipeline/NotesPrompts.swift",
+        "Notes/Pipeline/NotesPipeline.swift",
+        "Notes/Pipeline/EvidenceChecker.swift",
+        "Domain/Summary/Summary.swift",
+        "Benchmarks/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Make the notes stage take a template: each section's title + instruction drives extraction, while evidence validation (line-numbered transcript, deterministic evidence checks, verifier; docs/decisions/notes/0001-evidence-backed-notes.md) applies to every item regardless of section. `SummaryContent` gains a generic `sections: [SummarySection { key, title, items }]` while the fixed fields keep being filled for the Default template (contract stays decodable).",
+      "deliverables": [
+        "Prompt builder: generic per-section extraction from the template, batched as in notes/0002; action-item sections keep owner/due extraction; paragraph sections produce one item.",
+        "Pipeline writes `sections` for custom templates and the legacy fields for Default; `promptVersion` includes a template hash so staleness is per template.",
+        "Measure notes time for the 60-minute corpus meeting with Default vs a 6-section custom template; report in docs/qualification/.",
+        "Notes checks (valid evidence 100%, planted coverage, injection suite) run for the Default template unchanged and, with a planted custom template, for the generic path."
+      ],
+      "acceptance": [
+        "Default template output is unchanged versus T23 (byte-identical items on the corpus) — this is a refactor for Default.",
+        "Custom template: every item has valid evidence; injection suite passes; time delta reported."
+      ],
+      "fallback": "If generic sections cannot pass the injection suite, restrict custom sections to the `.list` kind and say so.",
+      "review_timestamps": [
+        "00:46–01:04"
+      ]
+    },
+    {
+      "id": "T48",
+      "title": "Choose a template per meeting and regenerate; exports render custom sections",
+      "milestone": "L",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T47"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Notes/NotesPane.swift",
+        "App/Library/LibraryModel.swift",
+        "App/Settings/SettingsView.swift",
+        "Export/Exporter.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Users pick a default template in Settings and can regenerate a meeting's notes with another one.",
+      "deliverables": [
+        "Settings → Notes templates: “Default for new meetings” picker. NotesPane: a small template menu next to the state banner (“Notes template: Default ▾ … Regenerate with ▸”).",
+        "Regeneration creates a new SummaryRevision (existing versioning); the previous revision stays until the new one succeeds.",
+        "Exporter renders `sections` in order for custom templates (TXT/MD/JSON); Default unchanged."
+      ],
+      "acceptance": [
+        "Switching template and regenerating shows the new sections with evidence links; exports match; failure keeps the prior notes (existing rule)."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "00:46–01:04"
+      ]
+    },
+    {
+      "id": "T49",
+      "title": "Optional meeting metadata: people and a linked calendar event",
+      "milestone": "M",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T39"
+      ],
+      "owner_role": "Storage",
+      "module_scope": [
+        "Domain/Meeting/Meeting.swift",
+        "Storage/",
+        "Export/Exporter.swift",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user eventually wants to link a recording to a calendar event (auto-naming the meeting) and list the people in it, like Granola's header chips (granola-note-header-calendar-people.png). No integration yet: this task adds the data shape and storage so the UI placeholders (T50) and a later integration (T51 spec) have somewhere to put data. Contract rule (docs/decisions/0002-domain-contracts.md, Domain/Core/Contract.swift): `ContractVersion.current = 1` is bumped only on an incompatible change; readers reject newer versions. These fields are additive with defaults, so do NOT bump the version; add a SQLite migration only.",
+      "deliverables": [
+        "Domain (additive, defaulted): `Meeting.people: [Person { name: String, source: .manual | .calendar }]`, `Meeting.linkedEvent: LinkedEvent? { identifier, title, start, end, calendarName, source }`.",
+        "Storage columns/migration; MeetingStore setters; JSON export includes them when present; TXT/MD show “People: …” under the title when non-empty.",
+        "Tests: round trip, old rows decode with empty people and nil event."
+      ],
+      "acceptance": [
+        "Storage tests pass; exports with and without metadata are covered by tests."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
+      ]
+    },
+    {
+      "id": "T50",
+      "title": "Header chips: date, people, calendar placeholder",
+      "milestone": "M",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T49",
+        "T26",
+        "T51"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/MeetingDetailView.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Replace the header's second line with a row of small chips like Granola: date chip, people chip (editable list of names, free text for now), and a disabled “Link calendar event” chip with a tooltip saying it is coming later. Keep the T27 status glyph and duration.",
+      "deliverables": [
+        "Chips: `calendar` date (not editable), `person.2` “Add people…” opening a popover with a simple names editor (comma-separated or one per line) saved via T49; `link` “Link calendar event” disabled with tooltip “Calendar linking is planned” (the spec is docs/decisions/0006-calendar-integration-spec.md from T51).",
+        "People names appear in the T53 search index later; for now they are just stored and exported."
+      ],
+      "acceptance": [
+        "Adding people persists and shows in exports; the disabled chip is clearly inert; `--self-test ui-render` passes."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/granola-note-header-calendar-people.png"
+      ]
+    },
+    {
+      "id": "T51",
+      "title": "Spec: calendar integration milestone (EventKit, local calendars)",
+      "milestone": "M",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T49"
+      ],
+      "owner_role": "Product/architecture",
+      "module_scope": [
+        "docs/decisions/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user wants a spec'd milestone for calendar integration without implementing it yet. Note for the spec writer: macOS EventKit reads the calendars already configured on the Mac (iCloud, Google, Exchange) after a one-time permission prompt, so Amaranth would need no account integration of its own; this fits the local-only principle. Granola instead pulls Google Calendar directly.",
+      "deliverables": [
+        "Write docs/decisions/0006-calendar-integration-spec.md: goals (auto title from the current/next event, attendee names as people and as speaker-rename suggestions, optional ‘meeting starting’ reminder), permission flow (NSCalendarsUsageDescription, denied state), data mapping onto T49 fields, privacy (nothing leaves the Mac; attendee emails never stored unless the user opts in), UI placement (the T50 chip becomes active), and a task breakdown of 4–6 small tasks for a future milestone.",
+        "Explicit non-goals: no automatic recording start, no meeting-bot, no cloud calendar APIs."
+      ],
+      "acceptance": [
+        "Spec reviewed by the user; tasks added to this backlog only after that review."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
+      ]
+    },
+    {
+      "id": "T52",
+      "title": "“Ask anything” entry point: placement and first version over local search",
+      "milestone": "N",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T31",
+        "T40"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "App/Library/MeetingDetailView.swift",
+        "App/Library/LibraryModel.swift"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user chose an ‘ask anything’ experience (natural-language questions over meetings, answered locally with evidence) as the search milestone, and asked us to decide where it lives. Granola puts a persistent “Ask anything” field at the bottom of the window (granola-home-sidebar.png). Amaranth already has FTS5 search in the sidebar (titles, transcript, notes, your notes). This first task places the UI and routes it to the existing search so the layout can be felt before the model work (T53/T54).",
+      "deliverables": [
+        "Add an “Ask anything” field pinned to the bottom of the detail pane (scope: current meeting) and reachable globally with ⌘K (the shortcut T29 assigned to search) (scope: all meetings; the sidebar search field is removed, its behaviour moves here).",
+        "Submitting shows a results panel above the field: FTS hits grouped by meeting with the existing snippet highlighting and jump-to-row; a scope switch “This meeting / All meetings”; Esc closes.",
+        "Keep `LibraryModel.query/hits/open(_:)` as the engine; no model calls yet."
+      ],
+      "acceptance": [
+        "Search works from the new placement with keyboard only; the old sidebar field is gone; `--self-test ui-render` passes."
+      ],
+      "fallback": "If a bottom field conflicts with the live transcript view, place it in the toolbar as a search-style field with a popover.",
+      "review_timestamps": [
+        "08:40–09:09"
+      ],
+      "evidence_images": [
+        "docs/design-review/2026-10-23/granola-home-sidebar.png"
+      ]
+    },
+    {
+      "id": "T53",
+      "title": "Retrieval layer: speaker and people names in the index, passage ranking, evidence references",
+      "milestone": "N",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T52",
+        "T50"
+      ],
+      "owner_role": "Storage",
+      "module_scope": [
+        "Storage/",
+        "Domain/",
+        "Tests/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Grounded answers need ranked passages with evidence references, not just FTS snippets.",
+      "deliverables": [
+        "Add `speaker` and `person` cases to `SearchHit.Kind` (Storage) and index speaker display names and T49 people names under them, with a one-time re-index migration for existing meetings so “what did Rochelle say about the kitchen” can match; re-index on rename.",
+        "`Retriever.search(question, scope) -> [Passage]`: FTS5 bm25 over transcript lines and notes items, query term expansion (simple stemming via unicode61 + prefix), windowing of ±2 transcript lines, de-duplication, top-k (k = 12) with `TranscriptEvidence` refs.",
+        "Tests on the fixture transcript: ranking sanity, speaker-name match, evidence refs resolve."
+      ],
+      "acceptance": [
+        "Retrieval over the longest corpus meeting (Tests/Data/Recordings manifest; or the first Amaranth meeting if longer) returns in < 50 ms on M2 Max (measure); tests pass."
+      ],
+      "fallback": "Skip query expansion if it hurts precision on the fixture.",
+      "review_timestamps": [
+        "08:40–09:09"
+      ]
+    },
+    {
+      "id": "T54",
+      "title": "Grounded answers with the local notes model",
+      "milestone": "N",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T53"
+      ],
+      "owner_role": "Notes pipeline",
+      "module_scope": [
+        "Notes/",
+        "InferenceWorker/",
+        "App/",
+        "Benchmarks/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Answer a question from retrieved passages only, with citations that jump to the transcript, using the existing Qwen model in the XPC worker and the evidence checker. Runs offline; must yield to transcription like notes do (notes/0002).",
+      "deliverables": [
+        "Worker job `.answer` (new ProcessingStage or a separate lightweight request): prompt = question + numbered passages; output JSON `{answer, citations: [passage indices], confidence}`; refuse (“I couldn't find that in these meetings”) when no passage supports the answer; EvidenceChecker validates citations map to real passages.",
+        "UI: streamed answer under the field with citation chips that jump to rows (reuse NoteItemRow's jump); ‘This answer is from the local model and may be wrong’ caption.",
+        "Benchmarks: a 20-question set over the corpus meetings with expected evidence lines; report answer latency (target first token ≤ 3 s, full ≤ 10 s on M2 Max) and citation validity (100%)."
+      ],
+      "acceptance": [
+        "Offline run (networking denied) works; citation validity 100% on the question set; latency reported; injection-style questions do not leak the prompt (reuse the notes injection suite pattern)."
+      ],
+      "fallback": "If latency is far off target, answer only from notes items (smaller context) and say so.",
+      "review_timestamps": [
+        "08:40–09:09"
+      ]
+    },
+    {
+      "id": "T55",
+      "title": "Follow-up questions and cross-meeting answers",
+      "milestone": "N",
+      "status": "planned",
+      "optional": true,
+      "depends_on": [
+        "T54"
+      ],
+      "owner_role": "Notes pipeline",
+      "module_scope": [
+        "Notes/",
+        "App/"
+      ],
+      "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Conversation within a session (follow-ups keep context) and answers that cite several meetings.",
+      "deliverables": [
+        "Keep the last 3 question/answer pairs as context; cross-meeting scope retrieves per meeting and labels citations with meeting title and time.",
+        "Add 10 cross-meeting questions over the corpus meetings (Tests/Data/Recordings manifest) with hand-written expected evidence lines to the T54 set."
+      ],
+      "acceptance": [
+        "Follow-ups resolve pronouns to the prior answer's subject on the question set; cross-meeting citations open the right meeting and row."
+      ],
+      "fallback": "Ship single-turn only if context handling degrades latency beyond the T54 target.",
+      "review_timestamps": [
+        "08:40–09:09"
+      ]
     }
   ]
 }
