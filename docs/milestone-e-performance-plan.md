@@ -201,6 +201,9 @@ Recommendations:
 - `reference` (none, auto or verified), `reference_file` (transcript), `notes_reference_file` (decisions and actions);
 - `split` (dev, heldout, or blank for automatic);
 - `duration_s`, `recorded`, `tracks` (mixed-stereo, or separate mic and system), `notes`.
+- `library` (optional, Amaranth meetings only): a library copied from another Mac, relative to
+  `Tests/Data/Recordings/` (for example `libraries/work-mac`; copy `amaranth.sqlite*` and `meetings/` with the app
+  quit). Blank means this Mac's library. The meeting is found by title, or by meeting ID when titles repeat.
 
 The held-out set stays fixed and is never used for tuning. The first corpus (2026-10-22) has 4 recordings, 2.8 h, all
 mixed single-track Google Meet calls. Two have Gemini auto-transcripts; one is held out (`hangout-ruby-session`).

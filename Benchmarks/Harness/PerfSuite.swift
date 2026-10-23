@@ -193,8 +193,8 @@ enum PerfSuite {
 
     static func corpusItems() async throws -> [SuiteItem] {
         var out: [SuiteItem] = []
-        let library = FileManager.default.homeDirectoryForCurrentUser.appending(path: "Library/Application Support/Amaranth")
-        var libraryCopy: URL?
+        let ownLibrary = FileManager.default.homeDirectoryForCurrentUser.appending(path: "Library/Application Support/Amaranth")
+        var libraryCopies: [URL: URL] = [:]
         for row in try manifest() {
             guard row.fields["consent"]?.lowercased() == "yes" else { print("[perf] skipping \(row.id): no consent"); continue }
             let id = slug(row.id)
@@ -207,10 +207,13 @@ enum PerfSuite {
                 out.append(SuiteItem(item: PerfRun.Item(id: id, kind: .audio, system: raw, notes: true), suite: "corpus", set: "corpus",
                                      audioSeconds: secs, split: split))
             } else {
-                // An Amaranth-recorded meeting by title, from a private copy of the library (never opened in place).
-                if libraryCopy == nil { libraryCopy = try copyLibrary(library) }
-                guard let copy = libraryCopy, let meeting = try meetingID(title: row.id, library: copy) else {
-                    print("[perf] skipping \(row.id): not a file and not an Amaranth meeting title"); continue
+                // An Amaranth-recorded meeting by title (or meeting ID), from a private copy of the library (never opened in
+                // place). `library` names a library brought from another Mac (relative to the corpus folder); blank is this Mac's.
+                let library = row.fields["library"].flatMap { $0.isEmpty ? nil : $0 }
+                    .map { $0.hasPrefix("/") ? URL(filePath: $0) : corpus.appending(path: $0) } ?? ownLibrary
+                if libraryCopies[library] == nil { libraryCopies[library] = try copyLibrary(library, index: libraryCopies.count) }
+                guard let copy = libraryCopies[library], let meeting = try meetingID(title: row.id, library: copy) else {
+                    print("[perf] skipping \(row.id): not a file and not a meeting in \(library.path)"); continue
                 }
                 try FileManager.default.copyItem(at: library.appending(path: "meetings/\(meeting)"), to: copy.appending(path: "meetings/\(meeting)"))
                 out.append(SuiteItem(item: PerfRun.Item(id: id, kind: .amaranthMeeting, library: copy.path, meetingID: meeting, notes: true),
@@ -221,8 +224,8 @@ enum PerfSuite {
     }
 
     /// Copies the library database (with its WAL) into the cache; meeting folders are copied per item.
-    static func copyLibrary(_ library: URL) throws -> URL {
-        let copy = cache.appending(path: "library-copy")
+    static func copyLibrary(_ library: URL, index: Int) throws -> URL {
+        let copy = cache.appending(path: index == 0 ? "library-copy" : "library-copy-\(index)")
         try? FileManager.default.removeItem(at: copy)
         try FileManager.default.createDirectory(at: copy.appending(path: "meetings"), withIntermediateDirectories: true)
         for f in ["amaranth.sqlite", "amaranth.sqlite-wal", "amaranth.sqlite-shm"] where FileManager.default.fileExists(atPath: library.appending(path: f).path) {
@@ -241,7 +244,7 @@ enum PerfSuite {
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         p.waitUntilExit()
         for line in String(decoding: data, as: UTF8.self).split(separator: "\n") {
-            if let m = try? ContractCoding.decode(Meeting.self, from: Data(line.utf8)), m.title == title { return m.id.rawValue }
+            if let m = try? ContractCoding.decode(Meeting.self, from: Data(line.utf8)), m.deletedAt == nil, m.title == title || m.id.rawValue == title { return m.id.rawValue }
         }
         return nil
     }
