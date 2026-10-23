@@ -4,6 +4,8 @@ Date: 2026-10-16 · Task: T14 · Status: Accepted for v0. The latency gate is me
 **Real calls and base-M2 hardware are unverified.**
 T19 ([processing/0003](../processing/0003-processing-while-recording.md)): final-pipeline words decoded during the
 recording replace live words before their point, and live text also pauses under memory pressure.
+T20 ([live/0002](0002-live-text-latency.md)): one request in flight per source, a 0.25 s check instead of the 2 s tick,
+delay samples saved per meeting, and a padded flush at Stop. Real-recording delay 1.19 s median, 3.40 s p95.
 
 ## Decision
 

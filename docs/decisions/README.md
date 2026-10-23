@@ -20,6 +20,7 @@
 | [ui/0001](ui/0001-recording-and-review-ui.md) | SwiftUI recorder/library/review UI, menu bar, quit guard, Presentation module | Accepted (T10); hands-on pass pending |
 | [data/0001](data/0001-search-export-deletion.md) | FTS5 search, TXT/MD/JSON export, audio-only and full deletion with byte-level guarantees | Accepted (T11) |
 | [live/0001](live/0001-live-text.md) | Live provisional text from committed audio, stateless worker passes, under-yield guard, pause under pressure | Accepted (T14); real calls/base M2 unverified |
+| [live/0002](live/0002-live-text-latency.md) | One live request per source and a 0.25 s check (segments stay 2 s), per-word delay breakdown saved per meeting (`live-latency.json`), padded flush at Stop | Accepted (T20); G4 met on real-time replays of real recordings (1.19 s / 3.40 s) |
 
 Qualification evidence: `docs/qualification/` (capture matrix, manual checklist, raw JSONL in `evidence/`).
 Benchmark results: `Benchmarks/Results/<run>/report.json` (+ `raw/`; generated inputs are gitignored).

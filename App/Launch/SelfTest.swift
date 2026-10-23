@@ -35,6 +35,11 @@ enum SelfTest {
                     log(["step": "usage", "error": "--perf-spec <spec.json> required"]); ok = false; break
                 }
                 ok = await PerfSelfTest.run(specURL: spec)
+            case "live-replay":
+                guard let spec = args.firstIndex(of: "--live-spec").flatMap({ $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }) else {
+                    log(["step": "usage", "error": "--live-spec <spec.json> required"]); ok = false; break
+                }
+                ok = await LiveReplaySelfTest.run(specURL: spec)
             case "live-latency": ok = await LiveSelfTest.run()
             case "live-pressure": ok = await LiveSelfTest.run(pressure: true)
             case "live-load": ok = await LiveSelfTest.run(load: true)

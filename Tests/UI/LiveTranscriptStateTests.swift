@@ -48,4 +48,24 @@ struct LiveTranscriptStateTests {
         try rev.validate()
         #expect(rev.allWords.map(\.text) == ["Hello", "world.", "next", "tail"])
     }
+
+    /// T20: each sample's delay splits into waiting for the segment to be saved, waiting to be sent, and the worker.
+    @Test func latencyBreakdownSumsToTheDelayAndLogHoldsNoText() throws {
+        var s = LiveTranscriptState()
+        // "hello" ends at 1.3 s; its segment [0, 2) is saved at 2 s; the request goes at 3.1 s and returns at 3.5 s.
+        let timing = LiveTranscriptState.RequestTiming(sentAt: .seconds(3.1), segmentEnds: [.seconds(4), .seconds(2)])
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("hello", 1)], tentativeWords: [w("there", 2.5)], stableUntil: .seconds(2), processedUntil: .seconds(4)),
+                sessionNow: .seconds(3.5), timing: timing)
+        let a = s.samples[0], b = s.samples[1]
+        #expect(abs(a.seconds - 2.2) < 1e-9 && abs(a.unsaved! - 0.7) < 1e-9 && abs(a.waiting! - 1.1) < 1e-9 && abs(a.worker! - 0.4) < 1e-9)
+        #expect(abs(b.unsaved! + b.waiting! + b.worker! - b.seconds) < 1e-9)
+        // The flush at Stop merges words without delay samples.
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("there", 2.5), w("end", 3.2)], tentativeWords: [], stableUntil: .seconds(4), processedUntil: .seconds(4)),
+                sessionNow: .seconds(4), measure: false)
+        #expect(s.samples.count == 2 && s.words.map(\.text) == ["hello", "there", "end"])
+        let log = LiveLatencyLog(meetingID: MeetingID("m"), tickSeconds: 1, requests: 1, samples: s.samples)
+        #expect(log.summary["all"]?.samples == 2 && log.summary["microphone"] != nil)
+        let json = String(decoding: try ContractCoding.encode(log), as: UTF8.self)
+        #expect(!json.contains("hello") && !json.contains("there"), "metrics only, never text")
+    }
 }

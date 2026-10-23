@@ -162,6 +162,12 @@ compute per 10 s of audio.
 - **Exit:** G1 ≤ 20 s for 60- and 120-minute meetings; G5, G6 and G7 hold.
 
 ### T20: Live text latency (small)
+**Result (2026-10-23):** G4 met on real-time replays of real recordings (4 work-Mac meetings and the first Amaranth
+meeting, 22 min): median 1.19 s and p95 3.40 s (v1 settings: 2.21 / 4.54 s). The delay was mostly mic and system
+audio taking turns for one request. Each source now has its own request, and live text checks for saved audio every
+0.25 s; segments stay 2 s (user decision). Delay samples are saved per meeting, and a padded flush at Stop keeps the
+last words (tracked item 23). Live word error rate +0.2 points on average. See `docs/decisions/live/0002-live-text-latency.md`.
+
 - Measure the floor: 2 s segment commits, a 2 s tick, and the stable-word rule (1.5 s after a pause).
 - Try a 1 s tick and shorter commit intervals for live reads only. Durable segments stay the only input
   (live/0001 rule).

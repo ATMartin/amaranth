@@ -1,0 +1,6 @@
+{"completed":"true","disagreement":"microphone=0.048,systemOutput=0.012","failure":"","id":"corpus-test-youtopia-recording","median":"1.11","p95":"2.50","samples":"322","step":"item","waitingMedian":"0.02","workerMedian":"0.13"}
+{"completed":"true","disagreement":"microphone=0.043,systemOutput=0.039","failure":"","id":"corpus-work-mac-1","median":"1.20","p95":"3.52","samples":"1019","step":"item","waitingMedian":"0.02","workerMedian":"0.14"}
+{"completed":"true","disagreement":"microphone=0.011,systemOutput=0.064","failure":"","id":"corpus-work-mac-2","median":"1.14","p95":"2.49","samples":"1300","step":"item","waitingMedian":"0.02","workerMedian":"0.13"}
+{"completed":"true","disagreement":"microphone=0.035,systemOutput=0.044","failure":"","id":"corpus-work-mac-3","median":"1.24","p95":"3.78","samples":"1157","step":"item","waitingMedian":"0.02","workerMedian":"0.14"}
+{"completed":"true","disagreement":"microphone=0.032,systemOutput=0.033","failure":"","id":"corpus-work-mac-4","median":"1.15","p95":"3.17","samples":"1133","step":"item","waitingMedian":"0.02","workerMedian":"0.13"}
+{"result":"pass","test":"live-replay"}

@@ -496,7 +496,7 @@
       "deferrals": [
         "Persist finalized chunk results for reuse after Stop: not delivered (live/0001: live passes use an energy gate and no right context, so reuse would lower final quality). Superseded by T19, which runs the final pipeline during recording instead of reusing live output.",
         "Provisional speakers: none are shown (live text carries MIC/SYS source tags only); Diarization/Live is not built. Speakers appear only in the final transcript.",
-        "Representative session set: one synthetic replay (LibriSpeech mic + 120 s of AMI EN2002a). Real-call latency is validated in Milestone F (T12); persisted latency samples are a T20 deliverable."
+        "Representative session set: one synthetic replay (LibriSpeech mic + 120 s of AMI EN2002a). Real-call latency is validated in Milestone F (T12); persisted latency samples are a T20 deliverable (delivered: live-latency.json per meeting, live/0002)."
       ]
     },
     {
@@ -642,7 +642,7 @@
       "id": "T20",
       "title": "Lower live text latency",
       "milestone": "E",
-      "status": "planned",
+      "status": "done",
       "optional": false,
       "depends_on": [
         "T19"
@@ -661,7 +661,8 @@
       "acceptance": [
         "Live text median <= 2 s and p95 <= 4 s on real recordings."
       ],
-      "fallback": "Keep the current live settings."
+      "fallback": "Keep the current live settings.",
+      "result": "2026-10-23: one live request per source + 0.25 s check (segments stay 2 s by user decision); G4 met on real-time replays of real recordings: median 1.19 s, p95 3.40 s (v1 2.21 / 4.54 s); live-latency.json per meeting; padded flush at Stop (item 23); live WER +0.2 points mean. live/0002."
     },
     {
       "id": "T21",

@@ -109,9 +109,12 @@ public struct LiveRequest: Hashable, Sendable, Codable {
     /// Words before this session time are already settled; the worker re-decodes from here (with context).
     public var stableUntil: SessionTime
     public var segments: [AudioSegmentRecord]
-    public init(meetingID: MeetingID, meetingDirectory: URL, source: SourceKind, stableUntil: SessionTime, segments: [AudioSegmentRecord]) {
+    /// The flush after Stop (T20): no more audio will come, so the end is padded and every word is settled.
+    public var final: Bool
+    public init(meetingID: MeetingID, meetingDirectory: URL, source: SourceKind, stableUntil: SessionTime, segments: [AudioSegmentRecord],
+                final: Bool = false) {
         self.meetingID = meetingID; self.meetingDirectory = meetingDirectory; self.source = source
-        self.stableUntil = stableUntil; self.segments = segments
+        self.stableUntil = stableUntil; self.segments = segments; self.final = final
     }
 }
 

@@ -161,7 +161,7 @@ final class RecorderModel {
         poll?.invalidate()
         poll = nil
         saveScratchpad()
-        live?.stop(publish: true)
+        if let live { Task { await live.finish(r) } }
         incremental?.stop()
         session = nil
         title = ""

@@ -46,7 +46,12 @@ enum LiveSelfTest {
             }
             let client = WorkerClient()
             guard case .pong(let workerPID, _)? = try? await client.send(.ping) else { log(["step": "worker", "ok": "false"]); return false }
-            let live = LiveTextModel(client: client)
+            // T20 experiments: `--live-tick <s>` and `--live-per-source yes|no` override the app's live text settings.
+            let args = CommandLine.arguments
+            func arg(_ k: String) -> String? { args.firstIndex(of: k).flatMap { $0 + 1 < args.count ? args[$0 + 1] : nil } }
+            let defaults = LiveTextModel(client: client)
+            let live = LiveTextModel(client: client, interval: arg("--live-tick").flatMap(Double.init) ?? defaults.interval,
+                                     perSource: arg("--live-per-source").map { $0 == "yes" } ?? defaults.perSource)
             live.modelsReady = ModelSetupModel.isReady
             let pressureOn = LockedFlag()
             if pressure { live.pauseReason = { pressureOn.value ? "simulated thermal pressure" : nil } }
@@ -89,9 +94,8 @@ enum LiveSelfTest {
             let r = session.stop()
             incremental?.stop()
             recordingFlag.value = false
-            // Let the in-flight pass land, then stop live text (publishes the provisional revision).
-            try await Task.sleep(for: .seconds(3))
-            live.stop(publish: true)
+            // Flush the remaining audio and publish the provisional revision, as the app does at Stop.
+            await live.finish(r)
             let st = live.state
             let micText = st.words.filter { $0.source == .microphone }.map(\.text).joined(separator: " ")
             let wer = SimpleWER.wer(reference: f.micReference, hypothesis: micText)
@@ -101,7 +105,7 @@ enum LiveSelfTest {
             if ProcessInfo.processInfo.environment["AMARANTH_LIVE_DEBUG"] != nil {
                 for w in st.words where w.source == .microphone { FileHandle.standardError.write(Data("\(String(format: "%.2f", w.interval.start.seconds)) \(w.text)\n".utf8)) }
             }
-            log(["step": "live", "status": "\(live.status)", "words": "\(st.words.count)", "latencyMedianSeconds": String(format: "%.2f", median),
+            log(["step": "live", "status": "\(live.status)", "tick": "\(live.interval)", "perSource": "\(live.perSource)", "words": "\(st.words.count)", "latencyMedianSeconds": String(format: "%.2f", median),
                  "latencyP95Seconds": String(format: "%.2f", p95), "samples": "\(st.latencies.count)",
                  "micProvisionalWER": String(format: "%.1f%%", wer * 100), "provisionalPublished": "\(published)"])
             log(["step": "capture", "segments": "\(r.segments.count)", "missingAudioEvents": "\(r.events.filter(\.isMissingAudio).count)",

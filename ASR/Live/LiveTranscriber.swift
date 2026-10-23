@@ -10,12 +10,15 @@ import Capture
 /// Words before the last pause (≥ 0.4 s) that ends at least `settle` seconds before the newest audio become *stable*;
 /// later words are *tentative* and are re-decoded next pass. When speech runs on without a pause for over 10 s, the
 /// stable point is forced to a word boundary 2 s before the end so latency stays bounded. Final transcripts are
-/// produced after Stop by the full pipeline; live words are always shown as provisional.
+/// produced after Stop by the full pipeline; live words are always shown as provisional. The flush at Stop (`final`)
+/// pads the end with silence and settles every word (T20).
 public final class LiveTranscriber: @unchecked Sendable {
     let asr: ParakeetASR
     public static let leftContext = 2.0
     public static let settle = 1.5
     public static let forcedAfter = 10.0
+    /// Silence appended after the last audio in the flush at Stop, so the final word is decoded whole (T20).
+    public static let finalPadding = 1.0
 
     public init(asr: ParakeetASR) { self.asr = asr }
 
@@ -26,8 +29,9 @@ public final class LiveTranscriber: @unchecked Sendable {
         }
         let origin = max(0, r.stableUntil.seconds - Self.leftContext)
         let end = last.interval.end.seconds
+        let limit = end + (r.final ? Self.finalPadding : 0)
         let rate = Double(AnalysisAudio.sampleRate)
-        var audio = [Float](repeating: 0, count: max(0, Int((end - origin) * rate)))
+        var audio = [Float](repeating: 0, count: max(0, Int((limit - origin) * rate)))
         for seg in segs where seg.interval.end.seconds > origin {
             let decoded = try CAFFile.decode(Data(contentsOf: r.meetingDirectory.appending(path: seg.relativePath)), salvage: true)
             let mono = AnalysisPreparer.downmix(decoded.samples, channels: decoded.format.channelCount, rate: decoded.format.sampleRate)
@@ -90,17 +94,21 @@ public final class LiveTranscriber: @unchecked Sendable {
         var stable = r.stableUntil.seconds
         var stableWords: [ParakeetASR.Word] = []
         var tentative: [ParakeetASR.Word] = []
-        while end - stable > 0.25 {
-            let spanEnd = min(end, stable + maxSpan)
+        while end - stable > 0.25 || (r.final && stable < end) {
+            let spanEnd = min(limit, stable + maxSpan)
             let words = try await window(stable, spanEnd)
-            if spanEnd < end {
+            if spanEnd < limit {
                 // More audio than one pass: settle this pass at the last pause before its end (or force near the end).
                 let cut = Self.cut(words, before: spanEnd - 1, minGap: 0.3) ?? Self.forcedCut(words, near: spanEnd - 2) ?? spanEnd - 2
                 stableWords += words.filter { $0.end <= cut }
                 stable = max(cut, stable + 1)
                 continue
             }
-            if let cut = Self.cut(words, before: end - Self.settle, minGap: 0.4) {
+            if r.final {
+                // Nothing more will arrive: every word is settled.
+                stableWords += words
+                stable = end
+            } else if let cut = Self.cut(words, before: end - Self.settle, minGap: 0.4) {
                 stableWords += words.filter { $0.end <= cut }
                 tentative = words.filter { $0.end > cut }
                 stable = cut

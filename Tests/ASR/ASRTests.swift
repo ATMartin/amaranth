@@ -442,6 +442,47 @@ struct ASREndToEndTests {
         #expect(wer.wer < 0.08)
     }
 
+    /// T20 (tracked item 23): Stop lands mid-speech, 1.9 s after the last regular pass. The flush at Stop decodes the
+    /// remaining audio, including the last partial segment, with padding and settles every word, so the closing words
+    /// reach the provisional transcript without duplicates.
+    @Test(.timeLimit(.minutes(5)))
+    func finalFlushKeepsTheLastWords() async throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "amr-live-flush-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let (speech, reference) = try Replay.libriSpeech(count: 3)
+        let spoken = speech.count - 9_600   // no trailing silence: the last word ends just before Stop
+        let r = try await Replay.record([.microphone: (AudioFormat(sampleRate: 16_000, channelCount: 1, sampleFormat: .float32),
+                                                       { @Sendable (i: Int64, _: Int) -> Float in i < spoken ? speech[Int(i)] : 0 })],
+                                        seconds: Double(spoken) / 16_000 + 0.1, speed: 10, root: root)
+        let asr = try ParakeetASR(directory: Replay.modelStore.appending(path: "parakeet-tdt-0.6b-v3-coreml"),
+                                  manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: "7dd20fe6")
+        let live = LiveTranscriber(asr: asr)
+        let segs = r.segments.sorted { $0.interval.start < $1.interval.start }
+        let end = segs.last!.interval.end.seconds
+        var stable = SessionTime.zero
+        var settled: [Word] = [], tentative: [Word] = []
+        var t = 2.0
+        while t < end - 1.9 {
+            let committed = segs.filter { $0.interval.end.seconds <= t && $0.interval.end.seconds > stable.seconds - 2.5 }
+            let resp = try await live.process(LiveRequest(meetingID: r.meetingID, meetingDirectory: r.directory, source: .microphone,
+                                                          stableUntil: stable, segments: committed))
+            settled += resp.stableWords; tentative = resp.tentativeWords; stable = resp.stableUntil
+            t += 2
+        }
+        let before = WER.normalize((settled + tentative).map(\.text).joined(separator: " "))
+        let flush = try await live.process(LiveRequest(meetingID: r.meetingID, meetingDirectory: r.directory, source: .microphone,
+                                                       stableUntil: stable, segments: segs.filter { $0.interval.end.seconds > stable.seconds - 2.5 }, final: true))
+        #expect(flush.tentativeWords.isEmpty, "the flush settles every word")
+        #expect(flush.stableUntil.seconds >= end - 0.001)
+        let all = settled + flush.stableWords
+        #expect(zip(all, all.dropFirst()).allSatisfy { $0.interval.start <= $1.interval.start }, "time order, no re-emission")
+        let h = WER.normalize(all.map(\.text).joined(separator: " ")), ref = WER.normalize(reference)
+        let wer = WER.score(reference: reference, hypothesis: all.map(\.text).joined(separator: " "))
+        print("[live] flush: before \(before.count) words, after \(h.count) of \(ref.count); WER \(String(format: "%.1f", wer.wer * 100))%")
+        #expect(h.suffix(3) == ref.suffix(3), "closing words: \(h.suffix(3)) vs \(ref.suffix(3))")
+        #expect(wer.wer < 0.08)
+    }
+
     @Test(.timeLimit(.minutes(3)))
     func silenceAndToneProduceNoWords() async throws {
         let root = FileManager.default.temporaryDirectory.appending(path: "amr-asr-sil-\(UUID())")

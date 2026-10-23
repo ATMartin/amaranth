@@ -972,6 +972,8 @@ case "notes-gate" where args.count >= 4:
                       nonThinking: args.contains("--non-thinking"), only: value("--only").map { Set($0.split(separator: ",").map(String.init)) })
 case "perf-suite":
     exit(try await PerfSuite.main(Array(args.dropFirst(2))))
+case "live-suite":
+    exit(try await LiveSuite.main(Array(args.dropFirst(2))))
 case "corpus" where args.count >= 5:
     scoreOnly = args.contains("--score-only")
     let engines = value("--engines")?.split(separator: ",").map(String.init)
