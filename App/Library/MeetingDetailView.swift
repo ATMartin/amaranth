@@ -13,6 +13,7 @@ struct MeetingDetailView: View {
     @State private var tab: Tab = .notes
     @State private var title = ""
     @State private var confirming: DestructiveAction?
+    @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
     enum Tab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Recording" }
 
     var notesModelInstalled: Bool { if case .ready = models.status { true } else { false } }
@@ -21,8 +22,11 @@ struct MeetingDetailView: View {
         VStack(spacing: 0) {
             header
             Picker("View", selection: $tab) { ForEach(Tab.allCases, id: \.self) { Text($0.rawValue) } }
-                .pickerStyle(.segmented).labelsHidden().padding(.horizontal).padding(.bottom, 8)
+                .pickerStyle(.segmented).labelsHidden().padding(.horizontal)
                 .frame(maxWidth: 420)
+                .frame(maxWidth: .infinity)
+                .overlay(alignment: .trailing) { detailsToggle.padding(.trailing) }
+                .padding(.bottom, 8)
             Divider()
             switch tab {
             case .notes: NotesPane(detail: detail, notesModelInstalled: notesModelInstalled) { tab = .transcript }
@@ -55,6 +59,17 @@ struct MeetingDetailView: View {
             Button(action.buttonTitle, role: .destructive) { playback.stop(); library.delete(action, detail.meeting.id) }
             Button("Cancel", role: .cancel) {}
         } message: { action in Text(action.explanation(detail.diskUsage)) }
+    }
+
+    /// The one place ⌘D is registered (the View menu item from T29 calls the same toggle).
+    var detailsToggle: some View {
+        Button { showDetails.toggle() } label: {
+            Image(systemName: showDetails ? "info.circle.fill" : "info.circle").imageScale(.large)
+        }
+        .buttonStyle(.borderless)
+        .keyboardShortcut("d", modifiers: .command)
+        .help("Show details: where each note came from, transcript gaps and flags (⌘D)")
+        .accessibilityLabel(showDetails ? "Hide details" : "Show details")
     }
 
     var header: some View {

@@ -164,6 +164,11 @@ struct NoteItemRow: View {
     let item: SummaryItem
     let detail: MeetingDetail
     let jump: (TranscriptEvidence) -> Void
+    @Environment(\.showDetails) private var showDetails
+
+    var transcriptEvidence: [TranscriptEvidence] {
+        item.evidence.compactMap { if case .transcript(let e) = $0 { e } else { nil } }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -178,16 +183,26 @@ struct NoteItemRow: View {
                 Text("Owner: \(item.owner ?? "not stated")  ·  Due: \(item.due?.originalText ?? "not stated")")
                     .font(.caption).foregroundStyle(.secondary)
             }
-            HStack(spacing: 6) {
-                ForEach(Array(item.evidence.enumerated()), id: \.offset) { _, ref in
-                    switch ref {
-                    case .transcript(let e):
-                        Button(time(e)) { jump(e) }.buttonStyle(.link).font(.caption.monospacedDigit()).help("Show in transcript")
-                    case .personalNote:
-                        Label("your private note", systemImage: "lock").font(.caption).foregroundStyle(.secondary)
+            // Evidence is attribution, shown only with Details on; the uncertain marker above is a warning and always shows.
+            if showDetails {
+                HStack(spacing: 6) {
+                    ForEach(Array(item.evidence.enumerated()), id: \.offset) { _, ref in
+                        switch ref {
+                        case .transcript(let e):
+                            Button(time(e)) { jump(e) }.buttonStyle(.link).font(.caption.monospacedDigit()).help("Show in transcript")
+                        case .personalNote:
+                            Label("your private note", systemImage: "lock").font(.caption).foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
+        }
+        .contentShape(Rectangle())
+        .contextMenu {
+            // A quiet way back to the source in both modes.
+            let refs = transcriptEvidence
+            if refs.count == 1 { Button("Show in Transcript") { jump(refs[0]) } }
+            else { ForEach(Array(refs.enumerated()), id: \.offset) { _, e in Button("Show in Transcript at \(time(e))") { jump(e) } } }
         }
     }
 

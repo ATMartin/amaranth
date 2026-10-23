@@ -9,6 +9,7 @@ struct MainView: View {
     @Environment(ModelSetupModel.self) private var models
     @State private var showingModels = false
     @AppStorage("onboarded") private var onboarded = false
+    @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
 
     var body: some View {
         @Bindable var library = library
@@ -29,6 +30,7 @@ struct MainView: View {
                 }
             }
         }
+        .environment(\.showDetails, showDetails)
         .searchable(text: $library.query, placement: .sidebar, prompt: "Search transcripts and notes")
         .toolbar {
             ToolbarItem(placement: .navigation) {

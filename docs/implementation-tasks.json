@@ -708,7 +708,7 @@
       "id": "T22",
       "title": "Add a global “Details” toggle and hide note evidence links by default",
       "milestone": "G",
-      "status": "planned",
+      "status": "done (hands-on checks pending: toggle click, ⌘D, relaunch persistence, note right-click menu)",
       "optional": false,
       "depends_on": [
         "T10"
@@ -738,7 +738,8 @@
       ],
       "evidence_images": [
         "docs/design-review/2026-10-23/amaranth-notes-evidence-links.png"
-      ]
+      ],
+      "result": "2026-10-23: global Details preference (key reviewShowDetails, default off, pinned by test) injected as an environment value from MainView; ⓘ toggle with ⌘D right of the tab picker; note evidence links shown only with Details on; uncertain marker always shown; per-note right-click 'Show in Transcript' in both modes (user decision); ui-render renders notes in both states. Exports untouched (Export tests pass)."
     },
     {
       "id": "T23",
