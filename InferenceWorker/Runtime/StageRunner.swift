@@ -14,6 +14,10 @@ public final class ModelProvider: @unchecked Sendable {
     private let lock = NSLock()
     private let resolveDirectory: @Sendable (String) throws -> (URL, String)
     private var asr: (decoders: [ParakeetASR], vads: [SileroVAD])?
+    /// Instances for live text and for incremental processing (T19). Batch jobs of an earlier meeting may run while a
+    /// meeting records, so neither shares a decoder with the batch pool.
+    private var liveASR: ParakeetASR?
+    private var incrementalASR: (ParakeetASR, SileroVAD)?
     /// Concurrent ASR decoders and VAD instances for batch transcription. Instances share the compiled Core ML models
     /// (about 5 MiB each). Alone, throughput levels off at 3 decoders on the M2 Max; beside diarization, which shares
     /// the Neural Engine, 2 finish the meeting soonest (T17, processing/0002).
@@ -50,10 +54,38 @@ public final class ModelProvider: @unchecked Sendable {
         }
     }
 
-    /// The first decoder and VAD (live text and single-instance callers).
+    /// The first decoder and VAD (single-instance callers).
     public func transcription() throws -> (ParakeetASR, SileroVAD) {
         let pool = try transcriptionPool()
         return (pool.decoders[0], pool.vads[0])
+    }
+
+    /// Live text's own decoder.
+    public func live() throws -> ParakeetASR {
+        try lock.withLock {
+            if let liveASR { return liveASR }
+            notesModel = nil
+            let (dir, rev) = try resolveDirectory("parakeet-tdt-0.6b-v3-coreml")
+            let d = try Perf.measure("model.load.asr") { try ParakeetASR(directory: dir, manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: rev) }
+            liveASR = d
+            return d
+        }
+    }
+
+    /// Incremental processing's own decoder and VAD.
+    public func incremental() throws -> (ParakeetASR, SileroVAD) {
+        try lock.withLock {
+            if let incrementalASR { return incrementalASR }
+            notesModel = nil
+            let (dir, rev) = try resolveDirectory("parakeet-tdt-0.6b-v3-coreml")
+            let (vadDir, _) = try resolveDirectory("silero-vad-coreml")
+            let e = try Perf.measure("model.load.asr") {
+                (try ParakeetASR(directory: dir, manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: rev),
+                 try SileroVAD(modelFile: vadDir.appending(path: "silero-vad-unified-256ms-v6.2.1.mlmodelc")))
+            }
+            incrementalASR = e
+            return e
+        }
     }
 
     public func transcriptionPool() throws -> (decoders: [ParakeetASR], vads: [SileroVAD]) {
@@ -90,7 +122,7 @@ public final class ModelProvider: @unchecked Sendable {
     public func notes() throws -> LlamaRunner {
         try lock.withLock {
             if let notesModel { return notesModel }
-            asr = nil; diarizer = nil
+            asr = nil; diarizer = nil; liveASR = nil; incrementalASR = nil
             let (dir, rev) = try resolveDirectory(Self.notesManifestID)
             guard let gguf = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
                 .first(where: { $0.pathExtension == "gguf" }) else { throw Error.missing("\(Self.notesManifestID) gguf") }
@@ -100,7 +132,7 @@ public final class ModelProvider: @unchecked Sendable {
         }
     }
 
-    public func unloadAll() { lock.withLock { asr = nil; diarizer = nil; notesModel = nil } }
+    public func unloadAll() { lock.withLock { asr = nil; diarizer = nil; notesModel = nil; liveASR = nil; incrementalASR = nil } }
 }
 
 /// Executes one stage from `input.json` in the job's work directory and writes `output.json` (atomically).
@@ -111,8 +143,39 @@ public final class StageRunner: @unchecked Sendable {
 
     /// Provisional live text (T14). Uses the same ASR model as transcription (loading it releases the notes LLM).
     public func live(_ r: LiveRequest) async throws -> LiveResponse {
-        let (asr, _) = try models.transcription()
-        return try await LiveTranscriber(asr: asr).process(r)
+        try await LiveTranscriber(asr: try models.live()).process(r)
+    }
+
+    private let incrementalLock = NSLock()
+    private var incrementalSessions: [MeetingID: (transcriber: IncrementalTranscriber, token: CancellationToken)] = [:]
+
+    /// Final-quality transcription while recording (T19). State is kept per meeting until `close`; a new worker starts
+    /// over from the segments the app resends (window checkpoints on disk are reused when identical).
+    public func incremental(_ r: IncrementalRequest) async throws -> IncrementalResponse {
+        if r.close {
+            incrementalLock.withLock { incrementalSessions.removeValue(forKey: r.meetingID)?.token.cancel() }
+            return IncrementalResponse(sources: [], busy: false)
+        }
+        let session = try incrementalLock.withLock {
+            if let s = incrementalSessions[r.meetingID] { return s }
+            let (decoder, vad) = try models.incremental()
+            let s = (transcriber: try IncrementalTranscriber(meetingDirectory: r.meetingDirectory, directory: r.workDirectory, decoder: decoder, vad: vad),
+                     token: CancellationToken())
+            incrementalSessions[r.meetingID] = s
+            return s
+        }
+        let trace = PerfTrace()
+        guard let p = try await PerfTrace.$current.withValue(trace, operation: {
+            try await session.transcriber.advance(segments: r.segments, events: r.events, deadline: .now + .seconds(r.budgetSeconds),
+                                                  cancellation: session.token)
+        }) else { return IncrementalResponse(sources: [], busy: true) }
+        return IncrementalResponse(sources: p.sources.map { s in
+            IncrementalResponse.Source(source: s.source, lastSequence: s.lastSequence, settledUntil: s.settledUntil, finalizedUntil: s.finalizedUntil,
+                                       plannedWindows: s.plannedWindows, decodedWindows: s.decodedWindows, newWords: s.newWords.map { w in
+                Word(id: WordID("final-\(s.source.rawValue)-\(Int(w.start * 1000))"), text: w.text, interval: .seconds(w.start, max(w.end, w.start + 0.01)),
+                     source: s.source, quality: ASRQuality(engine: "parakeet-tdt-0.6b-v3", values: ["tokenConfidenceMean": w.tokenConfidence]))
+            })
+        }, busy: false)
     }
 
     /// Loads (and so compiles, on first use on this Mac) the transcription and diarization models.
@@ -164,7 +227,8 @@ public final class StageRunner: @unchecked Sendable {
             let pool = try models.transcriptionPool()
             let prepared = try ContractCoding.decode(AnalysisPreparer.Output.self,
                                                      from: Data(contentsOf: i.prepared.directory.appending(path: "coverage.json")))
-            let pipeline = TranscriptionPipeline(decoders: pool.decoders, vads: pool.vads, workDirectory: job.workDirectory.appending(path: "windows"))
+            let pipeline = TranscriptionPipeline(decoders: pool.decoders, vads: pool.vads, workDirectory: job.workDirectory.appending(path: "windows"),
+                                                 incremental: i.incrementalDirectory)
             let rev = try await pipeline.run(meetingID: i.meetingID, prepared: prepared, preparedDirectory: i.prepared.directory,
                                              cancellation: cancellation) { p, cp in
                 progress(WorkerProgress(jobID: job.jobID, progress: p, checkpoint: cp))

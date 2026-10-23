@@ -25,29 +25,56 @@ enum PerfReport {
         return md.joined(separator: "\n") + "\n"
     }
 
+    /// Runs that replay a meeting as a recording in progress (T19).
+    static func isIncremental(_ i: PerfSuite.ItemMetrics) -> Bool { i.run == "incremental" || i.run.hasPrefix("b2b") }
+
     /// G1–G7 against docs/milestone-e-performance-plan.md targets.
     static func gates(_ m: M) -> [String] {
         let corpus = m.items.filter { ($0.suite == "corpus" || $0.set == "timing") && $0.completed }
         // G1–G3 are stated for a 60-minute meeting: use meetings of ≥ 50 min, scaled to 60 min (short meetings are
         // dominated by fixed per-job cost and would overstate a per-hour rate).
-        let long = corpus.filter { $0.audioSeconds >= 3000 }
+        let long = corpus.filter { $0.audioSeconds >= 3000 && !isIncremental($0) }
         func scaled(_ xs: [(Double?, Double)]) -> Double? { xs.compactMap { s, a in s.map { $0 / a * 3600 } }.max() }
         let g1 = scaled(long.map { ($0.stopToTranscriptSeconds, $0.audioSeconds) })
         let g2 = scaled(long.map { ($0.stopToNotesSeconds, $0.audioSeconds) })
         let longT = long.map { "\($0.id)/\($0.run) \(f($0.stopToTranscriptSeconds, 0)) s for \(f($0.audioSeconds / 60, 0)) min" }.joined(separator: "; ")
         let longN = long.map { "\($0.id)/\($0.run) \(f($0.stopToNotesSeconds, 0)) s" }.joined(separator: "; ")
+        // T19: with processing during the recording, the target is absolute (≤ 20 s for 60- and 120-minute meetings).
+        let inc = corpus.filter { $0.run == "incremental" && $0.audioSeconds >= 3000 }
+        let g1i = inc.compactMap(\.stopToTranscriptSeconds).max()
+        let incT = inc.map { "\($0.id) \(f($0.stopToTranscriptSeconds, 0)) s for \(f($0.audioSeconds / 60, 0)) min" }.joined(separator: "; ")
+        let b2b = m.items.filter { $0.run == "b2b-1" }
+        let g7 = b2b.isEmpty ? nil : b2b.allSatisfy { $0.completed && $0.transcriptReadyBeforeNextStop == true && $0.transcriptJobsLeftAtNextStop == 0 }
+        let b2bT = b2b.map { "\($0.id): ready \(f($0.stopToTranscriptSeconds, 0)) s after Stop, next Stop at \(f($0.nextStopSeconds, 0)) s, \($0.transcriptJobsLeftAtNextStop.map(String.init) ?? "?") stages left" }.joined(separator: "; ")
         func status(_ v: Double?, _ target: Double) -> String { v.map { $0 <= target ? "met" : "**not met**" } ?? "–" }
         var g5 = "not compared (run with `--compare <baseline>`)"
         if let c = m.comparison { g5 = c.breaches.isEmpty ? "**pass** (\(c.flagged.count) corpus flags for review)" : "**FAIL** (\(c.breaches.count) breaches)" }
         return ["## Gates (M2 Max measured)", "",
                 "| # | Gate | Target (batch / incremental) | Measured | Status |", "|---|---|---|---|---|",
-                "| G1 | Stop → final transcript with speakers, 60 min | ≤ 60 s / ≤ 20 s | \(f(g1, 0)) s per 60 min (worst ≥ 50-min meeting): \(longT.isEmpty ? "no meeting ≥ 50 min" : longT) | \(status(g1, 60)) (batch) |",
+                "| G1 | Stop → final transcript with speakers, 60 min | ≤ 60 s / ≤ 20 s | batch: \(f(g1, 0)) s per 60 min (worst ≥ 50-min meeting): \(longT.isEmpty ? "no meeting ≥ 50 min" : longT). While recording: \(incT.isEmpty ? "not run" : incT) | \(status(g1, 60)) (batch); \(status(g1i, 20)) (while recording) |",
                 "| G2 | Stop → notes, 60 min | ≤ 300 s | \(f(g2, 0)) s per 60 min: \(longN.isEmpty ? "no meeting ≥ 50 min" : longN) | \(status(g2, 300)) |",
-                "| G3 | Batch path transcript, 60 min | ≤ 60 s | same as G1 (no incremental processing yet) | \(status(g1, 60)) |",
+                "| G3 | Batch path transcript, 60 min | ≤ 60 s | same as G1 batch | \(status(g1, 60)) |",
                 "| G4 | Live text delay | median ≤ 2 s, p95 ≤ 4 s | not measured by perf-suite (T20) | – |",
                 "| G5 | Quality guard vs v0 | no breach | \(g5) | |",
-                "| G6 | Capture safety while processing during a call | zero loss | not exercised until T19 | – |",
-                "| G7 | Back-to-back meetings | meeting 1 ready while 2 records | not exercised until T19 | – |", ""]
+                "| G6 | Capture safety while processing during a call | zero loss | measured by `--self-test live-load` (processing/0003) | – |",
+                "| G7 | Back-to-back meetings | meeting 1 ready while 2 records | \(b2bT.isEmpty ? "not run" : b2bT) | \(g7.map { $0 ? "met" : "**not met**" } ?? "–") |", ""]
+            + incrementalTable(m)
+    }
+
+    /// T19: what processing while recording did, and whether the final transcript equals the item's batch run.
+    static func incrementalTable(_ m: M) -> [String] {
+        let runs = m.items.filter(isIncremental)
+        guard !runs.isEmpty else { return [] }
+        var md = ["## Processing while recording (T19)", "",
+                  "Replayed at \(f(runs.first?.incremental?.liveSpeed, 0))× realtime. *Final at Stop*: end of final-quality text per source when recording stopped. *Reused*: windows the transcription stage took from incremental results (identical window and audio).", "",
+                  "| Item | Run | Audio min | Stop→transcript | transcribe exec | diarize exec | Requests (busy, failed, paused) | Windows decoded | Final at Stop (s) | Reused windows | Identical to batch run |",
+                  "|---|---|---|---|---|---|---|---|---|---|---|"]
+        for i in runs {
+            let inc = i.incremental
+            let fin = inc?.finalizedUntil.sorted { $0.key < $1.key }.map { "\($0.key) \(f($0.value, 0))" }.joined(separator: ", ") ?? "–"
+            md.append("| \(i.id) | \(i.run) | \(f(i.audioSeconds / 60)) | \(f(i.stopToTranscriptSeconds)) | \(stage(i, "transcribe").map { f($0.executeSeconds) } ?? "–") | \(stage(i, "diarize").map { f($0.executeSeconds) } ?? "–") | \(inc.map { "\($0.requests) (\($0.busyReplies), \($0.failures), \($0.pausedTicks))" } ?? "–") | \(inc.map { "\($0.decodedWindows)/\($0.plannedWindows)" } ?? "–") | \(fin) | \(i.reusedWindows.map { String($0) } ?? "–") | \(i.identicalToBatch.map { $0 ? "yes" : "**no**" } ?? "–") |")
+        }
+        return md + [""]
     }
 
     static func stage(_ i: PerfSuite.ItemMetrics, _ name: String) -> PerfSuite.StageMetrics? { i.stages.last { $0.stage == name } }

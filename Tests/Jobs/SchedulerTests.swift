@@ -99,9 +99,9 @@ enum JobFixture {
         return (store, m, root)
     }
 
-    static func config(concurrentAnalysis: Bool = true, notes: Bool = false) -> JobScheduler.Configuration {
+    static func config(concurrentAnalysis: Bool = true, notes: Bool = false, processWhileRecording: Bool = false) -> JobScheduler.Configuration {
         JobScheduler.Configuration(asrConfigHash: "asr", diarizationConfigHash: "diar", notesConfigHash: notes ? "notes" : nil,
-                                   retryBackoff: 0.05, concurrentAnalysis: concurrentAnalysis)
+                                   retryBackoff: 0.05, concurrentAnalysis: concurrentAnalysis, processWhileRecording: processWhileRecording)
     }
 
     static func wait(_ timeout: Duration = .seconds(10), until cond: () throws -> Bool) async rethrows -> Bool {
@@ -145,6 +145,51 @@ struct SchedulerTests {
         #expect(suspended.allSatisfy { $0.suspension == .recordingActive && $0.key.stage.isHeavy })
         #expect(MeetingStatus(meeting: try store.meeting(m)!, jobs: try store.jobs(meeting: m), events: []).processing == .waiting(.recordingActive))
         pressure.value = .none
+        s.poke()
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .reconcile && $0.state == .succeeded } })
+    }
+
+    /// T19: with "Process while recording" on, a meeting that ended is transcribed while the next one records
+    /// (back-to-back); only notes wait for the recording to end.
+    @Test func processWhileRecordingRunsTranscriptWorkButNotNotes() async throws {
+        let (store, m, root) = try JobFixture.storeWithMeeting()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let pressure = PressureBox()
+        pressure.value = .recording
+        let s = JobScheduler(store: store, executor: FakeExecutor(), configuration: JobFixture.config(notes: true, processWhileRecording: true),
+                             pressure: { pressure.value })
+        try s.start()
+        defer { s.stop() }
+        try s.enqueuePipeline(m)
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .reconcile && $0.state == .succeeded } })
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .notes && $0.state == .suspended } })
+        #expect(try store.jobs(meeting: m).first { $0.key.stage == .notes }?.suspension == .recordingActive)
+        pressure.value = .none
+        s.poke()
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .notes && $0.state == .succeeded } })
+    }
+
+    /// T19 back-off: a capture fault while recording suspends heavy work (and interrupts a running stage) even when
+    /// processing during recordings is on; work resumes when the fault clears.
+    @Test func captureFaultSuspendsProcessingDuringRecording() async throws {
+        let (store, m, root) = try JobFixture.storeWithMeeting()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let exec = FakeExecutor()
+        exec.delay = .seconds(3)
+        let pressure = PressureBox()
+        pressure.value = .recording
+        let s = JobScheduler(store: store, executor: exec, configuration: JobFixture.config(processWhileRecording: true), pressure: { pressure.value })
+        try s.start()
+        defer { s.stop() }
+        try s.enqueuePipeline(m)
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage.isHeavy && $0.state == .running } })
+        pressure.value = .captureFault
+        #expect(try await JobFixture.wait(.seconds(4)) {
+            let heavy = try store.jobs(meeting: m).filter { $0.key.stage.isHeavy }
+            return !heavy.isEmpty && heavy.allSatisfy { $0.state == .suspended && $0.suspension == .captureFault }
+        })
+        exec.delay = .milliseconds(30)
+        pressure.value = .recording
         s.poke()
         #expect(try await JobFixture.wait { try store.jobs(meeting: m).contains { $0.key.stage == .reconcile && $0.state == .succeeded } })
     }
@@ -198,7 +243,11 @@ struct SchedulerTests {
         #expect(P.current(recording: false, thermal: .serious, memoryPressure: false) == .thermal)
         #expect(P.current(recording: false, thermal: .critical, memoryPressure: true) == .thermal)
         #expect(P.current(recording: false, thermal: .nominal, memoryPressure: true) == .memory)
-        #expect(P.current(recording: true, thermal: .critical, memoryPressure: true) == .recording)
+        // T19: back-off reasons outrank recording, so they still apply when processing continues during a recording.
+        #expect(P.current(recording: true, thermal: .critical, memoryPressure: true) == .thermal)
+        #expect(P.current(recording: true, thermal: .nominal, memoryPressure: true) == .memory)
+        #expect(P.current(recording: true, captureFault: true, thermal: .nominal, memoryPressure: false) == .captureFault)
+        #expect(P.current(recording: true, thermal: .fair, memoryPressure: false) == .recording)
     }
 
     @Test func notesRunOnceThenGoStaleAndRegenerateOnRequest() async throws {

@@ -63,11 +63,13 @@ enum PipelineSelfTest {
     }
 
     static func scheduler(store: MeetingStore, client: WorkerClient, hangTimeout: Duration = .seconds(300), notes: Bool = false,
+                          processWhileRecording: Bool = false,
                           pressure: @escaping @Sendable () -> JobScheduler.Pressure = { .none }) -> JobScheduler {
         JobScheduler(store: store, executor: WorkerExecutor(client: client, hangTimeout: hangTimeout),
                      configuration: JobScheduler.Configuration(asrConfigHash: PipelineVersions.asr, diarizationConfigHash: PipelineVersions.diarization,
                                                                notesConfigHash: notes ? PipelineVersions.notes : nil,
-                                                               concurrentAnalysis: ProcessingModel.concurrentAnalysis),
+                                                               concurrentAnalysis: ProcessingModel.concurrentAnalysis,
+                                                               processWhileRecording: processWhileRecording),
                      pressure: pressure)
     }
 

@@ -98,9 +98,50 @@ public final class SileroVAD: @unchecked Sendable {
     /// Speech regions (seconds, relative to the first sample), padded by `padding`.
     public func speech(_ samples: [Float], padding: Double = 0.3, maxSegment: Double = 14) async throws -> [(Double, Double)] {
         guard samples.count >= 4096 else { return [] }
-        let cfg = VadSegmentationConfig(minSpeechDuration: 0.25, minSilenceDuration: 0.5, maxSpeechDuration: maxSegment,
-                                        speechPadding: min(padding, 0.25))
-        let segs = try await manager.segmentSpeech(samples, config: cfg)
-        return segs.map { (max(0, $0.startTime - max(0, padding - 0.25)), $0.endTime + max(0, padding - 0.25)) }
+        let segs = try await manager.segmentSpeech(samples, config: Self.segmentation(padding: padding, maxSegment: maxSegment))
+        return Self.padded(segs, padding: padding)
+    }
+
+    static func segmentation(padding: Double, maxSegment: Double) -> VadSegmentationConfig {
+        VadSegmentationConfig(minSpeechDuration: 0.25, minSilenceDuration: 0.5, maxSpeechDuration: maxSegment, speechPadding: min(padding, 0.25))
+    }
+
+    static func padded(_ segs: [VadSegment], padding: Double) -> [(Double, Double)] {
+        segs.map { (max(0, $0.startTime - max(0, padding - 0.25)), $0.endTime + max(0, padding - 0.25)) }
+    }
+
+    /// Samples per VAD model step.
+    public static let blockSize = 4096
+
+    /// VAD over audio that arrives in pieces (T19). FluidAudio runs the model over 4096-sample blocks in order from a
+    /// fresh state and the model is causal, so feeding a chunk's samples in whole blocks gives exactly the probabilities
+    /// `speech` computes for the whole chunk; `speech(_ stream:)` then applies the same segmentation.
+    public struct Stream: Sendable {
+        /// Samples fed so far (a multiple of `blockSize` until the final, possibly partial, block).
+        public fileprivate(set) var samples = 0
+        fileprivate var probabilities: [Float] = []
+        fileprivate var state: VadStreamState?
+        public init() {}
+    }
+
+    /// Feeds whole blocks (and, once, a final partial block, padded the way FluidAudio pads it).
+    public func feed(_ stream: inout Stream, _ samples: [Float]) async throws {
+        var i = 0
+        while i < samples.count {
+            let block = Array(samples[i..<min(samples.count, i + Self.blockSize)])
+            let r = try await manager.processStreamingChunk(block, state: stream.state ?? VadStreamState())
+            stream.probabilities.append(r.probability)
+            stream.state = VadStreamState(modelState: r.state.modelState)
+            stream.samples += block.count
+            i += block.count
+        }
+    }
+
+    /// Speech regions of everything fed so far, as `speech` would return them for those samples.
+    public func speech(_ stream: Stream, padding: Double = 0.3, maxSegment: Double = 14) async -> [(Double, Double)] {
+        guard stream.samples >= Self.blockSize else { return [] }
+        let results = stream.probabilities.map { VadResult(probability: $0, isVoiceActive: false, processingTime: 0, outputState: .initial()) }
+        let segs = await manager.segmentSpeech(from: results, totalSamples: stream.samples, config: Self.segmentation(padding: padding, maxSegment: maxSegment))
+        return Self.padded(segs, padding: padding)
     }
 }

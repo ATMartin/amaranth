@@ -2,6 +2,8 @@
 
 Date: 2026-10-16 · Task: T14 · Status: Accepted for v0. The latency gate is met on the M2 Max with synthetic replay.
 **Real calls and base-M2 hardware are unverified.**
+T19 ([processing/0003](../processing/0003-processing-while-recording.md)): final-pipeline words decoded during the
+recording replace live words before their point, and live text also pauses under memory pressure.
 
 ## Decision
 

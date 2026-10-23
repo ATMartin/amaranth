@@ -7,6 +7,7 @@ struct SettingsView: View {
     @Bindable var models: ModelSetupModel
     @AppStorage("microphoneMode") private var microphoneMode = MicrophoneMode.personal.rawValue
     @AppStorage("concurrentAnalysis") private var concurrentAnalysis = true
+    @AppStorage("processWhileRecording") private var processWhileRecording = true
 
     var body: some View {
         TabView {
@@ -23,6 +24,9 @@ struct SettingsView: View {
                 Section("Processing") {
                     Toggle("Find speakers while transcribing", isOn: $concurrentAnalysis)
                     Text("Transcripts with speakers are ready sooner. Turn this off to process one step at a time if your Mac runs hot or short of memory. Takes effect after the next launch.")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Toggle("Process while recording", isOn: $processWhileRecording)
+                    Text("Transcribes during the meeting, so the transcript is ready sooner after you stop, and finishes earlier meetings while you record the next one. It pauses on its own if the Mac gets hot, runs short of memory or the recording has a problem. Turn it off to wait until recording ends, as before. Takes effect after the next launch.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 Section("Privacy") {

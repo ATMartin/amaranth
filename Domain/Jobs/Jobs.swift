@@ -57,6 +57,8 @@ public enum ProcessingState: String, Hashable, Sendable, Codable {
 
 public enum SuspensionReason: String, Hashable, Sendable, Codable {
     case recordingActive, thermalPressure, memoryPressure, userPaused
+    /// Capture reported missing audio or a fault while recording (T19): processing backs off to protect the recording.
+    case captureFault
 }
 
 public struct JobLease: Hashable, Sendable, Codable {

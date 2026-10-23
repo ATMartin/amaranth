@@ -610,7 +610,7 @@
       "id": "T19",
       "title": "Process meetings incrementally during recording",
       "milestone": "E",
-      "status": "planned",
+      "status": "done",
       "optional": false,
       "depends_on": [
         "T17"
@@ -635,7 +635,8 @@
         "G6: zero missing-audio events and ring overruns, capture footprint unchanged, live text gate still met, under a simulated call load.",
         "G5 quality guard vs the frozen v0 baseline (docs/milestone-e-performance-plan.md)."
       ],
-      "fallback": "Roll back to pausing heavy work while recording (one setting) and keep the T17/T18 batch gains."
+      "fallback": "Roll back to pausing heavy work while recording (one setting) and keep the T17/T18 batch gains.",
+      "result": "2026-10-23: transcription during recording with exact reuse at Stop (byte-identical to v0); 60-min transcript with speakers 21.0 s after Stop (G1 <= 20 s not met: speakers at Stop by user decision; 120 min not measured); G6 met (synthetic), G7 met. processing/0003."
     },
     {
       "id": "T20",

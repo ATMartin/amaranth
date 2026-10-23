@@ -7,7 +7,8 @@ import Storage
 
 /// Drives live text while recording (T14). Every `interval` seconds it sends each source's newly committed segments
 /// (from `RecordingSession.snapshot()`, i.e. durable audio only) to the worker, one request in flight at a time, and
-/// merges the result. It pauses under serious or critical thermal state or when models are missing (no memory-pressure trigger yet: T19); capture is never affected.
+/// merges the result. It pauses under serious or critical thermal state, under memory pressure (T19) or when models are
+/// missing; capture is never affected. Final-pipeline words from incremental processing replace live words (T19).
 @MainActor @Observable
 final class LiveTextModel {
     enum Status: Equatable { case off, running, paused(String), unavailable(String) }
@@ -80,6 +81,12 @@ final class LiveTextModel {
                 // Worker restart or failure: the next tick resends from the last stable point.
             }
         }
+    }
+
+    /// Final-quality words decoded while recording (T19).
+    func applyFinal(_ s: IncrementalResponse.Source) {
+        guard session != nil else { return }
+        state.applyFinal(source: s.source, words: s.newWords, until: .seconds(s.finalizedUntil))
     }
 
     private func publishProvisional() {

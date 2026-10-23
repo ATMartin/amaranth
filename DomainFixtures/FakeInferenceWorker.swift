@@ -30,6 +30,9 @@ public actor FakeInferenceWorker {
             // Fixture: no audio decoding; everything up to the newest committed audio becomes stable, with no words.
             let end = r.segments.map(\.interval.end).max() ?? r.stableUntil
             return .live(LiveResponse(source: r.source, stableWords: [], tentativeWords: [], stableUntil: end, processedUntil: end))
+        case .incremental:
+            // Fixture: accepts the segments, produces nothing.
+            return .incremental(IncrementalResponse(sources: [], busy: false))
         }
     }
 

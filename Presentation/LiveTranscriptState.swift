@@ -3,13 +3,20 @@ public import Domain
 
 /// Live (provisional) text while recording (T14): merges worker responses per source, measures how long each word took
 /// to appear after it was spoken, and builds a `.provisional` revision. Never presented as final; speakers are not
-/// attributed live.
+/// attributed live. T19: words from the final pipeline, decoded while recording, replace live words before their
+/// `finalUntil` point (they are still unattributed and still part of a provisional revision).
 public struct LiveTranscriptState: Sendable {
     public struct SourceState: Sendable {
         public var stableUntil: SessionTime = .zero
         public var stable: [Word] = []
         public var tentative: [Word] = []
         public var processedUntil: SessionTime = .zero
+        /// Final-pipeline words (T19) and the point up to which they replace live words.
+        public var final: [Word] = []
+        public var finalUntil: SessionTime = .zero
+
+        /// Final words, then live words after `finalUntil`.
+        var shown: [Word] { final + (stable + tentative).filter { $0.interval.start >= finalUntil } }
     }
 
     public private(set) var sources: [SourceKind: SourceState] = [:]
@@ -40,9 +47,20 @@ public struct LiveTranscriptState: Sendable {
         }
     }
 
-    /// All live words in time order (stable then tentative per source).
+    /// Final-pipeline words up to `until` (T19). Words arrive window by window, in order, so they are appended.
+    public mutating func applyFinal(source: SourceKind, words: [Word], until: SessionTime) {
+        var s = sources[source] ?? SourceState()
+        guard until >= s.finalUntil else { return }
+        s.final += words.filter { w in w.interval.start >= s.finalUntil }
+        s.finalUntil = until
+        // Live words before the final point are no longer shown; keep only what can still be.
+        s.stable.removeAll { $0.interval.start < until }
+        sources[source] = s
+    }
+
+    /// All words in time order: final-pipeline words, then stable and tentative live words per source.
     public var words: [Word] {
-        sources.values.flatMap { $0.stable + $0.tentative }.sorted { $0.interval.start < $1.interval.start }
+        sources.values.flatMap(\.shown).sorted { $0.interval.start < $1.interval.start }
     }
 
     public func percentile(_ p: Double) -> Double? {
@@ -59,7 +77,7 @@ public struct LiveTranscriptState: Sendable {
             var curTentative = false
             func flush() { if let f = cur.first { out.append((kind, f.interval.start, cur.map(\.text).joined(separator: " "), curTentative)) }; cur = [] }
             let tentativeIDs = Set(s.tentative.map(\.id))
-            for w in s.stable + s.tentative {
+            for w in s.shown {
                 let t = tentativeIDs.contains(w.id)
                 if let l = cur.last, w.interval.start.seconds - l.interval.end.seconds > 1.5 || t != curTentative { flush() }
                 curTentative = t
@@ -91,7 +109,7 @@ public struct LiveTranscriptState: Sendable {
         }
         segments.sort { $0.interval.start < $1.interval.start }
         let coverage = sources.map { kind, s in
-            CoverageRegion(source: kind, interval: SessionInterval(unchecked: .zero, s.processedUntil), status: .transcribed)
+            CoverageRegion(source: kind, interval: SessionInterval(unchecked: .zero, max(s.processedUntil, s.finalUntil)), status: .transcribed)
         }
         return TranscriptRevision(meetingID: meetingID, kind: .provisional, stage: .asr, createdAt: Date(), producer: producer,
                                   segments: segments, coverage: coverage)

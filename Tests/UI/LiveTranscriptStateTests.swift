@@ -29,4 +29,23 @@ struct LiveTranscriptStateTests {
         try rev.validate()
         #expect(s.lines.last?.tentative == true)
     }
+
+    /// T19: final-pipeline words replace live words before their point; later live words still show.
+    @Test func finalWordsReplaceLiveWordsBeforeTheirPoint() throws {
+        var s = LiveTranscriptState()
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("helo", 1), w("wurld", 2), w("next", 6)], tentativeWords: [w("tail", 7)],
+                             stableUntil: .seconds(6.5), processedUntil: .seconds(8)), sessionNow: .seconds(8))
+        let final = [Word(id: WordID("final-mic-1000"), text: "Hello", interval: .seconds(1, 1.3), source: .microphone),
+                     Word(id: WordID("final-mic-2000"), text: "world.", interval: .seconds(2, 2.3), source: .microphone)]
+        s.applyFinal(source: .microphone, words: final, until: .seconds(4))
+        #expect(s.words.map(\.text) == ["Hello", "world.", "next", "tail"])
+        // An older final point is ignored; a repeated delivery adds nothing.
+        s.applyFinal(source: .microphone, words: [final[0]], until: .seconds(3))
+        s.applyFinal(source: .microphone, words: final, until: .seconds(4))
+        #expect(s.words.map(\.text) == ["Hello", "world.", "next", "tail"])
+        #expect(s.latencies.count == 4, "final words are not live latency samples")
+        let rev = try #require(s.revision(meetingID: MeetingID("m"), producer: ProducerInfo(component: "live", configHash: "l")))
+        try rev.validate()
+        #expect(rev.allWords.map(\.text) == ["Hello", "world.", "next", "tail"])
+    }
 }

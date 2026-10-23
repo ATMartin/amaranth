@@ -30,3 +30,6 @@ Benchmarks/Results/**/*.caf
 Tests/Data/Recordings/
 # perf-suite outputs hold transcripts and notes (corpus content is private, plan §10); reports hold metrics only.
 Benchmarks/Results/*/outputs/
+
+# Per-run outputs hold transcripts and notes (corpus meetings are private): never committed.
+Benchmarks/Results/*/outputs/

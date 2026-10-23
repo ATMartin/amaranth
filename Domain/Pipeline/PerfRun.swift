@@ -16,8 +16,11 @@ public enum PerfRun {
         /// committed meeting reused by later runs: replay timing (host-clock start offset, trailing silence) otherwise
         /// changes the captured audio slightly on every run, and transcripts could never be byte-identical.
         public var captureCache: String?
-        public init(items: [Item], outputDirectory: String, speed: Double, captureCache: String? = nil) {
+        /// T19: speed (× realtime) at which a captured meeting is replayed as a recording in progress.
+        public var liveSpeed: Double?
+        public init(items: [Item], outputDirectory: String, speed: Double, captureCache: String? = nil, liveSpeed: Double? = nil) {
             self.items = items; self.outputDirectory = outputDirectory; self.speed = speed; self.captureCache = captureCache
+            self.liveSpeed = liveSpeed
         }
     }
 
@@ -47,11 +50,18 @@ public enum PerfRun {
         /// T18 priority check: notes for this `TranscriptRevision` JSON start first, and this item arrives while they are
         /// generating. Its transcript must not wait for them; the notes must still finish.
         public var duringNotesOf: String?
+        /// T19: also run an identical copy as if it were still recording ("incremental" run): its committed segments
+        /// become visible at `liveSpeed` while incremental processing runs, and the pipeline starts at the end (Stop).
+        public var whileRecording: Bool?
+        /// T19 back-to-back (G7): run two copies as consecutive recordings ("b2b-1", "b2b-2"); the first one's stages run
+        /// while the second records.
+        public var backToBack: Bool?
         public init(id: String, kind: Kind, system: RawAudio? = nil, microphone: RawAudio? = nil, library: String? = nil, meetingID: String? = nil,
-                    transcript: String? = nil, notes: Bool, coldWorker: Bool = false, repeatWarm: Bool = false, duringNotesOf: String? = nil) {
+                    transcript: String? = nil, notes: Bool, coldWorker: Bool = false, repeatWarm: Bool = false, duringNotesOf: String? = nil,
+                    whileRecording: Bool? = nil, backToBack: Bool? = nil) {
             self.id = id; self.kind = kind; self.system = system; self.microphone = microphone; self.library = library
             self.meetingID = meetingID; self.transcript = transcript; self.notes = notes; self.coldWorker = coldWorker; self.repeatWarm = repeatWarm
-            self.duringNotesOf = duringNotesOf
+            self.duringNotesOf = duringNotesOf; self.whileRecording = whileRecording; self.backToBack = backToBack
         }
     }
 
@@ -71,6 +81,26 @@ public enum PerfRun {
         public var worker: StageTiming?
         public init(stage: String, state: String, errorCode: String?, scheduler: SchedulerTiming?, worker: StageTiming?) {
             self.stage = stage; self.state = state; self.errorCode = errorCode; self.scheduler = scheduler; self.worker = worker
+        }
+    }
+
+    public struct Incremental: Codable, Sendable {
+        public var liveSpeed: Double
+        public var replayWallSeconds: Double
+        public var requests: Int
+        public var busyReplies: Int
+        public var failures: Int
+        public var pausedTicks: Int
+        public var plannedWindows: Int
+        public var decodedWindows: Int
+        /// Per source (raw value): end of final-quality text, and of settled audio, at Stop.
+        public var finalizedUntil: [String: Double]
+        public var settledUntil: [String: Double]
+        public init(liveSpeed: Double, replayWallSeconds: Double, requests: Int, busyReplies: Int, failures: Int, pausedTicks: Int,
+                    plannedWindows: Int, decodedWindows: Int, finalizedUntil: [String: Double], settledUntil: [String: Double]) {
+            self.liveSpeed = liveSpeed; self.replayWallSeconds = replayWallSeconds; self.requests = requests; self.busyReplies = busyReplies
+            self.failures = failures; self.pausedTicks = pausedTicks; self.plannedWindows = plannedWindows; self.decodedWindows = decodedWindows
+            self.finalizedUntil = finalizedUntil; self.settledUntil = settledUntil
         }
     }
 
@@ -95,6 +125,13 @@ public enum PerfRun {
         /// `duringNotesOf`: this item's arrival → the background notes finished, and how often those notes were started.
         public var backgroundNotesSeconds: Double?
         public var backgroundNotesStarts: Int?
+        /// T19: what incremental processing did while this meeting "recorded" (replayed at `liveSpeed`).
+        public var incremental: Incremental?
+        /// T19 back-to-back: the next recording ran from this meeting's Stop until `nextStopSeconds` after it; this
+        /// meeting's transcript was ready before then, and none of its transcript stages were left at the next Stop.
+        public var nextStopSeconds: Double?
+        public var transcriptReadyBeforeNextStop: Bool?
+        public var transcriptJobsLeftAtNextStop: Int?
         public init(id: String, run: String, completed: Bool, failure: String?, audioSeconds: Double, recordWallSeconds: Double?,
                     missingAudioEvents: Int, stopToTranscriptSeconds: Double?, stopToNotesSeconds: Double?, stages: [StageResult],
                     peakAppMiB: Double, peakWorkerMiB: Double, workerPIDs: [Int32], thermalStart: String, thermalEnd: String) {

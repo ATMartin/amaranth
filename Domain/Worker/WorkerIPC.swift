@@ -52,6 +52,52 @@ public enum WorkerRequest: Hashable, Sendable, Codable {
     /// Loads the transcription and diarization models so Core ML compiles them for this Mac now, not on the first job
     /// (tracked item 3; sent after a model pack is installed). Replies `acknowledged`.
     case warmUp
+    /// Final-quality transcription while recording (T19). Carries segments committed since the worker's last reply;
+    /// the worker keeps per-meeting state, works for up to `budgetSeconds`, and replies `.incremental`.
+    case incremental(IncrementalRequest)
+}
+
+/// Incremental processing input. Only durable (committed) audio is read; capture is never touched.
+public struct IncrementalRequest: Hashable, Sendable, Codable {
+    public var meetingID: MeetingID
+    public var meetingDirectory: URL
+    /// The meeting's incremental work directory (read again by the transcription stage at Stop).
+    public var workDirectory: URL
+    /// Committed segments after each source's `lastSequence` in the previous reply (all of them for a new worker).
+    public var segments: [AudioSegmentRecord]
+    public var events: [CaptureEvent]
+    public var budgetSeconds: Double
+    /// Stop: cancel any work in progress for this meeting and release its state.
+    public var close: Bool
+    public init(meetingID: MeetingID, meetingDirectory: URL, workDirectory: URL, segments: [AudioSegmentRecord], events: [CaptureEvent],
+                budgetSeconds: Double, close: Bool = false) {
+        self.meetingID = meetingID; self.meetingDirectory = meetingDirectory; self.workDirectory = workDirectory
+        self.segments = segments; self.events = events; self.budgetSeconds = budgetSeconds; self.close = close
+    }
+}
+
+public struct IncrementalResponse: Hashable, Sendable, Codable {
+    public struct Source: Hashable, Sendable, Codable {
+        public var source: SourceKind
+        /// Highest segment sequence the worker has; the next request sends later ones.
+        public var lastSequence: Int64?
+        /// Settled audio, and the end of the final-quality text so far (seconds).
+        public var settledUntil: Double
+        public var finalizedUntil: Double
+        public var plannedWindows: Int
+        public var decodedWindows: Int
+        /// Final-quality words that became available in this call (they replace live text before `finalizedUntil`).
+        public var newWords: [Word]
+        public init(source: SourceKind, lastSequence: Int64?, settledUntil: Double, finalizedUntil: Double, plannedWindows: Int,
+                    decodedWindows: Int, newWords: [Word]) {
+            self.source = source; self.lastSequence = lastSequence; self.settledUntil = settledUntil; self.finalizedUntil = finalizedUntil
+            self.plannedWindows = plannedWindows; self.decodedWindows = decodedWindows; self.newWords = newWords
+        }
+    }
+    public var sources: [Source]
+    /// Another call for this meeting was still running; nothing was done.
+    public var busy: Bool
+    public init(sources: [Source], busy: Bool) { self.sources = sources; self.busy = busy }
 }
 
 /// Live text input: committed segments of one source from shortly before `stableUntil`, plus that stable point.
@@ -109,6 +155,7 @@ public enum WorkerResponse: Hashable, Sendable, Codable {
     case cancelled(jobID: JobID)
     case acknowledged
     case live(LiveResponse)
+    case incremental(IncrementalResponse)
 }
 
 public enum WorkerIPCCodec {

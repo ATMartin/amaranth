@@ -40,14 +40,38 @@ public enum AnalysisPreparer {
 
     static func buildDerivative(meetingDirectory: URL, segments: [AudioSegmentRecord], to url: URL, totalSamples: Int,
                                 cancellation: CancellationToken?) throws {
-        let writer = try AnalysisAudio.Writer(url: url)
-        let normalizer = TimelineNormalizer(segments: segments)
-        let target = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(AnalysisAudio.sampleRate), channels: 1, interleaved: false)!
-        var converter: AVAudioConverter?
-        var converterEpoch: EpochID?
-        var converterRate = 0
+        let builder = try DerivativeBuilder(meetingDirectory: meetingDirectory, url: url)
         for seg in segments {
             try cancellation?.check()
+            try builder.append(seg)
+        }
+        try builder.finish(totalSamples: totalSamples)
+        Perf.count("prepare.segments", segments.count)
+    }
+
+    /// Builds one source's derivative segment by segment, in sequence order. The batch prepare stage and incremental
+    /// processing during recording (T19) both use it, so a derivative built while recording holds exactly the samples
+    /// the prepare stage writes for the same segments: placement uses only a segment's own observed start, and the
+    /// converter (one per epoch, continuous filter state) sees the same samples in the same order.
+    public final class DerivativeBuilder {
+        let meetingDirectory: URL
+        private let writer: AnalysisAudio.Writer
+        private let target = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(AnalysisAudio.sampleRate), channels: 1, interleaved: false)!
+        private var converter: AVAudioConverter?
+        private var converterEpoch: EpochID?
+        private var converterRate = 0
+        /// Sample index where the last appended segment was placed. A later segment may overwrite from its own start,
+        /// which is never much earlier, so samples before this point are settled.
+        public private(set) var lastPlacedIndex = 0
+        public private(set) var appended = 0
+
+        public init(meetingDirectory: URL, url: URL) throws {
+            self.meetingDirectory = meetingDirectory
+            writer = try AnalysisAudio.Writer(url: url)
+        }
+
+        /// Appends the next segment of the source (in sequence order).
+        public func append(_ seg: AudioSegmentRecord) throws {
             let decoded = try Perf.measure("prepare.readSegment") { try CAFFile.decode(Data(contentsOf: meetingDirectory.appending(path: seg.relativePath))) }
             let mono = Perf.measure("prepare.downmix") { downmix(decoded.samples, channels: decoded.format.channelCount, rate: decoded.format.sampleRate) }
             if converterEpoch != seg.epochID || converterRate != decoded.format.sampleRate {
@@ -57,14 +81,19 @@ public enum AnalysisPreparer {
                 converterEpoch = seg.epochID
                 converterRate = decoded.format.sampleRate
             }
-            guard let conv = converter else { continue }
+            appended += 1
+            guard let conv = converter else { return }
             let resampled = try Perf.measure("prepare.resample") { try convert(mono, rate: decoded.format.sampleRate, with: conv, target: target) }
-            let start = normalizer.time(segment: seg, frame: 0)
+            // Frame 0 is placed at the segment's own observed start: the same with or without later segments known.
+            let start = TimelineNormalizer(segments: [seg]).time(segment: seg, frame: 0)
             let index = Int(start.nanoseconds * Int64(AnalysisAudio.sampleRate) / 1_000_000_000)
             try Perf.measure("prepare.write") { try writer.write(resampled, at: index) }
+            lastPlacedIndex = index
         }
-        try Perf.measure("prepare.write") { try writer.finish(totalSamples: totalSamples) }
-        Perf.count("prepare.segments", segments.count)
+
+        public func finish(totalSamples: Int) throws {
+            try Perf.measure("prepare.write") { try writer.finish(totalSamples: totalSamples) }
+        }
     }
 
     /// Anti-phase-safe downmix (see type docs).

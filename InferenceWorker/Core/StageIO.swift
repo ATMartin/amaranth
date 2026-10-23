@@ -44,7 +44,11 @@ public struct PreparedAudio: Codable, Sendable, Hashable {
 public struct TranscribeInput: Codable, Sendable {
     public var meetingID: MeetingID
     public var prepared: PreparedAudio
-    public init(meetingID: MeetingID, prepared: PreparedAudio) { self.meetingID = meetingID; self.prepared = prepared }
+    /// Results of processing while recording (T19), reused where identical; nil when there are none.
+    public var incrementalDirectory: URL?
+    public init(meetingID: MeetingID, prepared: PreparedAudio, incrementalDirectory: URL? = nil) {
+        self.meetingID = meetingID; self.prepared = prepared; self.incrementalDirectory = incrementalDirectory
+    }
 }
 
 public struct DiarizeInput: Codable, Sendable {

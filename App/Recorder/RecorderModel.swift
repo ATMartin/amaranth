@@ -22,6 +22,8 @@ final class RecorderModel {
     private var lastScratchpadSave = Date.distantPast
     /// Live provisional text while recording (T14).
     weak var live: LiveTextModel?
+    /// Final-quality transcription while recording (T19).
+    weak var incremental: IncrementalProcessor?
     /// Called with the saved meeting after Stop.
     var onFinished: ((MeetingID) -> Void)?
     private(set) var inputs: [AudioDeviceInfo] = []
@@ -99,6 +101,12 @@ final class RecorderModel {
         meetingID = s.meetingID
         live?.start(session: s, store: store)
         processing?.setRecording(true)
+        if let store {
+            incremental?.start(.init(meetingID: s.meetingID, meetingDirectory: s.directory,
+                                     workDirectory: store.workDirectory(s.meetingID).appending(path: "incremental")) { [weak s] in
+                s.map { snap in let r = snap.snapshot(); return (r.segments, r.events) }
+            })
+        }
         poll = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
         }
@@ -109,6 +117,7 @@ final class RecorderModel {
         state = s.state
         elapsed = s.now.seconds
         health = s.health()
+        processing?.observeCapture(health)
         savedUpTo = s.lastCommitted().mapValues(\.seconds)
         let disk = s.diskStatus()
         diskSecondsLeft = disk.secondsLeft
@@ -153,6 +162,7 @@ final class RecorderModel {
         poll = nil
         saveScratchpad()
         live?.stop(publish: true)
+        incremental?.stop()
         session = nil
         title = ""
         state = r.finalState

@@ -37,6 +37,7 @@ enum SelfTest {
                 ok = await PerfSelfTest.run(specURL: spec)
             case "live-latency": ok = await LiveSelfTest.run()
             case "live-pressure": ok = await LiveSelfTest.run(pressure: true)
+            case "live-load": ok = await LiveSelfTest.run(load: true)
             case "ui-render":
                 let out = args.firstIndex(of: "--self-test-output").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
                 ok = await UIRenderSelfTest.run(outputDirectory: out)

@@ -8,7 +8,8 @@ import Scoring
 
 /// T16 `amaranth-bench perf-suite` (docs/milestone-e-performance-plan.md):
 ///
-///     perf-suite run --app <Amaranth.app> [--suites public,corpus,notes[,yield]] [--only id,…] [--speed 20] [--results <dir>]
+///     perf-suite run --app <Amaranth.app> [--suites public,corpus,notes[,incremental][,yield]] [--only id,…] [--speed 20]
+///                    [--live-speed 10] [--results <dir>]
 ///                    [--compare <baseline>] [--require-identical]
 ///     perf-suite score <results> [--compare <baseline>] [--inject-regression] [--require-identical]
 ///     perf-suite freeze <results> <baseline> [--noise <second results>]
@@ -40,7 +41,8 @@ enum PerfSuite {
             guard !items.isEmpty else { print("perf-suite: no items"); return 2 }
             // The first item runs on a fresh worker (cold); the two-source timing meeting is also repeated warm.
             items[0].item.coldWorker = true
-            try runApp(app: URL(filePath: app), items: items, results: results, speed: Double(value("--speed") ?? "20") ?? 20)
+            try runApp(app: URL(filePath: app), items: items, results: results, speed: Double(value("--speed") ?? "20") ?? 20,
+                       liveSpeed: Double(value("--live-speed") ?? "10") ?? 10)
             return try score(results: results, compare: compare, inject: false, requireIdentical: requireIdentical)
         case "score" where args.count >= 2:
             return try score(results: URL(filePath: args[1]), compare: compare, inject: args.contains("--inject-regression"),
@@ -77,6 +79,10 @@ enum PerfSuite {
         if suites.contains("corpus") { out += try await corpusItems() }
         if suites.contains("notes") { out += try notesItems() }
         if suites.contains("yield") { out += try yieldItems() }
+        if suites.contains("incremental") {
+            // T19 (opt-in): the 60-minute meeting is also replayed as a recording in progress, and back to back.
+            for i in out.indices where out[i].item.id == "timing-2src-60min" { out[i].item.whileRecording = true; out[i].item.backToBack = true }
+        }
         return out
     }
 
@@ -87,11 +93,10 @@ enum PerfSuite {
         return PerfRun.RawAudio(path: url.path, sampleRate: 16_000, channels: 1)
     }
 
-    static func publicItems() throws -> [SuiteItem] {
-        var out: [SuiteItem] = []
-        // Two-source 60-minute meeting, built like the 2026-10-16 processing-timing evidence (QualificationSelfTest.sources):
-        // mic = LibriSpeech utterances with 2–6 s pauses, looped; system = ES2004a, IS1009a, EN2002a looped. Timing only.
-        let n = 3600 * 16_000
+    /// Two-source timing meeting, built like the 2026-10-16 processing-timing evidence (QualificationSelfTest.sources):
+    /// mic = LibriSpeech utterances with 2–6 s pauses, looped; system = ES2004a, IS1009a, EN2002a looped. Timing only.
+    static func timingMeeting(seconds: Int) throws -> (system: [Float], mic: [Float]) {
+        let n = seconds * 16_000
         var utterances: [[Float]] = []
         for (spk, ch) in [("1089", "134686"), ("121", "121726")] {
             let dir = fixtures.appending(path: "librispeech-test-clean/\(spk)/\(ch)")
@@ -105,8 +110,14 @@ enum PerfSuite {
         var tsys: [Float] = []
         i = 0
         while tsys.count < n { tsys += meetings[i % meetings.count]; i += 1 }
-        out.append(SuiteItem(item: PerfRun.Item(id: "timing-2src-60min", kind: .audio, system: try raw16k(Array(tsys.prefix(n)), id: "timing-2src-60min-sys"),
-                                                microphone: try raw16k(Array(tmic.prefix(n)), id: "timing-2src-60min-mic"), notes: true, repeatWarm: true),
+        return (Array(tsys.prefix(n)), Array(tmic.prefix(n)))
+    }
+
+    static func publicItems() throws -> [SuiteItem] {
+        var out: [SuiteItem] = []
+        let (tsys, tmic) = try timingMeeting(seconds: 3600)
+        out.append(SuiteItem(item: PerfRun.Item(id: "timing-2src-60min", kind: .audio, system: try raw16k(tsys, id: "timing-2src-60min-sys"),
+                                                microphone: try raw16k(tmic, id: "timing-2src-60min-mic"), notes: true, repeatWarm: true),
                              suite: "public", set: "timing", audioSeconds: 3600))
         for (m, file, set) in [("ES2004a", "Mix-Headset", "ami-clean"), ("IS1009a", "Mix-Headset", "ami-clean"),
                                ("EN2002a", "Mix-Headset", "ami-clean"), ("ES2004a", "Array1-01", "ami-difficult")] {
@@ -321,12 +332,12 @@ enum PerfSuite {
 
     // MARK: Run
 
-    static func runApp(app: URL, items: [SuiteItem], results: URL, speed: Double) throws {
+    static func runApp(app: URL, items: [SuiteItem], results: URL, speed: Double, liveSpeed: Double) throws {
         let outputs = results.appending(path: "outputs")
         try FileManager.default.createDirectory(at: outputs, withIntermediateDirectories: true)
         try JSONEncoder.pretty.encode(items).write(to: results.appending(path: "items.json"))
         let spec = PerfRun.Spec(items: items.map(\.item), outputDirectory: outputs.path, speed: speed,
-                                captureCache: corpus.appending(path: ".perf-cache/captures").path)
+                                captureCache: corpus.appending(path: ".perf-cache/captures").path, liveSpeed: liveSpeed)
         let specURL = results.appending(path: "perf-spec.json")
         try ContractCoding.encode(spec).write(to: specURL)
         try app.path.write(to: results.appending(path: "app-path.txt"), atomically: true, encoding: .utf8)
@@ -402,6 +413,13 @@ enum PerfSuite {
         var wordAgreement: Double?
         var speakerAgreement: Double?
         var notesOverlap: Double?
+        // T19: processing while recording.
+        var incremental: PerfRun.Incremental?
+        var reusedWindows: Int?
+        var identicalToBatch: Bool?
+        var nextStopSeconds: Double?
+        var transcriptReadyBeforeNextStop: Bool?
+        var transcriptJobsLeftAtNextStop: Int?
     }
 
     struct Comparison: Codable {
@@ -450,6 +468,11 @@ enum PerfSuite {
                 guard var l = load(dir) else { continue }
                 if inject { injectRegression(&l, si) }
                 metrics.append(try scoreItem(si, l))
+            }
+            // T19: a run replayed as a recording in progress must give exactly the item's batch transcript.
+            let mine = metrics.indices.filter { metrics[$0].id == si.item.id }
+            if let batch = mine.map({ metrics[$0] }).first(where: { !PerfReport.isIncremental($0) }) {
+                for i in mine where PerfReport.isIncremental(metrics[i]) { metrics[i].identicalToBatch = metrics[i].transcriptHash == batch.transcriptHash }
             }
             if runs(outputs, si.item.id).isEmpty {
                 metrics.append(ItemMetrics(id: si.item.id, run: "missing", suite: si.suite, set: si.set, split: si.split, completed: false,
@@ -515,6 +538,11 @@ enum PerfSuite {
                             audioSeconds: r.audioSeconds, recordWallSeconds: r.recordWallSeconds, stopToTranscriptSeconds: r.stopToTranscriptSeconds,
                             stopToNotesSeconds: r.stopToNotesSeconds, peakAppMiB: r.peakAppMiB, peakWorkerMiB: r.peakWorkerMiB,
                             stages: r.stages.map(stageMetrics))
+        m.incremental = r.incremental
+        m.reusedWindows = r.stages.last { $0.stage == "transcribe" }?.worker?.trace.entries["asr.windows.reused"].map(\.count)
+        m.nextStopSeconds = r.nextStopSeconds
+        m.transcriptReadyBeforeNextStop = r.transcriptReadyBeforeNextStop
+        m.transcriptJobsLeftAtNextStop = r.transcriptJobsLeftAtNextStop
         if let t = l.transcript, si.suite != "notes" {
             m.words = t.allWords.count
             m.speakers = t.speakers.count

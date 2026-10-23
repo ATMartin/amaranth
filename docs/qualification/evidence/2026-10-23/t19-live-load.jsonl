@@ -1,0 +1,4 @@
+{"latencyMedianSeconds":"2.16","latencyP95Seconds":"5.25","micProvisionalWER":"1.2%","provisionalPublished":"true","samples":"481","status":"off","step":"live","words":"416"}
+{"appPeakMiB":"126","missingAudioEvents":"0","ringOverruns":"0","segments":"126","step":"capture","workerPeakMiB":"873"}
+{"audioEnd":"125","captureFaultBackoffs":"0","earlierJobs":"prepare=succeeded,transcribe=succeeded,diarize=succeeded,reconcile=succeeded","earlierMeetingStagesDone":"2","finalizedUntil":"77","finalWordsShown":"338","incrementalFailures":"0","incrementalRequests":"24","step":"load"}
+{"result":"pass","test":"live-load"}

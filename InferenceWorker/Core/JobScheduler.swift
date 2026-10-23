@@ -12,8 +12,9 @@ public import Storage
 /// - Jobs are rows in SQLite keyed by content (input hash + model/config hash), so enqueueing is idempotent and results
 ///   commit idempotently (at-least-once execution).
 /// - One stage runs at a time (heavy stages hold models), except that transcription and diarization may overlap
-///   (`concurrentAnalysis`, T17). Heavy stages are suspended while a recording is active and under serious thermal or
-///   memory pressure; suspended jobs show as `suspended(reason)`, never as stuck.
+///   (`concurrentAnalysis`, T17). Heavy stages are suspended under serious thermal or memory pressure and after a
+///   capture fault; suspended jobs show as `suspended(reason)`, never as stuck. While a recording is active, notes are
+///   suspended; the other heavy stages keep running (`processWhileRecording`, T19) unless that setting is off.
 /// - Running jobs hold a lease renewed by worker progress; on relaunch, jobs left `running` by a previous process are
 ///   requeued and resume from their checkpoints.
 /// - Worker loss is retried with backoff; stage errors once; permanent errors are not retried automatically.
@@ -33,25 +34,32 @@ public final class JobScheduler: @unchecked Sendable {
         /// T17: transcription and diarization may run at the same time (they are independent in the DAG and use
         /// different models). Every other stage still runs alone. Off restores strictly one stage at a time.
         public var concurrentAnalysis: Bool
+        /// T19: transcription, speaker finding and reconcile keep running while a meeting records (back-to-back
+        /// meetings), under the thermal, memory and capture-fault back-off. Notes still wait for the recording to end.
+        /// Off restores the v0 policy: all heavy work waits while recording.
+        public var processWhileRecording: Bool
         public init(asrConfigHash: String, diarizationConfigHash: String, reconcileConfigHash: String = "reconcile-v1",
                     notesConfigHash: String? = nil, microphoneMode: MicrophoneMode = .personal, leaseSeconds: TimeInterval = 30, maxWorkerLossRetries: Int = 3,
-                    retryBackoff: TimeInterval = 2, concurrentAnalysis: Bool = true) {
+                    retryBackoff: TimeInterval = 2, concurrentAnalysis: Bool = true, processWhileRecording: Bool = false) {
             self.asrConfigHash = asrConfigHash; self.diarizationConfigHash = diarizationConfigHash
             self.reconcileConfigHash = reconcileConfigHash; self.notesConfigHash = notesConfigHash; self.microphoneMode = microphoneMode
             self.leaseSeconds = leaseSeconds; self.maxWorkerLossRetries = maxWorkerLossRetries; self.retryBackoff = retryBackoff
             self.concurrentAnalysis = concurrentAnalysis
+            self.processWhileRecording = processWhileRecording
         }
     }
 
     public enum Pressure: Sendable, Equatable {
-        case none, recording, thermal, memory
+        case none, recording, thermal, memory, captureFault
 
-        /// The app's policy: recording outranks thermal, which outranks memory. Serious/critical thermal state pauses
-        /// heavy work; nominal/fair does not.
-        public static func current(recording: Bool, thermal: ProcessInfo.ThermalState, memoryPressure: Bool) -> Pressure {
-            if recording { return .recording }
+        /// The app's policy: thermal outranks memory, which outranks a capture fault, which outranks recording (so a
+        /// back-off reason is never hidden by recording while processing continues during it). Serious/critical
+        /// thermal state pauses heavy work; nominal/fair does not.
+        public static func current(recording: Bool, captureFault: Bool = false, thermal: ProcessInfo.ThermalState, memoryPressure: Bool) -> Pressure {
             if thermal == .serious || thermal == .critical { return .thermal }
             if memoryPressure { return .memory }
+            if captureFault { return .captureFault }
+            if recording { return .recording }
             return .none
         }
     }
@@ -211,7 +219,7 @@ public final class JobScheduler: @unchecked Sendable {
                 try j.transition(to: .cancelled, at: Date()); try store.upsertJob(j); continue
             }
             if let nb = j.notBefore, nb > Date() { continue }
-            if j.key.stage.isHeavy, let reason = suspension(p) {
+            if j.key.stage.isHeavy, let reason = suspension(p, j.key.stage) {
                 if j.state != .suspended || j.suspension != reason {
                     if j.state == .queued { try j.transition(to: .suspended, at: Date()) }
                     j.suspension = reason
@@ -246,12 +254,13 @@ public final class JobScheduler: @unchecked Sendable {
             && active.allSatisfy { overlapping.contains($0) && $0 != stage }
     }
 
-    func suspension(_ p: Pressure) -> SuspensionReason? {
+    func suspension(_ p: Pressure, _ stage: ProcessingStage) -> SuspensionReason? {
         switch p {
         case .none: nil
-        case .recording: .recordingActive
+        case .recording: configuration.processWhileRecording && stage != .notes ? nil : .recordingActive
         case .thermal: .thermalPressure
         case .memory: .memoryPressure
+        case .captureFault: .captureFault
         }
     }
 
@@ -275,14 +284,14 @@ public final class JobScheduler: @unchecked Sendable {
         }
         lock.withLock { running[job.id] = (job, false, false) }
         // Pressure watchdog: a heavy stage is interrupted at its next checkpoint when recording starts.
-        let heavy = job.key.stage.isHeavy, runningID = job.id
+        let heavy = job.key.stage.isHeavy, runningID = job.id, stage = job.key.stage
         // T18: running notes yield to new transcript work the same way and are requeued to resume from their checkpoints.
         let isNotes = job.key.stage == .notes
         let watchdog = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .milliseconds(250))
                 guard let self else { return }
-                if heavy, self.suspension(self.pressure()) != nil {
+                if heavy, self.suspension(self.pressure(), stage) != nil {
                     self.lock.withLock { self.running[runningID]?.cancelledForPressure = true }
                 } else if isNotes, (try? self.store.jobs().contains(where: Self.blocksNotes)) == true {
                     self.lock.withLock { self.running[runningID]?.yieldedToTranscripts = true }
@@ -317,7 +326,7 @@ public final class JobScheduler: @unchecked Sendable {
             case .cancelled:
                 if lock.withLock({ running[jobID]?.cancelledForPressure ?? false }) {
                     try job.transition(to: .suspended, at: Date())
-                    job.suspension = suspension(pressure()) ?? .recordingActive
+                    job.suspension = suspension(pressure(), job.key.stage) ?? .recordingActive
                 } else if lock.withLock({ running[jobID]?.yieldedToTranscripts ?? false }) {
                     try job.transition(to: .queued, at: Date())
                     job.attempt -= 1   // yielding is not a failed attempt; keep the retry budget
@@ -380,7 +389,10 @@ public final class JobScheduler: @unchecked Sendable {
             input = .prepare(PrepareInput(meetingID: m, meetingDirectory: store.meetingDirectory(m),
                                           segments: try store.segments(m), events: try store.events(m)))
         case .transcribe:
-            input = .transcribe(TranscribeInput(meetingID: m, prepared: try preparedAudio(m)))
+            // Windows decoded while the meeting recorded (T19) are reused where identical.
+            let incremental = store.workDirectory(m).appending(path: "incremental")
+            input = .transcribe(TranscribeInput(meetingID: m, prepared: try preparedAudio(m),
+                                                incrementalDirectory: FileManager.default.fileExists(atPath: incremental.path) ? incremental : nil))
         case .diarize:
             input = .diarize(DiarizeInput(meetingID: m, prepared: try preparedAudio(m), microphoneMode: configuration.microphoneMode))
         case .reconcile:

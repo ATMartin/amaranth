@@ -179,6 +179,7 @@ struct ProcessingBadge: View {
         case .recordingActive: "Queued · paused while recording"
         case .thermalPressure: "Queued · paused while the Mac is hot"
         case .memoryPressure: "Queued · paused while memory is low"
+        case .captureFault: "Queued · paused to protect the recording"
         case .userPaused: "Paused"
         case nil: "Queued"
         }

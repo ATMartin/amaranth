@@ -22,6 +22,7 @@ struct AmaranthApp: App {
     @State private var library: LibraryModel
     @State private var playback = PlaybackModel()
     @State private var live: LiveTextModel
+    @State private var incremental: IncrementalProcessor
 
     init() {
         let worker = WorkerClient()
@@ -37,6 +38,20 @@ struct AmaranthApp: App {
         recorder.live = live
         let modelsCheck = ModelSetupModel.isReady
         live.modelsReady = modelsCheck
+        live.pauseReason = { [weak processing] in
+            let t = ProcessInfo.processInfo.thermalState
+            if t == .serious || t == .critical { return "Live text paused while the Mac is hot — recording continues" }
+            if processing?.memoryPressure == true { return "Live text paused while memory is low — recording continues" }
+            return nil
+        }
+        let incremental = IncrementalProcessor(client: worker)
+        incremental.pauseReason = { [weak processing] in
+            guard modelsCheck() else { return "Needs the model pack" }
+            return processing?.incrementalPauseReason()
+        }
+        incremental.onFinal = { [weak live] s in live?.applyFinal(s) }
+        recorder.incremental = incremental
+        _incremental = State(initialValue: incremental)
         _live = State(initialValue: live)
         let models = ModelSetupModel()
         // Core ML compiles each model for this Mac on its first load (about 16 s for ASR): do it now, not on the first job.

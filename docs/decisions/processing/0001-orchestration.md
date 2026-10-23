@@ -2,6 +2,8 @@
 
 Date: 2026-10-16 · Task: T08 · Status: Accepted for v0.
 Notes priority (notes yield to transcription work) amended by [notes/0002](../notes/0002-faster-notes.md) (T18).
+Suspension while recording amended by [processing/0003](0003-processing-while-recording.md) (T19): only notes wait for
+a recording; back-off (thermal, memory, capture fault) outranks recording.
 
 ## Decision
 

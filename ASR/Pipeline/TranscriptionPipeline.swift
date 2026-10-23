@@ -66,6 +66,8 @@ public final class TranscriptionPipeline: @unchecked Sendable {
     let vads: [SileroVAD]
     let workDirectory: URL
     let policy: WindowPolicy
+    /// Results of incremental processing during recording (T19); windows and VAD chunks over identical audio are reused.
+    let reuse: IncrementalReuse?
     var maxWindow: Double { policy.maxInput }
     var minWindow: Double { policy.minWindow }
 
@@ -73,7 +75,8 @@ public final class TranscriptionPipeline: @unchecked Sendable {
         self.init(decoders: [asr], vads: [vad], workDirectory: workDirectory, policy: policy)
     }
 
-    public init(decoders: [ParakeetASR], vads: [SileroVAD], workDirectory: URL, policy: WindowPolicy = .default) {
+    public init(decoders: [ParakeetASR], vads: [SileroVAD], workDirectory: URL, policy: WindowPolicy = .default,
+                incremental: URL? = nil) {
         precondition(!decoders.isEmpty && !vads.isEmpty, "at least one decoder and one VAD")
         precondition(policy.maxInput <= ParakeetASR.maxInputSeconds
                      && policy.maxInput > max(policy.forcedLeft + policy.forcedRight, 2 * policy.pauseContext) + policy.minWindow,
@@ -83,6 +86,7 @@ public final class TranscriptionPipeline: @unchecked Sendable {
         self.vads = vads
         self.workDirectory = workDirectory
         self.policy = policy
+        self.reuse = incremental.map { IncrementalReuse(directory: $0, policy: policy) }
     }
 
     public func run(meetingID: MeetingID, prepared: AnalysisPreparer.Output, preparedDirectory: URL,
@@ -94,6 +98,7 @@ public final class TranscriptionPipeline: @unchecked Sendable {
         for cov in prepared.coverage {
             try cancellation.check()
             let audio = AnalysisAudio(url: preparedDirectory.appending(path: cov.derivativeFile))
+            try Perf.measure("asr.reuse.validate") { try reuse?.validate(cov.source, against: audio) }
             plans.append((cov, audio, try await Perf.measure("asr.plan") { try await planWindows(cov, audio, cancellation: cancellation) }))
         }
         // Every window of every source goes to one shared queue; each decoder takes the next window when it is free.
@@ -141,26 +146,19 @@ public final class TranscriptionPipeline: @unchecked Sendable {
     func planWindows(_ cov: SourceCoverage, _ audio: AnalysisAudio, cancellation: CancellationToken) async throws -> [Window] {
         let planURL = workDirectory.appending(path: "\(Self.pipelineVersion)-\(policy.name)-plan-\(cov.source.rawValue).json")
         if let d = try? Data(contentsOf: planURL), let p = try? ContractCoding.decode([Window].self, from: d) { return p }
-        // VAD in 600 s chunks (5 s overlap), spread over the VAD instances; each chunk is independent.
-        let chunk = 600.0, overlap = 5.0
-        var chunks: [(Double, Double)] = []
-        for region in cov.recorded {
-            var t = region.start.seconds
-            while t < region.end.seconds {
-                let e = min(region.end.seconds, t + chunk)
-                chunks.append((t, e))
-                if e >= region.end.seconds { break }
-                t = e - overlap
-            }
-        }
+        // VAD in 600 s chunks (5 s overlap), spread over the VAD instances; each chunk is independent. Chunks that
+        // incremental processing already ran over identical audio are reused (T19).
+        let chunks = Self.vadChunks(cov.recorded.map { ($0.start.seconds, $0.end.seconds) })
         let queue = WorkQueue(count: chunks.count), vadChunks = chunks
-        var speech: [(Double, Double)] = try await withThrowingTaskGroup(of: [(Double, Double)].self) { group in
+        let reuse = self.reuse
+        let speech: [(Double, Double)] = try await withThrowingTaskGroup(of: [(Double, Double)].self) { group in
             for vad in vads.prefix(max(1, chunks.count)) {
                 group.addTask {
                     var out: [(Double, Double)] = []
                     while let n = queue.next() {
                         try cancellation.check(); try Task.checkCancellation()   // a sibling failed: stop early
                         let (t, e) = vadChunks[n]
+                        if let r = reuse?.speech(cov.source, chunk: (t, e)) { Perf.count("asr.vad.reused"); out += r; continue }
                         let samples = try Perf.measure("asr.vad.read") { try audio.read(SessionInterval(unchecked: .seconds(t), .seconds(e))) }
                         out += try await Perf.measure("asr.vad.infer") {
                             try await vad.speech(samples, padding: Self.contextPadding, maxSegment: 14).map { ($0.0 + t, $0.1 + t) }
@@ -173,21 +171,58 @@ public final class TranscriptionPipeline: @unchecked Sendable {
             for try await part in group { all += part }
             return all
         }
-        // Merge overlapping VAD regions (chunk overlaps); silence midpoints between them are the candidate cut points.
-        speech.sort { $0.0 < $1.0 || ($0.0 == $1.0 && $0.1 < $1.1) }
+        let windows = Self.plan(regions: cov.recorded.map { ($0.start.seconds, $0.end.seconds) }, merged: Self.merge(speech), policy: policy)
+        try ContractCoding.encode(windows).write(to: planURL, options: .atomic)
+        return windows
+    }
+
+    /// VAD chunk length and overlap. Chunks start at each recorded region's start, so the grid does not depend on how
+    /// much audio follows (incremental processing runs the same chunks while recording).
+    public static let vadChunkSeconds = 600.0, vadOverlapSeconds = 5.0
+
+    /// VAD chunks of recorded regions (seconds). A region still being recorded has end `.infinity` and holds audio up to
+    /// at least `available`: its chunks are listed up to the first one not yet closed, whose end is then `.infinity`.
+    static func vadChunks(_ regions: [(Double, Double)], available: Double = .infinity) -> [(Double, Double)] {
+        var chunks: [(Double, Double)] = []
+        for (start, end) in regions {
+            var t = start
+            while t < end {
+                if !end.isFinite, t + vadChunkSeconds > available { chunks.append((t, .infinity)); break }
+                let e = min(end, t + vadChunkSeconds)
+                chunks.append((t, e))
+                if e >= end { break }
+                t = e - vadOverlapSeconds
+            }
+        }
+        return chunks
+    }
+
+    /// Sorts VAD regions and merges overlaps (chunk overlaps); silence midpoints between them are the candidate cuts.
+    static func merge(_ speech: [(Double, Double)]) -> [(Double, Double)] {
+        let speech = speech.sorted { $0.0 < $1.0 || ($0.0 == $1.0 && $0.1 < $1.1) }
         var merged: [(Double, Double)] = []
         for sp in speech {
             if let last = merged.last, sp.0 <= last.1 { merged[merged.count - 1].1 = max(last.1, sp.1) } else { merged.append(sp) }
         }
+        return merged
+    }
+
+    /// Greedy window plan over recorded regions (seconds), cutting at the middle of silences between `merged` speech.
+    ///
+    /// The decision at a cursor looks only at cuts up to `cursor + maxInput` and at the region's end. While recording
+    /// (T19), speech is known only up to some point and the last region's end is `.infinity`: planning stops at the
+    /// first decision that reaches `settledUntil`, so every window returned is one the full plan also contains.
+    static func plan(regions: [(Double, Double)], merged: [(Double, Double)], policy P: WindowPolicy,
+                     settledUntil: Double = .infinity) -> [Window] {
+        let maxWindow = P.maxInput, minWindow = P.minWindow
         // Candidate cuts at the middle of each gap between speech regions, with the gap length.
         let cuts = zip(merged, merged.dropFirst()).filter { $1.0 - $0.1 >= 0.2 }.map { (time: ($0.1 + $1.0) / 2, gap: $1.0 - $0.1) }
-        let P = policy
         var windows: [Window] = []
-        for region in cov.recorded {
-            var cursor = region.start.seconds
-            let end = region.end.seconds
+        regions: for (start, end) in regions {
+            var cursor = start
             var left = P.silenceContext
             while cursor < end - 0.05 {
+                if cursor + maxWindow >= settledUntil { break regions }
                 if cursor + maxWindow - left - P.silenceContext >= end {
                     windows.append(Window(index: windows.count, start: cursor, end: end, leftContext: left, rightContext: P.silenceContext))
                     break
@@ -212,7 +247,6 @@ public final class TranscriptionPipeline: @unchecked Sendable {
             let (a, b) = (windows[i].start, windows[i].end)
             windows[i].speech = merged.compactMap { sp in sp.0 < b && sp.1 > a ? [max(a, sp.0), min(b, sp.1)] : nil }
         }
-        try ContractCoding.encode(windows).write(to: planURL, options: .atomic)
         return windows
     }
 
@@ -220,9 +254,14 @@ public final class TranscriptionPipeline: @unchecked Sendable {
 
     func transcribe(_ w: Window, source: SourceKind, audio: AnalysisAudio, engine: ParakeetASR? = nil) async throws -> WindowResult {
         let asr = engine ?? asr
-        let url = workDirectory.appending(path: "\(Self.pipelineVersion)-\(policy.name)-\(source.rawValue)-w\(w.index).json")
+        let url = workDirectory.appending(path: Self.checkpointName(w, source: source, policy: policy))
         if let d = try? Perf.measure("asr.checkpoint.read", { try Data(contentsOf: url) }),
-           let r = try? ContractCoding.decode(WindowResult.self, from: d) { Perf.count("asr.windows.resumed"); return r }
+           let r = try? ContractCoding.decode(WindowResult.self, from: d), r.window == w { Perf.count("asr.windows.resumed"); return r }
+        if let r = reuse?.window(w, source: source) {
+            Perf.count("asr.windows.reused")
+            try Perf.measure("asr.checkpoint.write") { try ContractCoding.encode(r).write(to: url, options: .atomic) }
+            return r
+        }
         Perf.count("asr.windows")
         // Digital silence (zero-filled missing audio) cannot contain speech: skip it.
         let own = try Perf.measure("asr.window.read") { try audio.read(SessionInterval(unchecked: .seconds(w.start), .seconds(w.end))) }
@@ -278,6 +317,10 @@ public final class TranscriptionPipeline: @unchecked Sendable {
         let r = WindowResult(window: w, words: words, questionable: questionable, retried: retried, uncoveredSpeech: uncovered)
         try Perf.measure("asr.checkpoint.write") { try ContractCoding.encode(r).write(to: url, options: .atomic) }
         return r
+    }
+
+    static func checkpointName(_ w: Window, source: SourceKind, policy: WindowPolicy) -> String {
+        "\(pipelineVersion)-\(policy.name)-\(source.rawValue)-w\(w.index).json"
     }
 
     /// A window is re-decoded when at least this much VAD speech has no word nearby.

@@ -29,9 +29,22 @@ enum PerfSelfTest {
                     // The warm copy is made before processing so both runs see identical committed inputs.
                     var runs = [(item.coldWorker ? "cold" : "default", meeting)]
                     if item.repeatWarm { runs.append(("warm", try copyMeeting(meeting, from: store, to: store))) }
+                    // T19: copies replayed as recordings in progress (identical committed inputs again).
+                    let liveSpeed = spec.liveSpeed ?? 10
+                    if item.whileRecording == true { runs.append(("incremental", try copyMeeting(meeting, from: store, to: store))) }
+                    var results: [(String, MeetingID, PerfRun.ItemResult)] = []
                     for (label, m) in runs {
                         if label == "cold" { await killWorker(client) }
-                        var r = try await process(m, item: item, label: label, store: store, client: client)
+                        results.append((label, m, try await process(m, item: item, label: label, store: store, client: client,
+                                                                    liveSpeed: label == "incremental" ? liveSpeed : nil)))
+                    }
+                    if item.backToBack == true {
+                        let a = try copyMeeting(meeting, from: store, to: store), b = try copyMeeting(meeting, from: store, to: store)
+                        let (ra, rb) = try await backToBack(a, b, item: item, store: store, client: client, liveSpeed: liveSpeed)
+                        results += [("b2b-1", a, ra), ("b2b-2", b, rb)]
+                    }
+                    for (label, m, result) in results {
+                        var r = result
                         r.recordWallSeconds = recording?.wall
                         r.missingAudioEvents = recording?.missing ?? 0
                         if r.missingAudioEvents > 0 { r.completed = false; r.failure = "missing audio during replay" }
@@ -207,12 +220,23 @@ enum PerfSelfTest {
 
     // MARK: Process
 
-    static func process(_ m: MeetingID, item: PerfRun.Item, label: String, store: MeetingStore, client: WorkerClient) async throws -> PerfRun.ItemResult {
+    /// `liveSpeed`: first replay the meeting as a recording in progress (T19), then Stop.
+    static func process(_ m: MeetingID, item: PerfRun.Item, label: String, store: MeetingStore, client: WorkerClient,
+                        liveSpeed: Double? = nil) async throws -> PerfRun.ItemResult {
         guard case .pong(let pid, _)? = try? await client.send(.ping) else { throw CocoaError(.executableLoad) }
         let thermalStart = ProcessInfo.processInfo.thermalState.label
-        let s = PipelineSelfTest.scheduler(store: store, client: client, hangTimeout: .seconds(1800), notes: item.notes || item.duringNotesOf != nil)
+        let recordingFlag = LockedFlag()
+        let s = PipelineSelfTest.scheduler(store: store, client: client, hangTimeout: .seconds(1800), notes: item.notes || item.duringNotesOf != nil,
+                                           processWhileRecording: true) { recordingFlag.value ? .recording : .none }
         try s.start()
         defer { s.stop() }
+        var incremental: PerfRun.Incremental?
+        if let liveSpeed {
+            recordingFlag.value = true
+            incremental = try await relive(m, store: store, client: client, speed: liveSpeed)
+            recordingFlag.value = false
+            s.poke()
+        }
         // T18 priority check: notes of another meeting are generating when this one arrives.
         var background: MeetingID?, backgroundStarts = 0, backgroundRunning = false
         func backgroundNotes() throws -> ProcessingJob? {
@@ -269,7 +293,115 @@ enum PerfSelfTest {
                                   stages: stages, peakAppMiB: Double(peakApp) / 1_048_576, peakWorkerMiB: Double(peakWorker) / 1_048_576,
                                   workerPIDs: pids, thermalStart: thermalStart, thermalEnd: ProcessInfo.processInfo.thermalState.label)
         if background != nil { result.backgroundNotesSeconds = backgroundSeconds; result.backgroundNotesStarts = backgroundStarts }
+        result.incremental = incremental
         return result
+    }
+
+    // MARK: T19 processing while recording
+
+    /// Replays a captured meeting as a recording in progress: its committed segments (and capture events) become
+    /// visible as their audio would have been recorded at `speed`× realtime, while `IncrementalProcessor` runs against
+    /// them through the real worker, exactly as in the app. Returns at the meeting's end (Stop).
+    static func relive(_ m: MeetingID, store: MeetingStore, client: WorkerClient, speed: Double) async throws -> PerfRun.Incremental {
+        let segs = try store.segments(m), events = try store.events(m)
+        let end = segs.map(\.interval.end.seconds).max() ?? 0
+        let inc = IncrementalProcessor(client: client)
+        let t0 = ContinuousClock.now
+        inc.start(.init(meetingID: m, meetingDirectory: store.meetingDirectory(m), workDirectory: store.workDirectory(m).appending(path: "incremental")) {
+            let t = Perf.seconds(since: t0) * speed
+            return (segs.filter { $0.interval.end.seconds <= t }, events.filter { $0.interval.start.seconds <= t })
+        })
+        while Perf.seconds(since: t0) * speed < end { try await Task.sleep(for: .milliseconds(250)) }
+        let wall = Perf.seconds(since: t0)
+        let st = inc.stats
+        inc.stop()
+        SelfTest.log(["step": "relive", "meeting": m.rawValue, "audio": String(format: "%.0f", end), "wall": String(format: "%.1f", wall),
+                      "requests": "\(st.requests)", "decoded": "\(st.decodedWindows)/\(st.plannedWindows)",
+                      "finalizedUntil": st.finalizedUntil.map { "\($0.key)=\(Int($0.value))" }.sorted().joined(separator: ",")])
+        return PerfRun.Incremental(liveSpeed: speed, replayWallSeconds: wall, requests: st.requests, busyReplies: st.busyReplies, failures: st.failures,
+                                   pausedTicks: st.pausedTicks, plannedWindows: st.plannedWindows, decodedWindows: st.decodedWindows,
+                                   finalizedUntil: st.finalizedUntil, settledUntil: st.settledUntil)
+    }
+
+    /// G7: meeting `a` "records", stops, and `b` starts recording at once; `a` is processed while `b` records. Notes
+    /// are left out (they wait for recordings to end by design).
+    static func backToBack(_ a: MeetingID, _ b: MeetingID, item: PerfRun.Item, store: MeetingStore, client: WorkerClient,
+                           liveSpeed: Double) async throws -> (PerfRun.ItemResult, PerfRun.ItemResult) {
+        guard case .pong(let pid, _)? = try? await client.send(.ping) else { throw CocoaError(.executableLoad) }
+        let thermalStart = ProcessInfo.processInfo.thermalState.label
+        let recordingFlag = LockedFlag()
+        recordingFlag.value = true
+        let s = PipelineSelfTest.scheduler(store: store, client: client, hangTimeout: .seconds(1800), notes: false,
+                                           processWhileRecording: true) { recordingFlag.value ? .recording : .none }
+        try s.start()
+        defer { s.stop() }
+        let peaks = Peaks(pids: [pid])
+        let incA = try await relive(a, store: store, client: client, speed: liveSpeed)
+        let stopA = Date()
+        try s.enqueuePipeline(a)
+        // The next meeting records right away; meanwhile `a` is processed.
+        let sampler = Task { @MainActor in while !Task.isCancelled { peaks.sample(client); try? await Task.sleep(for: .milliseconds(500)) } }
+        let incB = try await relive(b, store: store, client: client, speed: liveSpeed)
+        let stopB = Date()
+        let left = try store.jobs(meeting: a).filter { $0.key.stage != .notes && !$0.state.isTerminal }.count
+        recordingFlag.value = false
+        try s.enqueuePipeline(b)
+        s.poke()
+        var failure: String?
+        let deadline = ContinuousClock.now + .seconds(3600)
+        func done(_ m: MeetingID) throws -> Bool { try store.jobs(meeting: m).contains { $0.key.stage == .reconcile && $0.state == .succeeded } }
+        while ContinuousClock.now < deadline {
+            if let f = try (store.jobs(meeting: a) + store.jobs(meeting: b)).first(where: { $0.state == .failed && $0.notBefore == nil }) {
+                failure = "\(f.key.stage.rawValue): \(f.errorCode ?? "")"; break
+            }
+            if try done(a) && done(b) { break }
+            try await Task.sleep(for: .milliseconds(500))
+        }
+        sampler.cancel()
+        let thermalEnd = ProcessInfo.processInfo.thermalState.label
+        var ra = try collect(a, item: item, label: "b2b-1", t0: stopA, store: store, completed: try done(a) && failure == nil, failure: failure,
+                             peaks: peaks, thermal: (thermalStart, thermalEnd))
+        var rb = try collect(b, item: item, label: "b2b-2", t0: stopB, store: store, completed: try done(b) && failure == nil, failure: failure,
+                             peaks: peaks, thermal: (thermalStart, thermalEnd))
+        ra.incremental = incA; rb.incremental = incB
+        ra.nextStopSeconds = stopB.timeIntervalSince(stopA)
+        ra.transcriptReadyBeforeNextStop = ra.stopToTranscriptSeconds.map { $0 <= stopB.timeIntervalSince(stopA) } ?? false
+        ra.transcriptJobsLeftAtNextStop = left
+        SelfTest.log(["step": "b2b", "firstTranscript": ra.stopToTranscriptSeconds.map { String(format: "%.1f", $0) } ?? "-",
+                      "nextStop": String(format: "%.1f", stopB.timeIntervalSince(stopA)), "leftAtNextStop": "\(left)",
+                      "secondTranscript": rb.stopToTranscriptSeconds.map { String(format: "%.1f", $0) } ?? "-"])
+        return (ra, rb)
+    }
+
+    @MainActor final class Peaks {
+        var app: UInt64 = 0, worker: UInt64 = 0
+        var pids: [Int32]
+        init(pids: [Int32]) { self.pids = pids }
+        func sample(_ client: WorkerClient) {
+            if case .connected(let p) = client.state, !pids.contains(p) { pids.append(p) }
+            app = max(app, ProcessMetrics.physicalFootprint())
+            worker = max(worker, pids.map { LiveSelfTest.footprint(pid: $0) }.max() ?? 0)
+        }
+    }
+
+    /// Stage timings and Stop → transcript / notes for a meeting whose pipeline was enqueued at `t0`.
+    static func collect(_ m: MeetingID, item: PerfRun.Item, label: String, t0: Date, store: MeetingStore, completed: Bool, failure: String?,
+                        peaks: Peaks, thermal: (String, String)) throws -> PerfRun.ItemResult {
+        var stages: [PerfRun.StageResult] = []
+        for j in try store.jobs(meeting: m).sorted(by: { $0.createdAt < $1.createdAt }) {
+            let dir = store.root.appending(path: "work").appending(path: m.rawValue).appending(path: "\(j.key.stage.rawValue)-\(j.key.inputHash.prefix(12))")
+            stages.append(PerfRun.StageResult(stage: j.key.stage.rawValue, state: j.state.rawValue, errorCode: j.errorCode,
+                                              scheduler: try? ContractCoding.decode(SchedulerTiming.self, from: Data(contentsOf: dir.appending(path: SchedulerTiming.fileName))),
+                                              worker: try? ContractCoding.decode(StageTiming.self, from: Data(contentsOf: dir.appending(path: StageTiming.fileName)))))
+        }
+        func finished(_ st: String) -> Double? {
+            stages.last { $0.stage == st && $0.state == "succeeded" }?.scheduler.map { $0.finishedAt - t0.timeIntervalSince1970 }
+        }
+        let audio = try store.segments(m).map(\.interval.end.seconds).max() ?? 0
+        return PerfRun.ItemResult(id: item.id, run: label, completed: completed, failure: failure, audioSeconds: audio, recordWallSeconds: nil,
+                                  missingAudioEvents: 0, stopToTranscriptSeconds: finished("reconcile"), stopToNotesSeconds: finished("notes"),
+                                  stages: stages, peakAppMiB: Double(peaks.app) / 1_048_576, peakWorkerMiB: Double(peaks.worker) / 1_048_576,
+                                  workerPIDs: peaks.pids, thermalStart: thermal.0, thermalEnd: thermal.1)
     }
 
     static func writeOutputs(_ r: PerfRun.ItemResult, meeting m: MeetingID, store: MeetingStore, to dir: URL) throws {

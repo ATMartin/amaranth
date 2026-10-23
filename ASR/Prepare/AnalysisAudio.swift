@@ -20,10 +20,13 @@ public struct AnalysisAudio: Sendable {
 
     /// Reads `[start, end)` seconds as float samples (zero-padded past the end).
     public func read(_ interval: SessionInterval) throws -> [Float] {
-        let a = max(0, Int(interval.start.nanoseconds * Int64(Self.sampleRate) / 1_000_000_000))
-        let b = max(a, Int(interval.end.nanoseconds * Int64(Self.sampleRate) / 1_000_000_000))
+        let a = max(0, Self.sampleIndex(interval.start))
+        let b = max(a, Self.sampleIndex(interval.end))
         return try read(from: a, count: b - a)
     }
+
+    /// Index of the sample at session time `t` (the index `read` starts at).
+    public static func sampleIndex(_ t: SessionTime) -> Int { Int(t.nanoseconds * Int64(sampleRate) / 1_000_000_000) }
 
     public func read(from sample: Int, count: Int) throws -> [Float] {
         guard count > 0 else { return [] }

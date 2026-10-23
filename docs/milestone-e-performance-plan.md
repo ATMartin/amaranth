@@ -128,6 +128,13 @@ Qwen3-1.7B (fails planted 3/8 and injection 8/10) were measured and not used. Se
 - **Exit:** G2 ≤ 5 min, with G5 notes checks passing and no transcript delayed by notes.
 
 ### T19: Incremental processing during the meeting (the largest win)
+**Result (2026-10-23):** Transcription runs during the recording, and at Stop the normal stage reuses identical windows,
+so transcripts stay byte-identical to v0. A 60-minute meeting's transcript with speakers is ready 21.0 s after Stop
+(batch 50 s); speaker finding at Stop (about 19 s) is now the whole critical path. **G1 ≤ 20 s not met** (speakers stay
+at Stop and notes are not drafted during the meeting, by user decision; the 120-minute case was not measured). G7 met
+(back-to-back: meeting 1 ready 22 s after its Stop while meeting 2 records). G6 met for synthetic sources (0 loss,
+live latency unchanged). See `docs/decisions/processing/0003-processing-while-recording.md`.
+
 Today all heavy work waits for Stop. The machine is mostly idle during a call: live text uses about 70 ms of
 compute per 10 s of audio.
 - **Prepare and final ASR during recording.** The final pipeline's windows only need VAD cut points, so final-quality
