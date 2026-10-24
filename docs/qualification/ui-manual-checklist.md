@@ -35,3 +35,15 @@ Use the Debug app: `build/DerivedData/Build/Products/Debug/Amaranth.app`.
 21. Transcript skim mode (T25): with Details off, a meeting with gaps shows thin orange hairlines instead of gap rows; hovering one shows "No transcript 00:20–00:35: …"; flags are icons only (hover for the meaning); no MIC/SYS badges. ⌘D shows today's full rendering. In both modes a Notes evidence jump lands on the right row, and VoiceOver reads each hairline.
 22. Rename (T26): the meeting title in the header is plain text (no cursor, no focus on click or Tab). Right-click a meeting in the sidebar → Rename… (first item): the sheet is pre-filled; Save updates the card, the header and search (search for a word of the new title) at once. Saving an empty or spaces-only title keeps the old title.
 23. Status glyph (T27): each sidebar card is two lines (title with one glyph on the right; "date · duration"). Hover each glyph: recording (red ●), processing (spinner, "Transcribing 42%"), queued while recording (hourglass), failed (red ⚠, "… failed — retry available"), processed (✓ "Processed · audio saved"), processed with missing audio (orange !, "… s of audio missing — see Recording tab"), audio deleted (trash). The header shows the same glyph; ⌘D shows both full badges instead. Retry Processing / Process buttons show in both modes. VoiceOver reads the tooltip text.
+24. Editable fields (T28), dark mode now (light mode in T44). For each field: click into it, check the focus indicator and the cursor, and save a screenshot to `docs/qualification/evidence/<date>/`.
+
+    | Field | Where | Style | Placeholder | Focus ring visible | Cursor visible |
+    |---|---|---|---|---|---|
+    | Search | sidebar top | system search field | "Search transcripts and notes" | ☐ | ☐ |
+    | Meeting title | recorder (until T31) | rounded border | "Meeting title (optional)" | ☐ | ☐ |
+    | Scratchpad while recording | recorder | rounded border | "Private scratchpad (only on this Mac)" | ☐ | ☐ |
+    | Your notes | Notes tab (expand) | TextEditor + accent border when focused | "Write your own notes…" | ☐ | ☐ |
+    | Private scratchpad | Notes tab (expand) | TextEditor + accent border when focused | "Private notes, only on this Mac…" | ☐ | ☐ |
+    | Rename meeting / speaker, Correct text | sheets | system text field | the sheet title | ☐ | ☐ |
+
+    Settings has no text fields. No field uses `.textFieldStyle(.plain)` (the old plain header title field was removed in T26). The insertion point is the system one; on macOS 14+ it is drawn in the accent color. If it is hard to see, note which field.

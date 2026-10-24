@@ -931,7 +931,7 @@
       "id": "T28",
       "title": "Make editable fields visibly editable: focus ring and contrasting cursor",
       "milestone": "G",
-      "status": "planned",
+      "status": "done, with fallback (system insertion point kept; hands-on checks and focus screenshots pending: checklist item 24)",
       "optional": false,
       "depends_on": [
         "T26"
@@ -957,7 +957,8 @@
       ],
       "evidence_images": [
         "docs/design-review/2026-10-23/amaranth-title-field-selected.png"
-      ]
+      ],
+      "result": "2026-10-23: audit of every editable field (checklist item 24): search, recorder title and scratchpad, edit sheets already use system styles with focus rings and placeholders; the two Notes TextEditors now have placeholders and a 1-pt accent border when focused (resting 0.5-pt separator border) via App/Shared/EditableField. No .plain text field remains (T26 removed the last). Insertion point: system one (accent-colored on macOS 14+), no AppKit subclassing — the spec's fallback. Offscreen render of placeholders in evidence/2026-10-23; focus/cursor screenshots need a person."
     },
     {
       "id": "T29",

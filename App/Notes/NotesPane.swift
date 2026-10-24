@@ -14,6 +14,8 @@ struct NotesPane: View {
     @State private var scratchpad = ""
     @State private var includeScratchpad = false
     @State private var saves = DebouncedSaves()
+    @FocusState private var focusedEditor: Editor?
+    enum Editor: Hashable { case notes, scratchpad }
     @AppStorage("notesUserNotesExpanded") private var userNotesExpanded = false
     @AppStorage("notesScratchpadExpanded") private var scratchpadExpanded = false
 
@@ -25,6 +27,7 @@ struct NotesPane: View {
                 CollapsibleEditor(title: "Your notes", systemImage: "square.and.pencil", hint: CollapsedEditorHint.text(for: userNotes),
                                   help: "Yours alone: regenerating notes never changes this text.", isExpanded: expansion($userNotesExpanded)) {
                     TextEditor(text: $userNotes).font(.body).frame(minHeight: 120)
+                        .editableField(focused: $focusedEditor, as: .notes, isEmpty: userNotes.isEmpty, placeholder: "Write your own notes…")
                         .onChange(of: userNotes) { _, v in
                             let id = detail.meeting.id
                             saves.schedule("notes") { now in library.saveUserNotes(id, markdown: v, immediately: now) }
@@ -34,6 +37,7 @@ struct NotesPane: View {
                                   help: "Private: not exported or searched unless you choose to.", isExpanded: expansion($scratchpadExpanded)) {
                     VStack(alignment: .leading) {
                         TextEditor(text: $scratchpad).frame(minHeight: 80)
+                            .editableField(focused: $focusedEditor, as: .scratchpad, isEmpty: scratchpad.isEmpty, placeholder: "Private notes, only on this Mac…")
                             .onChange(of: scratchpad) { _, v in
                                 let id = detail.meeting.id
                                 // Read the switch when the save runs, not when typing happened (flipping it within the
