@@ -3,7 +3,8 @@ import Domain
 import Presentation
 
 /// Virtualized transcript (`List` reuses rows, so a two-hour meeting scrolls smoothly). Click a time to play from it;
-/// right-click a row to correct text or change its speaker; the speaker bar renames and merges speakers. Gaps are rows.
+/// right-click a row to correct text or change its speaker; the speaker bar renames and merges speakers. Gaps are rows:
+/// with Details off (skim mode, T25) they draw as hairlines and flags as icons; with Details on, in full.
 struct TranscriptPane: View {
     let detail: MeetingDetail
     @Environment(LibraryModel.self) private var library
@@ -13,6 +14,7 @@ struct TranscriptPane: View {
     @State private var renaming: Speaker?
     @State private var newName = ""
     @State private var selectedRow: String?
+    @Environment(\.showDetails) private var showDetails
 
     var speakers: [Speaker] { detail.displayTranscript?.speakers ?? [] }
 
@@ -31,7 +33,7 @@ struct TranscriptPane: View {
                                        description: Text(detail.transcript == nil ? "The transcript appears here after processing. The audio is saved." : "No speech was detected."))
             } else {
                 ScrollViewReader { proxy in
-                    List(detail.rows, selection: $selectedRow) { row in
+                    List(showDetails ? detail.rows : TranscriptRows.skim(detail.rows), selection: $selectedRow) { row in
                         TranscriptRowView(row: row, playable: detail.playbackUnavailableReason == nil) { playback.play(from: row.start.seconds) }
                             .tag(row.id)
                             .id(row.id)
@@ -39,6 +41,7 @@ struct TranscriptPane: View {
                             .contextMenu { menu(row) }
                     }
                     .listStyle(.inset)
+                    .environment(\.defaultMinListRowHeight, 8)   // hairline gap rows in skim mode
                     .onChange(of: library.focusRowID, initial: true) { _, id in
                         guard let id else { return }
                         // Next run-loop turn: changing the selection while the table is updating is reentrant in AppKit.
@@ -94,9 +97,15 @@ struct TranscriptRowView: View {
     let row: TranscriptRow
     let playable: Bool
     let play: () -> Void
+    @Environment(\.showDetails) private var showDetails
 
     var body: some View {
-        if case .gap(let reason) = row.kind {
+        if row.isGap, !showDetails {
+            Rectangle().fill(.orange.opacity(0.45)).frame(height: 1)
+                .padding(.vertical, 3).frame(maxWidth: .infinity).contentShape(Rectangle())
+                .help(TranscriptRows.gapDescription(row))
+                .accessibilityElement().accessibilityLabel(TranscriptRows.gapDescription(row))
+        } else if case .gap(let reason) = row.kind {
             Label("\(TranscriptRows.clock(row.start))–\(TranscriptRows.clock(row.end)) · \(reason)", systemImage: "waveform.slash")
                 .font(.callout).foregroundStyle(.orange)
                 .accessibilityLabel("Gap from \(TranscriptRows.clock(row.start)) to \(TranscriptRows.clock(row.end)): \(reason)")
@@ -109,8 +118,10 @@ struct TranscriptRowView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
                         Text(row.speakerLabel).bold().foregroundStyle(row.assignment == .unknown ? .secondary : .primary)
-                        Text(row.source == .microphone ? "MIC" : "SYS").font(.caption2.bold()).padding(.horizontal, 4)
-                            .background(.quaternary, in: .rect(cornerRadius: 3)).help(row.source == .microphone ? "Your microphone" : "System audio")
+                        if showDetails {
+                            Text(row.source == .microphone ? "MIC" : "SYS").font(.caption2.bold()).padding(.horizontal, 4)
+                                .background(.quaternary, in: .rect(cornerRadius: 3)).help(row.source == .microphone ? "Your microphone" : "System audio")
+                        }
                         if row.flags.contains(.overlap) { flag("overlap", "person.2.wave.2", "Several people spoke at once") }
                         if row.flags.contains(.uncertainSpeaker) { flag("speaker uncertain", "questionmark.circle", "Speaker attribution is uncertain") }
                         if row.flags.contains(.probableEcho) { flag("echo?", "speaker.wave.2", "Probably your speakers picked up by the mic; kept, not deleted") }
@@ -124,8 +135,13 @@ struct TranscriptRowView: View {
         }
     }
 
-    func flag(_ text: String, _ icon: String, _ help: String) -> some View {
-        Label(text, systemImage: icon).font(.caption2).foregroundStyle(.orange).help(help).labelStyle(.titleAndIcon)
+    /// Icon and caption with Details on; icon only (same tooltip, caption as the VoiceOver label) in skim mode.
+    @ViewBuilder func flag(_ text: String, _ icon: String, _ help: String) -> some View {
+        if showDetails {
+            Label(text, systemImage: icon).font(.caption2).foregroundStyle(.orange).help(help).labelStyle(.titleAndIcon)
+        } else {
+            Label(text, systemImage: icon).font(.caption2).foregroundStyle(.orange).help(help).labelStyle(.iconOnly)
+        }
     }
 }
 

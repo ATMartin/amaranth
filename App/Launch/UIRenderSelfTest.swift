@@ -68,16 +68,17 @@ enum UIRenderSelfTest {
             guard let d = library.detail else { ok = false; SelfTest.log(["step": "detail", "meeting": item.title, "ok": "false"]); continue }
             let name = item.title.replacingOccurrences(of: " ", with: "-")
             let tMain = await host(MainView(), "main-\(name)", size: CGSize(width: 1200, height: 760))
-            let tTranscript = await host(TranscriptPane(detail: d), "transcript-\(name)", size: CGSize(width: 900, height: 700))
+            let tTranscript = await host(TranscriptPane(detail: d).environment(\.showDetails, false), "transcript-\(name)", size: CGSize(width: 900, height: 700))
+            let tTranscriptDetails = await host(TranscriptPane(detail: d).environment(\.showDetails, true), "transcript-details-\(name)", size: CGSize(width: 900, height: 700))
             let tNotes = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, false).defaultAppStorage(collapsed), "notes-\(name)", size: CGSize(width: 900, height: 700))
             _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, true).defaultAppStorage(collapsed), "notes-details-\(name)", size: CGSize(width: 900, height: 700))
             _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).defaultAppStorage(expanded), "notes-expanded-\(name)", size: CGSize(width: 900, height: 900))
             SelfTest.log(["step": "render", "meeting": item.title, "rows": "\(d.rows.count)", "gaps": "\(d.rows.filter(\.isGap).count)",
                           "unknownSpeakerRows": "\(d.rows.filter { !$0.isGap && $0.assignment == .unknown }.count)",
                           "playback": d.playbackUnavailableReason ?? "available", "notes": "\(d.notesState(notesModelInstalled: true))",
-                          "mainSeconds": String(format: "%.2f", tMain), "transcriptSeconds": String(format: "%.2f", tTranscript),
+                          "mainSeconds": String(format: "%.2f", tMain), "transcriptSeconds": String(format: "%.2f", tTranscript), "transcriptDetailsSeconds": String(format: "%.2f", tTranscriptDetails),
                           "notesSeconds": String(format: "%.2f", tNotes)])
-            if d.rows.count > 1000, tTranscript > 2.0 { ok = false }
+            if d.rows.count > 1000, max(tTranscript, tTranscriptDetails) > 2.0 { ok = false }
         }
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
         _ = await host(VStack(spacing: 0) { RecorderPanel(model: recorder).padding(8); LibrarySidebar() }, "sidebar", size: CGSize(width: 360, height: 760))

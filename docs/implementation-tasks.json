@@ -817,7 +817,7 @@
       "id": "T25",
       "title": "Transcript skim mode: hide gap rows and flag text unless Details is on",
       "milestone": "G",
-      "status": "planned",
+      "status": "done (hands-on checks pending: checklist item 21)",
       "optional": false,
       "depends_on": [
         "T22"
@@ -848,7 +848,8 @@
       "evidence_images": [
         "docs/design-review/2026-10-23/amaranth-transcript-gap-rows.png",
         "docs/design-review/2026-10-23/amaranth-transcript-flat.png"
-      ]
+      ],
+      "result": "2026-10-23: TranscriptPane reads the T22 Details value. Off: gap rows draw as 1-pt orange hairlines (tooltip + VoiceOver label 'No transcript 00:20–00:35: reason'), runs of consecutive gaps merge into one (TranscriptRows.skim keeps the first id; speech rows and ids unchanged), flags icon-only, MIC/SYS hidden. On: previous rendering. Banners unchanged. Tests: skim merging, speech rows identical, every fixture gap still covered. ui-render renders both modes (2-h meeting 0.19 s / 0.22 s)."
     },
     {
       "id": "T26",

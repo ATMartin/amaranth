@@ -91,6 +91,32 @@ public enum TranscriptRows {
         return rows.sorted { ($0.start, $0.isGap ? 0 : 1) < ($1.start, $1.isGap ? 0 : 1) }
     }
 
+    /// Skim mode (Details off, T25): each run of consecutive gap rows becomes one gap row (the first row's id, spanning
+    /// the run, reasons joined), so many small gaps read as a single hairline. Speech rows and their ids are unchanged,
+    /// so evidence jumps and context menus work in both modes. Nothing is dropped: every gap is still covered.
+    public static func skim(_ rows: [TranscriptRow]) -> [TranscriptRow] {
+        var out: [TranscriptRow] = []
+        out.reserveCapacity(rows.count)
+        for row in rows {
+            if case .gap(let reason) = row.kind, var last = out.last, case .gap(let lastReason) = last.kind {
+                last.end = max(last.end, row.end)
+                if !lastReason.split(separator: ";").map({ $0.trimmingCharacters(in: .whitespaces) }).contains(reason) {
+                    last.kind = .gap(reason: lastReason + "; " + reason)
+                }
+                out[out.count - 1] = last
+            } else {
+                out.append(row)
+            }
+        }
+        return out
+    }
+
+    /// Tooltip and VoiceOver text of a gap row.
+    public static func gapDescription(_ row: TranscriptRow) -> String {
+        guard case .gap(let reason) = row.kind else { return "" }
+        return "No transcript \(clock(row.start))–\(clock(row.end)): \(reason)"
+    }
+
     /// Row containing the first word of an evidence reference (for "jump to evidence").
     public static func row(for evidence: TranscriptEvidence, in rows: [TranscriptRow], revision: TranscriptRevision) -> TranscriptRow? {
         guard let seg = revision.segment(evidence.segmentID), let wi = seg.words.firstIndex(where: { $0.id == evidence.firstWord }) else { return nil }
