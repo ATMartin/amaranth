@@ -132,3 +132,40 @@ About 2× faster, but it fails two notes checks. Not shipped, and no model pack 
   the acceptance bar, not identity.
 - Greedy decoding in a batch is not bit-identical to single-sequence decoding (different kernel shapes), so two runs
   with different batch composition can differ in rare tokens.
+
+## 2026-10-23 — T23: no topics (`notes-v3`)
+
+Design review 2026-10-23 (decisions/0005): "Topics we don't really need." The user chose to remove topics
+entirely (not keep them as a hidden intermediate step), and kept that choice after seeing its effect on the overview.
+
+**Changes**
+
+- Extraction asks for decisions, actions and open questions only; the grammar has no `topic` kind and no `title`
+  field. A stray `topic` from the model is dropped like any unknown kind. `SummaryContent.topics` stays in the frozen
+  contract (old revisions decode and export it) but new revisions write `[]`.
+- A decision the verifier calls a proposal (or `other`) is now dropped instead of being kept as a topic; a decision
+  or action resting only on personal notes is dropped instead of becoming a topic. Personal notes can still support a
+  question.
+- Notes UI has no Topics section. Exports already skip empty sections, so new notes export without Topics and old
+  revisions still export theirs (test in DataLifecycleTests).
+- **Overview.** Topics were most of the overview's input; without them it came out empty on a real 36-min meeting
+  (run t23). The overview now also reads up to 24 substantive transcript lines spread over the meeting and may cite
+  them (`lines`). Safeguards, all added after measuring:
+  - lines addressed to an AI (`EvidenceChecker.looksAddressedToAI`) are never sampled;
+  - citations the model writes into the text ("supported by items [4] … lines [L533]") are stripped *before* the
+    grounding check (they were being read as unsupported numbers);
+  - the name check accepts the cited lines' speaker names (it rejected "Speaker 2 said …" before, also in v2);
+  - every sentence that cites transcript lines is checked by the item verifier; "no" (or no verdict) drops it;
+  - a sentence claiming an agreement or decision must cite a verified decision item (run t23c: "we agreed to double
+    the price, even though we didn't" became an overview agreement).
+
+**Version.** `NotesPrompts.version` and `PipelineVersions.notes` → `notes-v3`: the prompts changed, and checkpoint keys
+and job config hashes must not mix versions (a test pins them equal). This does **not** make existing notes stale:
+staleness is computed from the transcript revision, edit sequence and scratchpad only (`NotesRecords`), and the
+scheduler only auto-enqueues notes for meetings that have none. Existing notes keep their topics until regenerated.
+
+**Measurements** (Release, M2 Max; `--suites corpus,notes`, 60-min corpus timing not run by user decision;
+docs/qualification/milestone-g-t23-notes.md): G5 pass; evidence 108/108; planted 2/2 (the 120-min planted item is
+not run, per the no-runs-over-60-min rule); injection 10/10; uncertain 25.0% (v2: 33.0%). Notes stage is faster and
+the overview keeps at least as many sentences on real meetings; on the synthetic planted transcript it has 1 sentence
+(v2: 4).

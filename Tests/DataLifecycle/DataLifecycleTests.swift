@@ -93,7 +93,13 @@ struct ExportTests {
             #expect(text.contains("private personal notes"), "notes influenced by personal notes are disclosed")
             #expect(!text.contains("PRIVATE-PAD"), "the private scratchpad is excluded by default")
             #expect(text.contains("call the vendor"))
+            #expect(!text.localizedCaseInsensitiveContains("topics"), "no Topics section without topics (T23)")
         }
+        // T23: notes no longer have topics, but an older revision that has them still exports them.
+        var old = try #require(input.summary)
+        old.content.topics = [SummaryItem(kind: .topic, title: "Release timing", text: "When to ship", evidence: old.content.decisions[0].evidence)]
+        let oldInput = ExportInput(meeting: input.meeting, transcript: input.transcript, summary: old, userNotes: input.userNotes)
+        for text in [Exporter.text(oldInput), Exporter.markdown(oldInput)] { #expect(text.localizedCaseInsensitiveContains("topics") && text.contains("Release timing") && text.contains("When to ship")) }
         // Injected Markdown in spoken text stays inert text (no links, images or HTML in the export).
         var hostile = f.transcript
         hostile.segments[0].words[0].text = "![x](http://example.com/p.png) <img src=x> [click](http://evil)"

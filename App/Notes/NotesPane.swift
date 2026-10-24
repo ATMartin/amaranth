@@ -133,7 +133,6 @@ struct NotesPane: View {
         section("Decisions", s.content.decisions)
         section("Action items", s.content.actionItems)
         section("Open questions", s.content.openQuestions)
-        section("Topics", s.content.topics)
         if !s.content.limitations.isEmpty {
             DisclosureGroup("Limitations (\(s.content.limitations.count))") {
                 VStack(alignment: .leading, spacing: 4) {

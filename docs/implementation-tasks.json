@@ -745,7 +745,7 @@
       "id": "T23",
       "title": "Remove Topics from generated notes (UI, prompt and export)",
       "milestone": "G",
-      "status": "planned",
+      "status": "done (60-min corpus notes timing not measured: user decision)",
       "optional": false,
       "depends_on": [
         "T18"
@@ -776,7 +776,8 @@
       ],
       "evidence_images": [
         "docs/design-review/2026-10-23/amaranth-notes-evidence-links.png"
-      ]
+      ],
+      "result": "2026-10-23: notes-v3 without topics (prompt, grammar, UI; exports keep old revisions' topics); unagreed proposals and personal-note-only decisions are dropped. Overview now also reads transcript lines (screened, verified, decisions only from decision items) so it does not come out empty. G5 pass: evidence 108/108, planted 2/2 (60 min), injection 10/10, uncertain 25.0%. Notes stage −5% to −24% on 22–60 min items. Existing notes not marked stale. docs/qualification/milestone-g-t23-notes.md; notes/0002."
     },
     {
       "id": "T24",

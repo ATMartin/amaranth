@@ -13,12 +13,13 @@ import CryptoKit
 ///    item must occur in the passage; items resting only on text addressed to an AI are rejected; decisions and actions
 ///    need spoken evidence.
 /// 4. **Verify:** every decision and action, and any item the checks doubt, is re-read against its cited passage by the
-///    model (yes/partly/no; decision vs proposal). "no" drops it, "partly" marks it uncertain, "proposal" demotes a
-///    decision to a topic.
+///    model (yes/partly/no; decision vs proposal). "no" drops it, "partly" marks it uncertain, and a decision the
+///    verifier calls a proposal is dropped (notes have no topics since notes-v3).
 /// 5. **Reduce:** near-duplicates merge with their evidence unioned (never across a negation mismatch, so revised or
 ///    contradicting statements both survive in time order); per-kind caps keep items spread across the timeline.
 /// 6. **Overview** is written from the validated items only, each sentence citing items (mapped to their evidence).
-///    **Limitations** are computed, not generated.
+///    **Limitations** are computed, not generated. Since notes-v3 (no topics) it also reads a spread of transcript
+///    lines and may cite them directly; names and numbers must still occur in what a sentence cites.
 ///
 /// Results are checkpointed per call, so a cancelled job resumes. Nothing here has side effects beyond the work
 /// directory: transcript text can only ever become data in the returned `SummaryRevision`.
@@ -30,7 +31,7 @@ public final class NotesPipeline: @unchecked Sendable {
         public var repairMaxItems = 8
         public var outputTokens = 1800
         public var maxVerifications = 120
-        public var caps: [String: Int] = ["decision": 25, "actionItem": 30, "openQuestion": 20, "topic": 15]
+        public var caps: [String: Int] = ["decision": 25, "actionItem": 30, "openQuestion": 20]
         public var personalNoteTokenLimit = 1000
         public init() {}
     }
@@ -139,7 +140,7 @@ public final class NotesPipeline: @unchecked Sendable {
             for item in out.items {
                 let lines = Array(Set(item.evidence.filter { allowed.contains($0) })).sorted()
                 guard !lines.isEmpty, let kind = Self.kind(item.kind) else { diagnostics.droppedInvalidEvidence += 1; continue }
-                var c = Candidate(kind: kind, title: kind == .topic ? item.title : nil, text: item.text, lines: lines,
+                var c = Candidate(kind: kind, title: nil, text: item.text, lines: lines,
                                   owner: item.owner, due: item.due, uncertain: false)
                 let spokenLines = c.lines.filter { $0 < NotesInputDocument.personalNoteBase }
                 let pText = passage(c.lines)
@@ -147,7 +148,7 @@ public final class NotesPipeline: @unchecked Sendable {
                     diagnostics.droppedAddressedToAI += 1; continue
                 }
                 if spokenLines.isEmpty, c.kind == .decision || c.kind == .actionItem {
-                    c.kind = .topic; c.owner = nil; c.due = nil   // personal notes alone cannot make a decision or action
+                    diagnostics.droppedInvalidEvidence += 1; continue   // personal notes alone cannot make a decision or action
                 }
                 if let o = c.owner, !EvidenceChecker.ownerSupported(o, passage: pText, speakers: c.lines.compactMap { lineSpeakers[$0] }) {
                     c.owner = nil; diagnostics.removedOwners += 1
@@ -169,7 +170,7 @@ public final class NotesPipeline: @unchecked Sendable {
             while verifySlots.count < chunks.count, let checked = checkedByChunk[verifySlots.count] {
                 verifySlots.append(checked.map { c, needs in
                     guard needs, verifyUsers.count < options.maxVerifications else { return nil }
-                    let kind = switch c.kind { case .decision: "decision"; case .actionItem: "action"; case .openQuestion: "question"; default: "topic" }
+                    let kind = switch c.kind { case .decision: "decision"; case .actionItem: "action"; case .openQuestion: "question"; default: "other" }
                     let user = NotesPrompts.verifyUser(passage: passage(c.lines, context: 1), kind: kind, text: c.text, owner: c.owner, due: c.due)
                     let slot = verifyUsers.count
                     verifyUsers.append(user)
@@ -242,8 +243,8 @@ public final class NotesPipeline: @unchecked Sendable {
                 if EvidenceChecker.unsupportedNumbers(c.text, passage: pText).isEmpty, !EvidenceChecker.looksAddressedToAI(c.text),
                    EvidenceChecker.unsupportedNames(c.text, passage: pText, speakers: c.lines.compactMap { lineSpeakers[$0] }).isEmpty { c.uncertain = false }
             }
-            if c.kind == .decision, v.kind == "proposal" || v.kind == "topic" {
-                c.kind = .topic; diagnostics.demotedProposals += 1   // no made-up title: the text stands alone
+            if c.kind == .decision, v.kind == "proposal" || v.kind == "other" {
+                diagnostics.demotedProposals += 1; continue   // not agreed: not a decision, and there are no topics to keep it as
             }
             // Owner/due: keep only what both the model and the passage support.
             if c.owner != nil, v.owner == nil { c.owner = nil; diagnostics.removedOwners += 1 }
@@ -276,11 +277,12 @@ public final class NotesPipeline: @unchecked Sendable {
                                      evidence: refs(c.lines), owner: c.owner, ownerEvidence: refs(ownerLines(c)),
                                      due: c.due.map { DueDate(originalText: $0) }, uncertain: c.uncertain))
         }
-        let overview = try Perf.measure("notes.overview") { try makeOverview(reduced, refs: refs, passage: { passage($0) }, cancellation: cancellation) }
+        let overview = try Perf.measure("notes.overview") { try makeOverview(reduced, sample: Self.overviewSample(doc), speakers: lineSpeakers, refs: refs,
+                                                                                    passage: { passage($0) }, cancellation: cancellation) }
         progress(1)
         limitations += computedLimitations(transcript: transcript, doc: doc, scratchpadIncluded: scratchID != nil)
         let limitationItems = limitations.enumerated().map { SummaryItem(id: SummaryItemID("limitation-\($0.offset)"), kind: .limitation, text: $0.element, evidence: []) }
-        let content = SummaryContent(overview: overview, topics: items.filter { $0.kind == .topic },
+        let content = SummaryContent(overview: overview, topics: [],
                                      decisions: items.filter { $0.kind == .decision }, actionItems: items.filter { $0.kind == .actionItem },
                                      openQuestions: items.filter { $0.kind == .openQuestion }, limitations: limitationItems)
         let dropped = diagnostics.droppedInvalidEvidence + diagnostics.droppedAddressedToAI + diagnostics.droppedByVerifier
@@ -339,34 +341,95 @@ public final class NotesPipeline: @unchecked Sendable {
     }
     struct Box<T: Codable & Sendable>: Codable, Sendable { var value: T? }
 
-    func makeOverview(_ items: [Candidate], refs: ([Int]) -> [EvidenceRef], passage: ([Int]) -> String,
-                      cancellation: CancellationToken) throws -> [SummaryItem] {
+    func makeOverview(_ items: [Candidate], sample: [NotesLine], speakers: [Int: String], refs: ([Int]) -> [EvidenceRef],
+                      passage: ([Int]) -> String, cancellation: CancellationToken) throws -> [SummaryItem] {
         let usable = items.filter { !$0.uncertain }.prefix(80)
-        guard !usable.isEmpty else { return [] }
+        guard !usable.isEmpty || !sample.isEmpty else { return [] }
         let numbered = usable.enumerated().map { (i, c) in (i + 1, c.kind.rawValue, c.text) }
-        let user = NotesPrompts.overviewUser(numbered)
+        let user = NotesPrompts.overviewUser(numbered, lines: sample)
         guard let out = try cached(["overview", user], {
             let r = try generator.generate(prompt: generator.chatPrompt(system: NotesPrompts.overviewSystem, user: user),
                                            grammar: NotesPrompts.overviewGrammar, maxTokens: 500, cancellation: cancellation)
             return try? JSONDecoder().decode(NotesPrompts.OverviewOutput.self, from: Data(r.text.utf8))
         }) else { return [] }
         let list = Array(usable)
-        return out.overview.enumerated().compactMap { (n, s) -> SummaryItem? in
+        let shown = Set(sample.map(\.id))
+        // Grounded sentences first; those resting on transcript lines (not only on verified items) are then verified.
+        var kept: [(text: String, lines: [Int], verify: Bool)] = []
+        for s in out.overview {
             let cited = s.items.filter { $0 >= 1 && $0 <= list.count }.map { list[$0 - 1] }
-            guard !cited.isEmpty else { return nil }   // an uncited sentence is not kept
-            let allLines = Array(Set(cited.flatMap(\.lines))).sorted()
-            // Grounding: every name and number in a sentence must occur in the cited items' lines; otherwise drop it.
-            let text0 = s.text
+            let citedLines = (s.lines ?? []).filter { shown.contains($0) }   // only lines it was shown
+            let allLines = Array(Set(cited.flatMap(\.lines) + citedLines)).sorted()
+            guard !allLines.isEmpty else { continue }   // an uncited sentence is not kept
+            // Citations belong in evidence, not in the text ("supported by items [4] and lines [L533]").
+            let text = Self.strippingCitations(s.text)
+            // Grounding: every name and number must occur in what the sentence cites (speaker names included).
             let p = passage(allLines)
-            guard EvidenceChecker.unsupportedNames(text0, passage: p).isEmpty, EvidenceChecker.unsupportedNumbers(text0, passage: p).isEmpty else {
+            // Decisions only come from verified decision items, never from raw lines ("we agreed to …, even though we
+            // didn't" must not become an agreement in the overview).
+            let claimsDecision = text.range(of: #"\b(agree[sd]?|agreement|decided?|decides|decision|settled|approved|resolved)\b"#,
+                                            options: [.regularExpression, .caseInsensitive]) != nil
+            guard !text.isEmpty, !EvidenceChecker.looksAddressedToAI(text), !claimsDecision || cited.contains(where: { $0.kind == .decision }),
+                  EvidenceChecker.unsupportedNames(text, passage: p, speakers: allLines.compactMap { speakers[$0] }).isEmpty,
+                  EvidenceChecker.unsupportedNumbers(text, passage: p).isEmpty else {
                 diagnostics.droppedOverviewSentences += 1
-                return nil
+                continue
             }
-            let lines = allLines.prefix(8)
-            // The model sometimes repeats its item citations in the text ("(items 1, 3)"); citations live in evidence.
-            let text = s.text.replacingOccurrences(of: #"\s*\((items?|see items?)\s*[\d,\s&and]+\)"#, with: "", options: [.regularExpression, .caseInsensitive])
-            return SummaryItem(id: SummaryItemID("overview-\(n)"), kind: .overview, text: text, evidence: refs(Array(lines)))
+            kept.append((text, allLines, !citedLines.isEmpty))
         }
+        // Raw transcript lines bypass the item verifier, so a sentence citing them gets the same check: "no" drops it.
+        var verdicts: [Int: NotesPrompts.VerifyOutput?] = [:]
+        var requests: [GenerationRequest] = [], slots: [Int] = [], keys: [[String]] = []
+        for (i, k) in kept.enumerated() where k.verify {
+            let vu = NotesPrompts.verifyUser(passage: passage(k.lines), kind: "overview", text: k.text, owner: nil, due: nil)
+            let key = ["overview-verify", vu]
+            if let hit = checkpoint(key, as: NotesPrompts.VerifyOutput.self) { verdicts[i] = .some(hit); continue }
+            requests.append(GenerationRequest(prompt: generator.chatPrompt(system: NotesPrompts.verifySystem, user: vu),
+                                              grammar: NotesPrompts.verifyGrammar, maxTokens: 120))
+            slots.append(i); keys.append(key)
+        }
+        if !requests.isEmpty {
+            try generator.generateStream(requests, cancellation: cancellation) { j, r in
+                let v = try? JSONDecoder().decode(NotesPrompts.VerifyOutput.self, from: Data(r.text.utf8))
+                verdicts[slots[j]] = .some(v)
+                try saveCheckpoint(keys[j], v)
+                return []
+            }
+        }
+        var result: [SummaryItem] = []
+        for (i, k) in kept.enumerated() {
+            if k.verify, (verdicts[i] ?? nil)?.supported != "yes", (verdicts[i] ?? nil)?.supported != "partly" {
+                diagnostics.droppedOverviewSentences += 1   // "no", or no usable verdict
+                continue
+            }
+            result.append(SummaryItem(id: SummaryItemID("overview-\(result.count)"), kind: .overview, text: k.text, evidence: refs(Array(k.lines.prefix(8)))))
+        }
+        return result
+    }
+
+    /// Removes citations the model wrote into a sentence: "(items 1, 3)", "[4]", "[L533]", and trailing clauses such as
+    /// "This is supported by items … and transcript lines …" or ", citing item [2] and transcript line [L176]".
+    static func strippingCitations(_ text: String) -> String {
+        var t = text
+        let patterns = [
+            #"[,;]?\s*(this is\s+|as\s+)?(supported by|citing|cited in|referenced in|as noted in|as seen in|see)\s+(the\s+)?(items?|transcript lines?|lines?)\b[^.]*"#,
+            #"\s*\((see\s+)?(items?|lines?|L)\s*[\dL,\s&and\[\]]+\)"#,
+            #"\s*\[L?\d+\](\s*(,|and|,\s*and)\s*\[L?\d+\])*"#,
+        ]
+        for p in patterns { t = t.replacingOccurrences(of: p, with: "", options: [.regularExpression, .caseInsensitive]) }
+        t = t.replacingOccurrences(of: #"\s+([.,;])"#, with: "$1", options: .regularExpression)
+        t = t.replacingOccurrences(of: #"\.{2,}"#, with: ".", options: .regularExpression)
+        t = t.trimmingCharacters(in: .whitespaces)
+        if t.hasSuffix(",") || t.hasSuffix(";") { t = String(t.dropLast()) + "." }
+        return t
+    }
+
+    /// Up to 24 substantive spoken lines spread evenly over the meeting (first and last included), for the overview.
+    static func overviewSample(_ doc: NotesInputDocument, count: Int = 24) -> [NotesLine] {
+        // Lines addressed to an AI are never shown to the overview (they are statements, not facts about the meeting).
+        let spoken = doc.lines.filter { !$0.isPersonalNote && $0.text.split(separator: " ").count >= 8 && !EvidenceChecker.looksAddressedToAI($0.text) }
+        guard spoken.count > count else { return spoken }
+        return (0..<count).map { spoken[$0 * (spoken.count - 1) / (count - 1)] }
     }
 
     // MARK: Reduce
@@ -451,7 +514,7 @@ public final class NotesPipeline: @unchecked Sendable {
     // MARK: Helpers
 
     static func kind(_ s: String) -> SummaryItemKind? {
-        switch s { case "decision": .decision; case "action": .actionItem; case "question": .openQuestion; case "topic": .topic; default: nil }
+        switch s { case "decision": .decision; case "action": .actionItem; case "question": .openQuestion; default: nil }
     }
 
     static func shortTitle(_ text: String) -> String {
