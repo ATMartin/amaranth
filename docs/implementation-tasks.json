@@ -964,7 +964,7 @@
       "id": "T29",
       "title": "Tooltips with keyboard shortcuts on every main action",
       "milestone": "G",
-      "status": "planned",
+      "status": "done (hands-on checks pending: checklist item 25)",
       "optional": false,
       "depends_on": [
         "T10"
@@ -990,7 +990,8 @@
       "fallback": "If a SwiftUI segmented Picker cannot take per-segment shortcuts, use `.keyboardShortcut` on hidden buttons that set `tab`.",
       "review_timestamps": [
         "09:35–09:47"
-      ]
+      ],
+      "result": "2026-10-23: Meeting menu (AmaranthApp .commands → App/Shared/MeetingCommands): Notes ⌘1, Transcript ⌘2, Recording ⌘3 (tab state moved to LibraryModel.detailTab), Export Markdown… ⌘E (focused scene value from the open meeting; disabled without a transcript), Search Meetings ⌘K (focuses the sidebar search). View ▸ Show Details toggles the T22 preference; ⌘D stays registered only on the ⓘ button. Menu actions are ignored while any sheet is attached. Tooltips with shortcuts on Record/Pause/Resume/Stop, tab picker, Export, Delete, Retry/Process, Play. Shortcut table in TESTER-GUIDE and checklist item 25."
     },
     {
       "id": "T30",

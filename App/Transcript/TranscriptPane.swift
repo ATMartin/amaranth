@@ -179,7 +179,7 @@ struct PlaybackBar: View {
                 Label(reason, systemImage: "speaker.slash").font(.caption).foregroundStyle(.secondary)
             } else {
                 Button { playback.toggle() } label: { Image(systemName: playback.isPlaying ? "pause.fill" : "play.fill") }
-                    .keyboardShortcut(.space, modifiers: []).help(playback.isPlaying ? "Pause" : "Play")
+                    .keyboardShortcut(.space, modifiers: []).help(playback.isPlaying ? "Pause (Space)" : "Play (Space)")
                 Text(TranscriptRows.clock(SessionTime(nanoseconds: Int64(playback.position * 1e9)))).monospacedDigit().font(.caption)
                 if let e = playback.error { Text(e).font(.caption).foregroundStyle(.red) }
             }

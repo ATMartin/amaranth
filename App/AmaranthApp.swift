@@ -81,6 +81,7 @@ struct AmaranthApp: App {
             .environment(live)
         }
         .defaultSize(width: 1100, height: 720)
+        .commands { MeetingCommands(library: library) }
 
         MenuBarExtra {
             MenuBarContent(recorder: recorder)

@@ -44,14 +44,14 @@ struct RecorderPanel: View {
             HStack {
                 if idle {
                     Button { model.start() } label: { Label("Record", systemImage: "record.circle") }
-                        .keyboardShortcut("r", modifiers: [.command, .shift]).controlSize(.large)
+                        .keyboardShortcut("r", modifiers: [.command, .shift]).controlSize(.large).help("Record (⌘⇧R)")
                 } else {
                     if model.state == .paused || model.state == .interrupted {
-                        Button("Resume") { model.resume() }.keyboardShortcut("p", modifiers: [.command, .shift])
+                        Button("Resume") { model.resume() }.keyboardShortcut("p", modifiers: [.command, .shift]).help("Resume recording (⌘⇧P)")
                     } else {
-                        Button("Pause") { model.pause() }.disabled(model.state != .recording).keyboardShortcut("p", modifiers: [.command, .shift])
+                        Button("Pause") { model.pause() }.disabled(model.state != .recording).keyboardShortcut("p", modifiers: [.command, .shift]).help("Pause recording (⌘⇧P)")
                     }
-                    Button("Stop and Save") { model.stop() }.disabled(model.state == .stopping).keyboardShortcut("s", modifiers: [.command, .shift])
+                    Button("Stop and Save") { model.stop() }.disabled(model.state == .stopping).keyboardShortcut("s", modifiers: [.command, .shift]).help("Stop and save (⌘⇧S)")
                 }
             }
             if model.state.isActive {

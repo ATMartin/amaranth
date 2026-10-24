@@ -10,6 +10,7 @@ struct MainView: View {
     @State private var showingModels = false
     @AppStorage("onboarded") private var onboarded = false
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
+    @FocusState private var searchFocused: Bool
 
     var body: some View {
         @Bindable var library = library
@@ -32,6 +33,8 @@ struct MainView: View {
         }
         .environment(\.showDetails, showDetails)
         .searchable(text: $library.query, placement: .sidebar, prompt: "Search transcripts and notes")
+        .searchFocused($searchFocused)
+        .onChange(of: library.searchFocusRequest) { _, _ in searchFocused = true }
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button { showingModels = true } label: {

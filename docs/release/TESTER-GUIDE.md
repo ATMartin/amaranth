@@ -48,11 +48,26 @@ when the Mac is hot or low on memory, and the meeting shows why.
   - Use the speaker bar to rename or merge speakers.
   - "Unknown speaker" and overlap markers are shown honestly, not guessed.
 - **Notes:**
-  - Each item links to the lines that support it; click a time to see them.
+  - Press **ⓘ** (⌘D) to show where each item came from (time links), transcript gaps and flags; right-click an item
+    for **Show in Transcript** in either mode.
   - Items marked **?** are only partly confirmed by the transcript.
   - If you edit speakers or text, the notes say they're out of date; press **Regenerate**.
   - **Your notes** are never changed by regeneration.
-- **Search** (sidebar) covers titles, transcripts and notes.
+- **Search** (sidebar, ⌘K) covers titles, transcripts and notes.
+- **Rename** a meeting by right-clicking it in the sidebar.
+
+### Keyboard shortcuts
+
+| Action | Shortcut |
+|---|---|
+| Record | ⌘⇧R |
+| Pause / Resume | ⌘⇧P |
+| Stop and save | ⌘⇧S |
+| Notes / Transcript / Recording tab | ⌘1 / ⌘2 / ⌘3 |
+| Show or hide details | ⌘D |
+| Export Markdown | ⌘E |
+| Search | ⌘K |
+| Play / pause (Transcript tab) | Space |
 
 ## Export
 **Export → Markdown / Plain Text / JSON** saves the transcript and notes with timestamps, speakers and gaps. Your

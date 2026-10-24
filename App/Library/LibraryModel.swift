@@ -17,6 +17,11 @@ final class LibraryModel {
     private(set) var error: String?
     /// Transcript row to scroll to and highlight (set by evidence links and search hits).
     var focusRowID: String?
+    /// The meeting screen's tab; here (not view state) so menu commands (⌘1–⌘3) can switch it.
+    var detailTab: DetailTab = .notes
+    enum DetailTab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Recording" }
+    /// Bumped by ⌘K; MainView focuses the search field.
+    var searchFocusRequest = 0
     let store: MeetingStore?
     weak var processing: ProcessingModel?
 

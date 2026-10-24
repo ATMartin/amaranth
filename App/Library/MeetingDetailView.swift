@@ -10,32 +10,32 @@ struct MeetingDetailView: View {
     @Environment(LibraryModel.self) private var library
     @Environment(PlaybackModel.self) private var playback
     @Environment(ModelSetupModel.self) private var models
-    @State private var tab: Tab = .notes
     @State private var confirming: DestructiveAction?
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
-    enum Tab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Recording" }
 
     var notesModelInstalled: Bool { if case .ready = models.status { true } else { false } }
 
     var body: some View {
+        @Bindable var library = library
         VStack(spacing: 0) {
             header
-            Picker("View", selection: $tab) { ForEach(Tab.allCases, id: \.self) { Text($0.rawValue) } }
-                .pickerStyle(.segmented).labelsHidden().padding(.horizontal)
+            Picker("View", selection: $library.detailTab) { ForEach(LibraryModel.DetailTab.allCases, id: \.self) { Text($0.rawValue) } }
+                .pickerStyle(.segmented).labelsHidden().help("Notes (⌘1) · Transcript (⌘2) · Recording (⌘3)").padding(.horizontal)
                 .frame(maxWidth: 420)
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .trailing) { detailsToggle.padding(.trailing) }
                 .padding(.bottom, 8)
             Divider()
-            switch tab {
-            case .notes: NotesPane(detail: detail, notesModelInstalled: notesModelInstalled) { tab = .transcript }
+            switch library.detailTab {
+            case .notes: NotesPane(detail: detail, notesModelInstalled: notesModelInstalled) { library.detailTab = .transcript }
             case .transcript: TranscriptPane(detail: detail)
             case .recording: RecordingDetailsPane(detail: detail)
             }
         }
         .onAppear { loadPlayback() }
         .onChange(of: detail.meeting.id) { _, _ in loadPlayback() }
-        .onChange(of: library.focusRowID) { _, id in if id != nil { tab = .transcript } }
+        .onChange(of: library.focusRowID) { _, id in if id != nil { library.detailTab = .transcript } }
+        .focusedSceneValue(\.exportMarkdown, detail.transcript == nil ? nil : ExportAction { export(.markdown) })
         .toolbar {
             ToolbarItemGroup {
                 Menu {
@@ -46,11 +46,12 @@ struct MeetingDetailView: View {
                     Button("Original Audio…") { exportAudio() }.disabled(detail.playbackUnavailableReason != nil)
                 } label: { Label("Export", systemImage: "square.and.arrow.up") }
                 .disabled(detail.transcript == nil)
-                .help("Export the transcript and notes. Your private scratchpad is not included.")
+                .help("Export the transcript and notes (Markdown: ⌘E). Your private scratchpad is not included.")
                 Menu {
                     Button("Delete Audio Only…") { confirming = .deleteAudioOnly }.disabled(detail.meeting.audio == .deletedByUser)
                     Button("Delete Meeting…", role: .destructive) { confirming = .deleteMeeting }
                 } label: { Label("Delete", systemImage: "trash") }
+                .help("Delete this meeting's audio, or the whole meeting")
             }
         }
         .confirmationDialog(confirming?.confirmationTitle(detail.meeting.title) ?? "", isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } }),
@@ -67,7 +68,7 @@ struct MeetingDetailView: View {
         }
         .buttonStyle(.borderless)
         .keyboardShortcut("d", modifiers: .command)
-        .help("Show details: where each note came from, transcript gaps and flags (⌘D)")
+        .help("Show details: where each note came from, transcript gaps and flags (⌘D)")   // View ▸ Show Details calls the same toggle
         .accessibilityLabel(showDetails ? "Hide details" : "Show details")
     }
 
@@ -86,8 +87,8 @@ struct MeetingDetailView: View {
                     MeetingStatusGlyph(status: detail.status)
                 }
                 Spacer()
-                if case .failed = detail.status.processing { Button("Retry Processing") { library.retry(detail.meeting.id) } }
-                if case .notQueued = detail.status.processing, detail.meeting.canPlayAudio { Button("Process") { library.process(detail.meeting.id) } }
+                if case .failed = detail.status.processing { Button("Retry Processing") { library.retry(detail.meeting.id) }.help("Run the failed processing steps again") }
+                if case .notQueued = detail.status.processing, detail.meeting.canPlayAudio { Button("Process") { library.process(detail.meeting.id) }.help("Transcribe, find speakers and write notes on this Mac") }
             }
             .font(.callout)
         }
