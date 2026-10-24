@@ -73,9 +73,7 @@ final class LibraryModel {
     // MARK: Actions
 
     func rename(_ id: MeetingID, to title: String) {
-        guard let store, var m = try? store.meeting(id) else { return }
-        let t = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !t.isEmpty, t != m.title else { return }
+        guard let store, var m = try? store.meeting(id), let t = MeetingTitle.renamed(from: m.title, to: title) else { return }
         m.title = t
         let updated = m
         perform { try store.upsertMeeting(updated) }

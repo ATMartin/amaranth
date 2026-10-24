@@ -11,7 +11,6 @@ struct MeetingDetailView: View {
     @Environment(PlaybackModel.self) private var playback
     @Environment(ModelSetupModel.self) private var models
     @State private var tab: Tab = .notes
-    @State private var title = ""
     @State private var confirming: DestructiveAction?
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
     enum Tab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Recording" }
@@ -34,8 +33,8 @@ struct MeetingDetailView: View {
             case .recording: RecordingDetailsPane(detail: detail)
             }
         }
-        .onAppear { title = detail.meeting.title; loadPlayback() }
-        .onChange(of: detail.meeting.id) { _, _ in title = detail.meeting.title; loadPlayback() }
+        .onAppear { loadPlayback() }
+        .onChange(of: detail.meeting.id) { _, _ in loadPlayback() }
         .onChange(of: library.focusRowID) { _, id in if id != nil { tab = .transcript } }
         .toolbar {
             ToolbarItemGroup {
@@ -74,8 +73,8 @@ struct MeetingDetailView: View {
 
     var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            TextField("Title", text: $title).font(.title2.bold()).textFieldStyle(.plain)
-                .onSubmit { library.rename(detail.meeting.id, to: title) }
+            // Static: renaming lives in the sidebar card's context menu (T26).
+            Text(detail.meeting.title).font(.title2.bold()).lineLimit(1)
             HStack(spacing: 16) {
                 Text(detail.meeting.createdAt.formatted(date: .abbreviated, time: .shortened)).foregroundStyle(.secondary)
                 Text(TranscriptRows.clock(SessionTime(nanoseconds: detail.meeting.duration.nanoseconds))).monospacedDigit().foregroundStyle(.secondary)

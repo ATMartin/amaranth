@@ -58,6 +58,8 @@ struct MainView: View {
 struct LibrarySidebar: View {
     @Environment(LibraryModel.self) private var library
     @State private var confirming: (DestructiveAction, MeetingListItem)?
+    @State private var renaming: MeetingListItem?
+    @State private var newTitle = ""
 
     var body: some View {
         @Bindable var library = library
@@ -75,10 +77,17 @@ struct LibrarySidebar: View {
                 ForEach(library.items) { item in
                     MeetingRow(item: item).tag(item.id)
                         .contextMenu {
+                            Button("Rename…") { newTitle = item.title; renaming = item }
+                            Divider()
                             Button("Delete Audio Only…") { confirming = (.deleteAudioOnly, item) }.disabled(item.status.audio == .audioDeleted)
                             Button("Delete Meeting…", role: .destructive) { confirming = (.deleteMeeting, item) }
                         }
                 }
+            }
+        }
+        .sheet(item: $renaming) { item in
+            EditTextSheet(title: "Rename Meeting", text: $newTitle, help: "Shown in the meeting list, the meeting header, search and exports.") {
+                library.rename(item.id, to: newTitle)
             }
         }
         .confirmationDialog(confirming.map { $0.0.confirmationTitle($0.1.title) } ?? "", isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } }),

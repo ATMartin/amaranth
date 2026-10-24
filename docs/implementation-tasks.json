@@ -855,7 +855,7 @@
       "id": "T26",
       "title": "Rename meetings from the sidebar context menu; make the title header static",
       "milestone": "G",
-      "status": "planned",
+      "status": "done (hands-on checks pending: checklist item 22)",
       "optional": false,
       "depends_on": [
         "T10"
@@ -887,7 +887,8 @@
       "evidence_images": [
         "docs/design-review/2026-10-23/amaranth-title-field-selected.png",
         "docs/design-review/2026-10-23/amaranth-sidebar-recorder-and-cards.png"
-      ]
+      ],
+      "result": "2026-10-23: header title is static Text; 'Rename…' is the first item of the sidebar card context menu, opening the shared EditTextSheet (moved to App/Shared) pre-filled; LibraryModel.rename uses Presentation.MeetingTitle (trim; empty/unchanged keeps the old title). Tests: empty/whitespace/unchanged titles, renamed title is in the search index and the old one is not."
     },
     {
       "id": "T27",
