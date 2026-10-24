@@ -33,7 +33,8 @@ struct NotesPane: View {
                             saves.schedule("notes") { now in library.saveUserNotes(id, markdown: v, immediately: now) }
                         }
                 }
-                CollapsibleEditor(title: "Private scratchpad", systemImage: "lock", hint: CollapsedEditorHint.text(for: scratchpad),
+                CollapsibleEditor(title: "Private scratchpad", systemImage: "lock",
+                                  hint: CollapsedEditorHint.text(for: scratchpad).map { includeScratchpad ? $0 + " · used for notes" : $0 },
                                   help: "Private: not exported or searched unless you choose to.", isExpanded: expansion($scratchpadExpanded)) {
                     VStack(alignment: .leading) {
                         TextEditor(text: $scratchpad).frame(minHeight: 80)

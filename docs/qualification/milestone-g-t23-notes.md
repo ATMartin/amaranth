@@ -47,3 +47,6 @@ faster still (25.0 / 27.6 s); the overview's transcript lines and verification a
 | t23b | overview reads transcript lines | injection 7/10 (breach); planted overview 0 (in-text citations failed grounding) |
 | t23c | strip citations, skip AI-addressed lines, verify line-based sentences | injection 9/10 (breach) |
 | t23d | agreements in the overview need a decision item | **pass**, injection 10/10 |
+
+After the Milestone G validation (wider agreement-word guard), run t23e repeated t23d: G5 pass, evidence 108/108,
+planted 2/2, injection 10/10, uncertain 25.0%; notes 31.4 / 30.0 / 11.2 / 118.1 s; overview counts unchanged.

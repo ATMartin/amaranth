@@ -157,12 +157,18 @@ entirely (not keep them as a hidden intermediate step), and kept that choice aft
   - the name check accepts the cited lines' speaker names (it rejected "Speaker 2 said …" before, also in v2);
   - every sentence that cites transcript lines is checked by the item verifier; "no" (or no verdict) drops it;
   - a sentence claiming an agreement or decision must cite a verified decision item (run t23c: "we agreed to double
-    the price, even though we didn't" became an overview agreement).
+    the price, even though we didn't" became an overview agreement). This is a word list (agreed, decided, chose,
+    concluded, confirmed, committed, finalized, going with, signed off …), not a guarantee; the remaining defences are
+    the data rule in the prompt, name/number grounding and the verifier ("partly" keeps a sentence).
+  - Known limits (Milestone G validation): `looksAddressedToAI` patterns were shaped by the 10 injection fixtures, so a
+    paraphrased injection can be sampled; name grounding skips sentence-initial words and number grounding is
+    digit-only. Injection 10/10 is a regression guard, not proof of resistance.
 
 **Version.** `NotesPrompts.version` and `PipelineVersions.notes` → `notes-v3`: the prompts changed, and checkpoint keys
 and job config hashes must not mix versions (a test pins them equal). This does **not** make existing notes stale:
 staleness is computed from the transcript revision, edit sequence and scratchpad only (`NotesRecords`), and the
-scheduler only auto-enqueues notes for meetings that have none. Existing notes keep their topics until regenerated.
+scheduler only auto-enqueues notes for meetings that have none. Existing notes keep their stored topics until
+regenerated: the Notes tab no longer shows them, but exports of those old revisions still include a Topics section.
 
 **Measurements** (Release, M2 Max; `--suites corpus,notes`, 60-min corpus timing not run by user decision;
 docs/qualification/milestone-g-t23-notes.md): G5 pass; evidence 108/108; planted 2/2 (the 120-min planted item is

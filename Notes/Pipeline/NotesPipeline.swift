@@ -367,7 +367,7 @@ public final class NotesPipeline: @unchecked Sendable {
             let p = passage(allLines)
             // Decisions only come from verified decision items, never from raw lines ("we agreed to …, even though we
             // didn't" must not become an agreement in the overview).
-            let claimsDecision = text.range(of: #"\b(agree[sd]?|agreement|decided?|decides|decision|settled|approved|resolved)\b"#,
+            let claimsDecision = text.range(of: #"\b(agree[sd]?|agreement|decided?|decides|decision|settled|approved|resolved|cho(se|sen)|concluded?|confirmed|committed|finali[sz]ed|going with|signed off)\b"#,
                                             options: [.regularExpression, .caseInsensitive]) != nil
             guard !text.isEmpty, !EvidenceChecker.looksAddressedToAI(text), !claimsDecision || cited.contains(where: { $0.kind == .decision }),
                   EvidenceChecker.unsupportedNames(text, passage: p, speakers: allLines.compactMap { speakers[$0] }).isEmpty,

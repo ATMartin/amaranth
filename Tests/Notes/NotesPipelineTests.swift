@@ -211,10 +211,10 @@ struct NotesPipelineTests {
     @Test func overviewDecisionsNeedADecisionItem() throws {
         let g = ScriptedGenerator()
         g.extract = { _ in T.items([T.item("decision", "The launch moves to Thursday the twelfth", [1, 2])]) }
-        g.overview = { _ in #"{"overview":[{"text":"They agreed to move the launch.","items":[1],"lines":[]},{"text":"They agreed on a darker icon theme.","items":[],"lines":[5]}]}"# }
+        g.overview = { _ in #"{"overview":[{"text":"They agreed to move the launch.","items":[1],"lines":[]},{"text":"They agreed on a darker icon theme.","items":[],"lines":[5]},{"text":"They chose a darker icon theme.","items":[],"lines":[5]},{"text":"Speaker 2 suggested a darker theme for the icon.","items":[],"lines":[5]}]}"# }
         let rev = try NotesPipeline(generator: g, workDirectory: T.work())
             .run(meetingID: T.meeting, transcript: T.transcript(base), editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
-        #expect(rev.content.overview.map(\.text) == ["They agreed to move the launch."])
+        #expect(rev.content.overview.map(\.text) == ["They agreed to move the launch.", "Speaker 2 suggested a darker theme for the icon."])
     }
 
     @Test func citationsWrittenIntoOverviewTextAreRemoved() {
