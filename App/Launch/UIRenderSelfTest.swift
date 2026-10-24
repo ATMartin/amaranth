@@ -28,6 +28,13 @@ enum UIRenderSelfTest {
         let playback = PlaybackModel()
         let live = LiveTextModel(client: worker)
         UserDefaults.standard.set(true, forKey: "onboarded")
+        // Editors expanded (T24) without touching the user's own expansion preferences.
+        let expandedSuite = "amaranth-ui-render-\(UUID())"
+        let expanded = UserDefaults(suiteName: expandedSuite)!
+        expanded.set(true, forKey: "notesUserNotesExpanded"); expanded.set(true, forKey: "notesScratchpadExpanded")
+        let collapsedSuite = "amaranth-ui-render-\(UUID())"
+        let collapsed = UserDefaults(suiteName: collapsedSuite)!   // empty: every preference at its default
+        defer { for s in [expandedSuite, collapsedSuite] { UserDefaults.standard.removePersistentDomain(forName: s) } }
         var ok = true
         func host<V: View>(_ v: V, _ name: String, size: CGSize) async -> Double {
             let view = NSHostingView(rootView: v.environment(worker).environment(models).environment(recorder)
@@ -62,8 +69,9 @@ enum UIRenderSelfTest {
             let name = item.title.replacingOccurrences(of: " ", with: "-")
             let tMain = await host(MainView(), "main-\(name)", size: CGSize(width: 1200, height: 760))
             let tTranscript = await host(TranscriptPane(detail: d), "transcript-\(name)", size: CGSize(width: 900, height: 700))
-            let tNotes = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, false), "notes-\(name)", size: CGSize(width: 900, height: 700))
-            _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, true), "notes-details-\(name)", size: CGSize(width: 900, height: 700))
+            let tNotes = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, false).defaultAppStorage(collapsed), "notes-\(name)", size: CGSize(width: 900, height: 700))
+            _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, true).defaultAppStorage(collapsed), "notes-details-\(name)", size: CGSize(width: 900, height: 700))
+            _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).defaultAppStorage(expanded), "notes-expanded-\(name)", size: CGSize(width: 900, height: 900))
             SelfTest.log(["step": "render", "meeting": item.title, "rows": "\(d.rows.count)", "gaps": "\(d.rows.filter(\.isGap).count)",
                           "unknownSpeakerRows": "\(d.rows.filter { !$0.isGap && $0.assignment == .unknown }.count)",
                           "playback": d.playbackUnavailableReason ?? "available", "notes": "\(d.notesState(notesModelInstalled: true))",

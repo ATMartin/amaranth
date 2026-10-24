@@ -27,3 +27,8 @@ Use the Debug app: `build/DerivedData/Build/Products/Debug/Amaranth.app`.
 16. VoiceOver: move through the recorder, the library and a transcript row; the labels are spoken.
 17. Type in Your notes and switch to another meeting within one second. Switch back: the text was saved. Repeat, quitting with ⌘Q within one second of typing.
 18. Press Record, and while the macOS permission prompt is still open, choose Quit. The app quits cleanly without hanging.
+
+## Milestone G (design review 2026-10-23)
+
+19. Details toggle (T22): on a fresh install the Notes tab shows no time links under notes. Click ⓘ (right of the tab picker) or press ⌘D: the links appear and the icon fills. Quit and relaunch: the choice is kept. Right-click a note: "Show in Transcript" jumps to its row with Details on or off.
+20. Your notes / Private scratchpad (T24): both start collapsed. With text saved, the collapsed header shows "· N words". Expand one, relaunch: it is still expanded. Type in Your notes and collapse it within one second; switch meeting and back: the text was saved. The "Use these private notes…" switch is inside the expanded scratchpad.

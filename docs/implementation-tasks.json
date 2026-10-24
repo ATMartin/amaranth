@@ -783,7 +783,7 @@
       "id": "T24",
       "title": "Collapse “Your notes” and “Private scratchpad” by default",
       "milestone": "G",
-      "status": "planned",
+      "status": "done (hands-on checks pending: checklist item 20)",
       "optional": false,
       "depends_on": [
         "T10"
@@ -810,7 +810,8 @@
       ],
       "evidence_images": [
         "docs/design-review/2026-10-23/amaranth-notes-evidence-links.png"
-      ]
+      ],
+      "result": "2026-10-23: Your notes and Private scratchpad collapse (plain chevron header, the spec's fallback, no DisclosureGroup height fights); expansion persisted per editor (notesUserNotesExpanded / notesScratchpadExpanded); collapsed header shows a word count when text is saved; collapsing flushes the debounced save. Debounce/flush moved into Presentation.DebouncedSaves with tests (flush within the window saves once; fields independent). ui-render renders collapsed and expanded (separate defaults suites, user's prefs untouched)."
     },
     {
       "id": "T25",
