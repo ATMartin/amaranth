@@ -894,7 +894,7 @@
       "id": "T27",
       "title": "Lightweight meeting cards: title, date, duration and one status glyph with a tooltip",
       "milestone": "G",
-      "status": "planned",
+      "status": "done (hands-on checks pending: checklist item 23)",
       "optional": false,
       "depends_on": [
         "T22"
@@ -924,7 +924,8 @@
       ],
       "evidence_images": [
         "docs/design-review/2026-10-23/amaranth-sidebar-recorder-and-cards.png"
-      ]
+      ],
+      "result": "2026-10-23: Presentation.MeetingStatusPresentation maps every AudioHeadline × ProcessingHeadline (all stages and suspension reasons) to one glyph or spinner + tooltip (= VoiceOver label); exhaustive switches, test enumerates every combination. MeetingRow: title + trailing glyph, one caption 'date · duration' (card pitch 153 → 77 px in ui-render, ≈ half). Header: glyph by default, full AudioBadge + ProcessingBadge with Details on; Retry/Process always visible. Stage/waiting texts now shared from Presentation. Spinner kept (only processing rows animate)."
     },
     {
       "id": "T28",

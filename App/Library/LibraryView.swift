@@ -100,20 +100,40 @@ struct LibrarySidebar: View {
     }
 }
 
+/// Meeting card (T27): title with one status glyph, and one caption line "Oct 23, 2026 at 10:01 AM · 49:36".
 struct MeetingRow: View {
     let item: MeetingListItem
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(item.title).font(.headline).lineLimit(1)
-            HStack {
-                Text(item.createdAt.formatted(date: .abbreviated, time: .shortened))
-                Text(TranscriptRows.clock(SessionTime(nanoseconds: item.duration.nanoseconds))).monospacedDigit()
+        VStack(alignment: .leading, spacing: 1) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(item.title).font(.headline).lineLimit(1)
+                Spacer(minLength: 4)
+                MeetingStatusGlyph(status: item.status)
             }
-            .font(.caption).foregroundStyle(.secondary)
-            AudioBadge(headline: item.status.audio).font(.caption)
-            ProcessingBadge(headline: item.status.processing)
+            Text(item.createdAt.formatted(date: .abbreviated, time: .shortened) + " · "
+                 + TranscriptRows.clock(SessionTime(nanoseconds: item.duration.nanoseconds)))
+                .font(.caption).monospacedDigit().foregroundStyle(.secondary)
         }
-        .padding(.vertical, 2)
+    }
+}
+
+/// The single status glyph of a meeting; the tooltip is also its VoiceOver label.
+struct MeetingStatusGlyph: View {
+    let status: MeetingStatus
+    var body: some View {
+        let g = MeetingStatusPresentation.glyph(status)
+        Group {
+            if g.spinner { ProgressView().controlSize(.small).scaleEffect(0.6) }
+            else if let s = g.symbol { Image(systemName: s).foregroundStyle(color(g.tone)) }
+        }
+        .frame(width: 16, height: 16)
+        .help(g.tooltip)
+        .accessibilityElement()
+        .accessibilityLabel(g.tooltip)
+    }
+
+    func color(_ t: MeetingStatusPresentation.Tone) -> Color {
+        switch t { case .secondary: .secondary; case .red: .red; case .orange: .orange }
     }
 }
 
@@ -174,7 +194,7 @@ struct ProcessingBadge: View {
             switch headline {
             case .notQueued: Label("Not processed", systemImage: "circle.dashed")
             case .waiting(let reason):
-                Label(waiting(reason), systemImage: "hourglass")
+                Label(MeetingStatusPresentation.waiting(reason), systemImage: "hourglass")
             case .running(let stage, let p): Label("\(Self.stageName(stage)) \(Int(p * 100))%", systemImage: "gearshape.2")
             case .complete: Label("Processed", systemImage: "doc.text")
             case .failed(let stage, _):
@@ -185,25 +205,5 @@ struct ProcessingBadge: View {
         .font(.caption)
     }
 
-    func waiting(_ r: SuspensionReason?) -> String {
-        switch r {
-        case .recordingActive: "Queued · paused while recording"
-        case .thermalPressure: "Queued · paused while the Mac is hot"
-        case .memoryPressure: "Queued · paused while memory is low"
-        case .captureFault: "Queued · paused to protect the recording"
-        case .userPaused: "Paused"
-        case nil: "Queued"
-        }
-    }
-
-    static func stageName(_ s: ProcessingStage) -> String {
-        switch s {
-        case .prepare: "Preparing audio"
-        case .transcribe: "Transcribing"
-        case .diarize: "Finding speakers"
-        case .reconcile: "Matching speakers"
-        case .notes: "Writing notes"
-        case .live: "Live text"
-        }
-    }
+    static func stageName(_ s: ProcessingStage) -> String { MeetingStatusPresentation.stageName(s) }
 }

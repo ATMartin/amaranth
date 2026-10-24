@@ -78,8 +78,13 @@ struct MeetingDetailView: View {
             HStack(spacing: 16) {
                 Text(detail.meeting.createdAt.formatted(date: .abbreviated, time: .shortened)).foregroundStyle(.secondary)
                 Text(TranscriptRows.clock(SessionTime(nanoseconds: detail.meeting.duration.nanoseconds))).monospacedDigit().foregroundStyle(.secondary)
-                AudioBadge(headline: detail.status.audio)
-                ProcessingBadge(headline: detail.status.processing)
+                // Quick review: one glyph (hover for its meaning); Details on: both full badges.
+                if showDetails {
+                    AudioBadge(headline: detail.status.audio)
+                    ProcessingBadge(headline: detail.status.processing)
+                } else {
+                    MeetingStatusGlyph(status: detail.status)
+                }
                 Spacer()
                 if case .failed = detail.status.processing { Button("Retry Processing") { library.retry(detail.meeting.id) } }
                 if case .notQueued = detail.status.processing, detail.meeting.canPlayAudio { Button("Process") { library.process(detail.meeting.id) } }
