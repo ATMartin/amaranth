@@ -219,6 +219,9 @@ struct SearchAndDeletionTests {
         let f = try LifecycleFixture()
         defer { try? FileManager.default.removeItem(at: f.root) }
         #expect(try f.databaseContains(f.marker), "precondition: the marker is stored")
+        // T49 metadata goes too: people names, the event snapshot and its identifier column.
+        try f.store.setPeople([Person(name: "Quillon Brightwater")], for: f.meeting)
+        try f.store.setLinkedEvent(LinkedEvent(identifier: "EK-zephyrbadger", title: "Velvetquartz review", start: Date(), end: Date()), for: f.meeting)
         let scheduler = JobScheduler(store: f.store, executor: NoopExecutor(), configuration: .init(asrConfigHash: "a", diarizationConfigHash: "d"))
         try scheduler.delete(f.meeting)
         #expect(try f.store.meetings().isEmpty)
@@ -235,6 +238,7 @@ struct SearchAndDeletionTests {
         // Nothing of the meeting's content remains in the database file bytes, and after relaunch nothing is found.
         #expect(try !f.databaseContains(f.marker))
         #expect(try !f.databaseContains("Roadmap sync") && !f.databaseContains("call the vendor") && !f.databaseContains("PRIVATE-PAD"))
+        #expect(try !f.databaseContains("Quillon Brightwater") && !f.databaseContains("zephyrbadger") && !f.databaseContains("Velvetquartz"))
         let reopened = try MeetingStore(root: f.root)
         #expect(try reopened.search(f.marker).isEmpty && reopened.meetings().isEmpty)
         #expect(try reopened.meeting(f.meeting)?.deletedAt != nil, "a scrubbed tombstone remains")

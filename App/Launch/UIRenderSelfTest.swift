@@ -146,6 +146,12 @@ enum UIRenderSelfTest {
                 library.focusRowID = nil
             }
         }
+        // Header chips in a narrow window (T50): the compact variant, nothing truncated.
+        if library.items.contains(where: { $0.id == MeetingID("ui-long") }) {
+            library.selection = MeetingID("ui-long")
+            for _ in 0..<40 where library.detail?.meeting.id != MeetingID("ui-long") { try? await Task.sleep(for: .milliseconds(50)) }
+            if let d = library.detail { _ = await host(MeetingDetailView(detail: d), "header-narrow", size: CGSize(width: 560, height: 200)) }
+        }
         // Header people editor (T50): with names and empty.
         _ = await host(PeopleEditor(people: ["Dana Whitfield", "Ravi Patel"].map { Person(name: $0) }, save: { _ in }, cancel: {}), "people-editor", size: CGSize(width: 290, height: 230))
         _ = await host(PeopleEditor(people: [], save: { _ in }, cancel: {}), "people-editor-empty", size: CGSize(width: 290, height: 230))

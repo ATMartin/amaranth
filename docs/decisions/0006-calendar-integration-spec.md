@@ -29,7 +29,8 @@ local-only principle, so we don't do it.
    renamed.
 3. **Attendees as people.** Linking adds the event's named attendees to `Meeting.people` with `source: .calendar`,
    skipping rooms and resources (`EKParticipant.participantType == .room / .resource`). Manual entries are never
-   removed or renamed. Unlinking removes only `.calendar` entries that the user hasn't edited.
+   removed or renamed. Unlinking removes only `.calendar` entries; a calendar name the user edits in the people editor becomes a
+   manual entry (T49's `Person` has no "edited" flag), so it stays.
 4. **Speaker-rename suggestions.** The existing speaker rename popover (TranscriptPane) lists the meeting's people as
    one-click suggestions above the free-text field. Speakers are never named automatically: diarization labels are
    anonymous, and guessing a name could put words in the wrong person's mouth.

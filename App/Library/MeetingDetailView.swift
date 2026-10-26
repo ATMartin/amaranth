@@ -79,10 +79,11 @@ struct MeetingDetailView: View {
             Text(detail.meeting.title).appFont(.title).lineLimit(1)
             HStack(spacing: AppStyle.grid) {
                 // T50: small chips like Granola's header; date and the calendar placeholder are not editable.
-                HeaderChip(symbol: "calendar", text: detail.meeting.createdAt.formatted(date: .abbreviated, time: .shortened))
-                    .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
-                PeopleChip(meeting: detail.meeting).id(detail.meeting.id)
-                CalendarLinkPlaceholderChip()
+                // Narrow windows drop the time and the placeholder's words before anything truncates.
+                ViewThatFits(in: .horizontal) {
+                    headerChips(compact: false)
+                    headerChips(compact: true)
+                }
                 Text(TranscriptRows.clock(SessionTime(nanoseconds: detail.meeting.duration.nanoseconds))).monospacedDigit().foregroundStyle(.secondary)
                 // Quick review: one glyph (hover for its meaning); Details on: both full badges.
                 if showDetails {
@@ -98,6 +99,16 @@ struct MeetingDetailView: View {
             .appFont(.callout)
         }
         .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 4).padding(.bottom, AppStyle.grid)
+    }
+
+    func headerChips(compact: Bool) -> some View {
+        HStack(spacing: AppStyle.grid) {
+            HeaderChip(symbol: "calendar", text: detail.meeting.createdAt.formatted(date: .abbreviated, time: compact ? .omitted : .shortened))
+                .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
+            PeopleChip(meeting: detail.meeting).id(detail.meeting.id)
+            CalendarLinkPlaceholderChip(compact: compact)
+        }
+        .fixedSize()
     }
 
     func loadPlayback() {
@@ -160,7 +171,7 @@ struct HeaderChip: View {
     var body: some View {
         HStack(spacing: AppStyle.half) {
             Image(systemName: symbol).font(.system(size: AppStyle.iconSmall))
-            Text(text).lineLimit(1)
+            if !text.isEmpty { Text(text).lineLimit(1) }
         }
         .appFont(.callout)
         .foregroundStyle(style == .inert ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.secondary))
@@ -219,7 +230,7 @@ struct PeopleEditor: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppStyle.grid) {
             Text("People").appFont(.headline)
-            TextEditor(text: $text).appFont(.body).frame(width: 260, height: 110)
+            TextEditor(text: $text).appFont(.body).scrollIndicators(.never).frame(width: 260, height: 110)
                 .editableField(focused: $focused, as: .names, isEmpty: text.isEmpty, placeholder: "One name per line, or separated by commas")
             Text("Saved with this meeting and included in exports.").appFont(.caption).foregroundStyle(.secondary)
             HStack {
@@ -239,12 +250,16 @@ struct PeopleEditor: View {
 /// Placeholder for calendar linking (T50): visibly inert until Milestone O (docs/decisions/0006). Not a button, so it
 /// takes no clicks or focus; the tooltip says why.
 struct CalendarLinkPlaceholderChip: View {
+    var compact = false
+
     var body: some View {
-        HeaderChip(symbol: "link", text: "Link calendar event", style: .inert)
+        HeaderChip(symbol: "link", text: compact ? "" : "Link calendar event", style: .inert)
             .help("Calendar linking is planned")
             .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isStaticText)
             .accessibilityLabel("Link calendar event")
-            .accessibilityValue("Not available yet. Calendar linking is planned.")
+            .accessibilityValue("Not available yet")
+            .accessibilityHint("Calendar linking is planned")
     }
 }
 

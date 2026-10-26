@@ -1606,7 +1606,7 @@
       "id": "T49",
       "title": "Optional meeting metadata: people and a linked calendar event",
       "milestone": "M",
-      "status": "done (schema v3: linked_event_id column; people and event in the meeting JSON, kept by upsertMeeting, changed via setPeople/setLinkedEvent)",
+      "status": "done, validated (schema v3: linked_event_id column; people and event in the meeting JSON, kept by upsertMeeting, changed via setPeople/setLinkedEvent)",
       "optional": false,
       "depends_on": [],
       "owner_role": "Storage",
@@ -1635,7 +1635,7 @@
       "id": "T50",
       "title": "Header chips: date, people, calendar placeholder",
       "milestone": "M",
-      "status": "done (chips in MeetingDetailView header, Presentation/MeetingPeople; evidence docs/qualification/evidence/2026-10-26/header-chips; hands-on checks: checklist items 41-43)",
+      "status": "done, validated (chips in MeetingDetailView header, Presentation/MeetingPeople; evidence docs/qualification/evidence/2026-10-26/header-chips; hands-on checks: checklist items 41-43)",
       "optional": false,
       "depends_on": [
         "T49",
@@ -1888,7 +1888,7 @@
       "context": "Spec: docs/decisions/0006-calendar-integration-spec.md (T51, proposed 2026-10-26, pending the user's review; the user asked for these tasks to be added before review and will edit or delete them). Read the spec's Goals, Non-goals, Permission flow, Data mapping and Privacy sections first. Amaranth is a local-only SwiftUI macOS meeting recorder; T49 added Meeting.people / Meeting.linkedEvent (MeetingStore.setPeople / setLinkedEvent, schema v3 linked_event_id) and T50 the header chips. Never start a recording automatically; no network or cloud calendar APIs. The Recording tab, export and the model-management sheet stay out of scope.",
       "deliverables": [
         "On link, add named attendees as Person(source: .calendar), skipping rooms/resources and unnamed attendees (“+N unnamed”), current user first, de-duplicated against manual people.",
-        "Unlink removes only unedited .calendar people; manual people are never touched.",
+        "Unlink removes only .calendar people; a calendar name edited in the people editor becomes .manual (Person has no edited flag) and stays; manual people are never touched.",
         "Attendee emails never stored unless the off-by-default setting is on; data-lifecycle test proves deletion removes event title and calendar people from database bytes."
       ],
       "acceptance": [

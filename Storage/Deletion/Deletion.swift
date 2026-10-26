@@ -72,7 +72,7 @@ extension MeetingStore {
                                        audio: .deletedByUser, deletedAt: m.deletedAt)
                 try db.run("""
                     UPDATE meetings SET title='', audio=?, duration_ns=0, current_transcript_revision=NULL, provisional_transcript_revision=NULL,
-                      current_summary_revision=NULL, json=? WHERE id=?
+                      current_summary_revision=NULL, linked_event_id=NULL, json=? WHERE id=?
                     """, [.text(AudioAvailability.deletedByUser.rawValue), .blob(try ContractCoding.encode(scrubbed)), .text(id.rawValue)])
             }
         }
