@@ -70,7 +70,7 @@ struct AmaranthApp: App {
         Window("Amaranth", id: "main") {
             Group {
                 if OSVersionGate.isSupported && OSVersionGate.isSupportedArchitecture {
-                    MainView()
+                    MainView().frame(minHeight: 420)   // the window's minimum; taller content scrolls inside it
                 } else {
                     UnsupportedSystemView()
                 }
@@ -83,6 +83,7 @@ struct AmaranthApp: App {
             .environment(playback)
             .environment(live)
             .modifier(AppearanceRoot())
+            .windowFitsScreen()
         }
         .defaultSize(width: 1100, height: 720)
         .commands { MeetingCommands(library: library) }

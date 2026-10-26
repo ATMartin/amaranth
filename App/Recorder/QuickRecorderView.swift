@@ -15,8 +15,13 @@ struct RecordToolbarControl: View {
         if model.inSession {
             RecordingStrip(model: model)
         } else {
-            // Two plain buttons in one toolbar item: a ControlGroup here was moved to the trailing edge and truncated.
-            HStack(spacing: 2) {
+            idle.toolbarSized()
+        }
+    }
+
+    /// Two plain buttons in one toolbar item: a ControlGroup here was moved to the trailing edge and truncated.
+    var idle: some View {
+        HStack(spacing: 2) {
                 Button { model.start() } label: {
                     HStack(spacing: 4) { Image(systemName: "record.circle").foregroundStyle(Color.statusFailed); Text("Record") }
                 }
@@ -29,7 +34,6 @@ struct RecordToolbarControl: View {
                     .popover(isPresented: $showingOptions, arrowEdge: .bottom) {
                         RecordOptionsForm(model: model) { showingOptions = false; model.start() }
                     }
-            }
         }
     }
 }
@@ -72,6 +76,11 @@ struct RecordOptionsForm: View {
         .frame(width: 340)
         .onAppear { model.refreshDevices() }
     }
+}
+
+extension View {
+    /// Toolbar recorder text and controls a step smaller than the defaults, so the Record button and the strip stay compact.
+    func toolbarSized() -> some View { font(.system(size: AppStyle.toolbarText)).controlSize(.small) }
 }
 
 /// The compact toolbar strip while recording: state and elapsed time, one health glyph per source, the disk warning,
@@ -131,6 +140,9 @@ struct RecordingStripContent: View {
                 .keyboardShortcut("s", modifiers: [.command, .shift]).help("Stop and save (⌘⇧S)")
         }
         .labelStyle(.titleAndIcon)
+        .toolbarSized()
+        // Keeps the leading red dot and the Stop button inside the toolbar item's capsule.
+        .padding(.horizontal, AppStyle.half + 2)
         .fixedSize()
     }
 

@@ -34,6 +34,9 @@ enum AppStyle {
     static let icon: CGFloat = 12
     static let iconLarge: CGFloat = 13
 
+    /// Text in the toolbar recorder (Record button and recording strip): a step below the default control size.
+    static let toolbarText: CGFloat = 11.5
+
     /// 8-pt grid, with a half step for tight rows.
     static let half: CGFloat = 4
     static let grid: CGFloat = 8

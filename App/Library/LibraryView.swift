@@ -33,16 +33,19 @@ struct MainView: View {
                     }
                 }
             }
-            // Content starts at the top and grows down; it never floats in the middle or bottom of the column.
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            // Content starts at the top and grows down; it never floats in the middle or bottom of the column. It never
+            // sets the window's height either: the panes scroll inside whatever height the window has.
+            .fillsOfferedSpace()
             .safeAreaInset(edge: .top, spacing: 0) { RecorderBanner(model: recorder) }
+            // In the detail column's toolbar, not over the sidebar: with the sidebar open the sidebar's toolbar area is too
+            // narrow for the recording strip, and AppKit moved Stop into the overflow menu.
+            .toolbar { ToolbarItem(placement: .navigation) { RecordToolbarControl(model: recorder).fixedSize() } }
         }
         .environment(\.showDetails, showDetails)
         .searchable(text: $library.query, placement: .sidebar, prompt: "Search transcripts and notes")
         .searchFocused($searchFocused)
         .onChange(of: library.searchFocusRequest) { _, _ in searchFocused = true }
         .toolbar {
-            ToolbarItem(placement: .navigation) { RecordToolbarControl(model: recorder).fixedSize() }
             ToolbarItem(placement: .navigation) {
                 Button { showingModels = true } label: {
                     if case .ready = models.status { Label("Models ready", systemImage: "checkmark.seal") }

@@ -53,6 +53,15 @@ final class RecorderModel {
     /// Set by the app: recording pauses heavy processing; a stopped meeting is queued for processing.
     weak var processing: ProcessingModel?
 
+    #if DEBUG
+    /// UI render self-test only: shows the recording strip without a capture session (state `nil` returns to idle).
+    func showStripForRender(_ state: CaptureState?, elapsed: Double = 3723, health: [SourceHealth] = []) {
+        self.state = state ?? .idle
+        self.elapsed = state == nil ? 0 : elapsed
+        self.health = state == nil ? [] : health
+    }
+    #endif
+
     init(store: MeetingStore? = try? MeetingStore(root: MeetingStore.defaultRoot()), recover: Bool = true) {
         self.store = store
         refreshDevices()

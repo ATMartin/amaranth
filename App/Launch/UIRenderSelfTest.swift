@@ -215,8 +215,45 @@ enum UIRenderSelfTest {
             let expected = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua ? "Switch to Light Mode" : "Switch to Dark Mode"
             let pass = toggle != nil && export != nil && toggle! < export! && labels[toggle!] == expected
             SelfTest.log(["step": "toolbar", "items": labels.joined(separator: " | "), "ok": "\(pass)"])
+            // The whole window including its title bar and toolbar (the window frame view, not just the content).
+            if let frameView = window.contentView?.superview {
+                let rep = frameView.bitmapImageRepForCachingDisplay(in: frameView.bounds)!
+                frameView.cacheDisplay(in: frameView.bounds, to: rep)
+                try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "main-toolbar.png"))
+            }
             if !pass { ok = false }
             window.contentView = nil
+            // While recording, with the sidebar open: the whole strip, Stop included, must be on the toolbar, not in its
+            // overflow menu, at the default window width and a narrower one.
+            recorder.showStripForRender(.recording, health: [
+                .init(source: .microphone, status: .healthy, peakLevelDBFS: -18, deviceName: "MacBook Pro Microphone"),
+                .init(source: .systemOutput, status: .healthy, peakLevelDBFS: -24, deviceName: "System audio")])
+            for width in [1100.0, 900.0] {
+                let rec = NSHostingView(rootView: MainView().textSize(textSize).environment(worker).environment(models).environment(recorder)
+                    .environment(library).environment(playback).environment(live).frame(width: width, height: 600))
+                rec.sceneBridgingOptions = [.toolbars]
+                let recWindow = NSWindow(contentRect: CGRect(x: 0, y: 0, width: width, height: 600), styleMask: [.titled, .resizable], backing: .buffered, defer: false)
+                recWindow.appearance = appearance
+                recWindow.contentView = rec
+                // On screen (briefly): offscreen windows don't split the toolbar between the sidebar and detail columns,
+                // which is where the strip used to overflow.
+                recWindow.orderFrontRegardless()
+                try? await Task.sleep(for: .milliseconds(900))
+                let items = recWindow.toolbar?.items ?? [], visible = recWindow.toolbar?.visibleItems ?? []
+                let hidden = items.filter { item in !visible.contains { $0 === item } }
+                    .map { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label }
+                let pass = hidden.isEmpty
+                SelfTest.log(["step": "toolbar-recording", "width": "\(Int(width))", "items": "\(items.count)", "hidden": hidden.joined(separator: " | "), "ok": "\(pass)"])
+                if !pass { ok = false }
+                if let frameView = recWindow.contentView?.superview {
+                    let rep = frameView.bitmapImageRepForCachingDisplay(in: frameView.bounds)!
+                    frameView.cacheDisplay(in: frameView.bounds, to: rep)
+                    try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "main-recording-toolbar-\(Int(width)).png"))
+                }
+                recWindow.orderOut(nil)
+                recWindow.contentView = nil
+            }
+            recorder.showStripForRender(nil)
         }
         // Onboarding, the model sheet and the menu-bar menu's items (T43: every screen in both appearances).
         _ = await host(OnboardingView {}, "onboarding", size: CGSize(width: 560, height: 520))
