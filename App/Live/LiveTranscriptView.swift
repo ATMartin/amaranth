@@ -42,10 +42,10 @@ struct LiveTranscriptView: View {
                     let lines = live.state.lines
                     ForEach(Array(lines.enumerated()), id: \.offset) { i, line in
                         HStack(alignment: .firstTextBaseline, spacing: 8) {
-                            Text(TranscriptRows.clock(line.start)).monospacedDigit().foregroundStyle(.secondary).frame(width: 60, alignment: .leading)
-                            Text(line.source == .microphone ? "MIC" : "SYS").font(.caption2.bold()).padding(.horizontal, 4)
+                            Text(TranscriptRows.clock(line.start)).appFont(.caption, monospacedDigit: true).foregroundStyle(.secondary).frame(width: 60, alignment: .leading)
+                            Text(line.source == .microphone ? "MIC" : "SYS").appFont(.caption2, weight: .bold).padding(.horizontal, 4)
                                 .background(.quaternary, in: .rect(cornerRadius: 3))
-                            Text(line.text).foregroundStyle(line.tentative ? .secondary : .primary).italic(line.tentative)
+                            Text(line.text).appFont(.body).foregroundStyle(line.tentative ? .secondary : .primary).italic(line.tentative)
                         }
                         .id(i)
                     }

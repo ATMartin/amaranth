@@ -21,12 +21,12 @@ struct NotesPane: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: AppStyle.double) {
                 stateBanner
                 if let s = detail.summary { generated(s) }
                 CollapsibleEditor(title: "Your notes", systemImage: "square.and.pencil", hint: CollapsedEditorHint.text(for: userNotes),
                                   help: "Yours alone: regenerating notes never changes this text.", isExpanded: expansion($userNotesExpanded)) {
-                    TextEditor(text: $userNotes).font(.body).frame(minHeight: 120)
+                    TextEditor(text: $userNotes).appFont(.body).frame(minHeight: 120)
                         .editableField(focused: $focusedEditor, as: .notes, isEmpty: userNotes.isEmpty, placeholder: "Write your own notes…")
                         .onChange(of: userNotes) { _, v in
                             let id = detail.meeting.id
@@ -37,7 +37,7 @@ struct NotesPane: View {
                                   hint: CollapsedEditorHint.text(for: scratchpad).map { includeScratchpad ? $0 + " · used for notes" : $0 },
                                   help: "Private: not exported or searched unless you choose to.", isExpanded: expansion($scratchpadExpanded)) {
                     VStack(alignment: .leading) {
-                        TextEditor(text: $scratchpad).frame(minHeight: 80)
+                        TextEditor(text: $scratchpad).appFont(.body).frame(minHeight: 80)
                             .editableField(focused: $focusedEditor, as: .scratchpad, isEmpty: scratchpad.isEmpty, placeholder: "Private notes, only on this Mac…")
                             .onChange(of: scratchpad) { _, v in
                                 let id = detail.meeting.id
@@ -51,11 +51,12 @@ struct NotesPane: View {
                                 library.saveScratchpad(detail.meeting.id, text: scratchpad, include: v)
                             }
                         Text("Private: not exported or searched unless you choose to. Notes that used them are labelled.")
-                            .font(.caption).foregroundStyle(.secondary)
+                            .appFont(.caption).foregroundStyle(.secondary)
                     }
                 }
             }
-            .padding()
+            .appFont(.body)
+            .padding(AppStyle.double)
             .frame(maxWidth: 820, alignment: .leading)
             .frame(maxWidth: .infinity)
         }
@@ -122,7 +123,7 @@ struct NotesPane: View {
 
     @ViewBuilder func generated(_ s: SummaryRevision) -> some View {
         if s.influencedByPersonalNotes {
-            Label("These notes also used your private scratchpad.", systemImage: "lock.doc").font(.caption).foregroundStyle(.secondary)
+            Label("These notes also used your private scratchpad.", systemImage: "lock.doc").appFont(.caption).foregroundStyle(.secondary)
         }
         section("Overview", s.content.overview)
         section("Decisions", s.content.decisions)
@@ -131,7 +132,7 @@ struct NotesPane: View {
         if !s.content.limitations.isEmpty {
             DisclosureGroup("Limitations (\(s.content.limitations.count))") {
                 VStack(alignment: .leading, spacing: 4) {
-                    ForEach(s.content.limitations) { Text("• " + $0.text).font(.callout).foregroundStyle(.secondary) }
+                    ForEach(s.content.limitations) { Text("• " + $0.text).appFont(.callout).foregroundStyle(.secondary) }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -140,8 +141,8 @@ struct NotesPane: View {
 
     @ViewBuilder func section(_ title: String, _ items: [SummaryItem]) -> some View {
         if !items.isEmpty {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(title).font(.title3.bold())
+            VStack(alignment: .leading, spacing: AppStyle.grid) {
+                Text(title).appFont(.sectionTitle)
                 ForEach(items) { NoteItemRow(item: $0, detail: detail, jump: jump) }
             }
         }
@@ -167,7 +168,7 @@ struct NoteItemRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack(alignment: .firstTextBaseline) {
-                if let t = item.title { Text(t).bold() }
+                if let t = item.title { Text(t).appFont(.body, weight: .semibold) }
                 Text(item.text).textSelection(.enabled)
                 if item.uncertain {
                     Image(systemName: "questionmark.circle").foregroundStyle(.orange).help("Not fully confirmed by the transcript — check the cited passage")
@@ -175,7 +176,7 @@ struct NoteItemRow: View {
             }
             if item.kind == .actionItem || item.owner != nil || item.due != nil {
                 Text("Owner: \(item.owner ?? "not stated")  ·  Due: \(item.due?.originalText ?? "not stated")")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .appFont(.caption).foregroundStyle(.secondary)
             }
             // Evidence is attribution, shown only with Details on; the uncertain marker above is a warning and always shows.
             if showDetails {
@@ -183,9 +184,9 @@ struct NoteItemRow: View {
                     ForEach(Array(item.evidence.enumerated()), id: \.offset) { _, ref in
                         switch ref {
                         case .transcript(let e):
-                            Button(time(e)) { jump(e) }.buttonStyle(.link).font(.caption.monospacedDigit()).help("Show in transcript")
+                            Button(time(e)) { jump(e) }.buttonStyle(.link).appFont(.caption, monospacedDigit: true).help("Show in transcript")
                         case .personalNote:
-                            Label("your private note", systemImage: "lock").font(.caption).foregroundStyle(.secondary)
+                            Label("your private note", systemImage: "lock").appFont(.caption).foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -220,7 +221,7 @@ struct CollapsibleEditor<Content: View>: View {
         VStack(alignment: .leading, spacing: 6) {
             Button { isExpanded.toggle() } label: {
                 HStack(spacing: 6) {
-                    Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.secondary)
+                    Image(systemName: "chevron.right").appFont(.caption, weight: .bold).foregroundStyle(.secondary)
                         .rotationEffect(.degrees(isExpanded ? 90 : 0))
                     Label(title, systemImage: systemImage)
                     if !isExpanded, let hint { Text("· " + hint).foregroundStyle(.secondary) }

@@ -23,11 +23,15 @@ struct TranscriptPane: View {
         VStack(spacing: 0) {
             if detail.showingProvisional {
                 Label("Live text (provisional). The final transcript with speakers replaces it after processing; edits are available then.",
-                      systemImage: "waveform.badge.magnifyingglass").font(.caption).padding(8).frame(maxWidth: .infinity, alignment: .leading)
+                      systemImage: "waveform.badge.magnifyingglass").appFont(.caption).padding(AppStyle.grid).frame(maxWidth: .infinity, alignment: .leading)
                     .background(.blue.opacity(0.08))
             }
-            SpeakerBar(speakers: speakers, rename: { renaming = $0; newName = $0.displayName ?? "" }, merge: merge)
-            PlaybackBar(detail: detail)
+            // One compact strip (T36): playback on the left, speakers after it.
+            HStack(spacing: AppStyle.grid) {
+                PlaybackBar(detail: detail).layoutPriority(1)
+                SpeakerBar(speakers: speakers, rename: { renaming = $0; newName = $0.displayName ?? "" }, merge: merge)
+                Spacer(minLength: 0)
+            }
             Divider()
             if detail.rows.isEmpty {
                 ContentUnavailableView("No transcript yet", systemImage: "text.quote",
@@ -40,6 +44,10 @@ struct TranscriptPane: View {
                         TranscriptRowView(row: row, showsSpeaker: runStarts.contains(row.id), playable: detail.playbackUnavailableReason == nil) {
                             playback.play(from: row.start.seconds)
                         }
+                            // Compact rows (T36): no separators; a run's first row gets a little air above it instead.
+                            .listRowInsets(EdgeInsets(top: runStarts.contains(row.id) && !row.isGap ? 3 : 0, leading: AppStyle.grid,
+                                                      bottom: 0, trailing: AppStyle.grid))
+                            .listRowSeparator(.hidden)
                             .tag(row.id)
                             .id(row.id)
                             .listRowBackground(row.id == library.focusRowID ? Color.accentColor.opacity(0.15) : nil)
@@ -65,7 +73,7 @@ struct TranscriptPane: View {
             }
             if !detail.editsNeedingReview.isEmpty {
                 Label("\(detail.editsNeedingReview.count) of your edits could not be re-applied after reprocessing. They are kept; please check the speakers.",
-                      systemImage: "exclamationmark.bubble").font(.caption).padding(8).frame(maxWidth: .infinity, alignment: .leading)
+                      systemImage: "exclamationmark.bubble").appFont(.caption).padding(AppStyle.grid).frame(maxWidth: .infinity, alignment: .leading)
                     .background(.orange.opacity(0.12))
             }
         }
@@ -111,6 +119,7 @@ struct TranscriptRowView: View {
     let playable: Bool
     let play: () -> Void
     @Environment(\.showDetails) private var showDetails
+    @Environment(\.textScale) private var scale
 
     static let timeWidth: CGFloat = 60
     static let speakerWidth: CGFloat = 140
@@ -123,32 +132,31 @@ struct TranscriptRowView: View {
                 .accessibilityElement().accessibilityLabel(TranscriptRows.gapDescription(row))
         } else if case .gap(let reason) = row.kind {
             Label("\(TranscriptRows.clock(row.start))–\(TranscriptRows.clock(row.end)) · \(reason)", systemImage: "waveform.slash")
-                .font(.callout).foregroundStyle(.orange)
+                .appFont(.callout).foregroundStyle(.orange)
                 .accessibilityLabel("Gap from \(TranscriptRows.clock(row.start)) to \(TranscriptRows.clock(row.end)): \(reason)")
         } else {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Button(TranscriptRows.clock(row.start), action: play)
-                    .buttonStyle(.plain).monospacedDigit().foregroundStyle(playable ? Color.accentColor : .secondary)
+                    .buttonStyle(.plain).appFont(.caption, monospacedDigit: true).foregroundStyle(playable ? Color.accentColor : .secondary)
                     .disabled(!playable).help(playable ? "Play from here" : "Playback unavailable")
-                    .frame(width: Self.timeWidth, alignment: .leading)
-                speaker.frame(width: Self.speakerWidth, alignment: .leading)
+                    .frame(width: Self.timeWidth * scale, alignment: .leading)
+                speaker.frame(width: Self.speakerWidth * scale, alignment: .leading)
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     // Every row, continuation rows included, names its speaker for VoiceOver.
-                    Text(row.text).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                    Text(row.text).appFont(.body).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
                         .accessibilityLabel("\(row.speakerLabel): \(row.text)")
                     badges.fixedSize()
                 }
             }
-            .padding(.vertical, 2)
         }
     }
 
     @ViewBuilder var speaker: some View {
         if showsSpeaker {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                SpeakerDisc(assignment: row.assignment, name: row.speakerLabel).alignmentGuide(.firstTextBaseline) { $0.height * 0.75 }
+                SpeakerDisc(assignment: row.assignment, name: row.speakerLabel, size: 16 * scale).alignmentGuide(.firstTextBaseline) { $0.height * 0.75 }
                 // Overlap shows as the group disc and the overlap flag, so the column drops the "(overlapping)" suffix.
-                Text(row.speakerLabel.replacingOccurrences(of: " (overlapping)", with: "")).bold().lineLimit(1).truncationMode(.middle)
+                Text(row.speakerLabel.replacingOccurrences(of: " (overlapping)", with: "")).appFont(.body, weight: .semibold).lineLimit(1).truncationMode(.middle)
                     .foregroundStyle(row.assignment == .unknown ? .secondary : .primary)
                     .help(row.speakerLabel)
             }
@@ -161,7 +169,7 @@ struct TranscriptRowView: View {
     @ViewBuilder var badges: some View {
         HStack(spacing: 6) {
             if showDetails {
-                Text(row.source == .microphone ? "MIC" : "SYS").font(.caption2.bold()).padding(.horizontal, 4)
+                Text(row.source == .microphone ? "MIC" : "SYS").appFont(.caption2, weight: .bold).padding(.horizontal, 4)
                     .background(.quaternary, in: .rect(cornerRadius: 3)).help(row.source == .microphone ? "Your microphone" : "System audio")
             }
             if row.flags.contains(.overlap) { flag("overlap", "person.2.wave.2", "Several people spoke at once") }
@@ -175,9 +183,9 @@ struct TranscriptRowView: View {
     /// Icon and caption with Details on; icon only (same tooltip, caption as the VoiceOver label) in skim mode.
     @ViewBuilder func flag(_ text: String, _ icon: String, _ help: String) -> some View {
         if showDetails {
-            Label(text, systemImage: icon).font(.caption2).foregroundStyle(.orange).help(help).labelStyle(.titleAndIcon)
+            Label(text, systemImage: icon).appFont(.caption2).foregroundStyle(.orange).help(help).labelStyle(.titleAndIcon)
         } else {
-            Label(text, systemImage: icon).font(.caption2).foregroundStyle(.orange).help(help).labelStyle(.iconOnly)
+            Label(text, systemImage: icon).appFont(.caption2).foregroundStyle(.orange).help(help).labelStyle(.iconOnly)
         }
     }
 }
@@ -191,7 +199,7 @@ struct SpeakerBar: View {
         if !speakers.isEmpty {
             ScrollView(.horizontal) {
                 HStack {
-                    Text("Speakers").font(.caption).foregroundStyle(.secondary)
+                    Text("Speakers").appFont(.caption).foregroundStyle(.secondary)
                     ForEach(speakers) { s in
                         Menu {
                             Button("Rename…") { rename(s) }
@@ -200,7 +208,7 @@ struct SpeakerBar: View {
                         .menuStyle(.button).controlSize(.small).fixedSize()
                     }
                 }
-                .padding(.horizontal, 10).padding(.vertical, 6)
+                .padding(.horizontal, AppStyle.grid).padding(.vertical, AppStyle.half)
             }
         }
     }
@@ -213,15 +221,14 @@ struct PlaybackBar: View {
     var body: some View {
         HStack {
             if let reason = detail.playbackUnavailableReason {
-                Label(reason, systemImage: "speaker.slash").font(.caption).foregroundStyle(.secondary)
+                Label(reason, systemImage: "speaker.slash").appFont(.caption).foregroundStyle(.secondary)
             } else {
                 Button { playback.toggle() } label: { Image(systemName: playback.isPlaying ? "pause.fill" : "play.fill") }
                     .keyboardShortcut(.space, modifiers: []).help(playback.isPlaying ? "Pause (Space)" : "Play (Space)")
-                Text(TranscriptRows.clock(SessionTime(nanoseconds: Int64(playback.position * 1e9)))).monospacedDigit().font(.caption)
-                if let e = playback.error { Text(e).font(.caption).foregroundStyle(.red) }
+                Text(TranscriptRows.clock(SessionTime(nanoseconds: Int64(playback.position * 1e9)))).appFont(.caption, monospacedDigit: true)
+                if let e = playback.error { Text(e).appFont(.caption).foregroundStyle(.red) }
             }
-            Spacer()
         }
-        .padding(.horizontal, 10).padding(.vertical, 4)
+        .padding(.horizontal, AppStyle.grid).padding(.vertical, 2)
     }
 }

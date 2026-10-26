@@ -1,6 +1,7 @@
 import Foundation
 import Domain
 import ProcessingCore
+import Presentation
 
 /// Headless checks runnable against the real app bundle: `Amaranth.app/Contents/MacOS/Amaranth --self-test worker-crash`.
 /// Prints one JSON line per step and exits non-zero on failure. Used by scripts/selftest.sh and validators.
@@ -45,7 +46,9 @@ enum SelfTest {
             case "live-load": ok = await LiveSelfTest.run(load: true)
             case "ui-render":
                 let out = args.firstIndex(of: "--self-test-output").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
-                ok = await UIRenderSelfTest.run(outputDirectory: out)
+                let size = TextSize(stored: args.firstIndex(of: "--text-size").flatMap { $0 + 1 < args.count ? args[$0 + 1] : nil })
+                ok = await UIRenderSelfTest.run(outputDirectory: out, textSize: size)
+            case "ui-density": ok = await UIDensitySelfTest.run(args: args)
             case "capture-soak":
                 let minutes = args.firstIndex(of: "--minutes").flatMap { Double(args[$0 + 1]) } ?? 30
                 ok = await CaptureSelfTest.soak(minutes: minutes)

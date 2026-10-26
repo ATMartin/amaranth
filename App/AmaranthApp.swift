@@ -82,6 +82,7 @@ struct AmaranthApp: App {
             .environment(library)
             .environment(playback)
             .environment(live)
+            .modifier(TextSizeRoot())
         }
         .defaultSize(width: 1100, height: 720)
         .commands { MeetingCommands(library: library) }

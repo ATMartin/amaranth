@@ -9,7 +9,7 @@ import Presentation
 /// meetings plus a synthetic two-hour meeting), lays them out offscreen, writes PNGs, and reports layout/render times.
 /// No audio, no permissions, and nothing touches the user's library.
 enum UIRenderSelfTest {
-    @MainActor static func run(outputDirectory: URL?) async -> Bool {
+    @MainActor static func run(outputDirectory: URL?, textSize: TextSize = .default) async -> Bool {
         _ = NSApplication.shared
         let root = FileManager.default.temporaryDirectory.appending(path: "amaranth-ui-\(UUID())")
         defer { try? FileManager.default.removeItem(at: root) }
@@ -37,7 +37,7 @@ enum UIRenderSelfTest {
         defer { for s in [expandedSuite, collapsedSuite] { UserDefaults.standard.removePersistentDomain(forName: s) } }
         var ok = true
         func host<V: View>(_ v: V, _ name: String, size: CGSize) async -> Double {
-            let view = NSHostingView(rootView: v.environment(worker).environment(models).environment(recorder)
+            let view = NSHostingView(rootView: v.textSize(textSize).environment(worker).environment(models).environment(recorder)
                 .environment(library).environment(playback).environment(live).frame(width: size.width, height: size.height)
                 .background(Color(nsColor: .windowBackgroundColor)))
             // Offscreen windows don't draw vibrancy; force an opaque, fixed appearance so captures are readable.
@@ -90,8 +90,8 @@ enum UIRenderSelfTest {
                 let speech = shown.filter { !$0.isGap }
                 for (label, target, focusFirst) in [("while-shown", speech[speech.count / 2], false), ("on-appear", speech[speech.count / 3], true)] {
                     library.focusRowID = focusFirst ? target.id : nil
-                    let view = NSHostingView(rootView: TranscriptPane(detail: d).environment(\.showDetails, false).environment(library)
-                        .environment(playback).frame(width: 900, height: 700))
+                    let view = NSHostingView(rootView: TranscriptPane(detail: d).environment(\.showDetails, false).textSize(textSize).environment(library)
+                        .environment(playback).frame(width: 900, height: 700).background(Color(nsColor: .windowBackgroundColor)))
                     let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 900, height: 700), styleMask: [.titled], backing: .buffered, defer: false)
                     window.contentView = view
                     try? await Task.sleep(for: .milliseconds(600))

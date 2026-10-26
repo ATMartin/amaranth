@@ -14,12 +14,31 @@ struct SettingsView: View {
                 .tabItem { Label("Models", systemImage: "cpu") }
             RecordingSettings(recorder: recorder)
                 .tabItem { Label("Recording", systemImage: "mic") }
+            AppearanceSettings()
+                .tabItem { Label("Appearance", systemImage: "textformat.size") }
             ScrollView {
                 Text(Self.notices).font(.caption.monospaced()).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).padding()
             }
             .tabItem { Label("Notices", systemImage: "doc.text") }
         }
         .frame(width: 560, height: 460)
+    }
+}
+
+/// Settings → Appearance (T36; later also colour scheme, T43/T44): text size of the meeting views.
+struct AppearanceSettings: View {
+    @AppStorage(TextSize.key) private var textSize = TextSize.default.rawValue
+
+    var body: some View {
+        Form {
+            Picker("Text size", selection: $textSize) {
+                ForEach(TextSize.allCases) { Text($0.title).tag($0.rawValue) }
+            }
+            .pickerStyle(.segmented)
+            Text("Sets the size of the meeting list, transcripts and notes. Default is compact; choose Larger for easier reading.")
+                .font(.caption).foregroundStyle(.secondary)
+        }
+        .formStyle(.grouped)
     }
 }
 

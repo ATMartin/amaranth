@@ -1203,7 +1203,7 @@
       "id": "T36",
       "title": "Compact type scale and a text-size setting",
       "milestone": "I",
-      "status": "planned",
+      "status": "done (Default shows +38% transcript rows; hands-on check pending: checklist item 32)",
       "optional": false,
       "depends_on": [
         "T27"

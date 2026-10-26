@@ -112,13 +112,13 @@ struct MeetingRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 1) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(item.title).font(.headline).lineLimit(1)
+                Text(item.title).appFont(.headline).lineLimit(1)
                 Spacer(minLength: 4)
                 MeetingStatusGlyph(status: item.status)
             }
             Text(item.createdAt.formatted(date: .abbreviated, time: .shortened) + " · "
                  + TranscriptRows.clock(SessionTime(nanoseconds: item.duration.nanoseconds)))
-                .font(.caption).monospacedDigit().foregroundStyle(.secondary)
+                .appFont(.caption, monospacedDigit: true).foregroundStyle(.secondary)
         }
     }
 }
@@ -148,11 +148,11 @@ struct SearchHitRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {
-                Text(hit.meetingTitle).font(.caption.bold())
+                Text(hit.meetingTitle).appFont(.caption, weight: .bold)
                 Spacer()
-                Text(kind).font(.caption2).foregroundStyle(.secondary)
+                Text(kind).appFont(.caption2).foregroundStyle(.secondary)
             }
-            Text(highlighted).font(.callout).lineLimit(2)
+            Text(highlighted).appFont(.callout).lineLimit(2)
         }
     }
     var kind: String {
@@ -169,7 +169,7 @@ struct SearchHitRow: View {
         var bold = false
         for part in hit.snippet.split(omittingEmptySubsequences: false, whereSeparator: { $0 == "[" || $0 == "]" }) {
             var a = AttributedString(String(part))
-            if bold { a.font = .callout.bold() }
+            if bold { a.inlinePresentationIntent = .stronglyEmphasized }
             out += a
             bold.toggle()
         }
@@ -208,7 +208,7 @@ struct ProcessingBadge: View {
             case .cancelled(let stage): Label("\(Self.stageName(stage)) stopped", systemImage: "stop.circle")
             }
         }
-        .font(.caption)
+        .appFont(.caption)
     }
 
     static func stageName(_ s: ProcessingStage) -> String { MeetingStatusPresentation.stageName(s) }

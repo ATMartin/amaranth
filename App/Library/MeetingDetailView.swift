@@ -24,7 +24,7 @@ struct MeetingDetailView: View {
                 .frame(maxWidth: 420)
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .trailing) { detailsToggle.padding(.trailing) }
-                .padding(.bottom, 8)
+                .padding(.bottom, AppStyle.grid)
             Divider()
             switch library.detailTab {
             case .notes: NotesPane(detail: detail, notesModelInstalled: notesModelInstalled) { library.detailTab = .transcript }
@@ -73,9 +73,9 @@ struct MeetingDetailView: View {
     }
 
     var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppStyle.half) {
             // Static: renaming lives in the sidebar card's context menu (T26).
-            Text(detail.meeting.title).font(.title2.bold()).lineLimit(1)
+            Text(detail.meeting.title).appFont(.title).lineLimit(1)
             HStack(spacing: 16) {
                 Text(detail.meeting.createdAt.formatted(date: .abbreviated, time: .shortened)).foregroundStyle(.secondary)
                 Text(TranscriptRows.clock(SessionTime(nanoseconds: detail.meeting.duration.nanoseconds))).monospacedDigit().foregroundStyle(.secondary)
@@ -90,9 +90,9 @@ struct MeetingDetailView: View {
                 if case .failed = detail.status.processing { Button("Retry Processing") { library.retry(detail.meeting.id) }.help("Run the failed processing steps again") }
                 if case .notQueued = detail.status.processing, detail.meeting.canPlayAudio { Button("Process") { library.process(detail.meeting.id) }.help("Transcribe, find speakers and write notes on this Mac") }
             }
-            .font(.callout)
+            .appFont(.callout)
         }
-        .padding()
+        .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 4).padding(.bottom, AppStyle.grid)
     }
 
     func loadPlayback() {
