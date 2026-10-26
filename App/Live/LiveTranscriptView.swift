@@ -7,12 +7,11 @@ import Presentation
 struct LiveTranscriptView: View {
     @Environment(LiveTextModel.self) private var live
     @Environment(RecorderModel.self) private var recorder
+    @FocusState private var scratchpadFocused: Bool
 
     var body: some View {
         @Bindable var recorder = recorder
         VStack(alignment: .leading, spacing: 0) {
-            TextField("Private scratchpad (only on this Mac)", text: $recorder.scratchpad, axis: .vertical).lineLimit(2...6)
-                .textFieldStyle(.roundedBorder).font(.callout).padding([.horizontal, .top])
             HStack {
                 Label("Live text — provisional", systemImage: "waveform").font(.headline)
                 Spacer()
@@ -21,10 +20,22 @@ struct LiveTranscriptView: View {
                 case .paused(let why), .unavailable(let why): Text(why).font(.caption).foregroundStyle(.orange)
                 case .off: EmptyView()
                 }
+                Toggle(isOn: $recorder.scratchpadOpen) { Label("Scratchpad", systemImage: "note.text") }
+                    .toggleStyle(.button)
+                    .keyboardShortcut("n", modifiers: [.command, .shift])
+                    .help("Private scratchpad for this meeting (⌘⇧N)")
             }
             .padding()
             Text("The final transcript, with speakers, is made after you stop. Audio is saved either way.")
                 .font(.caption).foregroundStyle(.secondary).padding(.horizontal)
+            // Inline above the transcript, never a modal; text keeps flowing into the recorder and is saved at Stop.
+            if recorder.scratchpadOpen {
+                TextField("Private scratchpad (only on this Mac)", text: $recorder.scratchpad, axis: .vertical).lineLimit(2...6)
+                    .textFieldStyle(.roundedBorder).font(.callout).padding([.horizontal, .top])
+                    .focused($scratchpadFocused)
+                    // Only when empty: focusing selects all existing text, and the next keystroke would replace it.
+                    .onAppear { if recorder.scratchpad.isEmpty { scratchpadFocused = true } }
+            }
             Divider().padding(.top, 8)
             ScrollViewReader { proxy in
                 List {

@@ -91,6 +91,13 @@ enum UIRenderSelfTest {
                                       diskWarning: s.2, pause: {}, resume: {}, stop: {})
             }
         }.padding(), "recording-strip", size: CGSize(width: 520, height: 360))
+        // Live view (T33): scratchpad closed by default, then open above the transcript.
+        _ = await host(LiveTranscriptView(), "live-scratchpad-closed", size: CGSize(width: 900, height: 400))
+        recorder.scratchpadOpen = true
+        recorder.scratchpad = "Ask Dana about the notarization date"
+        _ = await host(LiveTranscriptView(), "live-scratchpad-open", size: CGSize(width: 900, height: 400))
+        recorder.scratchpadOpen = false
+        recorder.scratchpad = ""
         _ = await host(RecorderBannerContent(items: [
             .init(kind: .error, text: "Could not start recording: example error"),
             .init(kind: .permission, text: "Amaranth isn't allowed to record microphone. Allow it in System Settings → Privacy & Security."),

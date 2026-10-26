@@ -18,6 +18,8 @@ final class RecorderModel {
     private var loadingDefaults = false
     var title = ""
     var scratchpad = ""
+    /// Whether the scratchpad editor is open above the live transcript (T33). Closed by default; kept for the session.
+    var scratchpadOpen = false
     private(set) var meetingID: MeetingID?
     /// Seconds of audio durably saved, per source.
     private(set) var savedUpTo: [SourceKind: Double] = [:]
@@ -193,8 +195,7 @@ final class RecorderModel {
 
     private func saveScratchpad() {
         guard let store, let id = meetingID, scratchpad != savedScratchpad else { return }
-        let include = (try? store.latestScratchpad(id))?.includeInSummary ?? false
-        try? store.saveScratchpad(ScratchpadRevision(meetingID: id, text: scratchpad, includeInSummary: include, createdAt: Date()))
+        _ = try? RecordingScratchpad.save(scratchpad, for: id, in: store)
         savedScratchpad = scratchpad
         lastScratchpadSave = Date()
     }

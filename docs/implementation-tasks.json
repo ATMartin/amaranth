@@ -1111,7 +1111,7 @@
       "id": "T33",
       "title": "Scratchpad during recording moves behind a button",
       "milestone": "H",
-      "status": "planned",
+      "status": "done (hands-on check: checklist item 29)",
       "optional": false,
       "depends_on": [
         "T31"
