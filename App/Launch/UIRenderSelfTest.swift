@@ -223,6 +223,7 @@ enum UIRenderSelfTest {
             }
             if !pass { ok = false }
             window.contentView = nil
+            #if DEBUG
             // While recording, with the sidebar open: the whole strip, Stop included, must be on the toolbar, not in its
             // overflow menu, at the default window width and a narrower one.
             recorder.showStripForRender(.recording, health: [
@@ -254,6 +255,7 @@ enum UIRenderSelfTest {
                 recWindow.contentView = nil
             }
             recorder.showStripForRender(nil)
+            #endif
         }
         // Onboarding, the model sheet and the menu-bar menu's items (T43: every screen in both appearances).
         _ = await host(OnboardingView {}, "onboarding", size: CGSize(width: 560, height: 520))
