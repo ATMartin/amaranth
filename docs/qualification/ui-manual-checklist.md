@@ -73,3 +73,9 @@ Use the Debug app: `build/DerivedData/Build/Products/Debug/Amaranth.app`.
 39. Lighter visuals (T45): transcript lines with ⌘D on show a small mic or speaker icon instead of "MIC"/"SYS"; flags are small orange icons (hover explains each). The recording strip's Pause/Resume is an icon (hover names ⌘⇧P); Stop and Save keeps its words. Notes banners are one plain line without a box; the expanded Your notes / Private scratchpad editors have no extra box around them.
 40. VoiceOver spot check (T45): with VoiceOver on, a source icon reads "Your microphone" / "System audio", a flag reads its caption ("speaker uncertain", …), and Pause/Resume reads its name.
 
+
+## Milestone M (calendar and people placeholders)
+
+41. Header chips (T50): under the meeting title, one row shows a date chip (calendar icon; hover gives the full date), a people chip, a dashed "Link calendar event" chip, then the duration and the status glyph. The date chip doesn't react to clicks. The dashed chip is clearly inactive: grey text, no fill, no hover, can't be clicked or focused with Tab; hover says "Calendar linking is planned".
+42. People (T50): on a meeting with nobody listed, the chip reads "Add people…". Click it: a popover with a names box (focused, accent border) opens. Type "Ana, Ben" on one line and "Carla" on the next, then Save (or ⌘↩): the chip reads "Ana, Ben +1", and hovering lists all three. Reopen: one name per line. Cancel or Esc changes nothing. Switch to another meeting and back: the names are still there. Quit and relaunch: still there. Export Markdown and Plain Text: "People: Ana, Ben, Carla" is under the title. JSON: the meeting has a "people" list. Clear the box and Save: the chip says "Add people…" again, and exports have no People line.
+43. People survive recording (T49): while recording, open the new meeting and add a name; press Stop: the name is still there after the meeting finishes processing.

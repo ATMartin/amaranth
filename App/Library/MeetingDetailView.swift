@@ -77,8 +77,12 @@ struct MeetingDetailView: View {
         VStack(alignment: .leading, spacing: AppStyle.half) {
             // Static: renaming lives in the sidebar card's context menu (T26).
             Text(detail.meeting.title).appFont(.title).lineLimit(1)
-            HStack(spacing: 16) {
-                Text(detail.meeting.createdAt.formatted(date: .abbreviated, time: .shortened)).foregroundStyle(.secondary)
+            HStack(spacing: AppStyle.grid) {
+                // T50: small chips like Granola's header; date and the calendar placeholder are not editable.
+                HeaderChip(symbol: "calendar", text: detail.meeting.createdAt.formatted(date: .abbreviated, time: .shortened))
+                    .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
+                PeopleChip(meeting: detail.meeting).id(detail.meeting.id)
+                CalendarLinkPlaceholderChip()
                 Text(TranscriptRows.clock(SessionTime(nanoseconds: detail.meeting.duration.nanoseconds))).monospacedDigit().foregroundStyle(.secondary)
                 // Quick review: one glyph (hover for its meaning); Details on: both full badges.
                 if showDetails {
@@ -141,6 +145,106 @@ struct MeetingDetailView: View {
                                          segments: detail.segments, events: detail.events,
                                          to: dir.appending(path: detail.meeting.title.replacingOccurrences(of: "/", with: "-") + " audio"))
         } catch { NSAlert(error: error).runModal() }
+    }
+}
+
+/// One header chip (T50): icon + short text in a capsule. `.inert` is for placeholders: no fill, dashed outline,
+/// tertiary text, so it never reads as a control.
+struct HeaderChip: View {
+    enum Style { case info, action, inert }
+    let symbol: String
+    let text: String
+    var style: Style = .info
+    var hovering = false
+
+    var body: some View {
+        HStack(spacing: AppStyle.half) {
+            Image(systemName: symbol).font(.system(size: AppStyle.iconSmall))
+            Text(text).lineLimit(1)
+        }
+        .appFont(.callout)
+        .foregroundStyle(style == .inert ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.secondary))
+        .padding(.horizontal, AppStyle.grid).padding(.vertical, 3)
+        .background {
+            if style != .inert { Capsule().fill(hovering ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.quaternary)) }
+        }
+        .overlay {
+            if style == .inert { Capsule().strokeBorder(.tertiary, style: StrokeStyle(lineWidth: 0.5, dash: [3, 2])) }
+        }
+        .contentShape(Capsule())
+    }
+}
+
+/// People in the meeting (T50): click to edit the names in a popover. Saved through `LibraryModel.setPeople` (T49).
+struct PeopleChip: View {
+    let meeting: Meeting
+    @Environment(LibraryModel.self) private var library
+    @State private var editing = false
+    @State private var hovering = false
+
+    var body: some View {
+        Button { editing = true } label: {
+            HeaderChip(symbol: "person.2", text: MeetingPeople.chipLabel(meeting.people), style: .action, hovering: hovering)
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering = $0 }
+        .help(meeting.people.isEmpty ? "Add the people in this meeting" : MeetingPeople.fullList(meeting.people) + " (click to edit)")
+        .accessibilityLabel(MeetingPeople.fullList(meeting.people))
+        .accessibilityHint("Edit the people in this meeting")
+        .popover(isPresented: $editing, arrowEdge: .bottom) {
+            PeopleEditor(people: meeting.people) { people in
+                library.setPeople(meeting.id, people)
+                editing = false
+            } cancel: { editing = false }
+        }
+    }
+}
+
+/// The names editor in the people chip's popover: one name per line or comma-separated.
+struct PeopleEditor: View {
+    let people: [Person]
+    let save: ([Person]) -> Void
+    let cancel: () -> Void
+    @State private var text: String
+    @FocusState private var focused: Field?
+    enum Field { case names }
+
+    init(people: [Person], save: @escaping ([Person]) -> Void, cancel: @escaping () -> Void) {
+        self.people = people
+        self.save = save
+        self.cancel = cancel
+        _text = State(initialValue: MeetingPeople.editableText(people))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppStyle.grid) {
+            Text("People").appFont(.headline)
+            TextEditor(text: $text).appFont(.body).frame(width: 260, height: 110)
+                .editableField(focused: $focused, as: .names, isEmpty: text.isEmpty, placeholder: "One name per line, or separated by commas")
+            Text("Saved with this meeting and included in exports.").appFont(.caption).foregroundStyle(.secondary)
+            HStack {
+                Spacer()
+                Button("Cancel", action: cancel).keyboardShortcut(.cancelAction)
+                Button("Save") { save(MeetingPeople.parse(text, keeping: people)) }
+                    .keyboardShortcut(.return, modifiers: .command)
+                    .buttonStyle(.borderedProminent)
+                    .help("Save (⌘↩)")
+            }
+        }
+        .padding(12)
+        .onAppear { focused = .names }
+    }
+}
+
+/// Placeholder for calendar linking (T50): visibly inert until Milestone O (docs/decisions/0006). Not a button, so it
+/// takes no clicks or focus; the tooltip says why.
+struct CalendarLinkPlaceholderChip: View {
+    var body: some View {
+        HeaderChip(symbol: "link", text: "Link calendar event", style: .inert)
+            .help("Calendar linking is planned")
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Link calendar event")
+            .accessibilityValue("Not available yet. Calendar linking is planned.")
     }
 }
 

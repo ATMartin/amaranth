@@ -1635,7 +1635,7 @@
       "id": "T50",
       "title": "Header chips: date, people, calendar placeholder",
       "milestone": "M",
-      "status": "planned",
+      "status": "done (chips in MeetingDetailView header, Presentation/MeetingPeople; evidence docs/qualification/evidence/2026-10-26/header-chips; hands-on checks: checklist items 41-43)",
       "optional": false,
       "depends_on": [
         "T49",

@@ -127,6 +127,12 @@ final class LibraryModel {
         perform { try store.upsertMeeting(updated) }
     }
 
+    /// Header people chip (T50). Stored through the store's setter so a recorder holding an older copy can't drop them.
+    func setPeople(_ id: MeetingID, _ people: [Person]) {
+        guard let store else { return }
+        perform { try store.setPeople(people, for: id) }
+    }
+
     /// Stores a user edit and re-runs speaker reconciliation (cheap); notes become stale, never silently rewritten.
     func apply(_ edit: UserEdit) {
         guard let store else { return }

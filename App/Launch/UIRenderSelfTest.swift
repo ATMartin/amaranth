@@ -20,6 +20,8 @@ enum UIRenderSelfTest {
         do {
             for f in Fixtures.all { try persistFixture(f, store) }
             try persistLongMeeting(store)
+            // T50: one meeting with people so the header shows names; the others show "Add people…".
+            try store.setPeople(["Dana Whitfield", "Ravi Patel", "Mei Chen", "Tomás Ortega"].map { Person(name: $0) }, for: MeetingID("ui-long"))
         } catch { SelfTest.log(["step": "fixtures", "error": "\(error)"]); return false }
         var ok = true
         for (name, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
@@ -144,6 +146,9 @@ enum UIRenderSelfTest {
                 library.focusRowID = nil
             }
         }
+        // Header people editor (T50): with names and empty.
+        _ = await host(PeopleEditor(people: ["Dana Whitfield", "Ravi Patel"].map { Person(name: $0) }, save: { _ in }, cancel: {}), "people-editor", size: CGSize(width: 290, height: 230))
+        _ = await host(PeopleEditor(people: [], save: { _ in }, cancel: {}), "people-editor-empty", size: CGSize(width: 290, height: 230))
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
         _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 360, height: 760))
         // Toolbar recorder (T31): idle control, this meeting's options, the strip in each state, the banner.
