@@ -34,7 +34,8 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order_2026_10_23": "G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
+    "milestone_order": "K → M → N → J → L → T21 → F (user decision 2026-10-26, after Milestone I; G, H and I are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
+    "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md"
   },
@@ -43,8 +44,8 @@
     "B": "Reliable recorder: T05-T08 (validated)",
     "C": "Complete usable workflow: T09-T11 (validated)",
     "D": "Live text: T14",
-    "E": "Local model performance and delay reduction: T16-T21 (docs/milestone-e-performance-plan.md). T21 runs after Milestone G (user decision 2026-10-23)",
-    "F": "Release qualification: T12, T13 (moved from D on 2026-10-22; runs after Milestone N by user decision 2026-10-23)",
+    "E": "Local model performance and delay reduction: T16-T21 (docs/milestone-e-performance-plan.md). T21 runs after Milestone L (user decision 2026-10-26; earlier: after G)",
+    "F": "Release qualification: T12, T13 (moved from D on 2026-10-22; runs last, after T21, by user decision 2026-10-26)",
     "Later": "T15",
     "G": "Design-review quick wins (notes and transcript noise, rename, cards, focus, tooltips): T22-T29. Runs before T21",
     "H": "Recorder simplification (sidebar = meetings only, toolbar Record): T30-T34",
@@ -702,7 +703,8 @@
         "Independent Sonnet validator verdict before commit.",
         "Base-M2 results remain projections marked unverified."
       ],
-      "fallback": "Report unmet gates explicitly; never relabel a failing gate as passing."
+      "fallback": "Report unmet gates explicitly; never relabel a failing gate as passing.",
+      "dependency_note": "2026-10-26: runs after Milestone L (order K → M → N → J → L → T21 → F). Notes are template-driven by then; measure with the default template, which must match notes-v3."
     },
     {
       "id": "T22",
@@ -1533,7 +1535,8 @@
       "fallback": "None.",
       "review_timestamps": [
         "00:46–01:04"
-      ]
+      ],
+      "dependency_note": "2026-10-26: L now runs before T21. The default template must reproduce today's notes (notes-v3 sections and prompt) so T21's notes checks against baseline-v0 stay comparable."
     },
     {
       "id": "T47",
@@ -1604,9 +1607,7 @@
       "milestone": "M",
       "status": "planned",
       "optional": false,
-      "depends_on": [
-        "T39"
-      ],
+      "depends_on": [],
       "owner_role": "Storage",
       "module_scope": [
         "Domain/Meeting/Meeting.swift",
@@ -1626,7 +1627,8 @@
       "fallback": "None.",
       "review_timestamps": [
         "10:24–11:15"
-      ]
+      ],
+      "dependency_note": "2026-10-26: T39 dropped (M now runs before J). It only sequenced the two schema migrations; nothing here uses folders. Whichever of T49/T39 lands second adds its migration on top of the other."
     },
     {
       "id": "T50",
@@ -1692,8 +1694,7 @@
       "status": "planned",
       "optional": false,
       "depends_on": [
-        "T31",
-        "T40"
+        "T31"
       ],
       "owner_role": "App UI",
       "module_scope": [
@@ -1716,7 +1717,8 @@
       ],
       "evidence_images": [
         "docs/design-review/2026-10-23/granola-home-sidebar.png"
-      ]
+      ],
+      "dependency_note": "2026-10-26: T40 dropped (N now runs before J). Nothing here uses folders; T40 later adds folders to the already simplified sidebar and shows folder names in this panel. T42's folder scope option builds on this panel."
     },
     {
       "id": "T53",
