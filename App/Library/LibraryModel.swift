@@ -17,8 +17,18 @@ final class LibraryModel {
     private(set) var error: String?
     /// Transcript row to scroll to and highlight (set by evidence links and search hits).
     var focusRowID: String?
-    /// The meeting screen's tab; here (not view state) so menu commands (⌘1–⌘3) can switch it.
-    var detailTab: DetailTab = .notes
+    /// The meeting screen's tab; here (not view state) so menu commands (⌘1–⌘3) can switch it. Any change not made by
+    /// the T32 rules counts as the user's choice for the open meeting and is kept for this session.
+    var detailTab: DetailTab = .notes {
+        didSet { if !applyingTabRule, let id = selection { chosenTabs[id] = detailTab; notesSwitch.userChoseTab(id) } }
+    }
+    private var applyingTabRule = false
+    private var chosenTabs: [MeetingID: DetailTab] = [:]
+    private var notesSwitch = NotesArrivalSwitch()
+    /// The meeting the open detail's tab was chosen for, so a refresh of the same meeting keeps the tab.
+    private var tabAppliedFor: MeetingID?
+    /// Set by the app: whether the notes model is installed (no model → never auto-switch to Notes).
+    var notesModelReady: () -> Bool = { false }
     enum DetailTab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Recording" }
     /// Bumped by ⌘K; MainView focuses the search field.
     var searchFocusRequest = 0
@@ -43,22 +53,55 @@ final class LibraryModel {
             await MainActor.run {
                 guard gen == self.generation else { return }
                 switch items { case .success(let v): self.items = v; case .failure(let e): self.error = "Could not read the library: \(e.localizedDescription)" }
-                switch detail { case .success(let v): if self.selection == id { self.detail = v }; case .failure(let e): self.error = "Could not open the meeting: \(e.localizedDescription)" }
+                switch detail { case .success(let v): if self.selection == id { self.show(v) }; case .failure(let e): self.error = "Could not open the meeting: \(e.localizedDescription)" }
                 if !self.query.isEmpty { self.runSearch() }
             }
         }
     }
 
     func reloadDetail() {
-        guard let store, let id = selection else { detail = nil; return }
-        if detail?.meeting.id != id { detail = nil }
+        guard let store, let id = selection else { detail = nil; tabAppliedFor = nil; return }
+        if detail?.meeting.id != id { detail = nil; tabAppliedFor = nil }
         Task.detached(priority: .userInitiated) {
             let d = Result { try MeetingDetail.load(store, id) }
             await MainActor.run {
                 guard self.selection == id else { return }
-                switch d { case .success(let v): self.detail = v; case .failure(let e): self.error = "Could not open the meeting: \(e.localizedDescription)" }
+                switch d { case .success(let v): self.show(v); case .failure(let e): self.error = "Could not open the meeting: \(e.localizedDescription)" }
             }
         }
+    }
+
+    /// Publishes a loaded detail and applies the tab rules (T32): a newly opened meeting gets the tab the user chose for
+    /// it this session, else its default; a meeting waiting for its first notes after Stop switches to Notes once.
+    private func show(_ d: MeetingDetail?) {
+        detail = d
+        guard let d else { tabAppliedFor = nil; return }
+        let id = d.meeting.id
+        if tabAppliedFor != id {
+            tabAppliedFor = id
+            setTabByRule(chosenTabs[id] ?? (d.defaultTab(isRecording: false) == .notes ? .notes : .transcript))
+        }
+        if notesSwitch.shouldSwitchToNotes(viewing: id, hasSummary: d.summary != nil) { setTabByRule(.notes) }
+    }
+
+    private func setTabByRule(_ tab: DetailTab) {
+        applyingTabRule = true
+        detailTab = tab
+        applyingTabRule = false
+    }
+
+    /// Record pressed: open the new meeting so the detail pane is its live transcript.
+    func recordingStarted(_ id: MeetingID) {
+        selection = id
+        reload()
+    }
+
+    /// Stop: show the meeting's transcript, then Notes once when its first notes arrive (unless the user picks a tab).
+    func recordingStopped(_ id: MeetingID) {
+        chosenTabs[id] = nil
+        notesSwitch.stopped(id, notesModelReady: notesModelReady())
+        if selection == id { tabAppliedFor = id; setTabByRule(.transcript) } else { tabAppliedFor = nil; selection = id }
+        reload()
     }
 
     private func runSearch() {

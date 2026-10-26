@@ -1074,7 +1074,7 @@
       "id": "T32",
       "title": "Default tab rules: transcript while recording, notes once they exist",
       "milestone": "H",
-      "status": "planned",
+      "status": "done (automatic switch to Notes is on without a Settings toggle; hands-on check: checklist item 28)",
       "optional": false,
       "depends_on": [
         "T31"

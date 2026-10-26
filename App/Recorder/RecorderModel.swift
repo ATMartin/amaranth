@@ -29,7 +29,8 @@ final class RecorderModel {
     weak var live: LiveTextModel?
     /// Final-quality transcription while recording (T19).
     weak var incremental: IncrementalProcessor?
-    /// Called with the saved meeting after Stop.
+    /// Called with the new meeting once recording has started, and with the saved meeting after Stop.
+    var onStarted: ((MeetingID) -> Void)?
     var onFinished: ((MeetingID) -> Void)?
     private(set) var inputs: [AudioDeviceInfo] = []
     private(set) var state: CaptureState = .idle
@@ -163,6 +164,7 @@ final class RecorderModel {
     private func attach(_ s: RecordingSession) {
         session = s
         meetingID = s.meetingID
+        onStarted?(s.meetingID)
         live?.start(session: s, store: store)
         processing?.setRecording(true)
         if let store {

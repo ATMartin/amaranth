@@ -33,7 +33,9 @@ struct AmaranthApp: App {
         recorder.processing = processing
         library.processing = processing
         processing.onChange = { [weak library] in library?.reload() }
-        recorder.onFinished = { [weak library] id in library?.reload(); library?.selection = id }
+        recorder.onStarted = { [weak library] id in library?.recordingStarted(id) }
+        recorder.onFinished = { [weak library] id in library?.recordingStopped(id) }
+        library.notesModelReady = ModelSetupModel.isReady
         AppDelegate.recorder = recorder
         let live = LiveTextModel(client: worker)
         recorder.live = live
@@ -118,7 +120,8 @@ struct MenuBarContent: View {
             else { Button("Pause") { recorder.pause() }.disabled(recorder.state != .recording) }
             Button("Stop and Save") { recorder.stop() }.disabled(recorder.state == .stopping)
         } else {
-            Button("Record") { recorder.start() }
+            // Bring the window forward so the live transcript is in front (T32).
+            Button("Record") { recorder.start(); openWindow(id: "main"); NSApp.activate() }
         }
         Divider()
         Button("Open Amaranth") { openWindow(id: "main"); NSApp.activate() }
