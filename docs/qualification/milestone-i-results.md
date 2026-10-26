@@ -7,7 +7,7 @@ stay out of git; committed screenshots use fixtures); stop after I is validated;
 ## T35 Three-column transcript with speaker runs
 - `TranscriptRows.runs(_:)` / `runStarts(_:)` (Presentation): consecutive speech rows with the same `assignment` and
   source form a run; every gap row is its own run; `.unknown` groups with `.unknown`, `.multiple` only with the same
-  speaker list. Rows stay individually addressable (ids, `.tag`, context menu, play-from unchanged).
+  set of speakers, order ignored (fixed after validation; it compared ordered lists before). Rows stay individually addressable (ids, `.tag`, context menu, play-from unchanged).
 - Columns: time 60 pt · speaker 140 pt (initials disc + name on the first row of a run, middle-truncated with a tooltip)
   · text. Flags and the MIC/SYS badge moved to the trailing edge of the text line, so a row is one line taller only
   when its text wraps. Overlap rows show a group disc and drop the "(overlapping)" suffix in the column.
@@ -15,7 +15,9 @@ stay out of git; committed screenshots use fixtures); stop after I is validated;
 - VoiceOver: each row's text is labelled "<speaker>: <text>", continuation rows included.
 - Evidence jump fix (pre-existing bug found by the new check): one `scrollTo` on the two-hour meeting landed ~75 rows
   away (rows have estimated heights until laid out) and a pane opened with the focus already set selected nothing;
-  HEAD before T35 failed both cases. The pane now selects and scrolls up to three times, 120 ms apart.
+  HEAD before T35 failed both cases. The pane now selects and scrolls up to three times, 120 ms apart,
+  in a `.task(id:)` cancelled by a newer focus or when the pane closes; it stops early if the user selects another row
+  (a user scroll inside those ~240 ms can still be overridden).
   `--self-test ui-render` checks both cases (`evidence-jump`, while-shown and on-appear): target row selected and
   inside the visible range (row 1801 of 3601: visible 1792–1810; row 1200: 1191–1209).
 - Tests: `TranscriptRunsTests` (7). `--self-test ui-render`: pass; 3,601-row transcript renders in 0.21 s.
@@ -38,7 +40,7 @@ stay out of git; committed screenshots use fixtures); stop after I is validated;
   |---|---|---|
   | before Milestone I (ee8de37) | 15 | — |
   | before T36 (T35, 4bc9acd) | 21 (18 speech) | 17 |
-  | T36 Smaller | 33 (30) | 25 |
+  | T36 Smaller | 33 (30) | 25 (validator: 26 after T37/T38) |
   | **T36 Default** | **29 (26): +38% vs before T36** (speech +44%; +93% vs before I) | **23: +35%** |
   | T36 Larger | 24 (21) | 20 |
 
@@ -69,10 +71,17 @@ stay out of git; committed screenshots use fixtures); stop after I is validated;
   row's speaker (one submenu per speaker on overlap rows; unknown rows have none), then **Assign This Line To ▸** (same
   items as the row's context menu). Plain text while the transcript is provisional.
 - Both menus and the SpeakerBar call the same `rename` / `merge` functions on `EditComposer`; `SpeakerMenu`
-  (Presentation) chooses the subjects, merge targets and assign targets, and `SpeakerMenuTests` shows the column and the
-  bar produce identical edits. The row and column "assign" lists now leave out the row's current speaker (a no-op), and
+  (Presentation) chooses the subjects, merge targets and assign targets, and the shared functions make the edits identical by
+  construction (`SpeakerMenuTests` covers the menu contents; its edit-equality check only restates that). The row and column "assign" lists now leave out the row's current speaker (a no-op), and
   "Unknown Speaker" is not offered for a line that is already unknown.
 - SpeakerBar shows only with Details on (skim mode: playback control alone in the strip).
 - Not automatable here: offscreen SwiftUI menus have no AppKit view or accessibility element until clicked, and the
   terminal has no Accessibility permission. Menu contents and clicks: checklist item 34.
 - `--self-test ui-render` passes at all three text sizes; package UI tests 49/49.
+
+## Validation (2026-10-26)
+Sonnet validator: **PASS**, no blocking findings (`docs/qualification/milestone-i-verdict-v1.md`). Should-fix items
+fixed: overlap runs compare speaker sets; the evidence-jump retry runs in a cancellable `.task(id:)` and yields to a
+user selection; the results doc no longer overstates the edit-equality test. After the fixes: `ui-render` passes at
+all three sizes (evidence jump ok in both styles), UI tests 49/49. Remaining notes (live header fonts, `onboarded`
+written by ui-render since Milestone C) are recorded in the verdict. Hands-on: checklist items 31–34.

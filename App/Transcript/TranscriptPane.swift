@@ -57,18 +57,21 @@ struct TranscriptPane: View {
                     .listStyle(.inset)
                     .environment(\.speakerColors, TranscriptRows.paletteIndices(speakers.map(\.id)))
                     .environment(\.defaultMinListRowHeight, 8)   // hairline gap rows in skim mode
-                    .onChange(of: library.focusRowID, initial: true) { _, id in
-                        guard let id else { return }
-                        // Off the current update: changing the selection while the table is updating is reentrant in
-                        // AppKit. Rows have estimated heights until laid out, so one scroll on a long meeting lands
-                        // dozens of rows off; scroll again once the rows near the target have real heights.
-                        Task { @MainActor in
-                            for pass in 0..<3 {
-                                if pass > 0 { try? await Task.sleep(for: .milliseconds(120)) }
-                                guard library.focusRowID == id else { return }
-                                selectedRow = id
-                                proxy.scrollTo(id, anchor: .center)
+                    // Runs on appear and on each new focus; cancelled when the focus changes or the pane goes away.
+                    // Off the current update: changing the selection while the table is updating is reentrant in
+                    // AppKit. Rows have estimated heights until laid out, so one scroll on a long meeting lands dozens
+                    // of rows off; scroll again once the rows near the target have real heights, unless the user has
+                    // selected another row meanwhile.
+                    .task(id: library.focusRowID) {
+                        guard let id = library.focusRowID else { return }
+                        await Task.yield()
+                        for pass in 0..<3 {
+                            if pass > 0 {
+                                try? await Task.sleep(for: .milliseconds(120))
+                                guard !Task.isCancelled, selectedRow == id else { return }
                             }
+                            selectedRow = id
+                            proxy.scrollTo(id, anchor: .center)
                         }
                     }
                 }

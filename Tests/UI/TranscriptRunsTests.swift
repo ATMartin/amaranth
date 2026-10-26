@@ -33,8 +33,8 @@ struct TranscriptRunsTests {
     @Test func overlappingRowsGroupOnlyWithTheSameSpeakers() {
         let both = SpeakerAssignment.multiple([Self.dana, Self.lee])
         let rows = [Self.speech("a", 0, both), Self.speech("b", 2, both), Self.speech("c", 4, .multiple([Self.lee, Self.dana])),
-                    Self.speech("d", 6, .speaker(Self.dana))]
-        #expect(Self.ids(TranscriptRows.runs(rows)) == [["a", "b"], ["c"], ["d"]])
+                    Self.speech("d", 6, .multiple([Self.dana])), Self.speech("e", 8, .speaker(Self.dana))]
+        #expect(Self.ids(TranscriptRows.runs(rows)) == [["a", "b", "c"], ["d"], ["e"]], "same set in any order groups; a different set does not")
     }
 
     @Test func gapsAndSourceChangesBreakARun() {

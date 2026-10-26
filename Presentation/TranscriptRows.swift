@@ -124,13 +124,19 @@ public enum TranscriptRows {
     public static func runs(_ rows: [TranscriptRow]) -> [Run] {
         var out: [Run] = []
         for row in rows {
-            if !row.isGap, let last = out.last?.rows.last, !last.isGap, last.source == row.source, last.assignment == row.assignment {
+            if !row.isGap, let last = out.last?.rows.last, !last.isGap, last.source == row.source, sameSpeakers(last.assignment, row.assignment) {
                 out[out.count - 1].rows.append(row)
             } else {
                 out.append(Run(rows: [row]))
             }
         }
         return out
+    }
+
+    /// Same speaker(s): overlap lists compare as sets (the reconciler orders them by score, which can flip).
+    static func sameSpeakers(_ a: SpeakerAssignment, _ b: SpeakerAssignment) -> Bool {
+        if case .multiple(let x) = a, case .multiple(let y) = b { return Set(x) == Set(y) }
+        return a == b
     }
 
     /// Ids of the rows that start a run: the only rows that show the speaker disc and name.

@@ -11,7 +11,7 @@ left-aligned in the speaker's colour; the disc and name sit above the first bubb
 play), flags and, with Details on, the MIC/SYS badge are a small caption beside each bubble. Gaps draw exactly as in
 Columns (hairlines in skim mode, full rows with Details).
 
-Checks: `--self-test ui-render` evidence jump passes in both styles (row selected and centred, both when the pane is
+Checks: `--self-test ui-render` evidence jump passes in both styles (row selected and inside the visible range, centred in the captures, both when the pane is
 showing and when it opens with the focus set), at Default and Larger text; bubble renders of each fixture in skim and
 Details mode. Speaker colours are now assigned per meeting so up to 8 speakers never share one (the plain hash gave
 two of four speakers the same pink), and blue is left out of the palette because it is the accent (your bubbles).
