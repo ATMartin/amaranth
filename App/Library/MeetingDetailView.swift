@@ -162,7 +162,7 @@ struct RecordingDetailsPane: View {
                         Text(TranscriptRows.clock(e.interval.start)).monospacedDigit().frame(width: 70, alignment: .leading)
                         Text(Self.describe(e))
                         Spacer()
-                        Text(e.source.map { $0 == .microphone ? "mic" : "system" } ?? "all").foregroundStyle(.secondary)
+                        Text(e.source.map { $0 == .microphone ? "mic" : "system" } ?? "all").foregroundStyle(Color(nsColor: .secondaryLabelColor))   // grey even on attention rows
                     }
                     .foregroundStyle(e.isMissingAudio ? Color.statusAttention : .primary)
                 }

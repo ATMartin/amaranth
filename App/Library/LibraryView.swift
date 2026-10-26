@@ -131,11 +131,15 @@ struct MeetingRow: View {
 /// The single status glyph of a meeting; the tooltip is also its VoiceOver label.
 struct MeetingStatusGlyph: View {
     let status: MeetingStatus
+    /// Increased on the selected sidebar row (accent fill): coloured glyphs would vanish there, so use the row's text colour.
+    @Environment(\.backgroundProminence) private var prominence
     var body: some View {
         let g = MeetingStatusPresentation.glyph(status)
         Group {
             if g.spinner { ProgressView().controlSize(.small).scaleEffect(0.6) }
-            else if let s = g.symbol { Image(systemName: s).foregroundStyle(color(g.tone)) }
+            else if let s = g.symbol {
+                Image(systemName: s).foregroundStyle(prominence == .increased ? AnyShapeStyle(.primary) : AnyShapeStyle(color(g.tone)))
+            }
         }
         .frame(width: 16, height: 16)
         .help(g.tooltip)
