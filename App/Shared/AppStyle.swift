@@ -110,4 +110,22 @@ extension AppAppearance {
 
     /// Applies the stored setting to every window, the Settings window and the menu-bar menu.
     @MainActor static func apply(_ stored: String?) { NSApp.appearance = AppAppearance(stored: stored).nsAppearance }
+
+    /// What is on screen now, whether forced or following the system.
+    @MainActor static var effectiveIsDark: Bool { NSApp.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua }
+}
+
+/// T44: sun/moon toolbar button. Shows where a click goes (sun in dark mode, moon in light mode) and stores Light or
+/// Dark; ⌘⇧L lives on the View-menu item, which does the same.
+struct AppearanceToggle: View {
+    @AppStorage(AppAppearance.key) private var appearance = AppAppearance.system.rawValue
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        let dark = scheme == .dark
+        Button { appearance = AppAppearance.toggled(effectiveIsDark: dark).rawValue } label: {
+            Label(AppAppearance.toggleMenuTitle(effectiveIsDark: dark), systemImage: dark ? "sun.max" : "moon")
+        }
+        .help(AppAppearance.toggleHelp(effectiveIsDark: dark))
+    }
 }

@@ -1451,7 +1451,7 @@
       "id": "T44",
       "title": "Sun/moon appearance toggle in the toolbar",
       "milestone": "K",
-      "status": "planned",
+      "status": "done (toolbar order + label checked by ui-render: docs/qualification/evidence/2026-10-26/appearance/toolbar-order.jsonl)",
       "optional": false,
       "depends_on": [
         "T43"

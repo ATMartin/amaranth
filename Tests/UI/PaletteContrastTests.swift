@@ -57,5 +57,8 @@ struct PaletteContrastTests {
         #expect(AppAppearance.toggled(effectiveIsDark: true) == .light)
         #expect(AppAppearance.toggled(effectiveIsDark: false) == .dark)
         #expect(AppAppearance.allCases.map(\.title) == ["Match system", "Light", "Dark"])
+        #expect(AppAppearance.toggleHelp(effectiveIsDark: true) == "Switch to light mode (⌘⇧L)")
+        #expect(AppAppearance.toggleHelp(effectiveIsDark: false) == "Switch to dark mode (⌘⇧L)")
+        #expect(AppAppearance.toggleMenuTitle(effectiveIsDark: false) == "Switch to Dark Mode")
     }
 }

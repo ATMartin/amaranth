@@ -51,6 +51,7 @@ struct MainView: View {
                 }
                 .help("Local speech and notes models")
             }
+            ToolbarItem(placement: .primaryAction) { AppearanceToggle() }
         }
         .sheet(isPresented: $showingModels) {
             ModelSetupView(model: models)

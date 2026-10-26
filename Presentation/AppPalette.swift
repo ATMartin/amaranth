@@ -20,6 +20,14 @@ public enum AppAppearance: String, CaseIterable, Identifiable, Sendable {
     /// The toolbar sun/moon toggle (T44): always the opposite of what is on screen now, so the first click away from
     /// Match system picks the other appearance.
     public static func toggled(effectiveIsDark: Bool) -> AppAppearance { effectiveIsDark ? .light : .dark }
+    /// Tooltip of the toolbar toggle; also its VoiceOver label without the shortcut.
+    public static func toggleHelp(effectiveIsDark: Bool) -> String {
+        "Switch to \(effectiveIsDark ? "light" : "dark") mode (⌘⇧L)"
+    }
+    /// View-menu item title.
+    public static func toggleMenuTitle(effectiveIsDark: Bool) -> String {
+        "Switch to \(effectiveIsDark ? "Light" : "Dark") Mode"
+    }
 }
 
 /// Colour tokens with light and dark variants (T43). Status colours keep their meaning (green = OK, orange = needs

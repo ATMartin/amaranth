@@ -186,6 +186,27 @@ enum UIRenderSelfTest {
         collapsed.set(TranscriptStyle.bubbles.rawValue, forKey: TranscriptStyle.key)
         _ = await host(AppearanceSettings().defaultAppStorage(collapsed), "settings-appearance-bubbles", size: CGSize(width: 560, height: 460))
         collapsed.removeObject(forKey: TranscriptStyle.key)
+        // Sun/moon toggle (T44): the sun in dark mode, the moon in light mode. Then the main window's real toolbar
+        // (bridged into an NSWindow) to check the toggle sits on the trailing side before Export.
+        _ = await host(AppearanceToggle().labelStyle(.iconOnly).padding(), "appearance-toggle", size: CGSize(width: 60, height: 44))
+        if let first = library.items.first {
+            library.selection = first.id
+            for _ in 0..<40 where library.detail?.meeting.id != first.id { try? await Task.sleep(for: .milliseconds(50)) }
+            let view = NSHostingView(rootView: MainView().textSize(textSize).environment(worker).environment(models).environment(recorder)
+                .environment(library).environment(playback).environment(live).frame(width: 1200, height: 760))
+            view.sceneBridgingOptions = [.toolbars]
+            let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 1200, height: 760), styleMask: [.titled, .resizable], backing: .buffered, defer: false)
+            window.appearance = appearance
+            window.contentView = view
+            try? await Task.sleep(for: .milliseconds(600))
+            let labels = window.toolbar?.items.map { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label } ?? []
+            let toggle = labels.firstIndex { $0.hasPrefix("Switch to") }, export = labels.firstIndex(of: "Export")
+            let expected = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua ? "Switch to Light Mode" : "Switch to Dark Mode"
+            let pass = toggle != nil && export != nil && toggle! < export! && labels[toggle!] == expected
+            SelfTest.log(["step": "toolbar", "items": labels.joined(separator: " | "), "ok": "\(pass)"])
+            if !pass { ok = false }
+            window.contentView = nil
+        }
         // Onboarding, the model sheet and the menu-bar menu's items (T43: every screen in both appearances).
         _ = await host(OnboardingView {}, "onboarding", size: CGSize(width: 560, height: 520))
         _ = await host(ModelSetupView(model: models), "model-sheet", size: CGSize(width: 560, height: 460))

@@ -37,7 +37,7 @@ struct AppearanceSettings: View {
                 ForEach(AppAppearance.allCases) { Text($0.title).tag($0.rawValue) }
             }
             .pickerStyle(.segmented)
-            Text("Match system follows the Mac's light or dark setting.")
+            Text("Match system follows the Mac's light or dark setting. The sun and moon button in the toolbar (⌘⇧L) switches between Light and Dark.")
                 .font(.caption).foregroundStyle(.secondary)
             Picker("Text size", selection: $textSize) {
                 ForEach(TextSize.allCases) { Text($0.title).tag($0.rawValue) }
