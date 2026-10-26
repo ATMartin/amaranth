@@ -1140,7 +1140,7 @@
       "id": "T34",
       "title": "Recording health popover",
       "milestone": "H",
-      "status": "planned",
+      "status": "done (mapping of every old RecorderPanel item: docs/qualification/milestone-h-results.md)",
       "optional": false,
       "depends_on": [
         "T31"

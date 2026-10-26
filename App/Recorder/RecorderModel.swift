@@ -21,6 +21,8 @@ final class RecorderModel {
     /// Whether the scratchpad editor is open above the live transcript (T33). Closed by default; kept for the session.
     var scratchpadOpen = false
     private(set) var meetingID: MeetingID?
+    /// The open recording's meeting folder (shown in the health popover, T34).
+    private(set) var directory: URL?
     /// Seconds of audio durably saved, per source.
     private(set) var savedUpTo: [SourceKind: Double] = [:]
     private(set) var diskSecondsLeft: Double?
@@ -166,6 +168,7 @@ final class RecorderModel {
     private func attach(_ s: RecordingSession) {
         session = s
         meetingID = s.meetingID
+        directory = s.directory
         onStarted?(s.meetingID)
         live?.start(session: s, store: store)
         processing?.setRecording(true)

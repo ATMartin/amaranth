@@ -88,9 +88,15 @@ enum UIRenderSelfTest {
         _ = await host(VStack(alignment: .leading, spacing: 14) {
             ForEach(Array(stripSamples.enumerated()), id: \.offset) { _, s in
                 RecordingStripContent(state: s.0, elapsed: 3723, health: s.1, savedUpTo: [.microphone: 3720, .systemOutput: 3700],
-                                      diskWarning: s.2, pause: {}, resume: {}, stop: {})
+                                      diskWarning: s.2, folder: nil, pause: {}, resume: {}, stop: {})
             }
         }.padding(), "recording-strip", size: CGSize(width: 520, height: 360))
+        // Health popover content (T34).
+        _ = await host(RecordingHealthDetails(health: [
+            .init(source: .microphone, status: .healthy, peakLevelDBFS: -18, deviceName: "MacBook Pro Microphone"),
+            .init(source: .systemOutput, status: .silent, peakLevelDBFS: -90, deviceName: "System audio"),
+        ], savedUpTo: [.microphone: 3720, .systemOutput: 3700], now: 3723, diskWarning: RecorderPresentation.diskWarning(secondsLeft: 900),
+           folder: "/Users/example/Library/Application Support/Amaranth/meetings/2026-10-25-m1"), "recording-health", size: CGSize(width: 380, height: 260))
         // Live view (T33): scratchpad closed by default, then open above the transcript.
         _ = await host(LiveTranscriptView(), "live-scratchpad-closed", size: CGSize(width: 900, height: 400))
         recorder.scratchpadOpen = true

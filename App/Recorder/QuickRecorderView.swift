@@ -82,7 +82,7 @@ struct RecordingStrip: View {
     var body: some View {
         RecordingStripContent(state: model.state, elapsed: model.elapsed, health: model.health, savedUpTo: model.savedUpTo,
                               diskWarning: model.diskWarned ? model.diskSecondsLeft.map(RecorderPresentation.diskWarning) : nil,
-                              pause: model.pause, resume: model.resume, stop: model.stop)
+                              folder: model.directory?.path, pause: model.pause, resume: model.resume, stop: model.stop)
     }
 }
 
@@ -93,19 +93,30 @@ struct RecordingStripContent: View {
     let health: [SourceHealth]
     let savedUpTo: [SourceKind: Double]
     let diskWarning: String?
+    let folder: String?
     let pause: () -> Void
     let resume: () -> Void
     let stop: () -> Void
+    @State private var showingHealth = false
 
     var body: some View {
         HStack(spacing: 10) {
             status
-            HStack(spacing: 6) {
-                ForEach(health, id: \.source) { h in SourceHealthGlyph(health: h, savedUpTo: savedUpTo[h.source], now: elapsed) }
-                if let diskWarning {
-                    Image(systemName: "externaldrive.badge.exclamationmark").foregroundStyle(.orange)
-                        .help(diskWarning).accessibilityLabel(diskWarning)
+            // The glyphs open the detailed health popover (T34); each glyph's tooltip still names its status.
+            Button { showingHealth.toggle() } label: {
+                HStack(spacing: 6) {
+                    ForEach(health, id: \.source) { h in SourceHealthGlyph(health: h, savedUpTo: savedUpTo[h.source], now: elapsed) }
+                    if let diskWarning {
+                        Image(systemName: "externaldrive.badge.exclamationmark").foregroundStyle(.orange)
+                            .help(diskWarning).accessibilityLabel(diskWarning)
+                    }
                 }
+            }
+            .buttonStyle(.borderless)
+            .disabled(health.isEmpty && diskWarning == nil)
+            .accessibilityHint("Shows levels, devices and where the recording is saved")
+            .popover(isPresented: $showingHealth, arrowEdge: .bottom) {
+                RecordingHealthDetails(health: health, savedUpTo: savedUpTo, now: elapsed, diskWarning: diskWarning, folder: folder)
             }
             if state == .paused || state == .interrupted {
                 Button(action: resume) { Label("Resume", systemImage: "play.fill") }
@@ -135,6 +146,43 @@ struct RecordingStripContent: View {
         case .stopping: Label("Saving…", systemImage: "arrow.down.circle").foregroundStyle(.secondary)
         default: Label("Starting…", systemImage: "hourglass").foregroundStyle(.secondary).help("Starting… waiting for audio")
         }
+    }
+}
+
+/// Recording health on demand (T34): per source the level meter, status, device and "saved up to"; the disk warning;
+/// and the meeting folder. Meters update with the recorder's 10 Hz poll (which also drives the strip glyphs).
+struct RecordingHealthDetails: View {
+    let health: [SourceHealth]
+    let savedUpTo: [SourceKind: Double]
+    let now: Double
+    let diskWarning: String?
+    let folder: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Recording health").font(.headline)
+            ForEach(health, id: \.source) { h in
+                VStack(alignment: .leading, spacing: 2) {
+                    SourceHealthRow(health: h, savedUpTo: savedUpTo[h.source], now: now)
+                    Text([RecorderPresentation.sourceName(h.source) + ": " + (h.deviceName ?? "device unknown"),
+                          savedUpTo[h.source].map { "saved up to \(RecorderPresentation.clock($0))" }].compactMap { $0 }.joined(separator: " · "))
+                        .font(.caption).foregroundStyle(.secondary).padding(.leading, 36)
+                }
+            }
+            if let diskWarning {
+                Label(diskWarning, systemImage: "externaldrive.badge.exclamationmark").font(.caption).foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            if let folder {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Saving to").font(.caption).foregroundStyle(.secondary)
+                    Text(folder).font(.caption.monospaced()).foregroundStyle(.secondary).textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+        .padding(14)
+        .frame(width: 380, alignment: .leading)
     }
 }
 
