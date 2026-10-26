@@ -2,87 +2,201 @@ import SwiftUI
 import AppKit
 import Capture
 import Domain
+import Presentation
 
-/// The recorder: title, sources, microphone, independent per-source meters and health, durable "saved up to" time,
-/// disk warning, pause/resume/stop, and the private scratchpad while recording. Meters are polled at 10 Hz.
-struct RecorderPanel: View {
+/// Toolbar recorder (T31): a Record button that starts at once with the Settings defaults, plus a chevron opening this
+/// meeting's options. While a recording session is open it becomes the compact recording strip. A SwiftUI toolbar
+/// Menu can't hold a text field, so the options are a popover (the task's fallback: button + adjacent chevron).
+struct RecordToolbarControl: View {
+    @Bindable var model: RecorderModel
+    @State private var showingOptions = false
+
+    var body: some View {
+        if model.inSession {
+            RecordingStrip(model: model)
+        } else {
+            // Two plain buttons in one toolbar item: a ControlGroup here was moved to the trailing edge and truncated.
+            HStack(spacing: 2) {
+                Button { model.start() } label: {
+                    HStack(spacing: 4) { Image(systemName: "record.circle").foregroundStyle(.red); Text("Record") }
+                }
+                .accessibilityLabel("Record")
+                .keyboardShortcut("r", modifiers: [.command, .shift])
+                    .help("Record a new meeting (⌘⇧R). \(RecorderPresentation.consent)")
+                Button { showingOptions.toggle() } label: { Image(systemName: "chevron.down") }
+                    .accessibilityLabel("Recording options")
+                    .help("Title, sources and microphone for this meeting")
+                    .popover(isPresented: $showingOptions, arrowEdge: .bottom) {
+                        RecordOptionsForm(model: model) { showingOptions = false; model.start() }
+                    }
+            }
+        }
+    }
+}
+
+/// This meeting's title, sources and microphone. Changes apply to the next recording only; Settings keeps the defaults.
+struct RecordOptionsForm: View {
+    @Bindable var model: RecorderModel
+    let record: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            TextField("Title", text: $model.title, prompt: Text(RecorderPresentation.automaticTitle(Date())))
+                .textFieldStyle(.roundedBorder)
+                .onSubmit(record)
+            Picker("Record", selection: $model.selection) {
+                Text("Microphone + system audio").tag(SourceSelection.both)
+                Text("Microphone only").tag(SourceSelection.microphoneOnly)
+                Text("System audio only").tag(SourceSelection.systemOnly)
+            }
+            Picker("Microphone", selection: $model.microphoneUID) {
+                Text("System default").tag(String?.none)
+                ForEach(model.inputs) { d in Text("\(d.name) (\(d.transportName))").tag(Optional(d.uid)) }
+                if let uid = model.microphoneUID, !model.inputs.contains(where: { $0.uid == uid }) {
+                    Text("Not connected (uses System default)").tag(Optional(uid))
+                }
+            }
+            .disabled(model.selection == .systemOnly)
+            Text("For this meeting only. A blank title is filled in with the date and time.")
+                .font(.caption).foregroundStyle(.secondary)
+            HStack {
+                SettingsLink { Text("Recording Settings…") }
+                if model.customized { Button("Use Defaults") { model.loadDefaults() } }
+                Spacer()
+                Button(action: record) { Label("Record", systemImage: "record.circle") }
+                    .keyboardShortcut(.defaultAction)
+                    .help(RecorderPresentation.consent)
+            }
+        }
+        .padding(14)
+        .frame(width: 340)
+        .onAppear { model.refreshDevices() }
+    }
+}
+
+/// The compact toolbar strip while recording: state and elapsed time, one health glyph per source, the disk warning,
+/// Pause/Resume and Stop and Save.
+struct RecordingStrip: View {
     @Bindable var model: RecorderModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                status
-                Spacer()
-            }
-            let idle = !model.state.isActive
-            if idle {
-                TextField("Meeting title (optional)", text: $model.title).textFieldStyle(.roundedBorder)
-                Picker("Record", selection: $model.selection) {
-                    Text("Microphone + system audio").tag(SourceSelection.both)
-                    Text("Microphone only").tag(SourceSelection.microphoneOnly)
-                    Text("System audio only").tag(SourceSelection.systemOnly)
-                }
-                Picker("Microphone", selection: $model.microphoneUID) {
-                    Text("System default").tag(String?.none)
-                    ForEach(model.inputs) { d in Text("\(d.name) (\(d.transportName))").tag(Optional(d.uid)) }
-                }
-                .disabled(model.selection == .systemOnly)
-            }
-            ForEach(model.health, id: \.source) { h in
-                SourceHealthRow(health: h, savedUpTo: model.savedUpTo[h.source], now: model.elapsed)
-            }
-            if model.health.contains(where: { $0.status == .permissionDenied }) {
-                Button("Open Privacy Settings…") {
-                    NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy")!)
-                }
-                .font(.caption)
-            }
-            if model.diskWarned, let left = model.diskSecondsLeft {
-                Label("Low disk space: about \(Int(left / 60)) min of recording left. Amaranth will stop and save before the disk is full.",
-                      systemImage: "externaldrive.badge.exclamationmark").font(.caption).foregroundStyle(.orange)
-            }
-            HStack {
-                if idle {
-                    Button { model.start() } label: { Label("Record", systemImage: "record.circle") }
-                        .keyboardShortcut("r", modifiers: [.command, .shift]).controlSize(.large).help("Record (⌘⇧R)")
-                } else {
-                    if model.state == .paused || model.state == .interrupted {
-                        Button("Resume") { model.resume() }.keyboardShortcut("p", modifiers: [.command, .shift]).help("Resume recording (⌘⇧P)")
-                    } else {
-                        Button("Pause") { model.pause() }.disabled(model.state != .recording).keyboardShortcut("p", modifiers: [.command, .shift]).help("Pause recording (⌘⇧P)")
-                    }
-                    Button("Stop and Save") { model.stop() }.disabled(model.state == .stopping).keyboardShortcut("s", modifiers: [.command, .shift]).help("Stop and save (⌘⇧S)")
+        RecordingStripContent(state: model.state, elapsed: model.elapsed, health: model.health, savedUpTo: model.savedUpTo,
+                              diskWarning: model.diskWarned ? model.diskSecondsLeft.map(RecorderPresentation.diskWarning) : nil,
+                              pause: model.pause, resume: model.resume, stop: model.stop)
+    }
+}
+
+/// Value-only strip, so the UI render self-test can show every state without a capture session.
+struct RecordingStripContent: View {
+    let state: CaptureState
+    let elapsed: Double
+    let health: [SourceHealth]
+    let savedUpTo: [SourceKind: Double]
+    let diskWarning: String?
+    let pause: () -> Void
+    let resume: () -> Void
+    let stop: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            status
+            HStack(spacing: 6) {
+                ForEach(health, id: \.source) { h in SourceHealthGlyph(health: h, savedUpTo: savedUpTo[h.source], now: elapsed) }
+                if let diskWarning {
+                    Image(systemName: "externaldrive.badge.exclamationmark").foregroundStyle(.orange)
+                        .help(diskWarning).accessibilityLabel(diskWarning)
                 }
             }
-            if model.state.isActive {
-                TextField("Private scratchpad (only on this Mac)", text: $model.scratchpad, axis: .vertical).lineLimit(2...6)
-                    .textFieldStyle(.roundedBorder).font(.callout)
+            if state == .paused || state == .interrupted {
+                Button(action: resume) { Label("Resume", systemImage: "play.fill") }
+                    .keyboardShortcut("p", modifiers: [.command, .shift]).help("Resume recording (⌘⇧P)")
+            } else {
+                Button(action: pause) { Label("Pause", systemImage: "pause.fill") }.disabled(state != .recording)
+                    .keyboardShortcut("p", modifiers: [.command, .shift]).help("Pause recording (⌘⇧P)")
             }
-            Text("Amaranth records only when you press Record. Let participants know you are recording.")
-                .font(.caption2).foregroundStyle(.secondary)
-            if let n = model.notice { Label(n, systemImage: "mic.badge.xmark").font(.caption).foregroundStyle(.secondary) }
-            if let r = model.lastResult { Text(r).font(.caption).foregroundStyle(.secondary).lineLimit(3) }
-            if let m = model.recoveryMessage { Label(m, systemImage: "arrow.uturn.backward.circle").font(.caption).foregroundStyle(.secondary) }
-            if let e = model.error { Label(e, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.red) }
+            Button(action: stop) { Label("Stop and Save", systemImage: "stop.fill") }.disabled(state == .stopping || state == .preparing)
+                .keyboardShortcut("s", modifiers: [.command, .shift]).help("Stop and save (⌘⇧S)")
         }
-        .padding(10)
-        .background(.quaternary.opacity(0.4), in: .rect(cornerRadius: 8))
+        .labelStyle(.titleAndIcon)
+        .fixedSize()
     }
 
     @ViewBuilder var status: some View {
-        switch model.state {
-        case .recording: Label("Recording · \(Self.format(model.elapsed))", systemImage: "record.circle.fill").foregroundStyle(.red).monospacedDigit().font(.headline)
-        case .paused: Label("Paused · \(Self.format(model.elapsed)) — nothing is being recorded", systemImage: "pause.circle.fill").monospacedDigit().font(.headline)
-        case .interrupted: Label("Interrupted by sleep · audio so far is saved", systemImage: "moon.zzz").foregroundStyle(.orange).font(.headline)
-        case .preparing: Label("Starting… waiting for audio", systemImage: "hourglass").foregroundStyle(.secondary).font(.headline)
-        case .stopping: Label("Saving…", systemImage: "arrow.down.circle").font(.headline)
-        default: Text("Recorder").font(.headline)
+        let clock = RecorderPresentation.clock(elapsed)
+        switch state {
+        case .recording:
+            Label { Text(clock).monospacedDigit() } icon: { Image(systemName: "circle.fill").foregroundStyle(.red) }
+                .help("Recording").accessibilityLabel("Recording, \(clock)")
+        case .paused:
+            Label { Text(clock).monospacedDigit() } icon: { Image(systemName: "pause.circle.fill") }
+                .foregroundStyle(.secondary).help("Paused — nothing is being recorded").accessibilityLabel("Paused at \(clock)")
+        case .interrupted:
+            Label("Interrupted", systemImage: "moon.zzz").foregroundStyle(.orange).help("Interrupted by sleep · audio so far is saved")
+        case .stopping: Label("Saving…", systemImage: "arrow.down.circle").foregroundStyle(.secondary)
+        default: Label("Starting…", systemImage: "hourglass").foregroundStyle(.secondary).help("Starting… waiting for audio")
         }
     }
+}
 
-    static func format(_ s: Double) -> String {
-        let t = Int(s)
-        return String(format: "%02d:%02d:%02d", t / 3600, (t / 60) % 60, t % 60)
+/// One source's health as a small coloured glyph; the tooltip (and VoiceOver label) carries the details.
+struct SourceHealthGlyph: View {
+    let health: SourceHealth
+    let savedUpTo: Double?
+    let now: Double
+
+    var body: some View {
+        let tip = RecorderPresentation.tooltip(health, savedUpTo: savedUpTo, now: now)
+        Image(systemName: RecorderPresentation.symbol(health.source))
+            .foregroundStyle(Self.color(RecorderPresentation.tone(health.status)))
+            .frame(width: 18)
+            .help(tip)
+            .accessibilityElement()
+            .accessibilityLabel(tip)
+    }
+
+    static func color(_ t: RecorderPresentation.Tone) -> Color {
+        switch t { case .green: .green; case .grey: .secondary; case .orange: .orange; case .red: .red }
+    }
+}
+
+/// Recorder messages at the top of the detail pane: errors in red, everything else secondary; each can be dismissed.
+struct RecorderBanner: View {
+    @Bindable var model: RecorderModel
+
+    var body: some View {
+        RecorderBannerContent(items: model.bannerItems, dismiss: model.dismiss)
+    }
+}
+
+struct RecorderBannerContent: View {
+    let items: [RecorderModel.BannerItem]
+    let dismiss: (RecorderModel.Message) -> Void
+
+    var body: some View {
+        if !items.isEmpty {
+            VStack(alignment: .leading, spacing: 6) {
+                ForEach(items, id: \.kind) { item in
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Image(systemName: item.symbol).foregroundStyle(item.isError ? .red : .secondary)
+                        Text(item.text).foregroundStyle(item.isError ? .red : .secondary).textSelection(.enabled)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 8)
+                        if item.kind == .permission {
+                            Button("Open Privacy Settings…") {
+                                NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy")!)
+                            }
+                        }
+                        Button { dismiss(item.kind) } label: { Image(systemName: "xmark") }
+                            .buttonStyle(.borderless).help("Dismiss").accessibilityLabel("Dismiss")
+                    }
+                    .font(.callout)
+                }
+            }
+            .padding(.horizontal, 12).padding(.vertical, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.bar)
+            .overlay(alignment: .bottom) { Divider() }
+        }
     }
 }
 
@@ -97,31 +211,17 @@ struct SourceHealthRow: View {
             MeterBar(db: health.peakLevelDBFS ?? -120)
             Text(statusText).font(.caption2).foregroundStyle(statusColor).frame(width: 150, alignment: .leading)
         }
-        .help([health.deviceName, savedUpTo.map { "Saved up to \(RecorderPanel.format($0))" }].compactMap { $0 }.joined(separator: " · "))
+        .help([health.deviceName, savedUpTo.map { "Saved up to \(RecorderPresentation.clock($0))" }].compactMap { $0 }.joined(separator: " · "))
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(health.source == .microphone ? "Microphone" : "System audio"): \(statusText)")
+        .accessibilityLabel("\(RecorderPresentation.sourceName(health.source)): \(statusText)")
     }
 
-    var statusText: String {
-        let lag = savedUpTo.map { now - $0 } ?? 0
-        let saved = savedUpTo != nil && lag > 8 ? " · saving delayed" : ""
-        return switch health.status {
-        case .healthy: "OK" + saved
-        case .silent: "Silent (still recording)" + saved
-        case .clipping: "Too loud (clipping)"
-        case .degraded: "Interrupted — gap marked"
-        case .failed: "Not recording — source failed"
-        case .permissionDenied: "Permission denied — see System Settings"
-        case .starting: "Starting"
-        case .inactive: "Off"
-        }
-    }
+    var statusText: String { RecorderPresentation.statusText(health.status, savedUpTo: savedUpTo, now: now) }
 
     var statusColor: Color {
-        switch health.status {
-        case .healthy, .silent: .secondary
-        case .clipping, .degraded: .orange
-        case .failed, .permissionDenied: .red
+        switch RecorderPresentation.tone(health.status) {
+        case .orange: .orange
+        case .red: .red
         default: .secondary
         }
     }

@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import Presentation
 
 @main
 struct AmaranthEntry {
@@ -104,15 +105,15 @@ struct MenuBarContent: View {
 
     var body: some View {
         switch recorder.state {
-        case .recording: Text("Recording — \(RecorderPanel.format(recorder.elapsed))")
-        case .paused: Text("Paused — \(RecorderPanel.format(recorder.elapsed))")
+        case .recording: Text("Recording — \(RecorderPresentation.clock(recorder.elapsed))")
+        case .paused: Text("Paused — \(RecorderPresentation.clock(recorder.elapsed))")
         case .interrupted: Text("Interrupted by sleep — audio saved")
         case .preparing: Text("Starting…")
         case .stopping: Text("Saving…")
         default: Text("Not recording")
         }
         Divider()
-        if recorder.state.isActive {
+        if recorder.inSession {
             if recorder.state == .paused || recorder.state == .interrupted { Button("Resume") { recorder.resume() } }
             else { Button("Pause") { recorder.pause() }.disabled(recorder.state != .recording) }
             Button("Stop and Save") { recorder.stop() }.disabled(recorder.state == .stopping)

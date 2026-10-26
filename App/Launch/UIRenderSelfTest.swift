@@ -81,7 +81,23 @@ enum UIRenderSelfTest {
             if d.rows.count > 1000, max(tTranscript, tTranscriptDetails) > 2.0 { ok = false }
         }
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
-        _ = await host(VStack(spacing: 0) { RecorderPanel(model: recorder).padding(8); LibrarySidebar() }, "sidebar", size: CGSize(width: 360, height: 760))
+        _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 360, height: 760))
+        // Toolbar recorder (T31): idle control, this meeting's options, the strip in each state, the banner.
+        _ = await host(RecordToolbarControl(model: recorder).padding(), "record-control", size: CGSize(width: 260, height: 60))
+        _ = await host(RecordOptionsForm(model: recorder) {}, "record-options", size: CGSize(width: 340, height: 230))
+        _ = await host(VStack(alignment: .leading, spacing: 14) {
+            ForEach(Array(stripSamples.enumerated()), id: \.offset) { _, s in
+                RecordingStripContent(state: s.0, elapsed: 3723, health: s.1, savedUpTo: [.microphone: 3720, .systemOutput: 3700],
+                                      diskWarning: s.2, pause: {}, resume: {}, stop: {})
+            }
+        }.padding(), "recording-strip", size: CGSize(width: 520, height: 360))
+        _ = await host(RecorderBannerContent(items: [
+            .init(kind: .error, text: "Could not start recording: example error"),
+            .init(kind: .permission, text: "Amaranth isn't allowed to record microphone. Allow it in System Settings → Privacy & Security."),
+            .init(kind: .notice, text: RecordingDefaults.missingMicrophoneNotice),
+            .init(kind: .recovery, text: "Recovered 1 interrupted recording(s): 3 audio segment(s) restored."),
+            .init(kind: .result, text: "Saved 12 segments (62 s) to /Users/example/Library/Application Support/Amaranth/meetings/m1"),
+        ], dismiss: { _ in }), "recorder-banner", size: CGSize(width: 900, height: 200))
         // Settings → Recording defaults (T30).
         _ = await host(RecordingSettings(recorder: recorder), "settings-recording", size: CGSize(width: 560, height: 560))
         // Search renders results.
@@ -91,6 +107,17 @@ enum UIRenderSelfTest {
         SelfTest.log(["step": "output", "directory": out.path])
         return ok
     }
+
+    /// Every SourceHealth status appears in at least one strip, plus the low-disk glyph.
+    static let stripSamples: [(CaptureState, [SourceHealth], String?)] = [
+        (.recording, [.init(source: .microphone, status: .healthy, deviceName: "MacBook Pro Microphone"), .init(source: .systemOutput, status: .silent)], nil),
+        (.recording, [.init(source: .microphone, status: .clipping), .init(source: .systemOutput, status: .degraded)],
+         RecorderPresentation.diskWarning(secondsLeft: 900)),
+        (.paused, [.init(source: .microphone, status: .failed), .init(source: .systemOutput, status: .permissionDenied)], nil),
+        (.interrupted, [.init(source: .microphone, status: .starting), .init(source: .systemOutput, status: .inactive)], nil),
+        (.preparing, [], nil),
+        (.stopping, [.init(source: .microphone, status: .healthy)], nil),
+    ]
 
     static func persistFixture(_ f: FixtureMeeting, _ store: MeetingStore) throws {
         try store.upsertMeeting(f.meeting)

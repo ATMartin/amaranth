@@ -9,7 +9,10 @@ struct LiveTranscriptView: View {
     @Environment(RecorderModel.self) private var recorder
 
     var body: some View {
+        @Bindable var recorder = recorder
         VStack(alignment: .leading, spacing: 0) {
+            TextField("Private scratchpad (only on this Mac)", text: $recorder.scratchpad, axis: .vertical).lineLimit(2...6)
+                .textFieldStyle(.roundedBorder).font(.callout).padding([.horizontal, .top])
             HStack {
                 Label("Live text — provisional", systemImage: "waveform").font(.headline)
                 Spacer()

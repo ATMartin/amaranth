@@ -17,25 +17,28 @@ struct MainView: View {
         NavigationSplitView {
             LibrarySidebar()
                 .navigationSplitViewColumnWidth(min: 300, ideal: 340)
-                .safeAreaInset(edge: .top) { RecorderPanel(model: recorder).padding(8) }
         } detail: {
-            if recorder.state.isActive, library.selection == nil || library.selection == recorder.meetingID {
-                LiveTranscriptView()
-            } else if let d = library.detail {
-                MeetingDetailView(detail: d)
-            } else {
-                ContentUnavailableView {
-                    Label("No meeting selected", systemImage: "waveform")
-                } description: {
-                    Text("Press Record to capture a meeting. Audio stays on this Mac.")
+            Group {
+                if recorder.inSession, library.selection == nil || library.selection == recorder.meetingID {
+                    LiveTranscriptView()
+                } else if let d = library.detail {
+                    MeetingDetailView(detail: d)
+                } else {
+                    ContentUnavailableView {
+                        Label("No meeting selected", systemImage: "waveform")
+                    } description: {
+                        Text("Press Record to capture a meeting. Audio stays on this Mac.")
+                    }
                 }
             }
+            .safeAreaInset(edge: .top, spacing: 0) { RecorderBanner(model: recorder) }
         }
         .environment(\.showDetails, showDetails)
         .searchable(text: $library.query, placement: .sidebar, prompt: "Search transcripts and notes")
         .searchFocused($searchFocused)
         .onChange(of: library.searchFocusRequest) { _, _ in searchFocused = true }
         .toolbar {
+            ToolbarItem(placement: .navigation) { RecordToolbarControl(model: recorder).fixedSize() }
             ToolbarItem(placement: .navigation) {
                 Button { showingModels = true } label: {
                     if case .ready = models.status { Label("Models ready", systemImage: "checkmark.seal") }

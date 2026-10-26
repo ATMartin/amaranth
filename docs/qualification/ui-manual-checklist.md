@@ -5,11 +5,11 @@ Use the Debug app: `build/DerivedData/Build/Products/Debug/Amaranth.app`.
 1. First launch shows onboarding. **Get Started** dismisses it and it does not return.
 2. Record a short call (any app playing audio, plus your voice).
    - macOS asks for microphone and system-audio permission at the first Record, not before.
-   - Both meters move. The menu-bar icon turns red and shows the elapsed time.
+   - The toolbar recording strip shows a red dot and the elapsed time, and a green mic and system-audio glyph (hover each: source, status, device, "Saved up to"). The menu-bar icon turns red and shows the elapsed time.
 3. Pause, then Resume.
    - The label says nothing is being recorded while paused.
    - After processing, the Recording tab shows the pause.
-4. Unplug or switch the microphone mid-recording. The mic row shows "Interrupted — gap marked" and the system row keeps going.
+4. Unplug or switch the microphone mid-recording. The mic glyph in the recording strip turns orange with the tooltip "Interrupted — gap marked", and the system glyph stays green.
 5. Close the window while recording. Recording continues, and the menu bar can bring the window back.
 6. Choose Quit while recording. The dialog offers Stop, Save and Quit or Keep Recording, and Stop saves.
 7. After Stop the meeting is selected. Processing badges move through queued, transcribing and writing notes; Notes appear.
@@ -23,8 +23,8 @@ Use the Debug app: `build/DerivedData/Build/Products/Debug/Amaranth.app`.
 12. Export Markdown. Check that timestamps, speakers and gaps are present and the private scratchpad is not.
 13. Delete Audio Only. The dialog explains what stays. Afterwards playback says audio was deleted and search still finds the text.
 14. Delete Meeting. It disappears and search finds nothing from it after relaunching the app.
-15. Deny microphone permission in System Settings, then Record. The recorder shows "Permission denied" with Open Privacy Settings….
-16. VoiceOver: move through the recorder, the library and a transcript row; the labels are spoken.
+15. Deny microphone permission in System Settings, then Record. The mic glyph turns red ("Permission denied — see System Settings"), and a red banner above the detail pane offers Open Privacy Settings….
+16. VoiceOver: move through the toolbar Record button, the recording strip glyphs, the library and a transcript row; the labels are spoken.
 17. Type in Your notes and switch to another meeting within one second. Switch back: the text was saved. Repeat, quitting with ⌘Q within one second of typing.
 18. Press Record, and while the macOS permission prompt is still open, choose Quit. The app quits cleanly without hanging.
 
@@ -40,11 +40,16 @@ Use the Debug app: `build/DerivedData/Build/Products/Debug/Amaranth.app`.
     | Field | Where | Style | Placeholder | Focus ring visible | Cursor visible |
     |---|---|---|---|---|---|
     | Search | sidebar top | system search field | "Search transcripts and notes" | ☐ | ☐ |
-    | Meeting title | recorder (until T31) | rounded border | "Meeting title (optional)" | ☐ | ☐ |
-    | Scratchpad while recording | recorder | rounded border | "Private scratchpad (only on this Mac)" | ☐ | ☐ |
+    | Meeting title | Record ▾ options popover (T31) | rounded border | "Meeting — <date> <time>" | ☐ | ☐ |
+    | Scratchpad while recording | live transcript view | rounded border | "Private scratchpad (only on this Mac)" | ☐ | ☐ |
     | Your notes | Notes tab (expand) | TextEditor + accent border when focused | "Write your own notes…" | ☐ | ☐ |
     | Private scratchpad | Notes tab (expand) | TextEditor + accent border when focused | "Private notes, only on this Mac…" | ☐ | ☐ |
     | Rename meeting / speaker, Correct text | sheets | system text field | the sheet title | ☐ | ☐ |
 
-    Settings has no text fields. No field uses `.textFieldStyle(.plain)` (the old plain header title field was removed in T26). The insertion point is the system one; on macOS 14+ it is drawn in the accent color. If it is hard to see, note which field.
+    Settings has no text fields (Settings → Recording has only pickers). No field uses `.textFieldStyle(.plain)` (the old plain header title field was removed in T26). The insertion point is the system one; on macOS 14+ it is drawn in the accent color. If it is hard to see, note which field.
 25. Shortcuts and tooltips (T29), main window focused: ⌘1/⌘2/⌘3 switch tabs, ⌘D toggles Details, ⌘E opens the Markdown export panel, ⌘K puts the cursor in Search, ⌘⇧R/⌘⇧P/⌘⇧S record, pause and stop. The menu bar shows Meeting ▸ Notes/Transcript/Recording/Export Markdown…/Search Meetings and View ▸ Show Details. With a sheet open (Rename…, Correct Text…, models) none of ⌘1–⌘3, ⌘E, ⌘K acts. Hover: Record, Pause/Resume, Stop and Save, tab picker, ⓘ, Export, Delete, Retry/Process, Play each show a tooltip naming its shortcut where it has one. Check Xcode's console for "duplicate key equivalent" warnings (⌘E could clash with a system "Use Selection for Find" item in text fields).
+
+## Milestone H (recorder simplification)
+
+26. Recorder in the toolbar (T31): the sidebar is search and meetings only. The toolbar's leading group shows ● Record, a ▾ chevron and the Models button. Hover Record: "Record a new meeting (⌘⇧R). Amaranth records only when you press Record; let participants know." One click on Record (or ⌘⇧R) starts recording with the Settings → Recording defaults and a title "Meeting — <date> <time>"; the live transcript shows in the detail pane. The ▾ popover has Title, Record (sources), Microphone (this meeting only), Recording Settings… (opens Settings) and Record (Return); after that recording the next one uses the Settings defaults again. While recording, the strip replaces Record: ● elapsed · a glyph per source · Pause/Resume (⌘⇧P) · Stop and Save (⌘⇧S). After Stop, a dismissable banner above the detail pane says where the audio was saved. The menu bar still records and stops. Quit while recording still asks first.
+27. Recording defaults (T30): in Settings → Recording, choose "Microphone only" and a USB microphone; press Record: only the mic is recorded with that device. Unplug the USB microphone and press Record: recording starts on the system default microphone and the banner says the chosen microphone isn't connected.

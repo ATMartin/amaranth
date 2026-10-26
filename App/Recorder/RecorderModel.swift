@@ -40,6 +40,7 @@ final class RecorderModel {
     private(set) var recoveryMessage: String?
     /// One-line notice for this recording, e.g. the chosen microphone is not connected (T30).
     private(set) var notice: String?
+    private var permissionDismissed = false
     private var session: RecordingSession?
     private var poll: Timer?
     private var sleepObserver: (any NSObjectProtocol)?
@@ -75,6 +76,48 @@ final class RecorderModel {
 
     func refreshDevices() { inputs = AudioDevices.inputs() }
 
+    /// A recording session is open: recording, paused, starting, saving, or interrupted by sleep and waiting to resume.
+    var inSession: Bool { session != nil || state.isActive }
+
+    enum Message: Hashable { case error, permission, notice, recovery, result }
+
+    struct BannerItem {
+        let kind: Message
+        let text: String
+        var isError: Bool { kind == .error || kind == .permission }
+        var symbol: String {
+            switch kind {
+            case .error, .permission: "exclamationmark.triangle"
+            case .notice: "mic.badge.xmark"
+            case .recovery: "arrow.uturn.backward.circle"
+            case .result: "checkmark.circle"
+            }
+        }
+    }
+
+    /// Messages for the banner above the detail pane (T31), most urgent first.
+    var bannerItems: [BannerItem] {
+        var items: [BannerItem] = []
+        if let error { items.append(.init(kind: .error, text: error)) }
+        if !permissionDismissed, health.contains(where: { $0.status == .permissionDenied }) {
+            items.append(.init(kind: .permission, text: "Amaranth isn't allowed to record \(health.filter { $0.status == .permissionDenied }.map { RecorderPresentation.sourceName($0.source).lowercased() }.joined(separator: " or ")). Allow it in System Settings → Privacy & Security."))
+        }
+        if let notice { items.append(.init(kind: .notice, text: notice)) }
+        if let recoveryMessage { items.append(.init(kind: .recovery, text: recoveryMessage)) }
+        if let lastResult { items.append(.init(kind: .result, text: lastResult)) }
+        return items
+    }
+
+    func dismiss(_ m: Message) {
+        switch m {
+        case .error: error = nil
+        case .permission: permissionDismissed = true
+        case .notice: notice = nil
+        case .recovery: recoveryMessage = nil
+        case .result: lastResult = nil
+        }
+    }
+
     /// Resets the per-recording choice to the Settings defaults (no-op while recording).
     func loadDefaults() {
         guard session == nil, !state.isActive else { return }
@@ -90,6 +133,7 @@ final class RecorderModel {
         error = nil
         lastResult = nil
         notice = nil
+        permissionDismissed = false
         if !customized { loadDefaults() }
         refreshDevices()
         // A saved microphone that is unplugged must not block recording: use System default and say so once.
@@ -97,14 +141,13 @@ final class RecorderModel {
         notice = mic.notice
         state = .preparing
         let options = RecordingOptions(selection: selection, microphoneUID: mic.uid)
-        let chosenTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let title = RecorderPresentation.recordingTitle(typed: self.title, at: Date())
         scratchpad = ""; savedScratchpad = ""; savedUpTo = [:]; diskWarned = false; diskSecondsLeft = nil
         // Starting capture can block while a TCC prompt is open: never on the main thread.
         let store = self.store
         Task.detached(priority: .userInitiated) {
             do {
                 let root = store?.root ?? MeetingStore.defaultRoot()
-                let title = chosenTitle.isEmpty ? "Meeting \(Date().formatted(date: .abbreviated, time: .shortened))" : chosenTitle
                 let s = try RecordingSession(meetingID: MeetingID(), rootDirectory: root, options: options, store: store, title: title)
                 s.onAutoStop = { r in
                     Task { @MainActor in self.finish(r, note: "Stopped automatically to protect free disk space.") }
