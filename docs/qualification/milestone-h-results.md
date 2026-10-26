@@ -66,3 +66,17 @@ Not caused by Milestone H:
 Follow-up (not in H): starting the system tap on macOS 27.0.1 takes longer. Options: start the tap earlier (warm it when
 the window opens or Record is hovered), or accept a short lead-in and raise the threshold. This needs a decision before
 the next capture qualification.
+
+## Validation (2026-10-25)
+
+The Sonnet validator gave a PASS with no blocking findings (`milestone-h-verdict-v1.md`). It raised three should-fix
+items, all fixed in the follow-up commit:
+1. `RecorderModel.start()` now refuses while a session is starting (`!inSession`), so pressing Return in the popover's
+   Title field can't start two recordings.
+2. Quit asks first, and the menu-bar icon stays red, while a recording is interrupted by sleep (`inSession`).
+3. Resume after an interruption restarts the sources off the main thread, guarded against a double Resume.
+
+The Settings copy now names the ▾ button instead of a "Record menu". These are left as notes: a title typed in the
+popover and then abandoned carries over to the next one-click Record; a tab picked during recording gives way to
+Transcript at Stop; the tab tests cover the rules but not the `LibraryModel` wiring.
+The rebuild means macOS asks for microphone and system-audio permission again at the next Record.

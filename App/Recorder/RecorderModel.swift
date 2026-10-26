@@ -134,7 +134,8 @@ final class RecorderModel {
     }
 
     func start() {
-        guard session == nil else { return }
+        // `session` is set only after the async attach: also refuse while preparing (Return in the popover fires twice).
+        guard !inSession else { return }
         error = nil
         lastResult = nil
         notice = nil
@@ -204,7 +205,18 @@ final class RecorderModel {
     }
 
     func pause() { session?.pause(); tick() }
-    func resume() { session?.resume(); tick() }
+    private var resuming = false
+
+    func resume() {
+        guard let s = session, !resuming else { return }
+        guard s.state == .interrupted else { s.resume(); tick(); return }
+        // Resuming after sleep restarts the sources, which can take over a second: never on the main thread.
+        resuming = true
+        Task.detached(priority: .userInitiated) {
+            s.resume()
+            await MainActor.run { self.resuming = false; self.tick() }
+        }
+    }
 
     private var afterStop: [() -> Void] = []
 

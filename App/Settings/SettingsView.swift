@@ -48,7 +48,7 @@ struct RecordingSettings: View {
                     }
                 }
                 .disabled(defaultSources == SourceSelection.systemOnly.rawValue)
-                Text("Record uses these every time. You can change them for a single meeting from the Record menu.")
+                Text("Record uses these every time. You can change them for a single meeting with the ▾ button next to Record.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Picker("My microphone is", selection: $microphoneMode) {

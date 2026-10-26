@@ -1,0 +1,34 @@
+PASS (with should-fix items; no blocking findings)
+
+Checked: all five task commits against implementation-tasks.json, the code diff d4cc7c1..HEAD, full `swift test` (exit 0, all suites pass including the 4 new ones; no flaky test hit), `--self-test ui-render` (pass, PNGs reviewed), 3 real-window launches (toolbar shows Record, chevron, Models at the leading edge, not truncated; sidebar is search + meetings only; no popover open at any launch).
+
+## Blocking
+None.
+
+## Should fix
+1. start() can be re-entered during .preparing. RecorderModel.start() guards only `session == nil` (App/Recorder/RecorderModel.swift, start), and session is set only after the async attach(). In RecordOptionsForm (App/Recorder/QuickRecorderView.swift:46 and :66) Return in the Title field is both `.onSubmit(record)` and the `.defaultAction` button. If both fire, two RecordingSessions start. Fix: `guard !inSession`. Hands-on check listed below.
+2. Quit does not ask while a recording is "Interrupted by sleep". AppDelegate.applicationShouldTerminate (App/AmaranthApp.swift:139) and the menu-bar icon (:93) use `state.isActive`, which excludes .interrupted, but the strip and menu now show a live session with Resume/Stop. Quit terminates with the session open (audio is on disk and recovered next launch, so no loss), contradicting "Quit while recording still asks" for the new Resume state. Use `inSession`.
+3. Resume after sleep runs on the main thread. RecorderModel.resume() calls session.resume(), which synchronously restarts sources (Capture/Recorder/RecordingSession.swift ~177-196). start() deliberately runs capture start off-main because of TCC prompts; with the system tap now taking ~1.2 s to deliver, the UI will freeze for about that long on every Resume-from-sleep. Capture logic itself is correct (interrupted->recording is a legal transition, sleep/wake events recorded, sources restarted into wake epochs) and previously reachable only in tests. Judgement on the added Resume: correct and safe for data, but see the above two gaps.
+
+## Notes
+- Capture-failure claim: capture code is untouched (`git diff 6ac994e..HEAD --stat -- Capture Domain/Capture App/Launch/CaptureSelfTest.swift` is empty; no Capture/Storage/Export/ASR/Notes change in d4cc7c1..HEAD either). Evidence supports it: 2026-10-16 runs 2-7 system firstFrameSec 0.045-0.080; 2026-10-25 runs 1-3 are 1.205/1.283/1.209 with startDelayed, mic 0.046-0.063. But the macOS 27.0.1 attribution is inferential: no capture-signals run on 27.0.1 with a pre-H build exists. Cheap confirmation for a person: run capture-signals on a d4cc7c1 build. Regardless of cause, ~1.2 s of system-audio lead-in is lost per recording on this OS, and the capture self-test is red until the threshold/warm-up decision.
+- Defaults (T30): single source in Presentation/RecordingDefaults.swift, keys pinned by test; start() no longer writes UserDefaults; `customized` + loadDefaults() reset after finish() and Settings onChange applies when not customized; missing mic -> System default + notice (resolveMicrophone, unit-tested). Meets spec. Small leak: a Title typed in the popover and abandoned (popover closed without Record) is used by the next one-click Record, since model.title only clears at finish.
+- Shortcuts: each of ⌘⇧R/⌘⇧P/⌘⇧S registered once (R idle only; P and S inside the strip; P branches are exclusive); ⌘⇧N once in LiveTranscriptView; MenuBarContent has none except ⌘Q. They work only while the main window exists (as before).
+- Tabs (T32): LibraryModel logic is sound (applyingTabRule guard, once per opened meeting, chosenTabs cleared at Stop). Edge: a tab picked during recording is discarded at Stop (forced to Transcript). The unit tests cover only the Presentation structs, not LibraryModel wiring (race cases: notes before Stop - not possible, no incremental notes; menu-bar start - goes through onStarted, fine). Wiring needs the hands-on check.
+- Scratchpad (T33): hidden by default, inline, focus only when empty, saved via RecordingScratchpad.save keeping includeInSummary, final save in finish(). Behaviour change: scratchpad is reachable only while the live view is showing; if the user selects another meeting during recording it is not accessible until they return (it was always visible in the old sidebar). Saving an empty text when no revision exists writes an empty revision (harmless).
+- Health popover/mapping (T34): every row of the old RecorderPanel (git show d4cc7c1:App/Recorder/QuickRecorderView.swift) has a home as claimed in milestone-h-results.md; popover and banner render correctly. Meters poll at 10 Hz throughout (documented deviation; task allowed it). Popover shows folder, not a live segment count (documented).
+- Copy: Settings says "change them for a single meeting from the Record menu"; it is a popover (SettingsView.swift). Settings window is fixed 560x460 while the Recording tab is now taller (render at 560x560); the grouped Form scrolls, check visually.
+- Menu-bar icon does not turn red when interrupted (same as before).
+- Docs: task status/result fields, results doc and checklist items 2, 4, 15, 16, 26-30 match the code. Checklist 26-30 are correctly scoped to hands-on checks.
+- Housekeeping: my first screencapture attempt wrote a stray PNG named `Amaranth` into the repo root; I deleted it (git status clean). No other repo or App Support changes; Debug app killed by PID after each launch.
+
+## Needs a person (UI scripting unavailable; I never pressed Record)
+1. Press Return in the Record options Title field and in the popover: confirm exactly one meeting/recording starts (finding 1).
+2. One-click Record and ⌘⇧R start with Settings defaults and auto title; popover choices apply to that meeting only; next recording back to defaults; "Use Defaults" appears when customized.
+3. Unplug the chosen USB mic then Record: banner notice appears and recording works on the system default (checklist 27).
+4. Strip states live: Pause/Resume, Stop and Save, ⌘⇧P/⌘⇧S, glyph colors and tooltips for a mic unplug (orange) and permission denial (red banner with Open Privacy Settings), health popover meters moving, low-disk glyph.
+5. Tabs: record, live transcript in front without clicks (also menu-bar start); Stop stays on Transcript; notes arrival switches to Notes once; choosing a tab after Stop prevents the switch.
+6. Scratchpad: button and ⌘⇧N, inline, cursor only when empty, text survives close/reopen, appears in Private scratchpad after Stop.
+7. Sleep during a recording, wake, press Resume in the strip and in the menu bar: recording continues with a marked gap; note the UI freeze at Resume and whether Quit asks (findings 2-3).
+8. Quit while recording asks; closing the window keeps recording; menu bar Record/Pause/Stop work.
+9. VoiceOver pass on toolbar Record, strip glyphs, banner (checklist 16); Settings -> Recording window fit; Models button not truncated at narrower window widths.

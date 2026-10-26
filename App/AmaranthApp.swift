@@ -90,8 +90,8 @@ struct AmaranthApp: App {
             MenuBarContent(recorder: recorder)
         } label: {
             // Visible whenever the app runs; red while recording so it is never silent.
-            Image(systemName: recorder.state.isActive ? "record.circle.fill" : "waveform")
-                .symbolRenderingMode(recorder.state.isActive ? .multicolor : .monochrome)
+            Image(systemName: recorder.inSession ? "record.circle.fill" : "waveform")
+                .symbolRenderingMode(recorder.inSession ? .multicolor : .monochrome)
         }
 
         Settings {
@@ -136,7 +136,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
     @MainActor func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        guard let recorder = Self.recorder, recorder.state.isActive else { return .terminateNow }
+        guard let recorder = Self.recorder, recorder.inSession else { return .terminateNow }
         let alert = NSAlert()
         alert.messageText = "Amaranth is recording"
         alert.informativeText = "Stop and save the recording before quitting? Everything recorded so far is already saved to disk."
