@@ -997,7 +997,7 @@
       "id": "T30",
       "title": "Recording defaults live in Settings",
       "milestone": "H",
-      "status": "planned",
+      "status": "done (capture self-test runs once at the end of Milestone H: user decision)",
       "optional": false,
       "depends_on": [
         "T10"

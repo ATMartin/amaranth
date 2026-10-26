@@ -92,7 +92,7 @@ struct AmaranthApp: App {
         }
 
         Settings {
-            SettingsView(models: models)
+            SettingsView(models: models, recorder: recorder)
         }
     }
 }

@@ -4,13 +4,18 @@ import Observation
 import Capture
 import Domain
 import Storage
+import Presentation
 
 /// Recorder state for the UI (T10). UI state is polled at 10 Hz from session snapshots — audio callbacks never publish
 /// to SwiftUI. The scratchpad is private: saved as revisions on this Mac, excluded from notes/exports unless included.
 @MainActor @Observable
 final class RecorderModel {
-    var selection: SourceSelection = SourceSelection(rawValue: UserDefaults.standard.string(forKey: "defaultSources") ?? "") ?? .both
-    var microphoneUID: String? = UserDefaults.standard.string(forKey: "microphoneUID")
+    /// Per-recording sources and microphone. They follow the Settings defaults (T30) until changed for this meeting
+    /// (`customized`), and return to the defaults after each recording.
+    var selection: SourceSelection = RecordingDefaults.sources() { didSet { if !loadingDefaults { customized = true } } }
+    var microphoneUID: String? = RecordingDefaults.microphone() { didSet { if !loadingDefaults { customized = true } } }
+    private(set) var customized = false
+    private var loadingDefaults = false
     var title = ""
     var scratchpad = ""
     private(set) var meetingID: MeetingID?
@@ -33,6 +38,8 @@ final class RecorderModel {
     private(set) var lastResult: String?
     private(set) var error: String?
     private(set) var recoveryMessage: String?
+    /// One-line notice for this recording, e.g. the chosen microphone is not connected (T30).
+    private(set) var notice: String?
     private var session: RecordingSession?
     private var poll: Timer?
     private var sleepObserver: (any NSObjectProtocol)?
@@ -68,14 +75,28 @@ final class RecorderModel {
 
     func refreshDevices() { inputs = AudioDevices.inputs() }
 
+    /// Resets the per-recording choice to the Settings defaults (no-op while recording).
+    func loadDefaults() {
+        guard session == nil, !state.isActive else { return }
+        loadingDefaults = true
+        selection = RecordingDefaults.sources()
+        microphoneUID = RecordingDefaults.microphone()
+        loadingDefaults = false
+        customized = false
+    }
+
     func start() {
         guard session == nil else { return }
         error = nil
         lastResult = nil
+        notice = nil
+        if !customized { loadDefaults() }
+        refreshDevices()
+        // A saved microphone that is unplugged must not block recording: use System default and say so once.
+        let mic = RecordingDefaults.resolveMicrophone(microphoneUID, sources: selection, connected: inputs.map(\.uid))
+        notice = mic.notice
         state = .preparing
-        let options = RecordingOptions(selection: selection, microphoneUID: microphoneUID)
-        UserDefaults.standard.set(selection.rawValue, forKey: "defaultSources")
-        UserDefaults.standard.set(microphoneUID, forKey: "microphoneUID")
+        let options = RecordingOptions(selection: selection, microphoneUID: mic.uid)
         let chosenTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         scratchpad = ""; savedScratchpad = ""; savedUpTo = [:]; diskWarned = false; diskSecondsLeft = nil
         // Starting capture can block while a TCC prompt is open: never on the main thread.
@@ -166,6 +187,7 @@ final class RecorderModel {
         session = nil
         title = ""
         state = r.finalState
+        loadDefaults()
         processing?.setRecording(false)
         if !r.segments.isEmpty { processing?.enqueue(r.meetingID) }
         onFinished?(r.meetingID)

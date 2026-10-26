@@ -82,6 +82,8 @@ enum UIRenderSelfTest {
         }
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
         _ = await host(VStack(spacing: 0) { RecorderPanel(model: recorder).padding(8); LibrarySidebar() }, "sidebar", size: CGSize(width: 360, height: 760))
+        // Settings → Recording defaults (T30).
+        _ = await host(RecordingSettings(recorder: recorder), "settings-recording", size: CGSize(width: 560, height: 560))
         // Search renders results.
         library.query = "release"
         SelfTest.log(["step": "search", "query": "release", "hits": "\(library.hits.count)"])

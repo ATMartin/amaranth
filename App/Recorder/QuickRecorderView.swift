@@ -60,6 +60,7 @@ struct RecorderPanel: View {
             }
             Text("Amaranth records only when you press Record. Let participants know you are recording.")
                 .font(.caption2).foregroundStyle(.secondary)
+            if let n = model.notice { Label(n, systemImage: "mic.badge.xmark").font(.caption).foregroundStyle(.secondary) }
             if let r = model.lastResult { Text(r).font(.caption).foregroundStyle(.secondary).lineLimit(3) }
             if let m = model.recoveryMessage { Label(m, systemImage: "arrow.uturn.backward.circle").font(.caption).foregroundStyle(.secondary) }
             if let e = model.error { Label(e, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.red) }
