@@ -5,7 +5,8 @@ import DomainFixtures
 import Storage
 import Presentation
 
-/// `Amaranth --self-test ui-density --store-root <dir> --meeting <id> --png-dir <dir> [--text-size smaller|default|larger]`:
+/// `Amaranth --self-test ui-density --store-root <dir> --meeting <id> --png-dir <dir> [--text-size smaller|default|larger]
+/// [--transcript-style columns|bubbles] [--details]`:
 /// renders one meeting's Transcript and Notes tabs in the main window at 1280×826 and logs how many transcript rows are
 /// visible (T36 density check). `--store-root` must be a *copy* of a data directory (scripts/ui-density.sh makes one
 /// with sqlite's backup command); without it, the ui-render fixtures and the synthetic two-hour meeting are used.
@@ -38,9 +39,15 @@ enum UIDensitySelfTest {
         guard let d = library.detail else { SelfTest.log(["step": "detail", "meeting": meetingID.rawValue, "ok": "false"]); return false }
         let label = arg("--label") ?? "run"
         var ok = true
+        // Preferences for this run only: a throwaway suite, so the user's own settings are never touched.
+        let suiteName = "amaranth-ui-density-\(UUID())"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { UserDefaults.standard.removePersistentDomain(forName: suiteName) }
+        defaults.set(true, forKey: "onboarded")
+        defaults.set(args.contains("--details"), forKey: ReviewPreferences.showDetailsKey)
         for tab in [LibraryModel.DetailTab.transcript, .notes] {
             library.detailTab = tab
-            let view = NSHostingView(rootView: textSized(MainView(), arg("--text-size")).environment(worker).environment(models).environment(recorder)
+            let view = NSHostingView(rootView: textSized(MainView().defaultAppStorage(defaults), arg("--text-size"), style: arg("--transcript-style")).environment(worker).environment(models).environment(recorder)
                 .environment(library).environment(playback).environment(live).frame(width: size.width, height: size.height)
                 .background(Color(nsColor: .windowBackgroundColor)))
             view.appearance = NSAppearance(named: .aqua)
@@ -55,7 +62,7 @@ enum UIDensitySelfTest {
             view.cacheDisplay(in: view.bounds, to: rep)
             try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "\(label)-\(tab.rawValue.lowercased()).png"))
             if tab == .transcript {
-                let shown = TranscriptRows.skim(d.rows)
+                let shown = args.contains("--details") ? d.rows : TranscriptRows.skim(d.rows)
                 // The transcript table is the one holding exactly the displayed rows (the sidebar is a table too).
                 guard let table = tables(in: view).first(where: { $0.numberOfRows == shown.count }) else {
                     SelfTest.log(["step": "transcript-table", "ok": "false"]); ok = false; continue
@@ -71,7 +78,9 @@ enum UIDensitySelfTest {
         return ok
     }
 
-    @MainActor static func textSized<V: View>(_ v: V, _ size: String?) -> some View { v.textSize(TextSize(stored: size)) }
+    @MainActor static func textSized<V: View>(_ v: V, _ size: String?, style: String? = nil) -> some View {
+        v.textSize(TextSize(stored: size)).environment(\.transcriptStyle, TranscriptStyle(stored: style))
+    }
 
     static func tables(in view: NSView) -> [NSTableView] {
         (view as? NSTableView).map { [$0] } ?? view.subviews.flatMap(tables(in:))

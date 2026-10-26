@@ -1,4 +1,5 @@
 import SwiftUI
+import Domain
 import Presentation
 
 /// Compact typography and spacing tokens (T36). Sizes are points at the Default text size and are multiplied by the
@@ -35,6 +36,9 @@ enum AppStyle {
 
 extension EnvironmentValues {
     @Entry var textScale: CGFloat = 1
+    @Entry var transcriptStyle: TranscriptStyle = .columns
+    /// Palette index per speaker of the meeting on screen (`TranscriptRows.paletteIndices`).
+    @Entry var speakerColors: [SpeakerID: Int] = [:]
 }
 
 private struct AppFont: ViewModifier {
@@ -58,8 +62,11 @@ extension View {
     func textSize(_ size: TextSize) -> some View { environment(\.textScale, CGFloat(size.scale)) }
 }
 
-/// Window root: reads the persisted setting so every view below gets the scale.
-struct TextSizeRoot: ViewModifier {
-    @AppStorage(TextSize.key) private var stored = TextSize.default.rawValue
-    func body(content: Content) -> some View { content.textSize(TextSize(stored: stored)) }
+/// Window root: reads the persisted Appearance settings (text size, transcript style) for every view below.
+struct AppearanceRoot: ViewModifier {
+    @AppStorage(TextSize.key) private var textSize = TextSize.default.rawValue
+    @AppStorage(TranscriptStyle.key) private var transcriptStyle = TranscriptStyle.columns.rawValue
+    func body(content: Content) -> some View {
+        content.textSize(TextSize(stored: textSize)).environment(\.transcriptStyle, TranscriptStyle(stored: transcriptStyle))
+    }
 }

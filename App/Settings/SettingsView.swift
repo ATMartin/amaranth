@@ -25,9 +25,10 @@ struct SettingsView: View {
     }
 }
 
-/// Settings → Appearance (T36; later also colour scheme, T43/T44): text size of the meeting views.
+/// Settings → Appearance (T36, T37; later also colour scheme, T43/T44): text size and transcript style.
 struct AppearanceSettings: View {
     @AppStorage(TextSize.key) private var textSize = TextSize.default.rawValue
+    @AppStorage(TranscriptStyle.key) private var transcriptStyle = TranscriptStyle.columns.rawValue
 
     var body: some View {
         Form {
@@ -36,6 +37,12 @@ struct AppearanceSettings: View {
             }
             .pickerStyle(.segmented)
             Text("Sets the size of the meeting list, transcripts and notes. Default is compact; choose Larger for easier reading.")
+                .font(.caption).foregroundStyle(.secondary)
+            Picker("Transcript style", selection: $transcriptStyle) {
+                ForEach(TranscriptStyle.allCases) { Text($0.title).tag($0.rawValue) }
+            }
+            .pickerStyle(.segmented)
+            Text("Columns: time, speaker and text side by side. Bubbles: a conversation view with your microphone on the right and other speakers on the left (an experiment; it gets busy with many speakers).")
                 .font(.caption).foregroundStyle(.secondary)
         }
         .formStyle(.grouped)

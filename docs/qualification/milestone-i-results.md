@@ -52,3 +52,14 @@ stay out of git; committed screenshots use fixtures); stop after I is validated;
 - Full `swift test`: all pass except the known load flake `incrementalThenStopGivesTheBatchTranscript` (failed once,
   passed in the run before; ASR untouched).
 - Manual (user): checklist item 32.
+
+## T37 Conversation bubbles (exploration)
+- Settings → Appearance → Transcript style: Columns (default) / Bubbles (`TranscriptStyle`, `@AppStorage("transcriptStyle")`,
+  applied at the window root with the text size). Recommendation and evaluation: `docs/decisions/ui/0002-transcript-bubbles.md`
+  (keep Columns; Bubbles fits half as many rows and the left/right split carries no information with 3+ remote speakers).
+- Both styles share rows, ids, context menu and selection: play-from (time caption), correct text, reassign, mark
+  uncertain, evidence jump (ui-render `evidence-jump` passes for `columns` and `bubbles`), skim/Details.
+- Also changes T35 colours: per-meeting distinct speaker colours (`TranscriptRows.paletteIndices`, tested), and cyan
+  instead of blue in the palette (blue is the accent / your bubbles).
+- `ui-density` takes `--transcript-style` and `--details`; its preferences live in a throwaway defaults suite.
+- Manual (user): checklist item 33.

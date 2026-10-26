@@ -54,6 +54,7 @@ struct TranscriptPane: View {
                             .contextMenu { menu(row) }
                     }
                     .listStyle(.inset)
+                    .environment(\.speakerColors, TranscriptRows.paletteIndices(speakers.map(\.id)))
                     .environment(\.defaultMinListRowHeight, 8)   // hairline gap rows in skim mode
                     .onChange(of: library.focusRowID, initial: true) { _, id in
                         guard let id else { return }
@@ -120,6 +121,8 @@ struct TranscriptRowView: View {
     let play: () -> Void
     @Environment(\.showDetails) private var showDetails
     @Environment(\.textScale) private var scale
+    @Environment(\.transcriptStyle) private var style
+    @Environment(\.speakerColors) private var colors
 
     static let timeWidth: CGFloat = 60
     static let speakerWidth: CGFloat = 140
@@ -134,6 +137,8 @@ struct TranscriptRowView: View {
             Label("\(TranscriptRows.clock(row.start))–\(TranscriptRows.clock(row.end)) · \(reason)", systemImage: "waveform.slash")
                 .appFont(.callout).foregroundStyle(.orange)
                 .accessibilityLabel("Gap from \(TranscriptRows.clock(row.start)) to \(TranscriptRows.clock(row.end)): \(reason)")
+        } else if style == .bubbles {
+            bubble
         } else {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Button(TranscriptRows.clock(row.start), action: play)
@@ -149,6 +154,45 @@ struct TranscriptRowView: View {
                 }
             }
         }
+    }
+
+    /// Bubbles (T37): the microphone (you) on the right in the accent tint, other speakers on the left in their colour,
+    /// the name above the first bubble of a run, time and flags in a caption beside each bubble.
+    @ViewBuilder var bubble: some View {
+        let mine = row.source == .microphone
+        VStack(alignment: mine ? .trailing : .leading, spacing: 2) {
+            if showsSpeaker {
+                HStack(spacing: AppStyle.half) {
+                    SpeakerDisc(assignment: row.assignment, name: row.speakerLabel, size: 14 * scale)
+                    Text(row.speakerLabel.replacingOccurrences(of: " (overlapping)", with: "")).appFont(.caption, weight: .semibold)
+                        .foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle).help(row.speakerLabel)
+                }
+                .padding(.top, AppStyle.half)
+                .accessibilityHidden(true)
+            }
+            HStack(alignment: .bottom, spacing: AppStyle.half + 2) {
+                if mine { bubbleCaption }
+                Text(row.text).appFont(.body).textSelection(.enabled)
+                    .padding(.horizontal, 10).padding(.vertical, 5)
+                    .background((mine ? Color.accentColor : SpeakerDisc.color(row.assignment, colors)).opacity(0.16), in: .rect(cornerRadius: 12))
+                    .accessibilityLabel("\(row.speakerLabel): \(row.text)")
+                if !mine { bubbleCaption }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: mine ? .trailing : .leading)
+        .padding(mine ? .leading : .trailing, 96 * scale)
+        .padding(.vertical, 1)
+    }
+
+    var bubbleCaption: some View {
+        HStack(spacing: AppStyle.half) {
+            Button(TranscriptRows.clock(row.start), action: play)
+                .buttonStyle(.plain).appFont(.caption2, monospacedDigit: true).foregroundStyle(playable ? Color.accentColor : .secondary)
+                .disabled(!playable).help(playable ? "Play from here" : "Playback unavailable")
+            badges
+        }
+        .fixedSize()
+        .padding(.bottom, 4)
     }
 
     @ViewBuilder var speaker: some View {

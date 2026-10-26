@@ -63,6 +63,16 @@ struct TranscriptRunsTests {
         #expect(spread.count >= 6, "ids spread over the palette")
     }
 
+    @Test func meetingColoursAreDistinctAndStable() {
+        let ids = (0..<8).map { SpeakerID("speaker-\($0)") }
+        let map = TranscriptRows.paletteIndices(ids)
+        #expect(Set(map.values).count == 8, "eight speakers, eight colours")
+        #expect(map == TranscriptRows.paletteIndices(ids))
+        #expect(map[ids[0]] == TranscriptRows.paletteIndex(ids[0]), "the first speaker keeps its hash colour")
+        let many = TranscriptRows.paletteIndices((0..<12).map { SpeakerID("s\($0)") })
+        #expect(many.count == 12 && many.values.allSatisfy { (0..<TranscriptRows.speakerPaletteCount).contains($0) }, "more than 8 reuse colours")
+    }
+
     @Test func initials() {
         #expect(TranscriptRows.initials("Dana Smith") == "DS")
         #expect(TranscriptRows.initials("Speaker 2") == "S2")

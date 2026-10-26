@@ -146,6 +146,19 @@ public enum TranscriptRows {
         return Int(h % UInt64(speakerPaletteCount))
     }
 
+    /// Colours for one meeting's speakers: each starts at its `paletteIndex` and moves to the next free colour, so up
+    /// to `speakerPaletteCount` speakers never share one; a speaker's colour stays put while the speaker list is unchanged.
+    public static func paletteIndices(_ speakers: [SpeakerID]) -> [SpeakerID: Int] {
+        var used = Set<Int>(), out: [SpeakerID: Int] = [:]
+        for id in speakers where out[id] == nil {
+            var i = paletteIndex(id)
+            if used.count < speakerPaletteCount { while used.contains(i) { i = (i + 1) % speakerPaletteCount } }
+            used.insert(i)
+            out[id] = i
+        }
+        return out
+    }
+
     /// Up to two initials for a speaker disc: "Dana Smith" → "DS", "Speaker 2" → "S2", "dana" → "D".
     public static func initials(_ name: String) -> String {
         let words = name.split(whereSeparator: { $0.isWhitespace || $0 == "-" }).filter { $0.first?.isLetter == true || $0.first?.isNumber == true }

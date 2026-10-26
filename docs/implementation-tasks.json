@@ -1236,7 +1236,7 @@
       "id": "T37",
       "title": "Conversation-bubble transcript style (exploration)",
       "milestone": "I",
-      "status": "planned",
+      "status": "done (Bubbles behind a setting, Columns stays default; recommendation in docs/decisions/ui/0002; hands-on check: checklist item 33)",
       "optional": true,
       "depends_on": [
         "T35"

@@ -70,6 +70,8 @@ enum UIRenderSelfTest {
             let tMain = await host(MainView(), "main-\(name)", size: CGSize(width: 1200, height: 760))
             let tTranscript = await host(TranscriptPane(detail: d).environment(\.showDetails, false), "transcript-\(name)", size: CGSize(width: 900, height: 700))
             let tTranscriptDetails = await host(TranscriptPane(detail: d).environment(\.showDetails, true), "transcript-details-\(name)", size: CGSize(width: 900, height: 700))
+            _ = await host(TranscriptPane(detail: d).environment(\.showDetails, false).environment(\.transcriptStyle, .bubbles), "transcript-bubbles-\(name)", size: CGSize(width: 900, height: 700))
+            _ = await host(TranscriptPane(detail: d).environment(\.showDetails, true).environment(\.transcriptStyle, .bubbles), "transcript-bubbles-details-\(name)", size: CGSize(width: 900, height: 700))
             let tNotes = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, false).defaultAppStorage(collapsed), "notes-\(name)", size: CGSize(width: 900, height: 700))
             _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, true).defaultAppStorage(collapsed), "notes-details-\(name)", size: CGSize(width: 900, height: 700))
             _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).defaultAppStorage(expanded), "notes-expanded-\(name)", size: CGSize(width: 900, height: 900))
@@ -88,9 +90,10 @@ enum UIRenderSelfTest {
             if let d = library.detail {
                 let shown = TranscriptRows.skim(d.rows)
                 let speech = shown.filter { !$0.isGap }
+                for style in TranscriptStyle.allCases {
                 for (label, target, focusFirst) in [("while-shown", speech[speech.count / 2], false), ("on-appear", speech[speech.count / 3], true)] {
                     library.focusRowID = focusFirst ? target.id : nil
-                    let view = NSHostingView(rootView: TranscriptPane(detail: d).environment(\.showDetails, false).textSize(textSize).environment(library)
+                    let view = NSHostingView(rootView: TranscriptPane(detail: d).environment(\.showDetails, false).textSize(textSize).environment(\.transcriptStyle, style).environment(library)
                         .environment(playback).frame(width: 900, height: 700).background(Color(nsColor: .windowBackgroundColor)))
                     let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 900, height: 700), styleMask: [.titled], backing: .buffered, defer: false)
                     window.contentView = view
@@ -106,15 +109,16 @@ enum UIRenderSelfTest {
                         if table?.selectedRow == index, NSLocationInRange(index, visible) { break }
                     }
                     let pass = table?.selectedRow == index && NSLocationInRange(index, visible)
-                    SelfTest.log(["step": "evidence-jump", "case": label, "row": target.id, "index": "\(index)", "selected": "\(table?.selectedRow ?? -1)",
+                    SelfTest.log(["step": "evidence-jump", "style": style.rawValue, "case": label, "row": target.id, "index": "\(index)", "selected": "\(table?.selectedRow ?? -1)",
                                   "visible": "\(visible.location)..<\(visible.location + visible.length)", "ok": "\(pass)"])
                     if !pass { ok = false }
-                    if pass, label == "while-shown" {
+                    if pass, label == "while-shown", style == .columns {
                         let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
                         view.cacheDisplay(in: view.bounds, to: rep)
                         try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "transcript-evidence-jump.png"))
                     }
                     window.contentView = nil
+                }
                 }
                 library.focusRowID = nil
             }
