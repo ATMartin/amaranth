@@ -48,3 +48,21 @@ run once on the final build; the Sonnet validator automates the hands-on recorde
 - Meter polling: unchanged at 10 Hz for the whole recording, because the strip glyphs need it too.
 - The popover lists the meeting folder, not a live segment count: counting segments needs a full session snapshot on
   every tick. The count still appears in the banner after Stop.
+
+## Capture self-test (final build, 2026-10-25)
+
+`--self-test capture-signals` was run three times on the final H build. Evidence is in `evidence/2026-10-25/`. Run 3 was
+done with no other Amaranth running and the machine idle. All three runs fail on one condition only: a
+`gap:source.startDelayed` event, because system audio delivers its first frame at 1.21–1.28 s, and the gap threshold is
+0.5 s. Everything else passes: the latency gates for both sources, the microphone signal, external audio captured,
+Amaranth's own audio excluded, and default routes unchanged.
+
+Not caused by Milestone H:
+- No capture file has changed since `6ac994e` (2026-10-16), whose runs 2–7 passed with the system first frame at
+  0.05–0.08 s. That includes `Capture/`, `Domain/Capture/` and `App/Launch/CaptureSelfTest.swift`.
+- macOS 27.0.1 was installed on 2026-10-20, between the passing runs and these runs.
+- The gap event is working as designed: about 1.2 s of system-audio lead-in really is lost, and the recording says so.
+
+Follow-up (not in H): starting the system tap on macOS 27.0.1 takes longer. Options: start the tap earlier (warm it when
+the window opens or Record is hovered), or accept a short lead-in and raise the threshold. This needs a decision before
+the next capture qualification.

@@ -1,0 +1,11 @@
+{"microphone":"3","step":"permissions"}
+{"detail":"signal after 1536 frames","result":"granted","step":"systemAudioPermission"}
+{"startErrors":"[:]","state":"preparing","step":"start"}
+{"bufferUs":"10667","callbackMaxUs":"29","callbackP99us":"25","callbacks":"693","device":"MacBook Pro Microphone","firstCommitSec":"2.066","firstFrameSec":"0.063","format":"48000Hz\/1ch\/float32","formatMismatch":"0","framesPerCallback":"512","gate":"pass","maxDriftMs":"0.02","overrunFrames":"0","p99UnderTenPercent":"true","source":"microphone","step":"latency"}
+{"bufferUs":"10667","callbackMaxUs":"32","callbackP99us":"50","callbacks":"577","device":"System output","firstCommitSec":"3.282","firstFrameSec":"1.283","format":"48000Hz\/2ch\/float32","formatMismatch":"0","framesPerCallback":"512","gate":"pass","maxDriftMs":"0.00","overrunFrames":"0","p99UnderTenPercent":"true","source":"systemOutput","step":"latency"}
+{"baselineRmsDB":"-29.6","micLive":"true","missingFraction":"0.0065","self660dB":"-97.7","source":"microphone","step":"signal","tone1000dB":"-92.2","tone1500dB":"-88.8"}
+{"baselineRmsDB":"-200.0","externalCaptured":"true","missingFraction":"0.1712","self660dB":"-240.0","selfExcluded":"true","source":"systemOutput","step":"signal","tone1000dB":"-11.4","tone1500dB":"-10.5"}
+{"defaultInput":"BuiltInMicrophoneDevice","defaultOutput":"BuiltInSpeakerDevice","step":"routes","unchanged":"true"}
+{"count":"1","kinds":"gap:source.startDelayed","step":"events"}
+{"directory":"\/var\/folders\/jn\/0_7nnpqs5ll7q7tdtnlsx4y00000gn\/T\/amaranth-capture-selftest\/97D4401C-FD72-41A6-BA56-D10AEB675FED\/meetings\/f68e45ae-0541-4ad6-a537-ba2f0e84f5a7","step":"artifacts"}
+{"result":"fail","test":"capture-signals"}
