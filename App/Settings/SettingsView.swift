@@ -38,11 +38,9 @@ struct AppearanceSettings: View {
             .pickerStyle(.segmented)
             Text("Sets the size of the meeting list, transcripts and notes. Default is compact; choose Larger for easier reading.")
                 .font(.caption).foregroundStyle(.secondary)
-            Picker("Transcript style", selection: $transcriptStyle) {
-                ForEach(TranscriptStyle.allCases) { Text($0.title).tag($0.rawValue) }
-            }
-            .pickerStyle(.segmented)
-            Text("Columns: time, speaker and text side by side. Bubbles: a conversation view with your microphone on the right and other speakers on the left (an experiment; it gets busy with many speakers).")
+            LabeledContent("Transcript style") { EmptyView() }
+            TranscriptStylePicker(selection: $transcriptStyle)
+            Text("Columns: time, speaker and text side by side. Bubbles: a conversation view with your microphone on the right and other speakers on the left; easiest to read in one-to-one meetings.")
                 .font(.caption).foregroundStyle(.secondary)
         }
         .formStyle(.grouped)

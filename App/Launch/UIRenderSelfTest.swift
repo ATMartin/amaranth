@@ -166,6 +166,11 @@ enum UIRenderSelfTest {
         ], dismiss: { _ in }), "recorder-banner", size: CGSize(width: 900, height: 200))
         // Settings → Recording defaults (T30).
         _ = await host(RecordingSettings(recorder: recorder), "settings-recording", size: CGSize(width: 560, height: 560))
+        // Settings → Appearance: transcript style cards, each selected in turn (throwaway defaults, at the Settings size).
+        _ = await host(AppearanceSettings().defaultAppStorage(collapsed), "settings-appearance-columns", size: CGSize(width: 560, height: 460))
+        collapsed.set(TranscriptStyle.bubbles.rawValue, forKey: TranscriptStyle.key)
+        _ = await host(AppearanceSettings().defaultAppStorage(collapsed), "settings-appearance-bubbles", size: CGSize(width: 560, height: 460))
+        collapsed.removeObject(forKey: TranscriptStyle.key)
         // Switching meetings: frames straight after the selection changes, while the next meeting loads.
         if library.items.count >= 2 {
             library.selection = library.items[0].id
