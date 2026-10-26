@@ -13,7 +13,7 @@ struct LiveTranscriptView: View {
         @Bindable var recorder = recorder
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Label("Live text — provisional", systemImage: "waveform").font(.headline)
+                Label("Live text — provisional", systemImage: "waveform").appFont(.headline)
                 Spacer()
                 switch live.status {
                 case .running: if let p = live.state.percentile(0.5) { Text(String(format: "about %.0f s behind", p)).font(.caption).foregroundStyle(.secondary) }
@@ -43,8 +43,7 @@ struct LiveTranscriptView: View {
                     ForEach(Array(lines.enumerated()), id: \.offset) { i, line in
                         HStack(alignment: .firstTextBaseline, spacing: 8) {
                             Text(TranscriptRows.clock(line.start)).appFont(.caption, monospacedDigit: true).foregroundStyle(.secondary).frame(width: 60, alignment: .leading)
-                            Text(line.source == .microphone ? "MIC" : "SYS").appFont(.caption2, weight: .bold).padding(.horizontal, 4)
-                                .background(.quaternary, in: .rect(cornerRadius: 3))
+                            SourceIcon(source: line.source)
                             Text(line.text).appFont(.body).foregroundStyle(line.tentative ? .secondary : .primary).italic(line.tentative)
                         }
                         .id(i)

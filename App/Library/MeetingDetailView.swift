@@ -65,7 +65,7 @@ struct MeetingDetailView: View {
     /// The one place ⌘D is registered (the View menu item from T29 calls the same toggle).
     var detailsToggle: some View {
         Button { showDetails.toggle() } label: {
-            Image(systemName: showDetails ? "info.circle.fill" : "info.circle").imageScale(.large)
+            Image(systemName: showDetails ? "info.circle.fill" : "info.circle").font(.system(size: AppStyle.iconLarge))
         }
         .buttonStyle(.borderless)
         .keyboardShortcut("d", modifiers: .command)

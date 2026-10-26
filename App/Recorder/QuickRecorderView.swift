@@ -100,7 +100,7 @@ struct RecordingStripContent: View {
     @State private var showingHealth = false
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: AppStyle.grid) {
             status
             // The glyphs open the detailed health popover (T34); each glyph's tooltip still names its status.
             Button { showingHealth.toggle() } label: {
@@ -118,11 +118,13 @@ struct RecordingStripContent: View {
             .popover(isPresented: $showingHealth, arrowEdge: .bottom) {
                 RecordingHealthDetails(health: health, savedUpTo: savedUpTo, now: elapsed, diskWarning: diskWarning, folder: folder)
             }
+            // Pause/Resume is icon-only (T45; tooltip and VoiceOver say which); Stop and Save keeps its words because it
+            // ends the recording.
             if state == .paused || state == .interrupted {
-                Button(action: resume) { Label("Resume", systemImage: "play.fill") }
+                Button(action: resume) { Label("Resume", systemImage: "play.fill").labelStyle(.iconOnly) }
                     .keyboardShortcut("p", modifiers: [.command, .shift]).help("Resume recording (⌘⇧P)")
             } else {
-                Button(action: pause) { Label("Pause", systemImage: "pause.fill") }.disabled(state != .recording)
+                Button(action: pause) { Label("Pause", systemImage: "pause.fill").labelStyle(.iconOnly) }.disabled(state != .recording)
                     .keyboardShortcut("p", modifiers: [.command, .shift]).help("Pause recording (⌘⇧P)")
             }
             Button(action: stop) { Label("Stop and Save", systemImage: "stop.fill") }.disabled(state == .stopping || state == .preparing)
@@ -255,7 +257,7 @@ struct SourceHealthRow: View {
 
     var body: some View {
         HStack {
-            Text(health.source == .microphone ? "MIC" : "SYS").font(.caption2.bold()).frame(width: 28)
+            SourceIcon(source: health.source).frame(width: 28)
             MeterBar(db: health.peakLevelDBFS ?? -120)
             Text(statusText).font(.caption2).foregroundStyle(statusColor).frame(width: 150, alignment: .leading)
         }

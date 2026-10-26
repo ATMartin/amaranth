@@ -111,14 +111,15 @@ struct NotesPane: View {
         }
     }
 
+    /// One line, no box (T45): icon and text in the state's colour, a small button on the right. The text stays; failed
+    /// notes are a safety-relevant state.
     func banner<A: View>(_ text: String, _ icon: String, _ color: Color, @ViewBuilder action: () -> A) -> some View {
-        HStack {
-            Label(text, systemImage: icon).foregroundStyle(color)
+        HStack(spacing: AppStyle.grid) {
+            Label(text, systemImage: icon).appFont(.callout).foregroundStyle(color)
             Spacer()
-            action()
+            action().controlSize(.small)
         }
-        .padding(10)
-        .background(.quaternary.opacity(0.5), in: .rect(cornerRadius: 8))
+        .padding(.vertical, AppStyle.half)
     }
 
     @ViewBuilder func generated(_ s: SummaryRevision) -> some View {
@@ -160,6 +161,7 @@ struct NoteItemRow: View {
     let detail: MeetingDetail
     let jump: (TranscriptEvidence) -> Void
     @Environment(\.showDetails) private var showDetails
+    @Environment(\.textScale) private var scale
 
     var transcriptEvidence: [TranscriptEvidence] {
         item.evidence.compactMap { if case .transcript(let e) = $0 { e } else { nil } }
@@ -171,7 +173,8 @@ struct NoteItemRow: View {
                 if let t = item.title { Text(t).appFont(.body, weight: .semibold) }
                 Text(item.text).textSelection(.enabled)
                 if item.uncertain {
-                    Image(systemName: "questionmark.circle").foregroundStyle(Color.statusAttention).help("Not fully confirmed by the transcript — check the cited passage")
+                    Image(systemName: "questionmark.circle").font(.system(size: AppStyle.icon * scale)).foregroundStyle(Color.statusAttention)
+                        .help("Not fully confirmed by the transcript — check the cited passage").accessibilityLabel("Not fully confirmed by the transcript")
                 }
             }
             if item.kind == .actionItem || item.owner != nil || item.due != nil {
@@ -231,7 +234,8 @@ struct CollapsibleEditor<Content: View>: View {
             .buttonStyle(.plain)
             .help(help)
             .accessibilityValue(isExpanded ? "Expanded" : "Collapsed")
-            if isExpanded { GroupBox { content() } }
+            // The editor draws its own field border; no extra box around it (T45).
+            if isExpanded { content().padding(.leading, AppStyle.double) }
         }
     }
 }

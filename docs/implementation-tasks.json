@@ -1479,7 +1479,7 @@
       "id": "T45",
       "title": "Lightweight visual language pass: icons over text badges, less chrome",
       "milestone": "K",
-      "status": "planned",
+      "status": "done (decision note docs/decisions/ui/0003-visual-language.md; hands-on checks: checklist items 37-40)",
       "optional": false,
       "depends_on": [
         "T43",

@@ -29,6 +29,11 @@ enum AppStyle {
         }
     }
 
+    /// Inline status and source icons (T45): 11–13 pt, so they sit on the text line instead of competing with it.
+    static let iconSmall: CGFloat = 11
+    static let icon: CGFloat = 12
+    static let iconLarge: CGFloat = 13
+
     /// 8-pt grid, with a half step for tight rows.
     static let half: CGFloat = 4
     static let grid: CGFloat = 8
@@ -69,6 +74,21 @@ struct AppearanceRoot: ViewModifier {
     @AppStorage(TranscriptStyle.key) private var transcriptStyle = TranscriptStyle.columns.rawValue
     func body(content: Content) -> some View {
         content.textSize(TextSize(stored: textSize)).environment(\.transcriptStyle, TranscriptStyle(stored: transcriptStyle))
+    }
+}
+
+/// Which track a line came from (T45): a small mic or speaker glyph instead of a "MIC" / "SYS" text badge. The tooltip
+/// and VoiceOver label carry the words.
+struct SourceIcon: View {
+    let source: SourceKind
+    @Environment(\.textScale) private var scale
+
+    var body: some View {
+        let name = source == .microphone ? "Your microphone" : "System audio"
+        Image(systemName: RecorderPresentation.symbol(source))
+            .font(.system(size: AppStyle.iconSmall * scale)).foregroundStyle(.secondary)
+            .frame(width: 14 * scale)
+            .help(name).accessibilityLabel(name)
     }
 }
 

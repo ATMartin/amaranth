@@ -265,8 +265,7 @@ struct TranscriptRowView: View {
     @ViewBuilder var badges: some View {
         HStack(spacing: 6) {
             if showDetails {
-                Text(row.source == .microphone ? "MIC" : "SYS").appFont(.caption2, weight: .bold).padding(.horizontal, 4)
-                    .background(.quaternary, in: .rect(cornerRadius: 3)).help(row.source == .microphone ? "Your microphone" : "System audio")
+                SourceIcon(source: row.source)
             }
             if row.flags.contains(.overlap) { flag("overlap", "person.2.wave.2", "Several people spoke at once") }
             if row.flags.contains(.uncertainSpeaker) { flag("speaker uncertain", "questionmark.circle", "Speaker attribution is uncertain") }
@@ -276,13 +275,10 @@ struct TranscriptRowView: View {
         }
     }
 
-    /// Icon and caption with Details on; icon only (same tooltip, caption as the VoiceOver label) in skim mode.
-    @ViewBuilder func flag(_ text: String, _ icon: String, _ help: String) -> some View {
-        if showDetails {
-            Label(text, systemImage: icon).appFont(.caption2).foregroundStyle(Color.statusAttention).help(help).labelStyle(.titleAndIcon)
-        } else {
-            Label(text, systemImage: icon).appFont(.caption2).foregroundStyle(Color.statusAttention).help(help).labelStyle(.iconOnly)
-        }
+    /// Icon only in both modes (T45); the tooltip explains it and the caption is the VoiceOver label.
+    func flag(_ text: String, _ icon: String, _ help: String) -> some View {
+        Image(systemName: icon).font(.system(size: AppStyle.iconSmall * scale)).foregroundStyle(Color.statusAttention)
+            .help(help).accessibilityLabel(text)
     }
 }
 
