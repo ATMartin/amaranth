@@ -80,6 +80,45 @@ enum UIRenderSelfTest {
                           "notesSeconds": String(format: "%.2f", tNotes)])
             if d.rows.count > 1000, max(tTranscript, tTranscriptDetails) > 2.0 { ok = false }
         }
+        // Evidence jump (T35): focusing a row mid-way through the two-hour meeting selects that row and scrolls it into
+        // view, both when the pane is already showing (focus set later) and when it appears with the focus already set.
+        if let long = library.items.first(where: { $0.id == MeetingID("ui-long") }) {
+            library.selection = long.id
+            for _ in 0..<40 where library.detail?.meeting.id != long.id { try? await Task.sleep(for: .milliseconds(50)) }
+            if let d = library.detail {
+                let shown = TranscriptRows.skim(d.rows)
+                let speech = shown.filter { !$0.isGap }
+                for (label, target, focusFirst) in [("while-shown", speech[speech.count / 2], false), ("on-appear", speech[speech.count / 3], true)] {
+                    library.focusRowID = focusFirst ? target.id : nil
+                    let view = NSHostingView(rootView: TranscriptPane(detail: d).environment(\.showDetails, false).environment(library)
+                        .environment(playback).frame(width: 900, height: 700))
+                    let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 900, height: 700), styleMask: [.titled], backing: .buffered, defer: false)
+                    window.contentView = view
+                    try? await Task.sleep(for: .milliseconds(600))
+                    if !focusFirst { library.focusRowID = target.id }
+                    let table = Self.table(in: view)
+                    let index = shown.firstIndex { $0.id == target.id } ?? -1
+                    var visible = NSRange(location: 0, length: 0)
+                    for _ in 0..<40 {
+                        try? await Task.sleep(for: .milliseconds(50))
+                        view.layoutSubtreeIfNeeded()
+                        visible = table.map { $0.rows(in: $0.visibleRect) } ?? visible
+                        if table?.selectedRow == index, NSLocationInRange(index, visible) { break }
+                    }
+                    let pass = table?.selectedRow == index && NSLocationInRange(index, visible)
+                    SelfTest.log(["step": "evidence-jump", "case": label, "row": target.id, "index": "\(index)", "selected": "\(table?.selectedRow ?? -1)",
+                                  "visible": "\(visible.location)..<\(visible.location + visible.length)", "ok": "\(pass)"])
+                    if !pass { ok = false }
+                    if pass, label == "while-shown" {
+                        let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
+                        view.cacheDisplay(in: view.bounds, to: rep)
+                        try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "transcript-evidence-jump.png"))
+                    }
+                    window.contentView = nil
+                }
+                library.focusRowID = nil
+            }
+        }
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
         _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 360, height: 760))
         // Toolbar recorder (T31): idle control, this meeting's options, the strip in each state, the banner.
@@ -119,6 +158,12 @@ enum UIRenderSelfTest {
         _ = await host(MainView(), "search", size: CGSize(width: 1200, height: 760))
         SelfTest.log(["step": "output", "directory": out.path])
         return ok
+    }
+
+    static func table(in view: NSView) -> NSTableView? {
+        if let t = view as? NSTableView { return t }
+        for v in view.subviews { if let t = table(in: v) { return t } }
+        return nil
     }
 
     /// Every SourceHealth status appears in at least one strip, plus the low-disk glyph.

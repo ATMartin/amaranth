@@ -2,8 +2,9 @@ import SwiftUI
 import Domain
 import Presentation
 
-/// Virtualized transcript (`List` reuses rows, so a two-hour meeting scrolls smoothly). Click a time to play from it;
-/// right-click a row to correct text or change its speaker; the speaker bar renames and merges speakers. Gaps are rows:
+/// Virtualized transcript (`List` reuses rows, so a two-hour meeting scrolls smoothly) in three columns: time, speaker
+/// (disc and name on the first row of each same-speaker run, T35), text. Click a time to play from it; right-click a
+/// row to correct text or change its speaker; the speaker bar renames and merges speakers. Gaps are rows:
 /// with Details off (skim mode, T25) they draw as hairlines and flags as icons; with Details on, in full.
 struct TranscriptPane: View {
     let detail: MeetingDetail
@@ -33,8 +34,12 @@ struct TranscriptPane: View {
                                        description: Text(detail.transcript == nil ? "The transcript appears here after processing. The audio is saved." : "No speech was detected."))
             } else {
                 ScrollViewReader { proxy in
-                    List(showDetails ? detail.rows : TranscriptRows.skim(detail.rows), selection: $selectedRow) { row in
-                        TranscriptRowView(row: row, playable: detail.playbackUnavailableReason == nil) { playback.play(from: row.start.seconds) }
+                    let rows = showDetails ? detail.rows : TranscriptRows.skim(detail.rows)
+                    let runStarts = TranscriptRows.runStarts(rows)
+                    List(rows, selection: $selectedRow) { row in
+                        TranscriptRowView(row: row, showsSpeaker: runStarts.contains(row.id), playable: detail.playbackUnavailableReason == nil) {
+                            playback.play(from: row.start.seconds)
+                        }
                             .tag(row.id)
                             .id(row.id)
                             .listRowBackground(row.id == library.focusRowID ? Color.accentColor.opacity(0.15) : nil)
@@ -44,10 +49,16 @@ struct TranscriptPane: View {
                     .environment(\.defaultMinListRowHeight, 8)   // hairline gap rows in skim mode
                     .onChange(of: library.focusRowID, initial: true) { _, id in
                         guard let id else { return }
-                        // Next run-loop turn: changing the selection while the table is updating is reentrant in AppKit.
+                        // Off the current update: changing the selection while the table is updating is reentrant in
+                        // AppKit. Rows have estimated heights until laid out, so one scroll on a long meeting lands
+                        // dozens of rows off; scroll again once the rows near the target have real heights.
                         Task { @MainActor in
-                            withAnimation { proxy.scrollTo(id, anchor: .center) }
-                            selectedRow = id
+                            for pass in 0..<3 {
+                                if pass > 0 { try? await Task.sleep(for: .milliseconds(120)) }
+                                guard library.focusRowID == id else { return }
+                                selectedRow = id
+                                proxy.scrollTo(id, anchor: .center)
+                            }
                         }
                     }
                 }
@@ -95,9 +106,14 @@ struct TranscriptPane: View {
 
 struct TranscriptRowView: View {
     let row: TranscriptRow
+    /// First row of a same-speaker run: shows the disc and name; continuation rows leave the column blank.
+    let showsSpeaker: Bool
     let playable: Bool
     let play: () -> Void
     @Environment(\.showDetails) private var showDetails
+
+    static let timeWidth: CGFloat = 60
+    static let speakerWidth: CGFloat = 140
 
     var body: some View {
         if row.isGap, !showDetails {
@@ -114,24 +130,45 @@ struct TranscriptRowView: View {
                 Button(TranscriptRows.clock(row.start), action: play)
                     .buttonStyle(.plain).monospacedDigit().foregroundStyle(playable ? Color.accentColor : .secondary)
                     .disabled(!playable).help(playable ? "Play from here" : "Playback unavailable")
-                    .frame(width: 60, alignment: .leading)
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 6) {
-                        Text(row.speakerLabel).bold().foregroundStyle(row.assignment == .unknown ? .secondary : .primary)
-                        if showDetails {
-                            Text(row.source == .microphone ? "MIC" : "SYS").font(.caption2.bold()).padding(.horizontal, 4)
-                                .background(.quaternary, in: .rect(cornerRadius: 3)).help(row.source == .microphone ? "Your microphone" : "System audio")
-                        }
-                        if row.flags.contains(.overlap) { flag("overlap", "person.2.wave.2", "Several people spoke at once") }
-                        if row.flags.contains(.uncertainSpeaker) { flag("speaker uncertain", "questionmark.circle", "Speaker attribution is uncertain") }
-                        if row.flags.contains(.probableEcho) { flag("echo?", "speaker.wave.2", "Probably your speakers picked up by the mic; kept, not deleted") }
-                        if row.flags.contains(.questionableText) { flag("check text", "exclamationmark.triangle", "Speech recognition may have garbled this") }
-                        if row.flags.contains(.corrected) { flag("edited", "pencil", "You corrected this text") }
-                    }
-                    Text(row.text).textSelection(.enabled)
+                    .frame(width: Self.timeWidth, alignment: .leading)
+                speaker.frame(width: Self.speakerWidth, alignment: .leading)
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    // Every row, continuation rows included, names its speaker for VoiceOver.
+                    Text(row.text).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                        .accessibilityLabel("\(row.speakerLabel): \(row.text)")
+                    badges.fixedSize()
                 }
             }
             .padding(.vertical, 2)
+        }
+    }
+
+    @ViewBuilder var speaker: some View {
+        if showsSpeaker {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                SpeakerDisc(assignment: row.assignment, name: row.speakerLabel).alignmentGuide(.firstTextBaseline) { $0.height * 0.75 }
+                // Overlap shows as the group disc and the overlap flag, so the column drops the "(overlapping)" suffix.
+                Text(row.speakerLabel.replacingOccurrences(of: " (overlapping)", with: "")).bold().lineLimit(1).truncationMode(.middle)
+                    .foregroundStyle(row.assignment == .unknown ? .secondary : .primary)
+                    .help(row.speakerLabel)
+            }
+            .accessibilityHidden(true)
+        } else {
+            Color.clear.frame(height: 1).accessibilityHidden(true)
+        }
+    }
+
+    @ViewBuilder var badges: some View {
+        HStack(spacing: 6) {
+            if showDetails {
+                Text(row.source == .microphone ? "MIC" : "SYS").font(.caption2.bold()).padding(.horizontal, 4)
+                    .background(.quaternary, in: .rect(cornerRadius: 3)).help(row.source == .microphone ? "Your microphone" : "System audio")
+            }
+            if row.flags.contains(.overlap) { flag("overlap", "person.2.wave.2", "Several people spoke at once") }
+            if row.flags.contains(.uncertainSpeaker) { flag("speaker uncertain", "questionmark.circle", "Speaker attribution is uncertain") }
+            if row.flags.contains(.probableEcho) { flag("echo?", "speaker.wave.2", "Probably your speakers picked up by the mic; kept, not deleted") }
+            if row.flags.contains(.questionableText) { flag("check text", "exclamationmark.triangle", "Speech recognition may have garbled this") }
+            if row.flags.contains(.corrected) { flag("edited", "pencil", "You corrected this text") }
         }
     }
 

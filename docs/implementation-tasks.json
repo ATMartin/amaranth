@@ -1168,7 +1168,7 @@
       "id": "T35",
       "title": "Grouped three-column transcript (time · speaker · text) with speaker initials discs",
       "milestone": "I",
-      "status": "planned",
+      "status": "done (hands-on check pending: checklist item 31)",
       "optional": false,
       "depends_on": [
         "T25"

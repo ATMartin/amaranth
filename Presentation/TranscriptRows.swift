@@ -111,6 +111,47 @@ public enum TranscriptRows {
         return out
     }
 
+    /// Consecutive speech rows by the same speaker on the same source, shown with the speaker once (T35). A gap row or
+    /// a source change ends a run; each gap row is a run of its own. `.unknown` rows group with each other, and
+    /// `.multiple` rows with rows that have the same set of speakers.
+    public struct Run: Identifiable, Hashable, Sendable {
+        public var rows: [TranscriptRow]
+        public var id: String { rows[0].id }
+        public var assignment: SpeakerAssignment { rows[0].assignment }
+        public var isGap: Bool { rows[0].isGap }
+    }
+
+    public static func runs(_ rows: [TranscriptRow]) -> [Run] {
+        var out: [Run] = []
+        for row in rows {
+            if !row.isGap, let last = out.last?.rows.last, !last.isGap, last.source == row.source, last.assignment == row.assignment {
+                out[out.count - 1].rows.append(row)
+            } else {
+                out.append(Run(rows: [row]))
+            }
+        }
+        return out
+    }
+
+    /// Ids of the rows that start a run: the only rows that show the speaker disc and name.
+    public static func runStarts(_ rows: [TranscriptRow]) -> Set<String> { Set(runs(rows).map(\.id)) }
+
+    /// Number of speaker colours; the app maps each index to a colour that reads in light and dark mode.
+    public static let speakerPaletteCount = 8
+
+    /// Stable palette index for a speaker (FNV-1a of its id, so the same speaker keeps its colour across launches).
+    public static func paletteIndex(_ id: SpeakerID) -> Int {
+        var h: UInt64 = 0xcbf2_9ce4_8422_2325
+        for b in id.rawValue.utf8 { h = (h ^ UInt64(b)) &* 0x100_0000_01b3 }
+        return Int(h % UInt64(speakerPaletteCount))
+    }
+
+    /// Up to two initials for a speaker disc: "Dana Smith" → "DS", "Speaker 2" → "S2", "dana" → "D".
+    public static func initials(_ name: String) -> String {
+        let words = name.split(whereSeparator: { $0.isWhitespace || $0 == "-" }).filter { $0.first?.isLetter == true || $0.first?.isNumber == true }
+        return words.prefix(2).compactMap { $0.first.map { String($0).uppercased() } }.joined()
+    }
+
     /// Tooltip and VoiceOver text of a gap row.
     public static func gapDescription(_ row: TranscriptRow) -> String {
         guard case .gap(let reason) = row.kind else { return "" }
