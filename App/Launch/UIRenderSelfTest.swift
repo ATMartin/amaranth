@@ -36,7 +36,7 @@ enum UIRenderSelfTest {
         let collapsed = UserDefaults(suiteName: collapsedSuite)!   // empty: every preference at its default
         defer { for s in [expandedSuite, collapsedSuite] { UserDefaults.standard.removePersistentDomain(forName: s) } }
         var ok = true
-        func host<V: View>(_ v: V, _ name: String, size: CGSize) async -> Double {
+        func makeView<V: View>(_ v: V, size: CGSize) -> NSView {
             let view = NSHostingView(rootView: v.textSize(textSize).environment(worker).environment(models).environment(recorder)
                 .environment(library).environment(playback).environment(live).frame(width: size.width, height: size.height)
                 .background(Color(nsColor: .windowBackgroundColor)))
@@ -47,16 +47,22 @@ enum UIRenderSelfTest {
             window.backgroundColor = .windowBackgroundColor
             window.isOpaque = true
             window.contentView = view
+            return view
+        }
+        func capture(_ view: NSView, _ name: String) {
+            let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
+            view.cacheDisplay(in: view.bounds, to: rep)
+            try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "\(name).png"))
+        }
+        func host<V: View>(_ v: V, _ name: String, size: CGSize) async -> Double {
+            let view = makeView(v, size: size)
             let t0 = ContinuousClock.now
             view.layoutSubtreeIfNeeded()
             try? await Task.sleep(for: .milliseconds(600))   // let async loads and List cells settle
             view.layoutSubtreeIfNeeded()
-            let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
-            view.cacheDisplay(in: view.bounds, to: rep)
+            capture(view, name)
             let d = ContinuousClock.now - t0
-            let secs = Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18 - 0.6
-            try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "\(name).png"))
-            return secs
+            return Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18 - 0.6
         }
         // Library + each fixture meeting's detail views.
         library.reload()
@@ -142,6 +148,10 @@ enum UIRenderSelfTest {
            folder: "/Users/example/Library/Application Support/Amaranth/meetings/2026-10-25-m1"), "recording-health", size: CGSize(width: 380, height: 260))
         // Live view (T33): scratchpad closed by default, then open above the transcript.
         _ = await host(LiveTranscriptView(), "live-scratchpad-closed", size: CGSize(width: 900, height: 400))
+        // The live view where MainView shows it while recording: the detail column of the split view.
+        _ = await host(NavigationSplitView { LibrarySidebar() } detail: {
+            LiveTranscriptView().safeAreaInset(edge: .top, spacing: 0) { RecorderBanner(model: recorder) }
+        }, "live-in-window", size: CGSize(width: 1200, height: 760))
         recorder.scratchpadOpen = true
         recorder.scratchpad = "Ask Dana about the notarization date"
         _ = await host(LiveTranscriptView(), "live-scratchpad-open", size: CGSize(width: 900, height: 400))
@@ -156,6 +166,19 @@ enum UIRenderSelfTest {
         ], dismiss: { _ in }), "recorder-banner", size: CGSize(width: 900, height: 200))
         // Settings → Recording defaults (T30).
         _ = await host(RecordingSettings(recorder: recorder), "settings-recording", size: CGSize(width: 560, height: 560))
+        // Switching meetings: frames straight after the selection changes, while the next meeting loads.
+        if library.items.count >= 2 {
+            library.selection = library.items[0].id
+            let view = makeView(MainView(), size: CGSize(width: 1200, height: 760))
+            view.layoutSubtreeIfNeeded()
+            try? await Task.sleep(for: .milliseconds(600))
+            library.selection = library.items[1].id
+            for (i, ms) in [0, 20, 60, 200].enumerated() {
+                try? await Task.sleep(for: .milliseconds(ms))
+                view.layoutSubtreeIfNeeded()
+                capture(view, "switch-frame-\(i)")
+            }
+        }
         // Search renders results.
         library.query = "release"
         SelfTest.log(["step": "search", "query": "release", "hits": "\(library.hits.count)"])

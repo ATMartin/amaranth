@@ -23,6 +23,8 @@ struct MainView: View {
                     LiveTranscriptView()
                 } else if let d = library.detail {
                     MeetingDetailView(detail: d)
+                } else if library.selection != nil {
+                    Color.clear   // the selected meeting is loading (a few ms): blank, not "No meeting selected"
                 } else {
                     ContentUnavailableView {
                         Label("No meeting selected", systemImage: "waveform")
@@ -31,6 +33,8 @@ struct MainView: View {
                     }
                 }
             }
+            // Content starts at the top and grows down; it never floats in the middle or bottom of the column.
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .safeAreaInset(edge: .top, spacing: 0) { RecorderBanner(model: recorder) }
         }
         .environment(\.showDetails, showDetails)

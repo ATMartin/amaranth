@@ -52,11 +52,15 @@ struct LiveTranscriptView: View {
                 }
                 .listStyle(.inset)
                 .onChange(of: live.state.lines.count) { _, n in if n > 0 { proxy.scrollTo(n - 1, anchor: .bottom) } }
-            }
-            if live.state.lines.isEmpty {
-                Text(recorder.state == .recording ? "Listening… text appears a few seconds after speech." : "Not recording.")
-                    .foregroundStyle(.secondary).padding()
+                // Where the first line will appear, not at the bottom of the window.
+                .overlay(alignment: .topLeading) {
+                    if live.state.lines.isEmpty {
+                        Text(recorder.state == .recording ? "Listening… text appears a few seconds after speech." : "Not recording.")
+                            .foregroundStyle(.secondary).padding()
+                    }
+                }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 }

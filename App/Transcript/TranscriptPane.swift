@@ -38,6 +38,8 @@ struct TranscriptPane: View {
             if detail.rows.isEmpty {
                 ContentUnavailableView("No transcript yet", systemImage: "text.quote",
                                        description: Text(detail.transcript == nil ? "The transcript appears here after processing. The audio is saved." : "No speech was detected."))
+                    .fixedSize(horizontal: false, vertical: true).padding(.top, AppStyle.double)
+                    .frame(maxHeight: .infinity, alignment: .top)
             } else {
                 ScrollViewReader { proxy in
                     let rows = showDetails ? detail.rows : TranscriptRows.skim(detail.rows)

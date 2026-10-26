@@ -32,6 +32,7 @@ struct MeetingDetailView: View {
             case .recording: RecordingDetailsPane(detail: detail)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear { loadPlayback() }
         .onChange(of: detail.meeting.id) { _, _ in loadPlayback() }
         .onChange(of: library.focusRowID) { _, id in if id != nil { library.detailTab = .transcript } }
