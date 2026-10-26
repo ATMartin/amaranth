@@ -1605,7 +1605,7 @@
       "id": "T49",
       "title": "Optional meeting metadata: people and a linked calendar event",
       "milestone": "M",
-      "status": "planned",
+      "status": "done (schema v3: linked_event_id column; people and event in the meeting JSON, kept by upsertMeeting, changed via setPeople/setLinkedEvent)",
       "optional": false,
       "depends_on": [],
       "owner_role": "Storage",

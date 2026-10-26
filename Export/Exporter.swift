@@ -96,6 +96,11 @@ public enum Exporter {
         return String(format: "%02d:%02d:%02d", s / 3600, s / 60 % 60, s % 60)
     }
 
+    /// "People: Ana, Ben" when the meeting lists anyone (T49); nil keeps exports without people unchanged.
+    static func peopleLine(_ m: Meeting) -> String? {
+        m.people.isEmpty ? nil : "People: " + m.people.map(\.name).joined(separator: ", ")
+    }
+
     static func sourceName(_ s: SourceKind) -> String { s == .microphone ? "mic" : "system audio" }
 
     static func wallClock(_ m: Meeting) -> String? {
@@ -161,6 +166,7 @@ public enum Exporter {
     public static func text(_ input: ExportInput, options: ExportOptions = ExportOptions()) -> String {
         let t = input.transcript, m = input.meeting
         var out = [m.title.isEmpty ? "Meeting" : m.title]
+        if let p = peopleLine(m) { out.append(p) }
         if let w = wallClock(m) { out.append("Recorded \(w)") }
         out.append("Duration \(clock(SessionTime(nanoseconds: m.duration.nanoseconds))); transcript revision \(t.id.rawValue)")
         out.append("")
@@ -202,6 +208,7 @@ public enum Exporter {
             return out
         }
         var out = ["# \(esc(m.title.isEmpty ? "Meeting" : m.title))", ""]
+        if let p = peopleLine(m) { out += [esc(p), ""] }
         var meta: [String] = []
         if let w = wallClock(m) { meta.append("Recorded \(w)") }
         meta.append("Duration \(clock(SessionTime(nanoseconds: m.duration.nanoseconds)))")

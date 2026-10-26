@@ -120,6 +120,12 @@ enum Schema {
             tokenize='unicode61 remove_diacritics 2'
         );
         """,
+        // v3 (T49): a meeting's linked calendar event, as a column so a future integration can find the meeting an event
+        // already belongs to. People and the event itself live in the meeting JSON; older rows decode with neither.
+        """
+        ALTER TABLE meetings ADD COLUMN linked_event_id TEXT;
+        CREATE INDEX meetings_by_linked_event ON meetings (linked_event_id);
+        """,
     ]
 
     /// Applies pending migrations; returns the version the database had before.

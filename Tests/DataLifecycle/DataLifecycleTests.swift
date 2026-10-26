@@ -128,6 +128,35 @@ struct ExportTests {
         #expect(txt.contains("earlier version of the transcript"))
     }
 
+    /// T49: people show under the title in TXT/MD and travel in the JSON meeting; without them exports are unchanged.
+    @Test func exportsListPeopleOnlyWhenTheMeetingHasThem() throws {
+        let f = try LifecycleFixture()
+        defer { try? FileManager.default.removeItem(at: f.root) }
+        let plain = try f.input()
+        let at = Date(timeIntervalSince1970: 1_800_000_000)
+        let before = (Exporter.text(plain), Exporter.markdown(plain), try Exporter.json(plain, exportedAt: at))
+        #expect(!before.0.contains("People:") && !before.1.contains("People:"))
+        #expect(!String(decoding: before.2, as: UTF8.self).contains("\"people\"") && !String(decoding: before.2, as: UTF8.self).contains("linkedEvent"))
+
+        try f.store.setPeople([Person(name: "Ana Ruiz"), Person(name: "Ben_O'Neil", source: .calendar)], for: f.meeting)
+        let event = LinkedEvent(identifier: "EK-1", title: "Roadmap sync", start: at, end: at.addingTimeInterval(1800), calendarName: "Work")
+        try f.store.setLinkedEvent(event, for: f.meeting)
+        let withPeople = try f.input()
+        let txt = Exporter.text(withPeople).components(separatedBy: "\n")
+        #expect(txt[0] == "Roadmap sync" && txt[1] == "People: Ana Ruiz, Ben_O'Neil")
+        let md = Exporter.markdown(withPeople).components(separatedBy: "\n")
+        #expect(md[0] == "# Roadmap sync" && md[2] == "People: Ana Ruiz, Ben\\_O'Neil", "names are escaped like other text")
+        let doc = try JSONDecoder.iso.decode(Exporter.JSONDocument.self, from: Exporter.json(withPeople, exportedAt: at))
+        #expect(doc.meeting.people == withPeople.meeting.people && doc.meeting.linkedEvent == event)
+
+        // Clearing people restores the original exports byte for byte.
+        try f.store.setPeople([], for: f.meeting)
+        try f.store.setLinkedEvent(nil, for: f.meeting)
+        let cleared = try f.input()
+        #expect(Exporter.text(cleared) == before.0 && Exporter.markdown(cleared) == before.1)
+        #expect(try Exporter.json(cleared, exportedAt: at) == before.2)
+    }
+
     @Test func audioIsExportedOnlyWhenAskedLosslessWithGapsListed() throws {
         let f = try LifecycleFixture()
         defer { try? FileManager.default.removeItem(at: f.root) }

@@ -60,12 +60,22 @@ public final class MeetingStore: @unchecked Sendable {
 
     // MARK: Meetings
 
-    public func upsertMeeting(_ m: Meeting) throws {
+    /// Inserts or replaces a meeting. On an existing row its people and linked event are kept as stored: writers that
+    /// hold an older copy (the recorder, recovery, rename) must not drop them. Change them with `setPeople` and
+    /// `setLinkedEvent`.
+    public func upsertMeeting(_ meeting: Meeting) throws {
         try sync {
+            var m = meeting
+            if let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(m.id.rawValue)]).first?["json"]?.blob {
+                let stored = try ContractCoding.decode(Meeting.self, from: row)
+                m.people = stored.people
+                m.linkedEvent = stored.linkedEvent
+            }
             try db.run("""
                 INSERT INTO meetings (id, title, created_at, capture_state, selected_sources, audio, duration_ns,
-                  current_transcript_revision, provisional_transcript_revision, current_summary_revision, deleted_at, json)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                  current_transcript_revision, provisional_transcript_revision, current_summary_revision, deleted_at,
+                  linked_event_id, json)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
                 ON CONFLICT(id) DO UPDATE SET title=excluded.title, capture_state=excluded.capture_state,
                   selected_sources=excluded.selected_sources, audio=excluded.audio, duration_ns=excluded.duration_ns,
                   current_transcript_revision=excluded.current_transcript_revision,
@@ -76,7 +86,8 @@ public final class MeetingStore: @unchecked Sendable {
                       m.currentTranscriptRevisionID.map { .text($0.rawValue) } ?? .null,
                       m.provisionalTranscriptRevisionID.map { .text($0.rawValue) } ?? .null,
                       m.currentSummaryRevisionID.map { .text($0.rawValue) } ?? .null,
-                      m.deletedAt.map { .double($0.timeIntervalSince1970) } ?? .null, try json(m)])
+                      m.deletedAt.map { .double($0.timeIntervalSince1970) } ?? .null,
+                      m.linkedEvent.map { .text($0.identifier) } ?? .null, try json(m)])
             // Keep the title searchable; a tombstoned meeting leaves the index entirely.
             if m.deletedAt != nil {
                 try db.run("DELETE FROM search_index WHERE meeting_id=?", [.text(m.id.rawValue)])
@@ -84,6 +95,36 @@ public final class MeetingStore: @unchecked Sendable {
                 try db.run("DELETE FROM search_index WHERE meeting_id=? AND kind='title'", [.text(m.id.rawValue)])
                 try db.run("INSERT INTO search_index (meeting_id, kind, ref, start_ns, text) VALUES (?,?,?,NULL,?)",
                            [.text(m.id.rawValue), .text("title"), .text(m.id.rawValue), .text(m.title)])
+            }
+        }
+    }
+
+    /// Replaces the meeting's people (T49). Names are trimmed; empty names and repeats (ignoring case) are dropped,
+    /// keeping the first. No-op for a missing or deleted meeting.
+    public func setPeople(_ people: [Person], for id: MeetingID) throws {
+        var seen = Set<String>()
+        let cleaned = people.compactMap { p -> Person? in
+            let name = p.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !name.isEmpty, seen.insert(name.lowercased()).inserted else { return nil }
+            return Person(name: name, source: p.source)
+        }
+        try updateMetadata(id) { $0.people = cleaned }
+    }
+
+    /// Links the meeting to a calendar event, or unlinks it with nil (T49). No-op for a missing or deleted meeting.
+    public func setLinkedEvent(_ event: LinkedEvent?, for id: MeetingID) throws {
+        try updateMetadata(id) { $0.linkedEvent = event }
+    }
+
+    private func updateMetadata(_ id: MeetingID, _ change: (inout Meeting) -> Void) throws {
+        try sync {
+            try db.transaction {
+                guard let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(id.rawValue)]).first?["json"]?.blob else { return }
+                var m = try ContractCoding.decode(Meeting.self, from: row)
+                guard m.deletedAt == nil else { return }
+                change(&m)
+                try db.run("UPDATE meetings SET linked_event_id=?, json=? WHERE id=?",
+                           [m.linkedEvent.map { .text($0.identifier) } ?? .null, try json(m), .text(id.rawValue)])
             }
         }
     }
