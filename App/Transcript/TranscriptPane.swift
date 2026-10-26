@@ -25,7 +25,7 @@ struct TranscriptPane: View {
             if detail.showingProvisional {
                 Label("Live text (provisional). The final transcript with speakers replaces it after processing; edits are available then.",
                       systemImage: "waveform.badge.magnifyingglass").appFont(.caption).padding(AppStyle.grid).frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.blue.opacity(0.08))
+                    .background(Color.accentColor.opacity(0.08))
             }
             // One compact strip (T36): playback on the left, then the speaker overview with Details on only; in skim
             // mode rename and merge live in the speaker column (T38).
@@ -81,7 +81,7 @@ struct TranscriptPane: View {
             if !detail.editsNeedingReview.isEmpty {
                 Label("\(detail.editsNeedingReview.count) of your edits could not be re-applied after reprocessing. They are kept; please check the speakers.",
                       systemImage: "exclamationmark.bubble").appFont(.caption).padding(AppStyle.grid).frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.orange.opacity(0.12))
+                    .background(Color.statusAttention.opacity(AppPalette.tintOpacity))
             }
         }
         .sheet(item: $correcting) { row in
@@ -167,20 +167,20 @@ struct TranscriptRowView: View {
 
     var body: some View {
         if row.isGap, !showDetails {
-            Rectangle().fill(.orange.opacity(0.45)).frame(height: 1)
+            Rectangle().fill(Color.statusAttention.opacity(0.45)).frame(height: 1)
                 .padding(.vertical, 3).frame(maxWidth: .infinity).contentShape(Rectangle())
                 .help(TranscriptRows.gapDescription(row))
                 .accessibilityElement().accessibilityLabel(TranscriptRows.gapDescription(row))
         } else if case .gap(let reason) = row.kind {
             Label("\(TranscriptRows.clock(row.start))–\(TranscriptRows.clock(row.end)) · \(reason)", systemImage: "waveform.slash")
-                .appFont(.callout).foregroundStyle(.orange)
+                .appFont(.callout).foregroundStyle(Color.statusAttention)
                 .accessibilityLabel("Gap from \(TranscriptRows.clock(row.start)) to \(TranscriptRows.clock(row.end)): \(reason)")
         } else if style == .bubbles {
             bubble
         } else {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Button(TranscriptRows.clock(row.start), action: play)
-                    .buttonStyle(.plain).appFont(.caption, monospacedDigit: true).foregroundStyle(playable ? Color.accentColor : .secondary)
+                    .buttonStyle(.plain).appFont(.caption, monospacedDigit: true).foregroundStyle(playable ? Color.link : .secondary)
                     .disabled(!playable).help(playable ? "Play from here" : "Playback unavailable")
                     .frame(width: Self.timeWidth * scale, alignment: .leading)
                 speaker.frame(width: Self.speakerWidth * scale, alignment: .leading)
@@ -239,7 +239,7 @@ struct TranscriptRowView: View {
     var bubbleCaption: some View {
         HStack(spacing: AppStyle.half) {
             Button(TranscriptRows.clock(row.start), action: play)
-                .buttonStyle(.plain).appFont(.caption2, monospacedDigit: true).foregroundStyle(playable ? Color.accentColor : .secondary)
+                .buttonStyle(.plain).appFont(.caption2, monospacedDigit: true).foregroundStyle(playable ? Color.link : .secondary)
                 .disabled(!playable).help(playable ? "Play from here" : "Playback unavailable")
             badges
         }
@@ -279,9 +279,9 @@ struct TranscriptRowView: View {
     /// Icon and caption with Details on; icon only (same tooltip, caption as the VoiceOver label) in skim mode.
     @ViewBuilder func flag(_ text: String, _ icon: String, _ help: String) -> some View {
         if showDetails {
-            Label(text, systemImage: icon).appFont(.caption2).foregroundStyle(.orange).help(help).labelStyle(.titleAndIcon)
+            Label(text, systemImage: icon).appFont(.caption2).foregroundStyle(Color.statusAttention).help(help).labelStyle(.titleAndIcon)
         } else {
-            Label(text, systemImage: icon).appFont(.caption2).foregroundStyle(.orange).help(help).labelStyle(.iconOnly)
+            Label(text, systemImage: icon).appFont(.caption2).foregroundStyle(Color.statusAttention).help(help).labelStyle(.iconOnly)
         }
     }
 }
@@ -322,7 +322,7 @@ struct PlaybackBar: View {
                 Button { playback.toggle() } label: { Image(systemName: playback.isPlaying ? "pause.fill" : "play.fill") }
                     .keyboardShortcut(.space, modifiers: []).help(playback.isPlaying ? "Pause (Space)" : "Play (Space)")
                 Text(TranscriptRows.clock(SessionTime(nanoseconds: Int64(playback.position * 1e9)))).appFont(.caption, monospacedDigit: true)
-                if let e = playback.error { Text(e).appFont(.caption).foregroundStyle(.red) }
+                if let e = playback.error { Text(e).appFont(.caption).foregroundStyle(Color.statusFailed) }
             }
         }
         .padding(.horizontal, AppStyle.grid).padding(.vertical, 2)

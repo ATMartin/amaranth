@@ -1420,7 +1420,7 @@
       "id": "T43",
       "title": "Semantic colours and an Appearance setting (System / Light / Dark)",
       "milestone": "K",
-      "status": "planned",
+      "status": "done (palette + contrast test Tests/UI/PaletteContrastTests.swift; screenshots docs/qualification/evidence/2026-10-26/appearance/)",
       "optional": false,
       "depends_on": [
         "T36"

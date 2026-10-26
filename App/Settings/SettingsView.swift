@@ -25,13 +25,20 @@ struct SettingsView: View {
     }
 }
 
-/// Settings → Appearance (T36, T37; later also colour scheme, T43/T44): text size and transcript style.
+/// Settings → Appearance (T36, T37, T43): light or dark, text size and transcript style.
 struct AppearanceSettings: View {
+    @AppStorage(AppAppearance.key) private var appearance = AppAppearance.system.rawValue
     @AppStorage(TextSize.key) private var textSize = TextSize.default.rawValue
     @AppStorage(TranscriptStyle.key) private var transcriptStyle = TranscriptStyle.columns.rawValue
 
     var body: some View {
         Form {
+            Picker("Appearance", selection: $appearance) {
+                ForEach(AppAppearance.allCases) { Text($0.title).tag($0.rawValue) }
+            }
+            .pickerStyle(.segmented)
+            Text("Match system follows the Mac's light or dark setting.")
+                .font(.caption).foregroundStyle(.secondary)
             Picker("Text size", selection: $textSize) {
                 ForEach(TextSize.allCases) { Text($0.title).tag($0.rawValue) }
             }

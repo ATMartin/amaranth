@@ -17,7 +17,7 @@ struct LiveTranscriptView: View {
                 Spacer()
                 switch live.status {
                 case .running: if let p = live.state.percentile(0.5) { Text(String(format: "about %.0f s behind", p)).font(.caption).foregroundStyle(.secondary) }
-                case .paused(let why), .unavailable(let why): Text(why).font(.caption).foregroundStyle(.orange)
+                case .paused(let why), .unavailable(let why): Text(why).font(.caption).foregroundStyle(Color.statusAttention)
                 case .off: EmptyView()
                 }
                 Toggle(isOn: $recorder.scratchpadOpen) { Label("Scratchpad", systemImage: "note.text") }

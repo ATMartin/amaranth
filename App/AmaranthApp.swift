@@ -134,7 +134,17 @@ struct MenuBarContent: View {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     @MainActor static weak var recorder: RecorderModel?
 
+    private var appearanceObservation: NSKeyValueObservation?
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
+
+    /// Settings → Appearance and the toolbar toggle (T43/T44) both just write the setting; this applies it app-wide.
+    @MainActor func applicationWillFinishLaunching(_ notification: Notification) {
+        AppAppearance.apply(UserDefaults.standard.appearance)
+        appearanceObservation = UserDefaults.standard.observe(\.appearance, options: [.new]) { _, _ in
+            Task { @MainActor in AppAppearance.apply(UserDefaults.standard.appearance) }
+        }
+    }
 
     @MainActor func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard let recorder = Self.recorder, recorder.inSession else { return .terminateNow }
@@ -147,6 +157,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         recorder.stopThen { NSApp.reply(toApplicationShouldTerminate: true) }
         return .terminateLater
     }
+}
+
+extension UserDefaults {
+    /// KVO-observable accessor for `AppAppearance.key`.
+    @objc dynamic var appearance: String? { string(forKey: AppAppearance.key) }
 }
 
 struct UnsupportedSystemView: View {

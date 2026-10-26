@@ -92,19 +92,19 @@ struct NotesPane: View {
         case .generating(let p):
             banner("Generating notes on this Mac… \(Int(p * 100))%", "gearshape.2", .secondary) { ProgressView(value: p).frame(width: 120) }
         case .failed(let code):
-            banner("Notes could not be generated (\(code)). The transcript is unaffected.", "xmark.octagon", .red) {
+            banner("Notes could not be generated (\(code)). The transcript is unaffected.", "xmark.octagon", .statusFailed) {
                 Button("Try Again") { library.regenerateNotes(detail.meeting.id) }
             }
         case .unavailable(let why):
             banner(why, "info.circle", .secondary) { EmptyView() }
         case .ready(let stale, let failure):
             if stale {
-                banner("The transcript or speakers changed after these notes were made.", "exclamationmark.arrow.circlepath", .orange) {
+                banner("The transcript or speakers changed after these notes were made.", "exclamationmark.arrow.circlepath", .statusAttention) {
                     Button("Regenerate") { library.regenerateNotes(detail.meeting.id) }
                 }
             }
             if let failure {
-                banner("Regenerating failed (\(failure)); these are the previous notes.", "exclamationmark.triangle", .orange) {
+                banner("Regenerating failed (\(failure)); these are the previous notes.", "exclamationmark.triangle", .statusAttention) {
                     Button("Try Again") { library.regenerateNotes(detail.meeting.id) }
                 }
             }
@@ -171,7 +171,7 @@ struct NoteItemRow: View {
                 if let t = item.title { Text(t).appFont(.body, weight: .semibold) }
                 Text(item.text).textSelection(.enabled)
                 if item.uncertain {
-                    Image(systemName: "questionmark.circle").foregroundStyle(.orange).help("Not fully confirmed by the transcript — check the cited passage")
+                    Image(systemName: "questionmark.circle").foregroundStyle(Color.statusAttention).help("Not fully confirmed by the transcript — check the cited passage")
                 }
             }
             if item.kind == .actionItem || item.owner != nil || item.due != nil {

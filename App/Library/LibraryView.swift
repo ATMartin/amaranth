@@ -143,7 +143,7 @@ struct MeetingStatusGlyph: View {
     }
 
     func color(_ t: MeetingStatusPresentation.Tone) -> Color {
-        switch t { case .secondary: .secondary; case .red: .red; case .orange: .orange }
+        Color.status(t)
     }
 }
 
@@ -185,12 +185,12 @@ struct AudioBadge: View {
     let headline: MeetingStatus.AudioHeadline
     var body: some View {
         switch headline {
-        case .saved: Label("Audio saved", systemImage: "checkmark.circle").foregroundStyle(.green)
-        case .savedWithGaps(let s): Label("Audio saved · \(Int(s.rounded())) s missing", systemImage: "exclamationmark.circle").foregroundStyle(.orange)
-        case .recording: Label("Recording", systemImage: "record.circle").foregroundStyle(.red)
+        case .saved: Label("Audio saved", systemImage: "checkmark.circle").foregroundStyle(Color.statusOK)
+        case .savedWithGaps(let s): Label("Audio saved · \(Int(s.rounded())) s missing", systemImage: "exclamationmark.circle").foregroundStyle(Color.statusAttention)
+        case .recording: Label("Recording", systemImage: "record.circle").foregroundStyle(Color.statusFailed)
         case .paused: Label("Paused", systemImage: "pause.circle")
         case .saving: Label("Saving…", systemImage: "arrow.down.circle")
-        case .interrupted: Label("Interrupted — audio up to the interruption is saved", systemImage: "bolt.horizontal.circle").foregroundStyle(.orange)
+        case .interrupted: Label("Interrupted — audio up to the interruption is saved", systemImage: "bolt.horizontal.circle").foregroundStyle(Color.statusAttention)
         case .notStarted: Label("No audio", systemImage: "circle")
         case .audioDeleted: Label("Audio deleted", systemImage: "trash.circle").foregroundStyle(.secondary)
         }
@@ -208,7 +208,7 @@ struct ProcessingBadge: View {
             case .running(let stage, let p): Label("\(Self.stageName(stage)) \(Int(p * 100))%", systemImage: "gearshape.2")
             case .complete: Label("Processed", systemImage: "doc.text")
             case .failed(let stage, _):
-                Label("\(Self.stageName(stage)) failed — retry available", systemImage: "xmark.octagon").foregroundStyle(.red)
+                Label("\(Self.stageName(stage)) failed — retry available", systemImage: "xmark.octagon").foregroundStyle(Color.statusFailed)
             case .cancelled(let stage): Label("\(Self.stageName(stage)) stopped", systemImage: "stop.circle")
             }
         }

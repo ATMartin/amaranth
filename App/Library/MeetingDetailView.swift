@@ -164,7 +164,7 @@ struct RecordingDetailsPane: View {
                         Spacer()
                         Text(e.source.map { $0 == .microphone ? "mic" : "system" } ?? "all").foregroundStyle(.secondary)
                     }
-                    .foregroundStyle(e.isMissingAudio ? .orange : .primary)
+                    .foregroundStyle(e.isMissingAudio ? Color.statusAttention : .primary)
                 }
             }
         }

@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import Domain
 import Presentation
 
@@ -69,4 +70,44 @@ struct AppearanceRoot: ViewModifier {
     func body(content: Content) -> some View {
         content.textSize(TextSize(stored: textSize)).environment(\.transcriptStyle, TranscriptStyle(stored: transcriptStyle))
     }
+}
+
+/// Semantic colours (T43): light and dark variants from `AppPalette`, resolved by the view's effective appearance.
+/// Use these instead of `.green` / `.orange` / `.red`, which are too pale on a light background for text.
+extension Color {
+    static let statusOK = Color(nsColor: .palette(AppPalette.ok))
+    static let statusAttention = Color(nsColor: .palette(AppPalette.attention))
+    static let statusFailed = Color(nsColor: .palette(AppPalette.failed))
+    /// Clickable text (time links): the system link colour.
+    static let link = Color(nsColor: .linkColor)
+
+    static func status(_ t: RecorderPresentation.Tone) -> Color {
+        switch t { case .green: .statusOK; case .grey: .secondary; case .orange: .statusAttention; case .red: .statusFailed }
+    }
+    static func status(_ t: MeetingStatusPresentation.Tone) -> Color {
+        switch t { case .secondary: .secondary; case .red: .statusFailed; case .orange: .statusAttention }
+    }
+}
+
+extension NSColor {
+    static func palette(_ p: AppPalette.Pair) -> NSColor {
+        NSColor(name: nil) { appearance in
+            let c = p.resolved(dark: appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua)
+            return NSColor(srgbRed: c.red, green: c.green, blue: c.blue, alpha: 1)
+        }
+    }
+}
+
+extension AppAppearance {
+    /// nil follows the system.
+    var nsAppearance: NSAppearance? {
+        switch self {
+        case .system: nil
+        case .light: NSAppearance(named: .aqua)
+        case .dark: NSAppearance(named: .darkAqua)
+        }
+    }
+
+    /// Applies the stored setting to every window, the Settings window and the menu-bar menu.
+    @MainActor static func apply(_ stored: String?) { NSApp.appearance = AppAppearance(stored: stored).nsAppearance }
 }

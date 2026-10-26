@@ -18,7 +18,7 @@ struct RecordToolbarControl: View {
             // Two plain buttons in one toolbar item: a ControlGroup here was moved to the trailing edge and truncated.
             HStack(spacing: 2) {
                 Button { model.start() } label: {
-                    HStack(spacing: 4) { Image(systemName: "record.circle").foregroundStyle(.red); Text("Record") }
+                    HStack(spacing: 4) { Image(systemName: "record.circle").foregroundStyle(Color.statusFailed); Text("Record") }
                 }
                 .accessibilityLabel("Record")
                 .keyboardShortcut("r", modifiers: [.command, .shift])
@@ -107,7 +107,7 @@ struct RecordingStripContent: View {
                 HStack(spacing: 6) {
                     ForEach(health, id: \.source) { h in SourceHealthGlyph(health: h, savedUpTo: savedUpTo[h.source], now: elapsed) }
                     if let diskWarning {
-                        Image(systemName: "externaldrive.badge.exclamationmark").foregroundStyle(.orange)
+                        Image(systemName: "externaldrive.badge.exclamationmark").foregroundStyle(Color.statusAttention)
                             .help(diskWarning).accessibilityLabel(diskWarning)
                     }
                 }
@@ -136,13 +136,13 @@ struct RecordingStripContent: View {
         let clock = RecorderPresentation.clock(elapsed)
         switch state {
         case .recording:
-            Label { Text(clock).monospacedDigit() } icon: { Image(systemName: "circle.fill").foregroundStyle(.red) }
+            Label { Text(clock).monospacedDigit() } icon: { Image(systemName: "circle.fill").foregroundStyle(Color.statusFailed) }
                 .help("Recording").accessibilityLabel("Recording, \(clock)")
         case .paused:
             Label { Text(clock).monospacedDigit() } icon: { Image(systemName: "pause.circle.fill") }
                 .foregroundStyle(.secondary).help("Paused — nothing is being recorded").accessibilityLabel("Paused at \(clock)")
         case .interrupted:
-            Label("Interrupted", systemImage: "moon.zzz").foregroundStyle(.orange).help("Interrupted by sleep · audio so far is saved")
+            Label("Interrupted", systemImage: "moon.zzz").foregroundStyle(Color.statusAttention).help("Interrupted by sleep · audio so far is saved")
         case .stopping: Label("Saving…", systemImage: "arrow.down.circle").foregroundStyle(.secondary)
         default: Label("Starting…", systemImage: "hourglass").foregroundStyle(.secondary).help("Starting… waiting for audio")
         }
@@ -170,7 +170,7 @@ struct RecordingHealthDetails: View {
                 }
             }
             if let diskWarning {
-                Label(diskWarning, systemImage: "externaldrive.badge.exclamationmark").font(.caption).foregroundStyle(.orange)
+                Label(diskWarning, systemImage: "externaldrive.badge.exclamationmark").font(.caption).foregroundStyle(Color.statusAttention)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if let folder {
@@ -203,7 +203,7 @@ struct SourceHealthGlyph: View {
     }
 
     static func color(_ t: RecorderPresentation.Tone) -> Color {
-        switch t { case .green: .green; case .grey: .secondary; case .orange: .orange; case .red: .red }
+        Color.status(t)
     }
 }
 
@@ -225,8 +225,8 @@ struct RecorderBannerContent: View {
             VStack(alignment: .leading, spacing: 6) {
                 ForEach(items, id: \.kind) { item in
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Image(systemName: item.symbol).foregroundStyle(item.isError ? .red : .secondary)
-                        Text(item.text).foregroundStyle(item.isError ? .red : .secondary).textSelection(.enabled)
+                        Image(systemName: item.symbol).foregroundStyle(item.isError ? Color.statusFailed : .secondary)
+                        Text(item.text).foregroundStyle(item.isError ? Color.statusFailed : .secondary).textSelection(.enabled)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 8)
                         if item.kind == .permission {
@@ -268,8 +268,7 @@ struct SourceHealthRow: View {
 
     var statusColor: Color {
         switch RecorderPresentation.tone(health.status) {
-        case .orange: .orange
-        case .red: .red
+        case .orange, .red: Color.status(RecorderPresentation.tone(health.status))
         default: .secondary
         }
     }
@@ -282,7 +281,7 @@ struct MeterBar: View {
             let frac = CGFloat(max(0, min(1, (db + 60) / 60)))
             ZStack(alignment: .leading) {
                 Capsule().fill(.quaternary)
-                Capsule().fill(db > -3 ? Color.orange : Color.green).frame(width: g.size.width * frac)
+                Capsule().fill(db > -3 ? Color.statusAttention : Color.statusOK).frame(width: g.size.width * frac)
             }
         }
         .frame(height: 6)

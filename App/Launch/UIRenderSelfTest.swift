@@ -7,7 +7,8 @@ import Presentation
 
 /// `Amaranth --self-test ui-render --self-test-output <dir>`: builds the real views over a temporary store (fixture
 /// meetings plus a synthetic two-hour meeting), lays them out offscreen, writes PNGs, and reports layout/render times.
-/// No audio, no permissions, and nothing touches the user's library.
+/// No audio, no permissions, and nothing touches the user's library. Every screen renders in light and in dark (T43),
+/// into `<dir>/light/` and `<dir>/dark/`.
 enum UIRenderSelfTest {
     @MainActor static func run(outputDirectory: URL?, textSize: TextSize = .default) async -> Bool {
         _ = NSApplication.shared
@@ -20,7 +21,18 @@ enum UIRenderSelfTest {
             for f in Fixtures.all { try persistFixture(f, store) }
             try persistLongMeeting(store)
         } catch { SelfTest.log(["step": "fixtures", "error": "\(error)"]); return false }
+        var ok = true
+        for (name, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
+            SelfTest.log(["step": "appearance", "appearance": name])
+            let dir = out.appending(path: name)
+            try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+            if await !render(store: store, out: dir, textSize: textSize, appearance: NSAppearance(named: appearance)!) { ok = false }
+        }
+        SelfTest.log(["step": "output", "directory": out.path])
+        return ok
+    }
 
+    @MainActor static func render(store: MeetingStore, out: URL, textSize: TextSize, appearance: NSAppearance) async -> Bool {
         let worker = WorkerClient()
         let models = ModelSetupModel()
         let recorder = RecorderModel(store: store, recover: false)
@@ -41,9 +53,9 @@ enum UIRenderSelfTest {
                 .environment(library).environment(playback).environment(live).frame(width: size.width, height: size.height)
                 .background(Color(nsColor: .windowBackgroundColor)))
             // Offscreen windows don't draw vibrancy; force an opaque, fixed appearance so captures are readable.
-            view.appearance = NSAppearance(named: .aqua)
+            view.appearance = appearance
             let window = NSWindow(contentRect: CGRect(origin: .zero, size: size), styleMask: [.titled], backing: .buffered, defer: false)
-            window.appearance = NSAppearance(named: .aqua)
+            window.appearance = appearance
             window.backgroundColor = .windowBackgroundColor
             window.isOpaque = true
             window.contentView = view
@@ -81,6 +93,7 @@ enum UIRenderSelfTest {
             let tNotes = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, false).defaultAppStorage(collapsed), "notes-\(name)", size: CGSize(width: 900, height: 700))
             _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, true).defaultAppStorage(collapsed), "notes-details-\(name)", size: CGSize(width: 900, height: 700))
             _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).defaultAppStorage(expanded), "notes-expanded-\(name)", size: CGSize(width: 900, height: 900))
+            _ = await host(RecordingDetailsPane(detail: d), "recording-tab-\(name)", size: CGSize(width: 900, height: 600))
             SelfTest.log(["step": "render", "meeting": item.title, "rows": "\(d.rows.count)", "gaps": "\(d.rows.filter(\.isGap).count)",
                           "unknownSpeakerRows": "\(d.rows.filter { !$0.isGap && $0.assignment == .unknown }.count)",
                           "playback": d.playbackUnavailableReason ?? "available", "notes": "\(d.notesState(notesModelInstalled: true))",
@@ -101,7 +114,9 @@ enum UIRenderSelfTest {
                     library.focusRowID = focusFirst ? target.id : nil
                     let view = NSHostingView(rootView: TranscriptPane(detail: d).environment(\.showDetails, false).textSize(textSize).environment(\.transcriptStyle, style).environment(library)
                         .environment(playback).frame(width: 900, height: 700).background(Color(nsColor: .windowBackgroundColor)))
+                    view.appearance = appearance
                     let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 900, height: 700), styleMask: [.titled], backing: .buffered, defer: false)
+                    window.appearance = appearance
                     window.contentView = view
                     try? await Task.sleep(for: .milliseconds(600))
                     if !focusFirst { library.focusRowID = target.id }
@@ -171,6 +186,10 @@ enum UIRenderSelfTest {
         collapsed.set(TranscriptStyle.bubbles.rawValue, forKey: TranscriptStyle.key)
         _ = await host(AppearanceSettings().defaultAppStorage(collapsed), "settings-appearance-bubbles", size: CGSize(width: 560, height: 460))
         collapsed.removeObject(forKey: TranscriptStyle.key)
+        // Onboarding, the model sheet and the menu-bar menu's items (T43: every screen in both appearances).
+        _ = await host(OnboardingView {}, "onboarding", size: CGSize(width: 560, height: 520))
+        _ = await host(ModelSetupView(model: models), "model-sheet", size: CGSize(width: 560, height: 460))
+        _ = await host(VStack(alignment: .leading, spacing: 6) { MenuBarContent(recorder: recorder) }.padding(), "menu-bar", size: CGSize(width: 260, height: 180))
         // Switching meetings: frames straight after the selection changes, while the next meeting loads.
         if library.items.count >= 2 {
             library.selection = library.items[0].id
@@ -188,7 +207,7 @@ enum UIRenderSelfTest {
         library.query = "release"
         SelfTest.log(["step": "search", "query": "release", "hits": "\(library.hits.count)"])
         _ = await host(MainView(), "search", size: CGSize(width: 1200, height: 760))
-        SelfTest.log(["step": "output", "directory": out.path])
+        library.query = ""
         return ok
     }
 

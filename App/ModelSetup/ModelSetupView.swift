@@ -33,7 +33,7 @@ struct ModelSetupView: View {
                     }
                 }
             } else {
-                Text("This build does not include a model pack definition.").foregroundStyle(.orange)
+                Text("This build does not include a model pack definition.").foregroundStyle(Color.statusAttention)
             }
 
             statusView
@@ -66,7 +66,7 @@ struct ModelSetupView: View {
             ProgressView().controlSize(.small)
         case .recordOnly(let reason):
             Label { Text("Record-only. ").bold() + Text(reason) } icon: { Image(systemName: "record.circle") }
-                .foregroundStyle(.orange)
+                .foregroundStyle(Color.statusAttention)
         case .installing(let p):
             VStack(alignment: .leading) {
                 ProgressView(value: p.bytesTotal > 0 ? Double(p.bytesDone) / Double(p.bytesTotal) : 0) {
@@ -77,9 +77,9 @@ struct ModelSetupView: View {
                 }
             }
         case .ready(let id, let v):
-            Label("Installed and verified: \(id) \(v). Works offline.", systemImage: "checkmark.seal").foregroundStyle(.green)
+            Label("Installed and verified: \(id) \(v). Works offline.", systemImage: "checkmark.seal").foregroundStyle(Color.statusOK)
         case .failed(let msg):
-            Label(msg, systemImage: "xmark.octagon").foregroundStyle(.red)
+            Label(msg, systemImage: "xmark.octagon").foregroundStyle(Color.statusFailed)
         }
     }
 

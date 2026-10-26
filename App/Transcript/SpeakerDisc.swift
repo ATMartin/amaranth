@@ -3,19 +3,21 @@ import Domain
 import Presentation
 
 /// Coloured initials disc for a speaker (T35); placeholder for avatars later. Colours come from a stable hash of the
-/// speaker id into system colours that adapt to light and dark mode. No blue: that is the accent (your microphone in Bubbles).
+/// speaker id into `AppPalette.speakers` (T43: one set tuned for white initials on both light and dark windows). No blue:
+/// that is the accent (your microphone in Bubbles).
 struct SpeakerDisc: View {
     let assignment: SpeakerAssignment
     let name: String
     var size: CGFloat = 18
     @Environment(\.speakerColors) private var colors
 
-    static let palette: [Color] = [.cyan, .purple, .pink, .orange, .green, .teal, .indigo, .brown]
+    static let palette: [Color] = AppPalette.speakers.map { Color(nsColor: .palette($0)) }
+    static let unknown = Color(nsColor: .palette(AppPalette.unknownSpeaker))
 
     /// `indices` comes from `TranscriptRows.paletteIndices` for the meeting (distinct colours); unknown ids fall back
     /// to the plain hash.
     static func color(_ assignment: SpeakerAssignment, _ indices: [SpeakerID: Int] = [:]) -> Color {
-        if case .speaker(let id) = assignment { palette[(indices[id] ?? TranscriptRows.paletteIndex(id)) % palette.count] } else { .gray }
+        if case .speaker(let id) = assignment { palette[(indices[id] ?? TranscriptRows.paletteIndex(id)) % palette.count] } else { unknown }
     }
 
     var body: some View {
