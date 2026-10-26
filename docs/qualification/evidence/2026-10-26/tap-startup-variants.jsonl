@@ -1,0 +1,11 @@
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"14.6","startCallMs":"3.7","variant":"current"}
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"26.8","startCallMs":"8.9","variant":"current-again"}
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"23.5","startCallMs":"11.1","variant":"no-bundleIDs"}
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"24.2","startCallMs":"11.1","variant":"no-drift"}
+{"firstCallbackMs":"40.9","inputBuffers":"2","setupMs":"22.8","startCallMs":"31.7","variant":"no-autostart"}
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"24.9","startCallMs":"10.8","variant":"main-subdevice-output"}
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"24.6","startCallMs":"17.3","variant":"precreate-1500ms"}
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"27.5","startCallMs":"9.2","variant":"output-running"}
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"15.8","startCallMs":"5.5","variant":"self-process-tap"}
+{"firstCallbackMs":">3000","inputBuffers":"2","setupMs":"25.1","startCallMs":"11.4","variant":"current-last"}
+{"result":"pass","test":"tap-startup"}

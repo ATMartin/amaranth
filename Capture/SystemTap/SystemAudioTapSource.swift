@@ -58,7 +58,9 @@ public final class SystemAudioTapSource: RingAudioSource, @unchecked Sendable {
                 kAudioAggregateDeviceUIDKey: aggUID,
                 kAudioAggregateDeviceIsPrivateKey: true,
                 kAudioAggregateDeviceIsStackedKey: false,
-                kAudioAggregateDeviceTapAutoStartKey: true,
+                // Auto-start off: on macOS 27.0.1 an auto-started global tap stays idle until another process plays
+                // sound, so the system track began late and its silent lead-in was reported as a startDelayed gap.
+                kAudioAggregateDeviceTapAutoStartKey: false,
                 kAudioAggregateDeviceTapListKey: [[
                     kAudioSubTapUIDKey: desc.uuid.uuidString,
                     kAudioSubTapDriftCompensationKey: true,

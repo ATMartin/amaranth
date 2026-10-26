@@ -63,9 +63,25 @@ Not caused by Milestone H:
 - macOS 27.0.1 was installed on 2026-10-20, between the passing runs and these runs.
 - The gap event is working as designed: about 1.2 s of system-audio lead-in really is lost, and the recording says so.
 
-Follow-up (not in H): starting the system tap on macOS 27.0.1 takes longer. Options: start the tap earlier (warm it when
-the window opens or Record is hovered), or accept a short lead-in and raise the threshold. This needs a decision before
-the next capture qualification.
+Resolved 2026-10-26 (separate commit; see below).
+
+## System tap start fix (2026-10-26)
+
+Cause: on macOS 27.0.1, a tap-only aggregate device created with `kAudioAggregateDeviceTapAutoStartKey: true` doesn't
+call the IOProc until another process plays sound. The capture self-test starts `afplay` 1.0 s after Record, so the first
+system frame came at about 1.2 s. In a real meeting, the system track started at the first remote sound, and the silence
+before it was reported as a `source.startDelayed` gap. No audio was lost, but the meeting was flagged as having gaps.
+Setup is not slow: the tap, aggregate and device start take 17 ms in total.
+
+Evidence (`evidence/2026-10-26/`):
+- `tap-startup-variants.jsonl`, a temporary experiment: device start → first callback with nothing playing. Auto-start
+  off took 41 ms. Every other variant had no callback within 3 s: the current setup, without the bundle-ID exclusion,
+  without drift compensation, clocked from the output device, pre-created 1.5 s ahead, with Amaranth playing silence, or
+  a self-process tap.
+- Fix: `kAudioAggregateDeviceTapAutoStartKey: false` in `SystemAudioTapSource`.
+  `capture-signals-autostart-off-run1..3.jsonl` all pass: system first frame at 0.039, 0.071 and 0.071 s, no events,
+  external audio captured, Amaranth's own audio excluded, routes unchanged. `scripts/check.sh` passes.
+- Not re-run: `capture-routes`, which switches default devices. The route path reopens through the same `open()`.
 
 ## Validation (2026-10-25)
 
