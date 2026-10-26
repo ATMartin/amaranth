@@ -54,7 +54,8 @@
     "K": "Light mode and lightweight visual language: T43-T45",
     "L": "Notes templates: T46-T48",
     "M": "Calendar and people placeholders: T49-T51",
-    "N": "Ask anything over meetings (local, evidence-backed): T52-T55"
+    "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
+    "O": "Calendar integration (EventKit, local calendars): T56-T61. Pending the user's review of docs/decisions/0006 (T51); not yet placed in milestone_order"
   },
   "tasks": [
     {
@@ -1665,7 +1666,7 @@
       "id": "T51",
       "title": "Spec: calendar integration milestone (EventKit, local calendars)",
       "milestone": "M",
-      "status": "planned",
+      "status": "spec written, awaiting user review (docs/decisions/0006-calendar-integration-spec.md; tasks T56-T61 added as Milestone O, pending review, at the user's request)",
       "optional": false,
       "depends_on": [
         "T49"
@@ -1805,6 +1806,180 @@
       "fallback": "Ship single-turn only if context handling degrades latency beyond the T54 target.",
       "review_timestamps": [
         "08:40–09:09"
+      ]
+    },
+    {
+      "id": "T56",
+      "title": "Calendar access: permission, entitlement and a testable calendar source",
+      "milestone": "O",
+      "status": "pending user review (proposed in docs/decisions/0006; not scheduled)",
+      "optional": false,
+      "depends_on": [
+        "T49"
+      ],
+      "owner_role": "Platform",
+      "module_scope": [
+        "App/Info.plist",
+        "project.yml",
+        "App/Amaranth.entitlements",
+        "App/Calendar/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0006-calendar-integration-spec.md (T51, proposed 2026-10-26, pending the user's review; the user asked for these tasks to be added before review and will edit or delete them). Read the spec's Goals, Non-goals, Permission flow, Data mapping and Privacy sections first. Amaranth is a local-only SwiftUI macOS meeting recorder; T49 added Meeting.people / Meeting.linkedEvent (MeetingStore.setPeople / setLinkedEvent, schema v3 linked_event_id) and T50 the header chips. Never start a recording automatically; no network or cloud calendar APIs. The Recording tab, export and the model-management sheet stay out of scope.",
+      "deliverables": [
+        "NSCalendarsFullAccessUsageDescription and com.apple.security.personal-information.calendars; `CalendarSource` protocol (authorization status, events in a range) with an EventKit implementation and a fake for tests.",
+        "Authorization states mapped per the spec (notDetermined / fullAccess / denied / restricted / writeOnly); request only on user action, never at launch or during recording.",
+        "`--self-test calendar-access` (needs a person, like capture trials)."
+      ],
+      "acceptance": [
+        "Unit tests over the fake pass; the permission self-test is listed for a person; no prompt appears at launch."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
+      ]
+    },
+    {
+      "id": "T57",
+      "title": "Link and unlink a recording from the header chip",
+      "milestone": "O",
+      "status": "pending user review (proposed in docs/decisions/0006; not scheduled)",
+      "optional": false,
+      "depends_on": [
+        "T56",
+        "T50"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/MeetingDetailView.swift",
+        "App/Calendar/",
+        "Presentation/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0006-calendar-integration-spec.md (T51, proposed 2026-10-26, pending the user's review; the user asked for these tasks to be added before review and will edit or delete them). Read the spec's Goals, Non-goals, Permission flow, Data mapping and Privacy sections first. Amaranth is a local-only SwiftUI macOS meeting recorder; T49 added Meeting.people / Meeting.linkedEvent (MeetingStore.setPeople / setLinkedEvent, schema v3 linked_event_id) and T50 the header chips. Never start a recording automatically; no network or cloud calendar APIs. The Recording tab, export and the model-management sheet stay out of scope.",
+      "deliverables": [
+        "The T50 `link` chip becomes active: picker of the recording's day (nearest first, search), snapshot mapping onto LinkedEvent per the spec, Unlink, “Use event title” button (never renames silently).",
+        "States: denied (Open Privacy Settings), restricted, linked, “Event changed since linking” with Update, “no longer in your calendar”, “Also linked to …” via linked_event_id.",
+        "ui-render fixtures for every chip state."
+      ],
+      "acceptance": [
+        "Linking persists and exports in JSON; every state renders in ui-render in both appearances."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
+      ]
+    },
+    {
+      "id": "T58",
+      "title": "Attendees become people",
+      "milestone": "O",
+      "status": "pending user review (proposed in docs/decisions/0006; not scheduled)",
+      "optional": false,
+      "depends_on": [
+        "T57"
+      ],
+      "owner_role": "Presentation",
+      "module_scope": [
+        "Presentation/",
+        "Storage/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0006-calendar-integration-spec.md (T51, proposed 2026-10-26, pending the user's review; the user asked for these tasks to be added before review and will edit or delete them). Read the spec's Goals, Non-goals, Permission flow, Data mapping and Privacy sections first. Amaranth is a local-only SwiftUI macOS meeting recorder; T49 added Meeting.people / Meeting.linkedEvent (MeetingStore.setPeople / setLinkedEvent, schema v3 linked_event_id) and T50 the header chips. Never start a recording automatically; no network or cloud calendar APIs. The Recording tab, export and the model-management sheet stay out of scope.",
+      "deliverables": [
+        "On link, add named attendees as Person(source: .calendar), skipping rooms/resources and unnamed attendees (“+N unnamed”), current user first, de-duplicated against manual people.",
+        "Unlink removes only unedited .calendar people; manual people are never touched.",
+        "Attendee emails never stored unless the off-by-default setting is on; data-lifecycle test proves deletion removes event title and calendar people from database bytes."
+      ],
+      "acceptance": [
+        "Merge/unlink rules covered by table tests; deletion-bytes test passes."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
+      ]
+    },
+    {
+      "id": "T59",
+      "title": "Suggest the current event when recording starts",
+      "milestone": "O",
+      "status": "pending user review (proposed in docs/decisions/0006; not scheduled)",
+      "optional": false,
+      "depends_on": [
+        "T57"
+      ],
+      "owner_role": "Presentation",
+      "module_scope": [
+        "Presentation/RecorderPresentation.swift",
+        "App/Recorder/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0006-calendar-integration-spec.md (T51, proposed 2026-10-26, pending the user's review; the user asked for these tasks to be added before review and will edit or delete them). Read the spec's Goals, Non-goals, Permission flow, Data mapping and Privacy sections first. Amaranth is a local-only SwiftUI macOS meeting recorder; T49 added Meeting.people / Meeting.linkedEvent (MeetingStore.setPeople / setLinkedEvent, schema v3 linked_event_id) and T50 the header chips. Never start a recording automatically; no network or cloud calendar APIs. The Recording tab, export and the model-management sheet stay out of scope.",
+      "deliverables": [
+        "At Record, match an in-progress event or one starting within 10 min; ignore all-day, declined and cancelled events.",
+        "One match: link it and use its title only if the meeting has its automatic title; several: a one-line “Which meeting?” choice (with None) in the recording strip.",
+        "Setting “Suggest calendar events when recording”."
+      ],
+      "acceptance": [
+        "Matching table tests (in progress, 9 vs 11 min, overlaps, all-day, declined, recurring) pass; a typed or renamed title is never changed."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
+      ]
+    },
+    {
+      "id": "T60",
+      "title": "Speaker-rename suggestions from the meeting's people",
+      "milestone": "O",
+      "status": "pending user review (proposed in docs/decisions/0006; not scheduled)",
+      "optional": false,
+      "depends_on": [
+        "T58"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Transcript/TranscriptPane.swift",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0006-calendar-integration-spec.md (T51, proposed 2026-10-26, pending the user's review; the user asked for these tasks to be added before review and will edit or delete them). Read the spec's Goals, Non-goals, Permission flow, Data mapping and Privacy sections first. Amaranth is a local-only SwiftUI macOS meeting recorder; T49 added Meeting.people / Meeting.linkedEvent (MeetingStore.setPeople / setLinkedEvent, schema v3 linked_event_id) and T50 the header chips. Never start a recording automatically; no network or cloud calendar APIs. The Recording tab, export and the model-management sheet stay out of scope.",
+      "deliverables": [
+        "The speaker rename popover lists the meeting's people as one-click suggestions above the free-text field; nothing is named automatically."
+      ],
+      "acceptance": [
+        "Choosing a suggestion records the same rename edit as typing it; ui-render covers the popover with and without people."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
+      ]
+    },
+    {
+      "id": "T61",
+      "title": "Optional “meeting starting” reminder and Settings → Calendar",
+      "milestone": "O",
+      "status": "pending user review (proposed in docs/decisions/0006; not scheduled)",
+      "optional": true,
+      "depends_on": [
+        "T56"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Settings/",
+        "App/Calendar/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0006-calendar-integration-spec.md (T51, proposed 2026-10-26, pending the user's review; the user asked for these tasks to be added before review and will edit or delete them). Read the spec's Goals, Non-goals, Permission flow, Data mapping and Privacy sections first. Amaranth is a local-only SwiftUI macOS meeting recorder; T49 added Meeting.people / Meeting.linkedEvent (MeetingStore.setPeople / setLinkedEvent, schema v3 linked_event_id) and T50 the header chips. Never start a recording automatically; no network or cloud calendar APIs. The Recording tab, export and the model-management sheet stay out of scope.",
+      "deliverables": [
+        "Local notification about 1 min before events in chosen calendars, off by default; clicking it brings Amaranth forward with the event pre-selected for the next recording and never starts recording.",
+        "Settings → Calendar: suggest toggle, reminder toggle and calendar list, “Keep attendee email addresses” (off), “Remove calendar data from all meetings”."
+      ],
+      "acceptance": [
+        "Reminder scheduling covered by tests with the fake source; turning it off removes pending notifications."
+      ],
+      "fallback": "None.",
+      "review_timestamps": [
+        "10:24–11:15"
       ]
     }
   ]
