@@ -1269,7 +1269,7 @@
       "id": "T38",
       "title": "Speaker actions from the speaker column",
       "milestone": "I",
-      "status": "planned",
+      "status": "done (hands-on check pending: checklist item 34)",
       "optional": false,
       "depends_on": [
         "T35"

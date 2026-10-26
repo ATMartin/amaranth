@@ -4,7 +4,8 @@ import Presentation
 
 /// Virtualized transcript (`List` reuses rows, so a two-hour meeting scrolls smoothly) in three columns: time, speaker
 /// (disc and name on the first row of each same-speaker run, T35), text. Click a time to play from it; right-click a
-/// row to correct text or change its speaker; the speaker bar renames and merges speakers. Gaps are rows:
+/// row to correct text or change its speaker; click a speaker's name to rename, merge or reassign (T38; the speaker bar
+/// shows with Details on). Gaps are rows:
 /// with Details off (skim mode, T25) they draw as hairlines and flags as icons; with Details on, in full.
 struct TranscriptPane: View {
     let detail: MeetingDetail
@@ -26,10 +27,11 @@ struct TranscriptPane: View {
                       systemImage: "waveform.badge.magnifyingglass").appFont(.caption).padding(AppStyle.grid).frame(maxWidth: .infinity, alignment: .leading)
                     .background(.blue.opacity(0.08))
             }
-            // One compact strip (T36): playback on the left, speakers after it.
+            // One compact strip (T36): playback on the left, then the speaker overview with Details on only; in skim
+            // mode rename and merge live in the speaker column (T38).
             HStack(spacing: AppStyle.grid) {
                 PlaybackBar(detail: detail).layoutPriority(1)
-                SpeakerBar(speakers: speakers, rename: { renaming = $0; newName = $0.displayName ?? "" }, merge: merge)
+                if showDetails { SpeakerBar(speakers: speakers, rename: rename, merge: merge) }
                 Spacer(minLength: 0)
             }
             Divider()
@@ -41,9 +43,8 @@ struct TranscriptPane: View {
                     let rows = showDetails ? detail.rows : TranscriptRows.skim(detail.rows)
                     let runStarts = TranscriptRows.runStarts(rows)
                     List(rows, selection: $selectedRow) { row in
-                        TranscriptRowView(row: row, showsSpeaker: runStarts.contains(row.id), playable: detail.playbackUnavailableReason == nil) {
-                            playback.play(from: row.start.seconds)
-                        }
+                        TranscriptRowView(row: row, showsSpeaker: runStarts.contains(row.id), playable: detail.playbackUnavailableReason == nil,
+                                          play: { playback.play(from: row.start.seconds) }, speakerMenu: speakerMenu(row))
                             // Compact rows (T36): no separators; a run's first row gets a little air above it instead.
                             .listRowInsets(EdgeInsets(top: runStarts.contains(row.id) && !row.isGap ? 3 : 0, leading: AppStyle.grid,
                                                       bottom: 0, trailing: AppStyle.grid))
@@ -93,16 +94,46 @@ struct TranscriptPane: View {
     @ViewBuilder func menu(_ row: TranscriptRow) -> some View {
         if row.range != nil, !detail.showingProvisional {
             Button("Correct Text…") { correction = row.text; correcting = row }
-            Menu("Assign to Speaker") {
-                ForEach(speakers) { s in Button(s.shownName) { apply { try $0.reassign(row, to: .existing(s.id)) } } }
-                Divider()
-                Button("New Speaker") { apply { try $0.reassign(row, to: $0.newSpeakerTarget()) } }
-                Button("Unknown Speaker") { apply { try $0.reassign(row, to: .unknown) } }
-            }
+            Menu("Assign to Speaker") { assignItems(row) }
             Button("Mark Speaker as Uncertain") { apply { try $0.markUncertain(row) } }
             if detail.playbackUnavailableReason == nil { Button("Play from Here") { playback.play(from: row.start.seconds) } }
         }
     }
+
+    @ViewBuilder func assignItems(_ row: TranscriptRow) -> some View {
+        ForEach(SpeakerMenu.assignTargets(for: row, in: speakers)) { s in Button(s.shownName) { apply { try $0.reassign(row, to: .existing(s.id)) } } }
+        Divider()
+        Button("New Speaker") { apply { try $0.reassign(row, to: $0.newSpeakerTarget()) } }
+        if row.assignment != .unknown { Button("Unknown Speaker") { apply { try $0.reassign(row, to: .unknown) } } }
+    }
+
+    /// Menu behind the speaker disc and name (T38): the SpeakerBar's Rename… and Merge Into for the row's speaker (one
+    /// submenu per speaker on overlap rows), and Assign This Line To from the row menu. Nil while the text is
+    /// provisional (no edits yet), so the name is plain text then.
+    func speakerMenu(_ row: TranscriptRow) -> (() -> AnyView)? {
+        guard !detail.showingProvisional, detail.transcript != nil, !row.isGap else { return nil }
+        return {
+            let subjects = SpeakerMenu.subjects(of: row, in: speakers)
+            return AnyView(Group {
+                if subjects.count == 1, let s = subjects.first {
+                    speakerItems(s)
+                } else {
+                    ForEach(subjects) { s in Menu(s.shownName) { speakerItems(s) } }
+                }
+                if row.range != nil {
+                    if !subjects.isEmpty { Divider() }
+                    Menu("Assign This Line To") { assignItems(row) }
+                }
+            })
+        }
+    }
+
+    @ViewBuilder func speakerItems(_ s: Speaker) -> some View {
+        Button("Rename…") { rename(s) }
+        Menu("Merge Into") { ForEach(SpeakerMenu.mergeTargets(for: s, in: speakers)) { t in Button(t.shownName) { merge(s, into: t) } } }
+    }
+
+    func rename(_ s: Speaker) { renaming = s; newName = s.displayName ?? "" }
 
     func merge(_ source: Speaker, into target: Speaker) { apply { try $0.merge([source.id], into: target.id) } }
 
@@ -119,6 +150,8 @@ struct TranscriptRowView: View {
     let showsSpeaker: Bool
     let playable: Bool
     let play: () -> Void
+    /// Rename / merge / assign menu behind the disc and name (T38); nil shows them as plain text.
+    var speakerMenu: (() -> AnyView)? = nil
     @Environment(\.showDetails) private var showDetails
     @Environment(\.textScale) private var scale
     @Environment(\.transcriptStyle) private var style
@@ -162,13 +195,14 @@ struct TranscriptRowView: View {
         let mine = row.source == .microphone
         VStack(alignment: mine ? .trailing : .leading, spacing: 2) {
             if showsSpeaker {
-                HStack(spacing: AppStyle.half) {
-                    SpeakerDisc(assignment: row.assignment, name: row.speakerLabel, size: 14 * scale)
-                    Text(row.speakerLabel.replacingOccurrences(of: " (overlapping)", with: "")).appFont(.caption, weight: .semibold)
-                        .foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle).help(row.speakerLabel)
+                withSpeakerMenu {
+                    HStack(spacing: AppStyle.half) {
+                        SpeakerDisc(assignment: row.assignment, name: row.speakerLabel, size: 14 * scale)
+                        Text(row.speakerLabel.replacingOccurrences(of: " (overlapping)", with: "")).appFont(.caption, weight: .semibold)
+                            .foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
+                    }
                 }
                 .padding(.top, AppStyle.half)
-                .accessibilityHidden(true)
             }
             HStack(alignment: .bottom, spacing: AppStyle.half + 2) {
                 if mine { bubbleCaption }
@@ -184,6 +218,19 @@ struct TranscriptRowView: View {
         .padding(.vertical, 1)
     }
 
+    /// The disc and name as a borderless menu button when actions are available, else plain (tooltip either way).
+    @ViewBuilder func withSpeakerMenu<L: View>(@ViewBuilder _ label: () -> L) -> some View {
+        if let speakerMenu {
+            Menu { speakerMenu() } label: { label() }
+                .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden)
+                .help("\(row.speakerLabel): rename, merge, or assign this line to someone else")
+                .accessibilityLabel("Speaker \(row.speakerLabel)")
+                .accessibilityHint("Rename, merge, or assign this line")
+        } else {
+            label().help(row.speakerLabel).accessibilityHidden(true)
+        }
+    }
+
     var bubbleCaption: some View {
         HStack(spacing: AppStyle.half) {
             Button(TranscriptRows.clock(row.start), action: play)
@@ -197,14 +244,14 @@ struct TranscriptRowView: View {
 
     @ViewBuilder var speaker: some View {
         if showsSpeaker {
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
-                SpeakerDisc(assignment: row.assignment, name: row.speakerLabel, size: 16 * scale).alignmentGuide(.firstTextBaseline) { $0.height * 0.75 }
-                // Overlap shows as the group disc and the overlap flag, so the column drops the "(overlapping)" suffix.
-                Text(row.speakerLabel.replacingOccurrences(of: " (overlapping)", with: "")).appFont(.body, weight: .semibold).lineLimit(1).truncationMode(.middle)
-                    .foregroundStyle(row.assignment == .unknown ? .secondary : .primary)
-                    .help(row.speakerLabel)
+            withSpeakerMenu {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    SpeakerDisc(assignment: row.assignment, name: row.speakerLabel, size: 16 * scale).alignmentGuide(.firstTextBaseline) { $0.height * 0.75 }
+                    // Overlap shows as the group disc and the overlap flag, so the column drops the "(overlapping)" suffix.
+                    Text(row.speakerLabel.replacingOccurrences(of: " (overlapping)", with: "")).appFont(.body, weight: .semibold).lineLimit(1).truncationMode(.middle)
+                        .foregroundStyle(row.assignment == .unknown ? .secondary : .primary)
+                }
             }
-            .accessibilityHidden(true)
         } else {
             Color.clear.frame(height: 1).accessibilityHidden(true)
         }
@@ -247,7 +294,7 @@ struct SpeakerBar: View {
                     ForEach(speakers) { s in
                         Menu {
                             Button("Rename…") { rename(s) }
-                            Menu("Merge Into") { ForEach(speakers.filter { $0.id != s.id }) { t in Button(t.shownName) { merge(s, t) } } }
+                            Menu("Merge Into") { ForEach(SpeakerMenu.mergeTargets(for: s, in: speakers)) { t in Button(t.shownName) { merge(s, t) } } }
                         } label: { Text(s.shownName) }
                         .menuStyle(.button).controlSize(.small).fixedSize()
                     }

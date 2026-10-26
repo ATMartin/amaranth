@@ -63,3 +63,16 @@ stay out of git; committed screenshots use fixtures); stop after I is validated;
   instead of blue in the palette (blue is the accent / your bubbles).
 - `ui-density` takes `--transcript-style` and `--details`; its preferences live in a throwaway defaults suite.
 - Manual (user): checklist item 33.
+
+## T38 Speaker actions from the speaker column
+- The disc and name (first row of a run, both styles) are a borderless menu: **Rename…** and **Merge Into ▸** for the
+  row's speaker (one submenu per speaker on overlap rows; unknown rows have none), then **Assign This Line To ▸** (same
+  items as the row's context menu). Plain text while the transcript is provisional.
+- Both menus and the SpeakerBar call the same `rename` / `merge` functions on `EditComposer`; `SpeakerMenu`
+  (Presentation) chooses the subjects, merge targets and assign targets, and `SpeakerMenuTests` shows the column and the
+  bar produce identical edits. The row and column "assign" lists now leave out the row's current speaker (a no-op), and
+  "Unknown Speaker" is not offered for a line that is already unknown.
+- SpeakerBar shows only with Details on (skim mode: playback control alone in the strip).
+- Not automatable here: offscreen SwiftUI menus have no AppKit view or accessibility element until clicked, and the
+  terminal has no Accessibility permission. Menu contents and clicks: checklist item 34.
+- `--self-test ui-render` passes at all three text sizes; package UI tests 49/49.
