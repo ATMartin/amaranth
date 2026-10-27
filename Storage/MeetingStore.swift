@@ -234,6 +234,22 @@ public final class MeetingStore: @unchecked Sendable {
         try sync { try decode(CaptureEvent.self, db.run("SELECT json FROM capture_events WHERE meeting_id = ? ORDER BY start_ns", [.text(meeting.rawValue)])) }
     }
 
+    /// Ends a just-stopped recording early (T68's quiet-tail trim): removes the given segment and event rows and sets the
+    /// meeting's duration, in one transaction. The caller deletes the files and the journal lines.
+    public func trimCapture(_ meeting: MeetingID, removingSegments segments: [AudioSegmentID], events: [CaptureEventID],
+                            duration: SessionDuration) throws {
+        try sync {
+            try db.transaction {
+                for id in segments { try db.run("DELETE FROM audio_segments WHERE id = ? AND meeting_id = ?", [.text(id.rawValue), .text(meeting.rawValue)]) }
+                for id in events { try db.run("DELETE FROM capture_events WHERE id = ? AND meeting_id = ?", [.text(id.rawValue), .text(meeting.rawValue)]) }
+                guard let row = try db.run("SELECT json FROM meetings WHERE id = ?", [.text(meeting.rawValue)]).first?["json"]?.blob else { return }
+                var m = try ContractCoding.decode(Meeting.self, from: row)
+                m.duration = duration
+                try db.run("UPDATE meetings SET duration_ns = ?, json = ? WHERE id = ?", [.int(duration.nanoseconds), try json(m), .text(meeting.rawValue)])
+            }
+        }
+    }
+
     /// Integrity check used by tests and diagnostics.
     func integrityOK() throws -> Bool {
         try sync { try db.run("PRAGMA integrity_check").first?["integrity_check"]?.text == "ok" }

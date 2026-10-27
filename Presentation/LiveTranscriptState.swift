@@ -94,6 +94,12 @@ public struct LiveTranscriptState: Sendable {
         sources.values.flatMap(\.shown).sorted { $0.interval.start < $1.interval.start }
     }
 
+    /// End of the newest word shown on any source (tentative words count: they are speech), for the quiet alert (T68).
+    public var lastWordEnd: SessionTime? {
+        // Each list is in time order, so its last word is its newest (read at 10 Hz: no full scan).
+        sources.values.flatMap { [$0.final.last, $0.stable.last, $0.tentative.last].compactMap { $0?.interval.end } }.max()
+    }
+
     public func percentile(_ p: Double) -> Double? { LiveLatencyLog.percentile(latencies, p) }
 
     /// Lines for display: one per source run, split at pauses over 1.5 s.

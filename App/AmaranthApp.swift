@@ -131,8 +131,9 @@ struct AmaranthApp: App {
             MenuBarContent(recorder: recorder)
         } label: {
             // Visible whenever the app runs; red while recording so it is never silent.
-            Image(systemName: recorder.inSession ? "record.circle.fill" : "waveform")
-                .symbolRenderingMode(recorder.inSession ? .multicolor : .monochrome)
+            // T68: an exclamation mark while the "Still recording?" alert is up.
+            Image(systemName: recorder.quiet != nil ? "exclamationmark.circle.fill" : recorder.inSession ? "record.circle.fill" : "waveform")
+                .symbolRenderingMode(recorder.inSession && recorder.quiet == nil ? .multicolor : .monochrome)
         }
 
         Settings {
@@ -158,6 +159,8 @@ struct MenuBarContent: View {
 
     var body: some View {
         switch recorder.state {
+        case .recording where recorder.quiet != nil:
+            Text("Still recording? \(QuietMonitor.stripLabel(recorder.quiet!, now: recorder.elapsed)) — \(RecorderPresentation.clock(recorder.elapsed))")
         case .recording: Text("Recording — \(RecorderPresentation.clock(recorder.elapsed))")
         case .paused: Text("Paused — \(RecorderPresentation.clock(recorder.elapsed))")
         case .interrupted: Text("Interrupted by sleep — audio saved")
@@ -169,7 +172,8 @@ struct MenuBarContent: View {
         if recorder.inSession {
             if recorder.state == .paused || recorder.state == .interrupted { Button("Resume") { recorder.resume() } }
             else { Button("Pause") { recorder.pause() }.disabled(recorder.state != .recording) }
-            Button("Stop and Save") { recorder.stop() }.disabled(recorder.state == .stopping)
+            if recorder.quiet != nil { Button("Keep Recording") { recorder.keepRecording() } }
+            Button(recorder.quiet != nil ? "Stop & Make Notes" : "Stop and Save") { recorder.stop() }.disabled(recorder.state == .stopping)
         } else {
             // Bring the window forward so the live transcript is in front (T32).
             Button("Record") { recorder.start(); openWindow(id: "main"); NSApp.activate() }

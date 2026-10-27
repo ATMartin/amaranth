@@ -2161,7 +2161,7 @@
       "id": "T68",
       "title": "“Still recording?” alert when a recording goes quiet, with tail trim",
       "milestone": "Fixes",
-      "status": "accepted, not started (user decisions 2026-10-27 in docs/decisions/capture/0002-quiet-recording-alert.md)",
+      "status": "done (2026-10-27): quiet + microphone-release alert, amber strip and menu bar, notification after the first Stop, tail trim deletes the quiet end (no Restore, per the user); decision capture/0002 amended; checklist item 60",
       "optional": false,
       "depends_on": [],
       "owner_role": "Capture + App UI",

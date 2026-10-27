@@ -51,6 +51,7 @@ final class ReminderController: NSObject, UNUserNotificationCenterDelegate {
     /// App launch: become the notification delegate (so a click that launches the app is delivered) and re-plan.
     func start() {
         UNUserNotificationCenter.current().delegate = self
+        QuietNotifications.registerCategory()   // T68's "Still recording?" buttons share this delegate
         observer = NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.sync() }
         }
@@ -90,6 +91,20 @@ final class ReminderController: NSObject, UNUserNotificationCenterDelegate {
         -> UNNotificationPresentationOptions { [.banner, .sound] }
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        if response.notification.request.identifier.hasPrefix(QuietNotifications.idPrefix) {
+            let action = response.actionIdentifier
+            let meeting = String(response.notification.request.identifier.dropFirst(QuietNotifications.idPrefix.count))
+            await MainActor.run {
+                // Only for the recording it was raised for (a late click after that recording ended does nothing).
+                guard let recorder, recorder.meetingID?.rawValue == meeting, recorder.inSession else { return }
+                switch action {
+                case QuietNotifications.stopAction: recorder.stop()
+                case QuietNotifications.keepAction: recorder.keepRecording()
+                default: openMainWindow?(); NSApp.activate()   // the notification itself: show the recording
+                }
+            }
+            return
+        }
         guard response.notification.request.identifier.hasPrefix(CalendarReminder.idPrefix) else { return }
         let id = response.notification.request.content.userInfo["eventIdentifier"] as? String
         await MainActor.run {

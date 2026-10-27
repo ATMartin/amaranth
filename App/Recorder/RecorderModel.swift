@@ -55,7 +55,15 @@ final class RecorderModel {
     private(set) var recoveryMessage: String?
     /// One-line notice for this recording, e.g. the chosen microphone is not connected (T30).
     private(set) var notice: String?
+    /// One-line explanation, e.g. why Amaranth is about to ask for notifications (T68).
+    private(set) var info: String?
     private var permissionDismissed = false
+    /// T68: "Still recording?" — the alert while it is up (nil otherwise), from `quietMonitor`, fed every tick.
+    private(set) var quiet: QuietMonitor.Alert?
+    private var quietMonitor: QuietMonitor?
+    /// Other apps' microphone use, polled at 1 Hz off the main thread while recording (nil: unknown).
+    private var othersUsingMicrophone: Bool?
+    private var microphonePoll: Task<Void, Never>?
     private var session: RecordingSession?
     private var poll: Timer?
     private var sleepObserver: (any NSObjectProtocol)?
@@ -65,11 +73,13 @@ final class RecorderModel {
 
     #if DEBUG
     /// UI render self-test only: shows the recording strip without a capture session (state `nil` returns to idle).
-    func showStripForRender(_ state: CaptureState?, elapsed: Double = 3723, health: [SourceHealth] = [], prompt: CalendarSuggestion.Prompt = .none) {
+    func showStripForRender(_ state: CaptureState?, elapsed: Double = 3723, health: [SourceHealth] = [], prompt: CalendarSuggestion.Prompt = .none,
+                            quiet: QuietMonitor.Alert? = nil) {
         self.state = state ?? .idle
         self.elapsed = state == nil ? 0 : elapsed
         self.health = state == nil ? [] : health
         eventPrompt = state == nil ? .none : prompt
+        self.quiet = state == nil ? nil : quiet
     }
 
     /// Stop layout probe only (T67): the banner's "Saved …" line, as after a real Stop.
@@ -107,7 +117,7 @@ final class RecorderModel {
     /// A recording session is open: recording, paused, starting, saving, or interrupted by sleep and waiting to resume.
     var inSession: Bool { session != nil || state.isActive }
 
-    enum Message: Hashable { case error, permission, notice, recovery, result }
+    enum Message: Hashable { case error, permission, notice, recovery, result, info }
 
     struct BannerItem {
         let kind: Message
@@ -119,6 +129,7 @@ final class RecorderModel {
             case .notice: "mic.badge.xmark"
             case .recovery: "arrow.uturn.backward.circle"
             case .result: "checkmark.circle"
+            case .info: "bell"
             }
         }
     }
@@ -133,6 +144,7 @@ final class RecorderModel {
         if let notice { items.append(.init(kind: .notice, text: notice)) }
         if let recoveryMessage { items.append(.init(kind: .recovery, text: recoveryMessage)) }
         if let lastResult { items.append(.init(kind: .result, text: lastResult)) }
+        if let info { items.append(.init(kind: .info, text: info)) }
         return items
     }
 
@@ -143,6 +155,7 @@ final class RecorderModel {
         case .notice: notice = nil
         case .recovery: recoveryMessage = nil
         case .result: lastResult = nil
+        case .info: info = nil
         }
     }
 
@@ -162,6 +175,7 @@ final class RecorderModel {
         error = nil
         lastResult = nil
         notice = nil
+        info = nil
         permissionDismissed = false
         if !customized { loadDefaults() }
         refreshDevices()
@@ -207,7 +221,59 @@ final class RecorderModel {
         poll = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
         }
+        startQuietMonitor()
         offerEvents()
+    }
+
+    // MARK: Quiet alert (T68, docs/decisions/capture/0002)
+
+    private func startQuietMonitor() {
+        quiet = nil
+        othersUsingMicrophone = nil
+        guard QuietAlertSettings.enabled() else { quietMonitor = nil; return }
+        quietMonitor = QuietMonitor(threshold: QuietAlertSettings.threshold())
+        microphonePoll = Task.detached(priority: .utility) { [weak self] in
+            while !Task.isCancelled {
+                let using = MicrophoneUse.othersUsingInput()
+                await MainActor.run { self?.othersUsingMicrophone = using }
+                try? await Task.sleep(for: .seconds(1))
+            }
+        }
+    }
+
+    private func stopQuietMonitor() {
+        microphonePoll?.cancel()
+        microphonePoll = nil
+        quietMonitor = nil
+        if quiet != nil, let id = meetingID { QuietNotifications.remove(meeting: id.rawValue) }
+        quiet = nil
+    }
+
+    private func updateQuiet() {
+        guard var m = quietMonitor else { return }
+        let liveRunning = live?.status == .running
+        let input = QuietMonitor.Input(now: elapsed, recording: state == .recording, liveText: liveRunning,
+                                       lastWordEnd: live?.state.lastWordEnd?.seconds,
+                                       levelsSilent: !health.isEmpty && health.allSatisfy { Double($0.rmsLevelDBFS ?? -120) < RecorderPresentation.silentDBFS },
+                                       othersUsingMicrophone: othersUsingMicrophone)
+        let raised = m.update(input)
+        quietMonitor = m
+        let was = quiet
+        quiet = m.alert
+        guard let id = meetingID else { return }
+        if let raised {
+            let text = QuietMonitor.notification(raised, now: elapsed)
+            QuietNotifications.post(title: text.title, body: text.body, meeting: id.rawValue)
+        } else if was != nil, quiet == nil {
+            QuietNotifications.remove(meeting: id.rawValue)
+        }
+    }
+
+    /// Keep Recording (notification, strip or menu bar): silence the alert until someone speaks again.
+    func keepRecording() {
+        quietMonitor?.keepRecording()
+        quiet = nil
+        if let id = meetingID { QuietNotifications.remove(meeting: id.rawValue) }
     }
 
     /// T59: once capture has started, ask about the calendar event happening now, if the setting is on and access was
@@ -257,6 +323,7 @@ final class RecorderModel {
         diskSecondsLeft = disk.secondsLeft
         diskWarned = disk.warned
         if scratchpad != savedScratchpad, Date().timeIntervalSince(lastScratchpadSave) > 10 { saveScratchpad() }
+        updateQuiet()
     }
 
     private func saveScratchpad() {
@@ -290,20 +357,36 @@ final class RecorderModel {
         stop()
     }
 
+    /// Stop and save. While the quiet alert is up, the meeting ends at the last words + 5 s and the quiet tail is
+    /// deleted (T68); otherwise nothing is trimmed.
     func stop() {
         guard let s = session else { return }
         poll?.invalidate()
         poll = nil
+        let trimEnd = quietMonitor?.trimEnd(duration: s.now.seconds)
+        stopQuietMonitor()
         state = .stopping
+        let store = self.store
         Task.detached(priority: .userInitiated) {
-            let r = s.stop()
-            await MainActor.run { self.finish(r, note: nil) }
+            var r = s.stop()
+            var note: String?
+            if let trimEnd, let plan = CaptureTrim.plan(r, end: .seconds(trimEnd)) {
+                do {
+                    r = try CaptureTrim.apply(plan, to: r, store: store)
+                    note = "Ended at the last words: removed \(RecorderPresentation.clock(plan.removedSeconds)) of quiet at the end."
+                } catch {
+                    note = "Couldn't remove the quiet end of the recording (\(error.localizedDescription)); the whole recording is kept."
+                }
+            }
+            let finalNote = note
+            await MainActor.run { self.finish(r, note: finalNote) }
         }
     }
 
     private func finish(_ r: CaptureResult, note: String?) {
         poll?.invalidate()
         poll = nil
+        stopQuietMonitor()
         saveScratchpad()
         if let live { Task { await live.finish(r) } }
         incremental?.stop()
@@ -319,8 +402,18 @@ final class RecorderModel {
         let waiting = afterStop
         afterStop = []
         waiting.forEach { $0() }
+        askForQuietNotificationsAfterStop()
         lastResult = [note, "Saved \(r.segments.count) segments (\(String(format: "%.0f", r.duration.seconds)) s) to \(r.directory.path)"
             + (r.events.contains(where: \.isMissingAudio) ? " · \(String(format: "%.1f", MeetingStatus.missingSeconds(r.events))) s missing (shown as gaps)" : "")]
             .compactMap { $0 }.joined(separator: " ")
+    }
+
+    /// T68: the one notification prompt for the quiet alert, right after a recording ends, with a line saying why.
+    private func askForQuietNotificationsAfterStop() {
+        Task {
+            guard await QuietNotifications.shouldAskAfterStop(), !inSession else { return }
+            info = "Amaranth can notify you when a recording goes quiet (“Still recording?”). Allow notifications if asked; Settings → Recording turns the alert off."
+            await QuietNotifications.ask()
+        }
     }
 }

@@ -261,6 +261,16 @@ enum UIRenderSelfTest {
                                       pause: {}, resume: {}, stop: {}, eventPrompt: p)
             }
         }.padding(), "recording-strip-calendar", size: CGSize(width: 720, height: 170))
+        // T68: the amber "Quiet" strip (quiet and call-ended) and its popover.
+        let quietAlerts = [QuietMonitor.Alert(reason: .quiet, quietSince: 3723 - 72, usedLevels: false),
+                           QuietMonitor.Alert(reason: .callEnded, quietSince: 3723 - 41, usedLevels: false)]
+        _ = await host(VStack(alignment: .leading, spacing: 14) {
+            ForEach(Array(quietAlerts.enumerated()), id: \.offset) { _, q in
+                RecordingStripContent(state: .recording, elapsed: 3723, health: stripSamples[0].1, savedUpTo: [:], diskWarning: nil, folder: nil,
+                                      pause: {}, resume: {}, stop: {}, quiet: q)
+            }
+        }.padding(), "recording-strip-quiet", size: CGSize(width: 520, height: 110))
+        _ = await host(QuietAlertDetails(alert: quietAlerts[0], now: 3723, stop: {}, keep: {}), "quiet-alert-popover", size: CGSize(width: 320, height: 190))
         _ = await host(EventPromptChoices(prompt: .one(promptEvents[0]), link: { _ in }, dismiss: {}), "event-prompt-one", size: CGSize(width: 300, height: 170))
         _ = await host(EventPromptChoices(prompt: .several(Array(promptEvents.prefix(2))), link: { _ in }, dismiss: {}), "event-prompt-several", size: CGSize(width: 300, height: 220))
         // Health popover content (T34).
@@ -334,12 +344,16 @@ enum UIRenderSelfTest {
                 .init(source: .microphone, status: .healthy, peakLevelDBFS: -18, deviceName: "MacBook Pro Microphone"),
                 .init(source: .systemOutput, status: .healthy, peakLevelDBFS: -24, deviceName: "System audio")])
             // T59: also with the calendar question showing (a long title, and "Which meeting?").
-            let prompts: [(String, CalendarSuggestion.Prompt)] = [("", .none), ("-calendar-one", .one(Self.longTitleEvent)),
-                                                                  ("-calendar-several", .several(Array(Self.calendarEvents(on: Date()).prefix(2))))]
-            for (suffix, prompt) in prompts {
+            // T68: and with the amber "Still recording?" quiet time (alone, and with the calendar question).
+            let quiet = QuietMonitor.Alert(reason: .quiet, quietSince: 3723 - 72, usedLevels: false)
+            let prompts: [(String, CalendarSuggestion.Prompt, QuietMonitor.Alert?)] = [
+                ("", .none, nil), ("-calendar-one", .one(Self.longTitleEvent), nil),
+                ("-calendar-several", .several(Array(Self.calendarEvents(on: Date()).prefix(2))), nil),
+                ("-quiet", .none, quiet), ("-quiet-calendar-one", .one(Self.longTitleEvent), quiet)]
+            for (suffix, prompt, quietAlert) in prompts {
             recorder.showStripForRender(.recording, health: [
                 .init(source: .microphone, status: .healthy, peakLevelDBFS: -18, deviceName: "MacBook Pro Microphone"),
-                .init(source: .systemOutput, status: .healthy, peakLevelDBFS: -24, deviceName: "System audio")], prompt: prompt)
+                .init(source: .systemOutput, status: .healthy, peakLevelDBFS: -24, deviceName: "System audio")], prompt: prompt, quiet: quietAlert)
             for width in [1100.0, 900.0] {
                 let rec = NSHostingView(rootView: MainView().textSize(textSize).environment(worker).environment(models).environment(recorder)
                     .environment(library).environment(playback).environment(live).environment(calendar).frame(width: width, height: 600))

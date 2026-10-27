@@ -4,6 +4,9 @@ public import Domain
 /// What the toolbar recording strip shows (T31): one glyph per active source, coloured by health, with the same
 /// status text the old sidebar recorder used as its tooltip.
 public enum RecorderPresentation {
+    /// RMS below this is "silent" (the recorder's health rule); the quiet alert's fallback when live text isn't running.
+    public static let silentDBFS: Double = -70
+
     public enum Tone: Sendable, Equatable { case green, grey, orange, red }
 
     public static func tone(_ s: SourceHealth.Status) -> Tone {

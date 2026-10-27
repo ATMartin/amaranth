@@ -92,7 +92,8 @@ struct RecordingStrip: View {
         RecordingStripContent(state: model.state, elapsed: model.elapsed, health: model.health, savedUpTo: model.savedUpTo,
                               diskWarning: model.diskWarned ? model.diskSecondsLeft.map(RecorderPresentation.diskWarning) : nil,
                               folder: model.directory?.path, pause: model.pause, resume: model.resume, stop: model.stop,
-                              eventPrompt: model.eventPrompt, link: model.approve, dismissEvent: model.dismissEventPrompt)
+                              eventPrompt: model.eventPrompt, link: model.approve, dismissEvent: model.dismissEventPrompt,
+                              quiet: model.quiet, keepRecording: model.keepRecording)
     }
 }
 
@@ -110,7 +111,11 @@ struct RecordingStripContent: View {
     var eventPrompt: CalendarSuggestion.Prompt = .none
     var link: (CalendarEvent) -> Void = { _ in }
     var dismissEvent: () -> Void = {}
+    /// T68: the "Still recording?" alert, shown as an amber "Quiet 1:12" in place of the clock; a click offers Keep Recording.
+    var quiet: QuietMonitor.Alert? = nil
+    var keepRecording: () -> Void = {}
     @State private var showingHealth = false
+    @State private var showingQuiet = false
 
     var body: some View {
         HStack(spacing: AppStyle.grid) {
@@ -143,7 +148,8 @@ struct RecordingStripContent: View {
             Button(action: stop) { Label("Stop and Save", systemImage: "stop.fill") }.disabled(state == .stopping || state == .preparing)
                 .keyboardShortcut("s", modifiers: [.command, .shift]).help("Stop and save (⌘⇧S)")
             if eventPrompt != .none {
-                EventPromptContent(prompt: eventPrompt, link: link, dismiss: dismissEvent)
+                // Icon only while "Quiet" shows: both don't fit beside Stop at a 900 pt window.
+                EventPromptContent(prompt: eventPrompt, link: link, dismiss: dismissEvent, compact: quiet != nil)
             }
         }
         .labelStyle(.titleAndIcon)
@@ -156,6 +162,21 @@ struct RecordingStripContent: View {
     @ViewBuilder var status: some View {
         let clock = RecorderPresentation.clock(elapsed)
         switch state {
+        case .recording where quiet != nil:
+            let q = quiet!
+            Button { showingQuiet.toggle() } label: {
+                Label { Text(QuietMonitor.stripLabel(q, now: elapsed)).monospacedDigit() } icon: {
+                    Image(systemName: "circle.fill").foregroundStyle(Color.statusAttention)
+                }
+                .foregroundStyle(Color.statusAttention)
+            }
+            .buttonStyle(.plain)
+            .help("Still recording (\(clock)) — \(q.reason == .quiet ? "no one has spoken for a while" : "the call seems to have ended"). Click for options.")
+            .accessibilityLabel("Still recording? \(QuietMonitor.stripLabel(q, now: elapsed)), recording \(clock)")
+            .popover(isPresented: $showingQuiet, arrowEdge: .bottom) {
+                QuietAlertDetails(alert: q, now: elapsed, stop: { showingQuiet = false; stop() },
+                                  keep: { showingQuiet = false; keepRecording() })
+            }
         case .recording:
             Label { Text(clock).monospacedDigit() } icon: { Image(systemName: "circle.fill").foregroundStyle(Color.statusFailed) }
                 .help("Recording").accessibilityLabel("Recording, \(clock)")
@@ -170,6 +191,31 @@ struct RecordingStripContent: View {
     }
 }
 
+/// T68: what the amber "Quiet" means, and the two choices the notification also offers.
+struct QuietAlertDetails: View {
+    let alert: QuietMonitor.Alert
+    let now: Double
+    let stop: () -> Void
+    let keep: () -> Void
+
+    var body: some View {
+        let text = QuietMonitor.notification(alert, now: now)
+        VStack(alignment: .leading, spacing: 8) {
+            Text(text.title).font(.headline)
+            Text(text.body)
+            Text("Stopping now ends the meeting 5 seconds after the last words and deletes the quiet audio after that. Amaranth never stops on its own.")
+                .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+            HStack {
+                Spacer()
+                Button("Keep Recording", action: keep)
+                Button("Stop & Make Notes", action: stop).keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(14)
+        .frame(width: 320)
+    }
+}
+
 /// The calendar question after Record (T59): one compact button in the strip, never acting on its own. One match reads
 /// "<title>?", several "Which meeting?"; the click opens the choices (Link / Not this, or each event and None) with the
 /// full title and time. The strip has about 100 pt to spare at a 900 pt window, so the buttons can't sit inline.
@@ -178,6 +224,8 @@ struct EventPromptContent: View {
     let prompt: CalendarSuggestion.Prompt
     let link: (CalendarEvent) -> Void
     let dismiss: () -> Void
+    /// Just the calendar icon (the question is in the tooltip and VoiceOver label).
+    var compact = false
     @State private var open = false
 
     var label: String {
@@ -192,10 +240,10 @@ struct EventPromptContent: View {
         Button { open.toggle() } label: {
             HStack(spacing: 3) {
                 Image(systemName: "calendar").foregroundStyle(Color.accentColor)
-                Text(label).lineLimit(1).truncationMode(.tail).frame(maxWidth: 74, alignment: .leading)
+                if !compact { Text(label).lineLimit(1).truncationMode(.tail).frame(maxWidth: 74, alignment: .leading) }
             }
         }
-        .help(prompt == .none ? "" : "Is this recording a calendar event? Click to link it, or dismiss. Nothing changes until you choose.")
+        .help(prompt == .none ? "" : (compact ? label + " " : "") + "Is this recording a calendar event? Click to link it, or dismiss. Nothing changes until you choose.")
         .accessibilityLabel("Calendar suggestion: \(label)")
         .popover(isPresented: $open, arrowEdge: .bottom) {
             EventPromptChoices(prompt: prompt, link: { open = false; link($0) }, dismiss: { open = false; dismiss() })
