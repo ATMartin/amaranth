@@ -4,6 +4,9 @@ Date: 2026-10-26 · Status: **Accepted 2026-10-27** (T51), with the user's three
 at the end). Tasks T56–T61 (Milestone O) are in `docs/implementation-tasks.json`; Milestone O is not yet placed in
 the milestone order.
 
+> 2026-10-27: spec [0007](0007-google-calendar-integration-spec.md) (proposed) would add a direct Google Calendar
+> integration and, if accepted, amend this spec's "No cloud calendar APIs" non-goal and its Approach.
+
 Source: design review of 2026-10-23, 10:24–11:15 (`docs/design-review/2026-10-23/transcript.md`): "I would eventually
 like to be able to link an Amaranth recording to a calendar event and let that automatically populate the name of the
 meeting … We also show the people in the meeting … We should think about speccing out a milestone for it." Reference:

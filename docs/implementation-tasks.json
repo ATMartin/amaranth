@@ -55,7 +55,8 @@
     "L": "Notes templates: T46-T48",
     "M": "Calendar and people placeholders: T49-T51",
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
-    "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert"
+    "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
+    "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); not placed in the milestone order"
   },
   "tasks": [
     {
@@ -1981,6 +1982,154 @@
       "review_timestamps": [
         "10:24–11:15"
       ]
+    },
+    {
+      "id": "T62",
+      "title": "Google sign-in and account row",
+      "milestone": "P",
+      "status": "proposed, pending review (spec 0007)",
+      "optional": false,
+      "depends_on": [
+        "T61"
+      ],
+      "owner_role": "App integration",
+      "module_scope": [
+        "App/Calendar/Google/",
+        "App/Settings/",
+        "Config/",
+        "project.yml",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0007-google-calendar-integration-spec.md (proposed 2026-10-27, pending the user's review; must be accepted before work starts). Read its Why direct, Sign-in flow, Sync, Data mapping, Network boundary and Privacy sections, and spec 0006 (Milestone O, T56-T61), whose rules still apply. Amaranth is a SwiftUI macOS meeting recorder; Milestone O built CalendarSource (Presentation/CalendarSource.swift), CalendarLinking, CalendarSuggestion, CalendarReminder and Settings -> Calendar over EventKit. Read-only: no write scopes, no writing to any calendar. Network only after the user connects an account, only to the Google hosts in the spec, never meeting content. Never start a recording automatically; never prompt or open a browser during a recording. Real event titles, attendee names and tokens are never committed.",
+      "deliverables": [
+        "Build-time OAuth client config in gitignored Config/GoogleOAuth.xcconfig; builds without it hide the Google option.",
+        "Authorization code + PKCE (S256) through the system browser with a one-shot 127.0.0.1 loopback listener (state checked, 5 min timeout); scopes calendar.calendarlist.readonly, calendar.events.readonly, openid email.",
+        "Refresh token in the Keychain (this device only, not synced); access token in memory; token refresh; invalid_grant -> \"Reconnect needed\" without opening a browser by itself.",
+        "Settings -> Calendar: Connect Google Calendar..., connected account email, last sync, Disconnect (revokes at Google, deletes the Keychain item)."
+      ],
+      "acceptance": [
+        "Tests: PKCE challenge, state mismatch rejected, listener timeout, Keychain round trip under a test service name, refresh and invalid_grant with a URLProtocol mock.",
+        "No network request before Connect; no browser or prompt while recording.",
+        "ui-render: not connected, connected, reconnect needed, in both appearances."
+      ],
+      "fallback": "If the loopback flow is blocked, stop and report; no embedded web view.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T63",
+      "title": "Google sync and local cache",
+      "milestone": "P",
+      "status": "proposed, pending review (spec 0007)",
+      "optional": false,
+      "depends_on": [
+        "T62"
+      ],
+      "owner_role": "Storage",
+      "module_scope": [
+        "App/Calendar/Google/",
+        "Storage/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0007-google-calendar-integration-spec.md (proposed 2026-10-27, pending the user's review; must be accepted before work starts). Read its Why direct, Sign-in flow, Sync, Data mapping, Network boundary and Privacy sections, and spec 0006 (Milestone O, T56-T61), whose rules still apply. Amaranth is a SwiftUI macOS meeting recorder; Milestone O built CalendarSource (Presentation/CalendarSource.swift), CalendarLinking, CalendarSuggestion, CalendarReminder and Settings -> Calendar over EventKit. Read-only: no write scopes, no writing to any calendar. Network only after the user connects an account, only to the Google hosts in the spec, never meeting content. Never start a recording automatically; never prompt or open a browser during a recording. Real event titles, attendee names and tokens are never committed.",
+      "deliverables": [
+        "CalendarList.list and Events.list (singleEvents=true, fields-limited) for chosen calendars; first sync -14 d ... +2 d, then syncToken; 410 -> full resync; 401 -> one refresh; 429/5xx backoff.",
+        "Cache in its own google-calendar.sqlite (secure_delete, mapped fields only, never raw JSON).",
+        "Sync at launch (not during self-tests), every 5 min, on picker open, on wake; older days fetched on demand and kept for the session only."
+      ],
+      "acceptance": [
+        "URLProtocol mock tests: paging, incremental sync, 410, 401, 429, offline (cache still served).",
+        "Cache file contains no description, location or conference fields (fields parameter excludes them)."
+      ],
+      "fallback": "Full resync each time instead of syncToken if incremental sync proves unreliable; document it.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T64",
+      "title": "Google as a calendar source, merged with EventKit",
+      "milestone": "P",
+      "status": "proposed, pending review (spec 0007)",
+      "optional": false,
+      "depends_on": [
+        "T63"
+      ],
+      "owner_role": "Presentation",
+      "module_scope": [
+        "Presentation/",
+        "Domain/Meeting/Meeting.swift",
+        "App/Calendar/",
+        "App/Settings/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0007-google-calendar-integration-spec.md (proposed 2026-10-27, pending the user's review; must be accepted before work starts). Read its Why direct, Sign-in flow, Sync, Data mapping, Network boundary and Privacy sections, and spec 0006 (Milestone O, T56-T61), whose rules still apply. Amaranth is a SwiftUI macOS meeting recorder; Milestone O built CalendarSource (Presentation/CalendarSource.swift), CalendarLinking, CalendarSuggestion, CalendarReminder and Settings -> Calendar over EventKit. Read-only: no write scopes, no writing to any calendar. Network only after the user connects an account, only to the Google hosts in the spec, never meeting content. Never start a recording automatically; never prompt or open a browser during a recording. Real event titles, attendee names and tokens are never committed.",
+      "deliverables": [
+        "GoogleCalendarSource implements CalendarSource from the cache; mapping per spec 0007 (attendee resource -> room skipped, self -> current user, declined, cancelled, all-day).",
+        "LinkedEvent.Source.google (domain contract change recorded in 0002).",
+        "Composite source: Google and EventKit merged by iCalUID + occurrence start, Google preferred; verified on a real account, fallback title + start + end.",
+        "Calendar checkboxes grouped by source; picker, changed/no-longer-in-calendar status, Update, attendees as people, rename suggestions and reminder work for Google events."
+      ],
+      "acceptance": [
+        "Mapping table tests from hand-written JSON fixtures; merge tests (one row per event, Google preferred, EventKit-linked meeting keeps its live status).",
+        "Existing Milestone O tests pass unchanged."
+      ],
+      "fallback": "Show both sources' copies unmerged, labelled by source, if iCalUIDs don't match in practice.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T65",
+      "title": "Fresh events at Record",
+      "milestone": "P",
+      "status": "proposed, pending review (spec 0007)",
+      "optional": false,
+      "depends_on": [
+        "T64"
+      ],
+      "owner_role": "Presentation",
+      "module_scope": [
+        "App/Recorder/",
+        "Presentation/CalendarSuggestion.swift",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0007-google-calendar-integration-spec.md (proposed 2026-10-27, pending the user's review; must be accepted before work starts). Read its Why direct, Sign-in flow, Sync, Data mapping, Network boundary and Privacy sections, and spec 0006 (Milestone O, T56-T61), whose rules still apply. Amaranth is a SwiftUI macOS meeting recorder; Milestone O built CalendarSource (Presentation/CalendarSource.swift), CalendarLinking, CalendarSuggestion, CalendarReminder and Settings -> Calendar over EventKit. Read-only: no write scopes, no writing to any calendar. Network only after the user connects an account, only to the Google hosts in the spec, never meeting content. Never start a recording automatically; never prompt or open a browser during a recording. Real event titles, attendee names and tokens are never committed.",
+      "deliverables": [
+        "When Record is pressed with a connected account, fetch events around now (3 s timeout) after capture starts; the prompt appears or updates when they arrive and falls back to the cache.",
+        "Offline and Reconnect-needed shown quietly in the chip and Settings; nothing modal while recording."
+      ],
+      "acceptance": [
+        "Tests with a slow and a failing fake client: capture start is never delayed; an event added just before Record is offered; approval still required.",
+        "ui-render toolbar-recording still fits at 900 pt."
+      ],
+      "fallback": "Cache only, with a sync at Record that updates the prompt next time.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T66",
+      "title": "Google privacy and network qualification",
+      "milestone": "P",
+      "status": "proposed, pending review (spec 0007)",
+      "optional": false,
+      "depends_on": [
+        "T64"
+      ],
+      "owner_role": "Qualification",
+      "module_scope": [
+        "Tests/DataLifecycle/",
+        "App/Launch/",
+        "scripts/",
+        "docs/qualification/"
+      ],
+      "context": "Spec: docs/decisions/0007-google-calendar-integration-spec.md (proposed 2026-10-27, pending the user's review; must be accepted before work starts). Read its Why direct, Sign-in flow, Sync, Data mapping, Network boundary and Privacy sections, and spec 0006 (Milestone O, T56-T61), whose rules still apply. Amaranth is a SwiftUI macOS meeting recorder; Milestone O built CalendarSource (Presentation/CalendarSource.swift), CalendarLinking, CalendarSuggestion, CalendarReminder and Settings -> Calendar over EventKit. Read-only: no write scopes, no writing to any calendar. Network only after the user connects an account, only to the Google hosts in the spec, never meeting content. Never start a recording automatically; never prompt or open a browser during a recording. Real event titles, attendee names and tokens are never committed.",
+      "deliverables": [
+        "Disconnect deletes the token and cache file and checkpoints its WAL; Remove Calendar Data from All Meetings also clears the cache.",
+        "Allowed-hosts check: with an account connected, connection attempts go only to accounts.google.com, oauth2.googleapis.com and www.googleapis.com; with none connected, none.",
+        "--self-test google-calendar (counts only) and checklist items for connect, sync, link, reconnect, disconnect."
+      ],
+      "acceptance": [
+        "Bytes test: a cached event title and attendee name are absent from disk after Disconnect.",
+        "Offline qualification (T12) still passes with no account connected.",
+        "Validator connects only the user's account read-only, logs counts only, and leaves the account as it found it."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
     }
   ]
 }
