@@ -1,7 +1,8 @@
 # 0006 — Calendar integration spec (EventKit, the Mac's own calendars)
 
-Date: 2026-10-26 · Status: **Proposed — awaiting the user's review** (T51). Tasks T56–T61 (Milestone O) are in
-`docs/implementation-tasks.json` marked "pending user review"; edit or delete them there after reading this.
+Date: 2026-10-26 · Status: **Accepted 2026-10-27** (T51), with the user's three answers applied (see "Decisions"
+at the end). Tasks T56–T61 (Milestone O) are in `docs/implementation-tasks.json`; Milestone O is not yet placed in
+the milestone order.
 
 Source: design review of 2026-10-23, 10:24–11:15 (`docs/design-review/2026-10-23/transcript.md`): "I would eventually
 like to be able to link an Amaranth recording to a calendar event and let that automatically populate the name of the
@@ -21,22 +22,28 @@ local-only principle, so we don't do it.
 1. **Link a recording to an event.** In the meeting header, the T50 chip opens a picker showing events from the
    recording's day, nearest to the recording's start first, with a search field. Picking one stores a `LinkedEvent`
    snapshot. "Unlink" removes it.
-2. **Automatic title.** When recording starts and the meeting still has its automatic title
-   (`RecorderPresentation.automaticTitle`, i.e. the user typed none), suggest the event that best overlaps now: an
-   event in progress, or one starting within the next 10 minutes. Ignore all-day, declined and cancelled events. With
-   one clear match, link it and use its title. With several (overlapping invitations), show a small "Which meeting?"
-   choice in the recording strip, with "None" as an option. Never rename a meeting the user has already titled or
-   renamed.
+2. **Suggested event at Record — always asks.** When recording starts, find the events that best overlap now: an
+   event in progress, or one starting within the next 10 minutes. Ignore all-day, declined and cancelled events.
+   **Nothing is linked or renamed without the user's explicit approval**, even with exactly one match: meetings get
+   cancelled at the last minute and unplanned calls pop up, so a lone match is not proof. The recording strip shows a
+   one-line prompt — one match: "Roadmap sync?" with Link / Not this; several: "Which meeting?" with the choices and
+   None. Ignoring it changes nothing; the prompt can be dismissed and the event linked later from the header chip.
+   Approving links the event; the meeting takes the event's title only if it still has its automatic title
+   (`RecorderPresentation.automaticTitle`, i.e. the user typed none). A meeting the user has titled or renamed is
+   never renamed; the header chip offers "Use event title" instead.
 3. **Attendees as people.** Linking adds the event's named attendees to `Meeting.people` with `source: .calendar`,
    skipping rooms and resources (`EKParticipant.participantType == .room / .resource`). Manual entries are never
-   removed or renamed. Unlinking removes only `.calendar` entries; a calendar name the user edits in the people editor becomes a
-   manual entry (T49's `Person` has no "edited" flag), so it stays.
+   removed or renamed. **Unlinking leaves all people in place**, calendar-sourced ones included: the user removes any
+   they don't want through the people editor (control over convenience). Re-linking the same or another event merges
+   its attendees in again without duplicating names already there.
 4. **Speaker-rename suggestions.** The existing speaker rename popover (TranscriptPane) lists the meeting's people as
    one-click suggestions above the free-text field. Speakers are never named automatically: diarization labels are
    anonymous, and guessing a name could put words in the wrong person's mouth.
 5. **Optional "meeting starting" reminder** (off by default). A local notification about a minute before an event in
    the calendars the user picked: "Roadmap sync starts in 1 min — Record". Clicking it brings Amaranth forward with that
-   event pre-selected for the next recording. **It never starts a recording.**
+   event offered first in the next recording's prompt (still approved by the user, per Goal 2). **It never starts a
+   recording.** Kept in Milestone O as an experiment; the user may drop it or split follow-up work into a new
+   milestone after seeing it.
 
 ## Explicit non-goals
 
@@ -83,8 +90,8 @@ local-only principle, so we don't do it.
   to: <meeting>". Several recordings of one event are allowed (a call that dropped and restarted).
 - `Person` from `EKParticipant.name`, with `source: .calendar`, de-duplicated against existing people
   (case-insensitive), with the current user (`isCurrentUser`) listed first.
-- The meeting title only changes under Goal 2's rule. Linking later from the chip offers "Use event title" as a
-  button; it never renames silently.
+- The meeting title only changes under Goal 2's rule, after the user approves the link. Linking later from the chip
+  offers "Use event title" as a button; it never renames silently.
 - **Refresh:** none automatic. The picker shows "Event changed since linking" when the stored snapshot differs from
   the live event, with an "Update" button. A deleted event leaves the snapshot in place, marked "no longer in your
   calendar".
@@ -110,7 +117,8 @@ local-only principle, so we don't do it.
   it shows the event title and time ("Roadmap sync · 10:00–10:30"), with the calendar name in the tooltip. Clicking it
   opens the picker / Unlink / Update popover. The people chip is unchanged; calendar-sourced names show a small
   calendar glyph in its editor.
-- **Recording strip:** only the one-line "Which meeting?" choice from Goal 2, and only when there are several matches.
+- **Recording strip:** only the one-line approval prompt from Goal 2 ("Roadmap sync?" or "Which meeting?"), shown
+  whenever there is at least one match; it must fit the strip without pushing Stop/Save into the toolbar overflow.
   The Recording tab stays out of scope.
 - **Settings → Calendar (new section):** "Suggest calendar events when recording" (on after access is granted), the
   reminder toggle and calendar list, "Keep attendee email addresses" (off), and "Remove calendar data from all
@@ -131,16 +139,20 @@ local-only principle, so we don't do it.
 |---|---|---|
 | T56 | Calendar access: Info.plist key, entitlement, `CalendarSource` protocol + EventKit implementation, authorization states, permission self-test | T49 |
 | T57 | Link/unlink from the header chip: event picker for the recording's day, snapshot mapping, "Use event title", "changed"/"no longer in calendar" states, ui-render fixtures | T56, T50 |
-| T58 | Attendees as people: participant filtering (rooms, unnamed, current user), merge rules with manual people, unlink cleanup, deletion-bytes test | T57 |
-| T59 | Suggest the event at Record: matching rules, automatic title only when untitled, "Which meeting?" choice in the recording strip | T57 |
+| T58 | Attendees as people: participant filtering (rooms, unnamed, current user), merge rules with manual people, unlink keeps people, deletion-bytes test | T57 |
+| T59 | Suggest the event at Record: matching rules, approval prompt in the recording strip for one or several matches (never links on its own), automatic title only when untitled | T57 |
 | T60 | Speaker-rename suggestions from the meeting's people | T58 |
 | T61 | Optional "meeting starting" reminder (local notification, off by default, never starts recording) and Settings → Calendar section | T56 |
 
 The order is T56 → T57 → T58 → (T59, T60, T61 in any order). T59 and T60 deliver most of the value; T61 can be dropped
 without affecting the rest.
 
-## Open questions for the user
+## Decisions (user, 2026-10-27)
 
-1. **Automatic title:** link and rename automatically when there's exactly one match (as proposed), or always ask?
-2. **Reminder (T61):** keep it, or drop it from the milestone?
-3. **Unlinking:** should it also remove calendar-sourced people (as proposed), or keep them?
+1. **Automatic title → always ask.** "I frequently have meetings canceled at the last minute or unplanned calls that
+   pop up - I need an explicit approval step to ensure they don't get mislabeled." Applied to Goal 2 and T59.
+2. **Reminder (T61) → keep.** "I'm curious to see how you implement it. I may remove it before completing this
+   milestone or break additional work into a new milestone if needed." Applied to Goal 5 and T61.
+3. **Unlinking → keeps calendar-sourced people.** "If I disassociate a calendar invite, I can also disassociate the
+   people who came with it selectively … for now I'm optimizing for control over convenience." Applied to Goal 3 and
+   T58.
