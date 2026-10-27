@@ -1,7 +1,8 @@
 # 0007 — Google Calendar integration spec (direct API)
 
 Date: 2026-10-27 · Status: **Proposed, pending the user's review.** Tasks T62–T66 (Milestone P) are in
-`docs/implementation-tasks.json` as proposed; Milestone P is not placed in the milestone order.
+`docs/implementation-tasks.json` as proposed; Milestone P is placed last in the milestone order, after F
+(user, 2026-10-27); open questions 1–5 stay open until the user works through them.
 
 Source: the user, 2026-10-27, after Milestone O: "I use Google Calendar extensively, not the local Apple Calendar
 app … I'd prefer the direct integration to MacOS's defaults: we may pull more data in later." Builds on spec 0006 and
@@ -181,4 +182,4 @@ Order: T62 → T63 → T64 → (T65, T66).
    attendee email addresses" is on?
 4. **Keep EventKit as well?** Proposed: yes, both sources, merged (Goal 4). Alternative: Google only when connected.
 5. **Cache window:** −14 days … +2 days proposed.
-6. **Placement** in the milestone order (currently J → L → T21 → F).
+6. ~~Placement~~ — answered 2026-10-27: last, after F (J → L → T21 → F → P).
