@@ -26,6 +26,7 @@ struct AmaranthApp: App {
     @State private var incremental: IncrementalProcessor
     /// Calendar access (T56): created without asking; the first prompt comes from a user action.
     @State private var calendar: CalendarModel
+    @State private var reminders: ReminderController
 
     init() {
         let worker = WorkerClient()
@@ -78,6 +79,11 @@ struct AmaranthApp: App {
         let calendar = CalendarModel()
         recorder.calendar = calendar   // T59: the suggestion at Record reads it; it never asks for access
         _calendar = State(initialValue: calendar)
+        // T61: the notification delegate must be set before launch finishes so a click that launches the app arrives.
+        let reminders = ReminderController(calendar: calendar)
+        reminders.recorder = recorder
+        if !SelfTest.isRequested { reminders.start() }
+        _reminders = State(initialValue: reminders)
         _worker = State(initialValue: worker)
         _recorder = State(initialValue: recorder)
         _processing = State(initialValue: processing)
@@ -102,6 +108,7 @@ struct AmaranthApp: App {
             .environment(live)
             .environment(calendar)
             .modifier(AppearanceRoot())
+            .modifier(ReminderWindowOpener(reminders: reminders))
             .windowFitsScreen()
         }
         .defaultSize(width: 1100, height: 720)
@@ -116,8 +123,18 @@ struct AmaranthApp: App {
         }
 
         Settings {
-            SettingsView(models: models, recorder: recorder, calendar: calendar)
+            SettingsView(models: models, recorder: recorder, calendar: calendar, reminders: reminders, library: library)
         }
+    }
+}
+
+/// Gives the reminder controller SwiftUI's openWindow, so a clicked reminder can reopen a closed main window (T61).
+struct ReminderWindowOpener: ViewModifier {
+    let reminders: ReminderController
+    @Environment(\.openWindow) private var openWindow
+
+    func body(content: Content) -> some View {
+        content.onAppear { let open = openWindow; reminders.openMainWindow = { open(id: "main") } }
     }
 }
 

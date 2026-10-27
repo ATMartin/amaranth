@@ -7,6 +7,9 @@ import Presentation
 /// Prints one JSON line per step and exits non-zero on failure. Used by scripts/selftest.sh and validators.
 @MainActor
 enum SelfTest {
+    /// True when launched with `--self-test` (the app then must not touch notifications or other system state).
+    static var isRequested: Bool { CommandLine.arguments.contains("--self-test") }
+
     static func runIfRequested() -> Bool {
         let args = CommandLine.arguments
         guard let i = args.firstIndex(of: "--self-test"), i + 1 < args.count else { return false }

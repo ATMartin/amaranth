@@ -7,7 +7,14 @@ import Presentation
 struct CalendarSettingsView: View {
     var calendar: CalendarModel
     var recorder: RecorderModel
+    var reminders: ReminderController?
+    var library: LibraryModel?
     @AppStorage(CalendarSettings.suggestKey) private var suggest = CalendarSettings.suggestDefault
+    @AppStorage(CalendarSettings.reminderKey) private var reminder = CalendarSettings.reminderDefault
+    @AppStorage(CalendarSettings.keepEmailsKey) private var keepEmails = CalendarSettings.keepEmailsDefault
+    @State private var chosen: Set<String> = CalendarSettings.reminderCalendars()
+    @State private var confirmingRemove = false
+    @State private var removedMessage: String?
 
     var body: some View {
         Form {
@@ -18,9 +25,53 @@ struct CalendarSettingsView: View {
                 Text("When you press Record during (or up to 10 minutes before) an event, the recording bar asks whether this is that meeting. Nothing is linked or renamed unless you choose Link, and the event's title is used only if you didn't type one.")
                     .font(.caption).foregroundStyle(.secondary)
             }
+            Section("Reminder") {
+                Toggle("Remind me a minute before meetings", isOn: $reminder)
+                    .onChange(of: reminder) { _, on in
+                        if on { Task { await reminders?.enable(); chosen = CalendarSettings.reminderCalendars() } } else { reminders?.sync() }
+                    }
+                Text("A notification about a minute before each event in the calendars below. Clicking it opens Amaranth and offers that event when you press Record. Amaranth never starts recording on its own.")
+                    .font(.caption).foregroundStyle(.secondary)
+                if reminders?.notificationsDenied == true {
+                    Text("Notifications for Amaranth are off in System Settings → Notifications.").font(.caption).foregroundStyle(Color.statusAttention)
+                }
+                if reminder, calendar.status.canRead {
+                    ForEach(calendar.source.calendars()) { c in
+                        Toggle(c.title, isOn: Binding(get: { chosen.contains(c.id) }, set: { on in
+                            if on { chosen.insert(c.id) } else { chosen.remove(c.id) }
+                            UserDefaults.standard.set(Array(chosen).sorted(), forKey: CalendarSettings.reminderCalendarsKey)
+                            reminders?.sync()
+                        }))
+                        .toggleStyle(.checkbox)
+                    }
+                }
+            }
+            Section("Privacy") {
+                Toggle("Keep attendee email addresses", isOn: $keepEmails)
+                    .onChange(of: keepEmails) { _, on in if !on, let store = library?.store { _ = try? CalendarLinking.forgetEmails(in: store) } }
+                Text("Off: only invitees' names are saved with a meeting. On: their email addresses are kept too (never exported). Turning it off forgets the addresses already kept.")
+                    .font(.caption).foregroundStyle(.secondary)
+                HStack {
+                    Button("Remove Calendar Data from All Meetings…") { confirmingRemove = true }.disabled(library?.store == nil)
+                    if let removedMessage { Text(removedMessage).font(.caption).foregroundStyle(.secondary) }
+                }
+                Text("Unlinks every meeting and removes the people that came from calendar events. Names you typed stay. Turning calendar access off in System Settings doesn't remove what is already saved; this does.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
-        .onAppear { calendar.refresh() }
+        .onAppear { calendar.refresh(); chosen = CalendarSettings.reminderCalendars() }
+        .confirmationDialog("Remove calendar data from all meetings?", isPresented: $confirmingRemove, titleVisibility: .visible) {
+            Button("Remove", role: .destructive) {
+                guard let store = library?.store else { return }
+                let n = (try? CalendarLinking.removeAllCalendarData(in: store)) ?? 0
+                removedMessage = n == 1 ? "1 meeting updated" : "\(n) meetings updated"
+                library?.reload()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Linked events and the people added from them are removed from every meeting. Names you typed stay. This can't be undone.")
+        }
     }
 }
 

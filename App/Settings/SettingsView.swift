@@ -8,6 +8,8 @@ struct SettingsView: View {
     @Bindable var models: ModelSetupModel
     var recorder: RecorderModel
     var calendar: CalendarModel
+    var reminders: ReminderController?
+    var library: LibraryModel?
 
     var body: some View {
         TabView {
@@ -17,7 +19,7 @@ struct SettingsView: View {
                 .tabItem { Label("Recording", systemImage: "mic") }
             AppearanceSettings()
                 .tabItem { Label("Appearance", systemImage: "textformat.size") }
-            CalendarSettingsView(calendar: calendar, recorder: recorder)
+            CalendarSettingsView(calendar: calendar, recorder: recorder, reminders: reminders, library: library)
                 .tabItem { Label("Calendar", systemImage: "calendar") }
             ScrollView {
                 Text(Self.notices).font(.caption.monospaced()).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).padding()

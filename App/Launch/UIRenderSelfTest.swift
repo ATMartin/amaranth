@@ -290,7 +290,10 @@ enum UIRenderSelfTest {
         // Settings → Recording defaults (T30).
         _ = await host(RecordingSettings(recorder: recorder), "settings-recording", size: CGSize(width: 560, height: 560))
         // Settings → Calendar (T59, T61): access allowed, and not yet set up.
-        _ = await host(CalendarSettingsView(calendar: calendar, recorder: recorder).defaultAppStorage(collapsed), "settings-calendar", size: CGSize(width: 560, height: 460))
+        _ = await host(CalendarSettingsView(calendar: calendar, recorder: recorder, library: library).defaultAppStorage(collapsed), "settings-calendar", size: CGSize(width: 560, height: 620))
+        collapsed.set(true, forKey: CalendarSettings.reminderKey)
+        _ = await host(CalendarSettingsView(calendar: calendar, recorder: recorder, library: library).defaultAppStorage(collapsed), "settings-calendar-reminder-on", size: CGSize(width: 560, height: 700))
+        collapsed.removeObject(forKey: CalendarSettings.reminderKey)
         _ = await host(CalendarSettingsView(calendar: CalendarModel(source: FakeCalendarSource(status: .notDetermined)), recorder: recorder).defaultAppStorage(collapsed),
                        "settings-calendar-not-set-up", size: CGSize(width: 560, height: 460))
         // Settings → Appearance: transcript style cards, each selected in turn (throwaway defaults, at the Settings size).

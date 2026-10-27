@@ -239,6 +239,25 @@ struct SearchAndDeletionTests {
                 && !f.databaseContains("marmotlantern"))
     }
 
+    /// T61: "Remove calendar data from all meetings" and turning emails off leave no event or calendar people bytes;
+    /// typed people stay.
+    @Test func removingCalendarDataLeavesTypedPeopleOnly() throws {
+        let f = try LifecycleFixture()
+        defer { try? FileManager.default.removeItem(at: f.root) }
+        try f.store.setPeople([Person(name: "Typed Tamsin")], for: f.meeting)
+        let event = CalendarEvent(identifier: "EK-gannetlamp", title: "Cobaltheron sync", start: Date(), end: Date().addingTimeInterval(600),
+                                  attendees: [CalendarAttendee(name: "Wilhelmina Fairweather", email: "wil@ospreymail.example")])
+        try CalendarLinking.link(event, to: f.meeting, in: f.store, keepEmails: true)
+        #expect(try CalendarLinking.forgetEmails(in: f.store) == 1)
+        #expect(try !f.databaseContains("ospreymail") && f.databaseContains("Wilhelmina"))
+        #expect(try CalendarLinking.removeAllCalendarData(in: f.store) == 1)
+        let m = try #require(try f.store.meeting(f.meeting))
+        #expect(m.linkedEvent == nil && m.people == [Person(name: "Typed Tamsin")])
+        #expect(try !f.databaseContains("Cobaltheron") && !f.databaseContains("Wilhelmina") && !f.databaseContains("gannetlamp"))
+        #expect(try f.store.search("Wilhelmina").isEmpty)
+        #expect(try CalendarLinking.removeAllCalendarData(in: f.store) == 0)
+    }
+
     @Test func completeDeletionLeavesNoContentRowsFilesSearchEntriesOrBytes() throws {
         let f = try LifecycleFixture()
         defer { try? FileManager.default.removeItem(at: f.root) }

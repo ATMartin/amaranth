@@ -83,7 +83,7 @@ extension MeetingStore {
 
     /// With `secure_delete` on, deleted rows are zeroed in the main file; the FTS index is merged so deleted terms are
     /// dropped; checkpointing moves the WAL into the file and truncates it so no deleted text lingers there either.
-    func checkpointAndTruncateWAL() throws {
+    public func checkpointAndTruncateWAL() throws {
         try withDB { db in
             // FTS5 deletes by writing tombstones; the deleted terms stay in index segments until they are merged.
             try db.run("INSERT INTO search_index(search_index) VALUES('optimize')")

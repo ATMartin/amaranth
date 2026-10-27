@@ -1958,7 +1958,7 @@
       "id": "T61",
       "title": "Optional “meeting starting” reminder and Settings → Calendar",
       "milestone": "O",
-      "status": "accepted, in progress (Milestone O)",
+      "status": "done, experiment (Presentation/CalendarReminder: plan 1 min ahead in chosen calendars, ≤32 pending, own id prefix; CalendarReminders.sync removes everything when off/no calendars/no access; FakeReminderScheduler; App/Calendar/ReminderController (UNUserNotificationCenter delegate, re-plans at launch/15 min/EKEventStoreChanged/setting change; a click opens the window and offers the event first at the next Record; never records); Settings → Calendar: reminder + calendar checkboxes, Keep attendee email addresses (off; off forgets kept ones), Remove Calendar Data from All Meetings (confirmation, WAL checkpoint); tests incl. turning off removes pending and a bytes test; evidence docs/qualification/evidence/2026-10-27/calendar-settings; checklist items 57-58)",
       "optional": true,
       "depends_on": [
         "T56"

@@ -18,6 +18,32 @@ public enum CalendarLinking {
         try store.linkEvent(snapshot(event), for: id) { MeetingPeople.merging(event.attendees, into: $0, keepEmails: keepEmails) }
     }
 
+    /// Settings → Calendar → "Remove calendar data from all meetings" (T61): every link and every calendar-sourced
+    /// person goes; typed people stay. Returns how many meetings changed.
+    @discardableResult
+    public static func removeAllCalendarData(in store: MeetingStore) throws -> Int {
+        var changed = 0
+        for m in try store.meetings() where m.linkedEvent != nil || m.people.contains(where: { $0.source == .calendar || $0.email != nil }) {
+            try store.setLinkedEvent(nil, for: m.id)
+            try store.setPeople(m.people.filter { $0.source == .manual }.map { Person(name: $0.name, source: .manual) }, for: m.id)
+            changed += 1
+        }
+        if changed > 0 { try store.checkpointAndTruncateWAL() }   // the removed text doesn't linger in the WAL
+        return changed
+    }
+
+    /// Turning "Keep attendee email addresses" off forgets the addresses already kept (T61). Returns meetings changed.
+    @discardableResult
+    public static func forgetEmails(in store: MeetingStore) throws -> Int {
+        var changed = 0
+        for m in try store.meetings() where m.people.contains(where: { $0.email != nil }) {
+            try store.setPeople(m.people.map { Person(name: $0.name, source: $0.source) }, for: m.id)
+            changed += 1
+        }
+        if changed > 0 { try store.checkpointAndTruncateWAL() }
+        return changed
+    }
+
     /// Title, times and calendar match (attendee changes don't count as "changed").
     static func sameDetails(_ a: LinkedEvent, _ b: LinkedEvent) -> Bool {
         a.identifier == b.identifier && a.title == b.title && a.start == b.start && a.end == b.end && a.calendarName == b.calendarName

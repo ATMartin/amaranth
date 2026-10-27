@@ -76,3 +76,21 @@ implementation choices the spec left open, task by task.
   spec says; the suggestions sit above its field. They are the meeting's people (typed and calendar-sourced) in
   order, without the speaker's current name. A click fills the field and runs the same Save, so the stored
   `UserEdit` is the one typing would make. Nothing is named automatically.
+
+## T61 — reminder and Settings → Calendar (experiment)
+
+- **Planning** (`CalendarReminder.plan`, `CalendarReminders.sync`): timed events in the chosen calendars within the
+  next 24 h, not cancelled or declined, whose "one minute before" is still ahead; at most 32 pending (macOS allows
+  64). Ids are `amaranth.calendar-reminder.<occurrence>`, so only our notifications are ever removed. Re-planned at
+  launch, every 15 minutes, on `EKEventStoreChanged` and on every setting change. Off, no calendar chosen, or no
+  calendar access → every pending Amaranth reminder is removed.
+- **Permissions.** Turning the reminder on is the only thing that asks for notification permission (and calendar
+  access, if undecided and not recording); all calendars are chosen the first time so "on" does something. Launch
+  never prompts: re-planning only reads pending requests.
+- **Click.** `ReminderController` is the `UNUserNotificationCenter` delegate (set before launch finishes). A click
+  sets `RecorderModel.preferredEventID` and opens the main window; the next Record offers that event first in the T59
+  prompt, still asking. Nothing starts a recording.
+- **Settings → Calendar** now has: access row, suggest toggle, reminder toggle + calendar checkboxes, "Keep attendee
+  email addresses" (off; turning it off forgets kept addresses), and "Remove Calendar Data from All Meetings…"
+  (confirmation; unlinks every meeting and removes calendar-sourced people, keeping typed names, then checkpoints the
+  WAL so the text doesn't linger; covered by a bytes test).
