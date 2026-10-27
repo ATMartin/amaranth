@@ -34,7 +34,7 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "K → M → N → J → L → T21 → F (user decision 2026-10-26, after Milestone I; G, H and I are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
+    "milestone_order": "K → M → N → O → J → L → T21 → F (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md"
@@ -1692,7 +1692,7 @@
       "id": "T52",
       "title": "“Ask anything” entry point: placement and first version over local search",
       "milestone": "N",
-      "status": "planned",
+      "status": "done (App/Library/AskAnythingView.swift, LibraryModel ask state, Presentation/AskAnything; MeetingStore.search(_:in:) scope; evidence docs/qualification/evidence/2026-10-27/ask-anything; hands-on checks: checklist items 46-47)",
       "optional": false,
       "depends_on": [
         "T31"

@@ -32,7 +32,7 @@ struct MeetingCommands: Commands {
                 .keyboardShortcut("e", modifiers: .command)
                 .disabled(exportMarkdown == nil)
             Divider()
-            Button("Search Meetings") { if !sheetOpen { library.searchFocusRequest += 1 } }
+            Button("Ask Anything…") { if !sheetOpen { library.askAllMeetings() } }   // T52: all meetings
                 .keyboardShortcut("k", modifiers: .command)
         }
         CommandGroup(after: .toolbar) {

@@ -274,11 +274,53 @@ enum UIRenderSelfTest {
                 capture(view, "switch-frame-\(i)")
             }
         }
-        // Search renders results.
-        library.query = "release"
-        SelfTest.log(["step": "search", "query": "release", "hits": "\(library.hits.count)"])
-        _ = await host(MainView(), "search", size: CGSize(width: 1200, height: 760))
-        library.query = ""
+        // Ask anything (T52): the field at the bottom of the detail column, the panel in each scope, keyboard selection,
+        // and Return on a hit landing on its transcript row, also when the hit is in a meeting that isn't open yet.
+        if let long = library.items.first(where: { $0.id == MeetingID("ui-long") }), let other = library.items.first(where: { $0.id != long.id }) {
+            func select(_ id: MeetingID) async {
+                library.selection = id
+                for _ in 0..<40 where library.detail?.meeting.id != id { try? await Task.sleep(for: .milliseconds(50)) }
+            }
+            await select(long.id)
+            _ = await host(MainView(), "ask-bar", size: CGSize(width: 1200, height: 760))
+            library.askScope = .thisMeeting
+            library.query = "release"
+            library.submitAsk()
+            let thisHits = library.hits
+            let thisOK = !thisHits.isEmpty && thisHits.allSatisfy { $0.meetingID == long.id }
+            library.moveAskSelection(by: 1); library.moveAskSelection(by: 1); library.moveAskSelection(by: -1)
+            let selOK = library.askSelection == 0
+            _ = await host(MainView(), "ask-this-meeting", size: CGSize(width: 1200, height: 760))
+            library.askAllMeetings()
+            let allOK = library.askScope == .allMeetings && library.hits.count >= thisHits.count
+            _ = await host(MainView(), "ask-all-meetings", size: CGSize(width: 1200, height: 760))
+            library.query = "zzqx-no-such-word"
+            _ = await host(MainView(), "ask-no-matches", size: CGSize(width: 1200, height: 760))
+            // Open the second hit of the long meeting with ↓↓ Return, starting from another meeting.
+            library.closeAskPanel()
+            await select(other.id)
+            library.askScope = .allMeetings
+            library.query = "release"
+            library.submitAsk()
+            let shown = AskResults.flattened(AskResults.grouped(library.hits))
+            var target: SearchHit?
+            if let i = shown.indices.filter({ shown[$0].meetingID == long.id && shown[$0].kind == .transcript }).dropFirst().first {
+                library.askSelection = nil
+                for _ in 0...i { library.moveAskSelection(by: 1) }
+                target = shown[i]
+                library.submitAsk()
+            }
+            for _ in 0..<40 where library.focusRowID == nil { try? await Task.sleep(for: .milliseconds(50)) }
+            let row = library.detail?.rows.first { $0.id == library.focusRowID }
+            let jumpOK = target != nil && library.selection == long.id && library.detailTab == .transcript && !library.askPanelOpen
+                && row?.segmentID?.rawValue == target?.ref
+            SelfTest.log(["step": "ask", "thisMeetingHits": "\(thisHits.count)", "allHits": "\(library.hits.count)", "thisScopeOK": "\(thisOK)",
+                          "allScopeOK": "\(allOK)", "arrowsOK": "\(selOK)", "jumpRow": library.focusRowID ?? "-", "ok": "\(thisOK && allOK && selOK && jumpOK)"])
+            if !(thisOK && allOK && selOK && jumpOK) { ok = false }
+            library.query = ""
+            library.focusRowID = nil
+        }
+        // The sidebar has no search field any more (T52); ⌘K focuses the ask field instead.
         return ok
     }
 

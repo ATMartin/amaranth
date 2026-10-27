@@ -10,10 +10,8 @@ struct MainView: View {
     @State private var showingModels = false
     @AppStorage("onboarded") private var onboarded = false
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
-    @FocusState private var searchFocused: Bool
 
     var body: some View {
-        @Bindable var library = library
         NavigationSplitView {
             LibrarySidebar()
                 .navigationSplitViewColumnWidth(min: 300, ideal: 340)
@@ -36,15 +34,22 @@ struct MainView: View {
             // Content starts at the top and grows down; it never floats in the middle or bottom of the column. It never
             // sets the window's height either: the panes scroll inside whatever height the window has.
             .fillsOfferedSpace()
+            // T52: the results panel floats over the bottom of the content, just above the ask field.
+            .overlay(alignment: .bottom) {
+                if library.askPanelOpen {
+                    GeometryReader { g in
+                        AskResultsPanel(maxHeight: max(g.size.height * 0.7 - 50, 120))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    }
+                }
+            }
+            .safeAreaInset(edge: .bottom, spacing: 0) { AskAnythingBar() }
             .safeAreaInset(edge: .top, spacing: 0) { RecorderBanner(model: recorder) }
             // In the detail column's toolbar, not over the sidebar: with the sidebar open the sidebar's toolbar area is too
             // narrow for the recording strip, and AppKit moved Stop into the overflow menu.
             .toolbar { ToolbarItem(placement: .navigation) { RecordToolbarControl(model: recorder).fixedSize() } }
         }
         .environment(\.showDetails, showDetails)
-        .searchable(text: $library.query, placement: .sidebar, prompt: "Search transcripts and notes")
-        .searchFocused($searchFocused)
-        .onChange(of: library.searchFocusRequest) { _, _ in searchFocused = true }
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button { showingModels = true } label: {
@@ -78,14 +83,6 @@ struct LibrarySidebar: View {
     var body: some View {
         @Bindable var library = library
         List(selection: $library.selection) {
-            if !library.query.isEmpty {
-                Section("Results") {
-                    if library.hits.isEmpty { Text("No matches").foregroundStyle(.secondary) }
-                    ForEach(Array(library.hits.enumerated()), id: \.offset) { _, hit in
-                        Button { library.open(hit) } label: { SearchHitRow(hit: hit) }.buttonStyle(.plain)
-                    }
-                }
-            }
             Section("Meetings") {
                 if library.items.isEmpty { Text("No recordings yet.").foregroundStyle(.secondary) }
                 ForEach(library.items) { item in
@@ -152,40 +149,6 @@ struct MeetingStatusGlyph: View {
 
     func color(_ t: MeetingStatusPresentation.Tone) -> Color {
         Color.status(t)
-    }
-}
-
-struct SearchHitRow: View {
-    let hit: SearchHit
-    var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack {
-                Text(hit.meetingTitle).appFont(.caption, weight: .bold)
-                Spacer()
-                Text(kind).appFont(.caption2).foregroundStyle(.secondary)
-            }
-            Text(highlighted).appFont(.callout).lineLimit(2)
-        }
-    }
-    var kind: String {
-        switch hit.kind {
-        case .title: "title"
-        case .transcript: hit.start.map { TranscriptRows.clock($0) } ?? "transcript"
-        case .notes: "notes"
-        case .userNotes: "your notes"
-        }
-    }
-    /// Snippet with the `[match]` markers rendered bold.
-    var highlighted: AttributedString {
-        var out = AttributedString()
-        var bold = false
-        for part in hit.snippet.split(omittingEmptySubsequences: false, whereSeparator: { $0 == "[" || $0 == "]" }) {
-            var a = AttributedString(String(part))
-            if bold { a.inlinePresentationIntent = .stronglyEmphasized }
-            out += a
-            bold.toggle()
-        }
-        return out
     }
 }
 

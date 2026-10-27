@@ -13,24 +13,37 @@ public struct SearchHit: Hashable, Sendable {
     public var start: SessionTime?
     /// Short excerpt with the match wrapped in `[` `]`.
     public var snippet: String
+
+    public init(meetingID: MeetingID, meetingTitle: String, kind: Kind, ref: String, start: SessionTime?, snippet: String) {
+        self.meetingID = meetingID
+        self.meetingTitle = meetingTitle
+        self.kind = kind
+        self.ref = ref
+        self.start = start
+        self.snippet = snippet
+    }
 }
 
 /// Local SQLite FTS5 search (T11). The index mirrors *current* content only (the meeting's current transcript and
 /// summary revisions and latest user notes); it is rewritten whenever that content changes and purged on deletion.
 /// The private scratchpad is never indexed.
 extension MeetingStore {
-    public func search(_ query: String, limit: Int = 50) throws -> [SearchHit] {
+    /// `meeting`: only that meeting's rows (the ask field's "This meeting" scope); nil searches every meeting.
+    public func search(_ query: String, in meeting: MeetingID? = nil, limit: Int = 50) throws -> [SearchHit] {
         let tokens = query.lowercased().split { !$0.isLetter && !$0.isNumber && $0 != "'" }.map(String.init).filter { !$0.isEmpty }
         guard !tokens.isEmpty else { return [] }
         // Each token is a quoted prefix term, so user input can never inject FTS syntax.
         let match = tokens.map { "\"\($0.replacingOccurrences(of: "\"", with: ""))\"*" }.joined(separator: " ")
+        var bindings: [SQLiteDB.Value] = [.text(match)]
+        if let meeting { bindings.append(.text(meeting.rawValue)) }
+        bindings.append(.int(Int64(limit)))
         return try withDB { db in
             try db.run("""
                 SELECT s.meeting_id, s.kind, s.ref, s.start_ns, snippet(search_index, 4, '[', ']', '…', 12) AS snip, m.title
                 FROM search_index s JOIN meetings m ON m.id = s.meeting_id
-                WHERE search_index MATCH ? AND m.deleted_at IS NULL
+                WHERE search_index MATCH ? AND m.deleted_at IS NULL\(meeting == nil ? "" : " AND s.meeting_id = ?")
                 ORDER BY rank LIMIT ?
-                """, [.text(match), .int(Int64(limit))]).compactMap { row -> SearchHit? in
+                """, bindings).compactMap { row -> SearchHit? in
                 guard let id = row["meeting_id"]?.text, let k = row["kind"]?.text.flatMap(SearchHit.Kind.init(rawValue:)) else { return nil }
                 return SearchHit(meetingID: MeetingID(id), meetingTitle: row["title"]?.text ?? "", kind: k, ref: row["ref"]?.text ?? "",
                                  start: row["start_ns"]?.int.map { SessionTime(nanoseconds: $0) }, snippet: row["snip"]?.text ?? "")

@@ -10,10 +10,18 @@ import Presentation
 @MainActor @Observable
 final class LibraryModel {
     private(set) var items: [MeetingListItem] = []
-    var selection: MeetingID? { didSet { if oldValue != selection { reloadDetail() } } }
+    var selection: MeetingID? { didSet { if oldValue != selection { reloadDetail(); if askPanelOpen, askScope == .thisMeeting { runSearch() } } } }
     private(set) var detail: MeetingDetail?
-    var query = "" { didSet { runSearch() } }
+    /// The “Ask anything” field's text (T52). Searched on submit, then live while the results panel is open.
+    var query = "" { didSet { if askPanelOpen { runSearch() }; askSelection = nil } }
     private(set) var hits: [SearchHit] = []
+    /// “This meeting” (the meeting on screen) or “All meetings”; ⌘K switches to All meetings.
+    var askScope: AskScope = .thisMeeting { didSet { if askPanelOpen { runSearch() } } }
+    private(set) var askPanelOpen = false
+    /// Hit highlighted with ↑/↓ (index into the panel's flattened order); Return opens it.
+    var askSelection: Int?
+    /// A hit opened in a meeting that is still loading: applied once its detail arrives.
+    private var pendingJump: SearchHit?
     private(set) var error: String?
     /// Transcript row to scroll to and highlight (set by evidence links and search hits).
     var focusRowID: String?
@@ -30,8 +38,8 @@ final class LibraryModel {
     /// Set by the app: whether the notes model is installed (no model → never auto-switch to Notes).
     var notesModelReady: () -> Bool = { false }
     enum DetailTab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Recording" }
-    /// Bumped by ⌘K; MainView focuses the search field.
-    var searchFocusRequest = 0
+    /// Bumped by ⌘K; the ask field takes focus.
+    var askFocusRequest = 0
     let store: MeetingStore?
     weak var processing: ProcessingModel?
 
@@ -54,7 +62,7 @@ final class LibraryModel {
                 guard gen == self.generation else { return }
                 switch items { case .success(let v): self.items = v; case .failure(let e): self.error = "Could not read the library: \(e.localizedDescription)" }
                 switch detail { case .success(let v): if self.selection == id { self.show(v) }; case .failure(let e): self.error = "Could not open the meeting: \(e.localizedDescription)" }
-                if !self.query.isEmpty { self.runSearch() }
+                if self.askPanelOpen { self.runSearch() }
             }
         }
     }
@@ -82,6 +90,7 @@ final class LibraryModel {
             setTabByRule(chosenTabs[id] ?? (d.defaultTab(isRecording: false) == .notes ? .notes : .transcript))
         }
         if notesSwitch.shouldSwitchToNotes(viewing: id, hasSummary: d.summary != nil) { setTabByRule(.notes) }
+        if let hit = pendingJump, hit.meetingID == id { pendingJump = nil; jump(to: hit, in: d) }
     }
 
     private func setTabByRule(_ tab: DetailTab) {
@@ -104,15 +113,61 @@ final class LibraryModel {
         reload()
     }
 
-    private func runSearch() {
-        guard let store, !query.trimmingCharacters(in: .whitespaces).isEmpty else { hits = []; return }
-        hits = (try? store.search(query)) ?? []
+    // MARK: Ask anything (T52)
+
+    /// ⌘K: focus the field with All meetings as the scope.
+    func askAllMeetings() {
+        askScope = .allMeetings
+        askFocusRequest += 1
     }
 
+    /// Return in the field: open the highlighted hit, or (re)run the search and show the panel.
+    func submitAsk() {
+        if askPanelOpen, let i = askSelection {
+            let shown = AskResults.flattened(AskResults.grouped(hits))
+            if shown.indices.contains(i) { open(shown[i]) }
+            return
+        }
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        askPanelOpen = true
+        runSearch()
+    }
+
+    func moveAskSelection(by delta: Int) {
+        guard askPanelOpen else { return }
+        askSelection = AskResults.move(askSelection, by: delta, count: hits.count)
+    }
+
+    /// Esc, a click outside, or opening a hit. The text stays, so Return shows the same results again.
+    func closeAskPanel() {
+        askPanelOpen = false
+        askSelection = nil
+    }
+
+    private func runSearch() {
+        guard let store, !query.trimmingCharacters(in: .whitespaces).isEmpty else { hits = []; return }
+        hits = (try? store.search(query, in: AskResults.effectiveScope(askScope, meeting: selection))) ?? []
+        if let i = askSelection, i >= hits.count { askSelection = nil }
+    }
+
+    /// Opens the hit's meeting at the match: the transcript row for transcript hits, the Notes tab for notes.
     func open(_ hit: SearchHit) {
-        selection = hit.meetingID
-        if hit.kind == .transcript, let d = detail {
+        closeAskPanel()
+        if selection == hit.meetingID, let d = detail, d.meeting.id == hit.meetingID {
+            jump(to: hit, in: d)
+        } else {
+            pendingJump = hit
+            selection = hit.meetingID
+        }
+    }
+
+    private func jump(to hit: SearchHit, in d: MeetingDetail) {
+        switch hit.kind {
+        case .transcript:
+            detailTab = .transcript
             focusRowID = d.rows.first { $0.segmentID?.rawValue == hit.ref }?.id
+        case .notes, .userNotes: detailTab = .notes
+        case .title: break
         }
     }
 
