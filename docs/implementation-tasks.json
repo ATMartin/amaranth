@@ -57,7 +57,7 @@
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
     "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
     "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them",
-    "Fixes": "Small fixes the user asked for before Milestone J (2026-10-27): T67 and any added alongside it. Each fix in its own commit"
+    "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert). Each in its own commit"
   },
   "tasks": [
     {
@@ -2155,6 +2155,35 @@
         "A check that fails before the fix and passes after; hands-on checklist item."
       ],
       "fallback": "If it can't be reproduced, add logging of scroll insets and window frame around Stop and ask the user to capture the next occurrence.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T68",
+      "title": "“Still recording?” alert when a recording goes quiet, with tail trim",
+      "milestone": "Fixes",
+      "status": "accepted, not started (user decisions 2026-10-27 in docs/decisions/capture/0002-quiet-recording-alert.md)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "Capture + App UI",
+      "module_scope": [
+        "Capture/",
+        "Presentation/",
+        "App/Recorder/",
+        "App/Settings/",
+        "Storage/",
+        "Tests/"
+      ],
+      "context": "Read docs/decisions/capture/0002-quiet-recording-alert.md. The system source is a global tap, so there is no per-app stream to watch; use live-text words per source (meter fallback) and other processes' microphone use. Notify only, never auto-stop; no permission prompt during a recording; trim is non-destructive with Restore.",
+      "deliverables": [
+        "Quiet detector (no live words on either source for the threshold, meter fallback) and microphone-release detector, both pure and testable with fakes.",
+        "Notification with Stop & Make Notes / Keep Recording; amber strip with quiet time; menu bar icon change.",
+        "Non-destructive tail trim at last word + 5 s when stopping while the alert is active, with Restore.",
+        "Settings → Recording: toggle (on) and threshold 30 s–5 min (default 60 s)."
+      ],
+      "acceptance": [
+        "Table tests per the decision doc; trim and restore tests; ui-render strip at 900/1100 pt and Settings; hands-on checklist item with a real call."
+      ],
+      "fallback": "Ship the quiet signal alone if the microphone-use signal proves unreliable; document it.",
       "review_timestamps": []
     }
   ]
