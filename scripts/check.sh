@@ -27,6 +27,7 @@ cat <<'MSG'
 Hardware trials (need a person to answer permission prompts; launch through LaunchServices):
   open -W -n "$APP" --args --self-test capture-signals --self-test-output /tmp/sig.jsonl
   open -W -n "$APP" --args --self-test capture-routes  --self-test-output /tmp/routes.jsonl
+  open -W -n "$APP" --args --self-test calendar-access --self-test-output /tmp/calendar.jsonl   # click Allow (or Don't Allow)
   Benchmarks/Capture/soak.sh 30 6 /tmp/soak.jsonl
   Benchmarks/Capture/browser-matrix.sh /tmp/browser
 MSG

@@ -24,6 +24,8 @@ struct AmaranthApp: App {
     @State private var playback = PlaybackModel()
     @State private var live: LiveTextModel
     @State private var incremental: IncrementalProcessor
+    /// Calendar access (T56): created without asking; the first prompt comes from a user action.
+    @State private var calendar = CalendarModel()
 
     init() {
         let worker = WorkerClient()
@@ -94,6 +96,7 @@ struct AmaranthApp: App {
             .environment(library)
             .environment(playback)
             .environment(live)
+            .environment(calendar)
             .modifier(AppearanceRoot())
             .windowFitsScreen()
         }

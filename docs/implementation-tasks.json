@@ -55,7 +55,7 @@
     "L": "Notes templates: T46-T48",
     "M": "Calendar and people placeholders: T49-T51",
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
-    "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); not yet placed in milestone_order"
+    "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N. Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert"
   },
   "tasks": [
     {
@@ -1812,7 +1812,7 @@
       "id": "T56",
       "title": "Calendar access: permission, entitlement and a testable calendar source",
       "milestone": "O",
-      "status": "accepted, not scheduled (Milestone O not yet placed in milestone_order)",
+      "status": "done (Presentation/CalendarSource: CalendarAuthorization + presentation states, CalendarAccessTrigger (prompt only on a user action outside recording), CalendarSource protocol, FakeCalendarSource; App/Calendar/EventKitCalendarSource + CalendarModel; NSCalendarsFullAccessUsageDescription + com.apple.security.personal-information.calendars; --self-test calendar-access (needs a person); decision docs/decisions/calendar/0001; checklist item 52)",
       "optional": false,
       "depends_on": [
         "T49"
@@ -1843,7 +1843,7 @@
       "id": "T57",
       "title": "Link and unlink a recording from the header chip",
       "milestone": "O",
-      "status": "accepted, not scheduled (Milestone O not yet placed in milestone_order)",
+      "status": "accepted, in progress (Milestone O)",
       "optional": false,
       "depends_on": [
         "T56",
@@ -1874,7 +1874,7 @@
       "id": "T58",
       "title": "Attendees become people",
       "milestone": "O",
-      "status": "accepted, not scheduled (Milestone O not yet placed in milestone_order)",
+      "status": "accepted, in progress (Milestone O)",
       "optional": false,
       "depends_on": [
         "T57"
@@ -1903,7 +1903,7 @@
       "id": "T59",
       "title": "Suggest the current event when recording starts",
       "milestone": "O",
-      "status": "accepted, not scheduled (Milestone O not yet placed in milestone_order)",
+      "status": "accepted, in progress (Milestone O)",
       "optional": false,
       "depends_on": [
         "T57"
@@ -1932,7 +1932,7 @@
       "id": "T60",
       "title": "Speaker-rename suggestions from the meeting's people",
       "milestone": "O",
-      "status": "accepted, not scheduled (Milestone O not yet placed in milestone_order)",
+      "status": "accepted, in progress (Milestone O)",
       "optional": false,
       "depends_on": [
         "T58"
@@ -1958,7 +1958,7 @@
       "id": "T61",
       "title": "Optional “meeting starting” reminder and Settings → Calendar",
       "milestone": "O",
-      "status": "accepted, not scheduled (Milestone O not yet placed in milestone_order)",
+      "status": "accepted, in progress (Milestone O)",
       "optional": true,
       "depends_on": [
         "T56"

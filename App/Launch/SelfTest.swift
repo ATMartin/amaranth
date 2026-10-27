@@ -50,6 +50,7 @@ enum SelfTest {
                 ok = await UIRenderSelfTest.run(outputDirectory: out, textSize: size)
             case "ui-density": ok = await UIDensitySelfTest.run(args: args)
             case "ask-worker": ok = await AskWorkerSelfTest.run()
+            case "calendar-access": ok = await CalendarSelfTest.run()
             case "capture-soak":
                 let minutes = args.firstIndex(of: "--minutes").flatMap { Double(args[$0 + 1]) } ?? 30
                 ok = await CaptureSelfTest.soak(minutes: minutes)

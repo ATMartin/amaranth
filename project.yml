@@ -41,6 +41,7 @@ targets:
       path: App/Amaranth.entitlements
       properties:
         com.apple.security.device.audio-input: true
+        com.apple.security.personal-information.calendars: true
     info:
       path: App/Info.plist
       properties:
@@ -51,6 +52,7 @@ targets:
         LSApplicationCategoryType: public.app-category.productivity
         NSMicrophoneUsageDescription: Amaranth records your microphone during meetings you start, and keeps the audio on this Mac.
         NSAudioCaptureUsageDescription: Amaranth records system audio (other meeting participants) during meetings you start, and keeps the audio on this Mac.
+        NSCalendarsFullAccessUsageDescription: Amaranth reads your calendar to name recordings and list who was invited. Nothing leaves this Mac.
         NSHumanReadableCopyright: "Local-only meeting recorder."
     settings:
       base:
