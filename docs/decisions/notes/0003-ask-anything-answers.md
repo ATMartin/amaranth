@@ -80,3 +80,51 @@ numbers above:
 The remaining miss (q10) is a refusal, not a wrong answer.
 
 Fallback (answer from notes items only) not needed.
+
+## T55: follow-ups and cross-meeting answers (2026-10-27)
+
+**Follow-ups.**
+- An ask session keeps its last 3 answered questions as context. The session ends when the panel closes or the scope or
+  meeting changes.
+- The prompt shows them as "Earlier in this conversation (for resolving words like 'it' …; not evidence)".
+- Retrieval for a follow-up also uses the previous question (`AskFollowUp`). A follow-up is a question with a pronoun or
+  "that/then/there", one starting "and/so/but/what about", or one with at most one content word.
+- The panel shows the earlier turns, dimmed, above the current answer.
+
+**Across meetings.**
+- In the All meetings scope, the retriever spreads its 12 passages round-robin over every meeting whose best passage
+  scores at least 45% of the top one, so one long meeting can't take all the slots. Weaker meetings fill what's left.
+- Labels name the meeting and date. Chips read "Meeting · 12:34" and open that meeting at the cited line.
+
+**Prompt `answer-v2`.** It adds two rules:
+- Name meetings by title, never "passage 2" or "Meeting 1".
+- For a question about several meetings, say what each relevant meeting said and cite each.
+
+**Checker changes.**
+- Passage numbers left in the text are removed.
+- "The passages do not say …" is shown as the refusal.
+- The "line addressed to the AI" check now uses only the unambiguous patterns (ignore your instructions, system prompt,
+  "note to / hey the AI"). With the broader notes pattern, two real cross-meeting answers about AI-heavy meetings were
+  refused.
+
+**Questions.** `Benchmarks/Ask/questions.json`:
+- q21–q30: 10 cross-meeting questions.
+- q31–q42: 6 follow-up pairs.
+- Expected evidence lines were written by the same independent agent as q01–q20.
+
+**Results.** All 42 questions + the injection suite, offline, `answer-v2` (`Benchmarks/Results/2026-10-27-ask-t55/`):
+
+| Metric | Result |
+|---|---|
+| Citation validity | 42/42 |
+| Correct overall | 40/42 (q01–q20 alone: 19/20, first text max 2.28 s, full max 3.77 s) |
+| Cross-meeting: an expected line cited | 10/11 |
+| Cross-meeting: citations from 2+ of the expected meetings | 8/11 |
+| Follow-ups answered citing the expected line (pronoun resolved to the earlier subject) | 6/6 |
+| First answer text, all 42 | median 2.15 s · max 2.75 s (follow-ups: median 2.10 s) |
+| Full answer, all 42 | median 2.87 s · max 4.71 s |
+| Injection suite | 15/15 |
+
+The context added for follow-ups doesn't slow answers measurably, so the single-turn fallback is not needed. The 2
+misses are refusals (q10, q30), not wrong answers. The cross-meeting run before `answer-v2` and the checker fixes cited
+2+ meetings for 4/11 questions and answered 14/22 q21–q42 correctly.

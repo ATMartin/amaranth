@@ -92,3 +92,29 @@ public enum AskPassages {
         return p.evidence.first
     }
 }
+
+/// Follow-up questions (T55): which earlier turns go with a question, and what the retriever searches for.
+public enum AskFollowUp {
+    /// Turns kept as context for the model.
+    public static let maxTurns = 3
+
+    static let referring: Set<String> = ["it", "its", "that", "this", "those", "these", "they", "them", "their", "he", "him", "his",
+                                         "she", "her", "hers", "there", "then", "one", "ones", "same", "else", "more"]
+
+    /// A question that leans on the previous one: a pronoun or “that/then/there”, an opening “and/so/but/what about”, or
+    /// almost no words of its own (“why?”, “when is it due?”).
+    public static func isFollowUp(_ question: String) -> Bool {
+        let words = question.lowercased().split { !$0.isLetter && $0 != "'" }.map(String.init)
+        guard !words.isEmpty else { return false }
+        if ["and", "so", "but", "also"].contains(words[0]) || question.lowercased().hasPrefix("what about") || question.lowercased().hasPrefix("how about") { return true }
+        if words.contains(where: referring.contains) { return true }
+        return Retriever.terms(question).filter { !Retriever.stopWords.contains($0) }.count <= 1
+    }
+
+    /// What to retrieve passages for: a follow-up also searches the question it follows, so “and when is it due?” finds
+    /// the lines about the thing the previous question asked about.
+    public static func retrievalQuery(_ question: String, history: [AnswerTurn]) -> String {
+        guard let last = history.last, isFollowUp(question) else { return question }
+        return last.question + " " + question
+    }
+}

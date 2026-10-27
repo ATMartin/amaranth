@@ -1785,7 +1785,7 @@
       "id": "T55",
       "title": "Follow-up questions and cross-meeting answers",
       "milestone": "N",
-      "status": "planned",
+      "status": "done (follow-up context of the last 3 turns + follow-up retrieval, cross-meeting spread in Retriever, answer-v2 prompt and checker fixes; 10 cross + 6 follow-up pairs in Benchmarks/Ask/questions.json; offline eval: 40/42 correct, follow-ups 6/6, cross 10/11 with expected line, citations 42/42; decision docs/decisions/notes/0003 (T55 section); checklist items 50-51)",
       "optional": true,
       "depends_on": [
         "T54"

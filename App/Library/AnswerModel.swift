@@ -31,6 +31,10 @@ final class AnswerModel {
     private(set) var passages: [Passage] = []
     private(set) var acrossMeetings = false
     private var scopeAsked: MeetingID?
+    /// Earlier questions and answers of this ask session (T55), newest last, at most `AskFollowUp.maxTurns`. A follow-up
+    /// like “and when is it due?” is answered with them as context. Cleared when the scope or meeting changes or the
+    /// panel closes.
+    private(set) var history: [AnswerTurn] = []
 
     let store: MeetingStore?
     let worker: WorkerClient?
@@ -55,13 +59,18 @@ final class AnswerModel {
         guard !q.isEmpty, let store else { return }
         if q == question, meeting == scopeAsked, phase != .idle, !{ if case .failed = phase { true } else { false } }() { return }
         cancel()
+        if meeting != scopeAsked { history = [] }
+        // Asked again (scope switch): the earlier turn of this same question isn't context for itself.
+        if history.last?.question == q { history.removeLast() }
+        let context = history
         question = q; scopeAsked = meeting; acrossMeetings = meeting == nil
         text = ""; response = nil; passages = []
         phase = .thinking
         let id = UUID().uuidString
         requestID = id
         task = Task { [weak self] in
-            let found = await Task.detached(priority: .userInitiated) { (try? Retriever(store: store).search(q, in: meeting)) ?? [] }.value
+            let query = AskFollowUp.retrievalQuery(q, history: context)
+            let found = await Task.detached(priority: .userInitiated) { (try? Retriever(store: store).search(query, in: meeting)) ?? [] }.value
             guard let self, !Task.isCancelled, self.requestID == id else { return }
             self.passages = found
             guard !found.isEmpty else {
@@ -87,7 +96,7 @@ final class AnswerModel {
                 }
             }
             defer { worker.unregisterAnswer(id) }
-            let request = AnswerRequest(requestID: id, question: q, passages: AskPassages.render(found, acrossMeetings: meeting == nil))
+            let request = AnswerRequest(requestID: id, question: q, passages: AskPassages.render(found, acrossMeetings: meeting == nil), history: context)
             do {
                 let r = try await worker.send(.answer(request), timeout: .seconds(120))
                 guard self.requestID == id else { return }
@@ -108,6 +117,13 @@ final class AnswerModel {
         response = a
         text = a.text
         phase = .done
+        if !a.refused { history = Array((history + [AnswerTurn(question: question, answer: a.text)]).suffix(AskFollowUp.maxTurns)) }
+    }
+
+    /// The panel closed: the next question starts a new conversation.
+    func endSession() {
+        cancel()
+        history = []
     }
 
     /// Esc, a new question, or closing the panel.
@@ -121,12 +137,14 @@ final class AnswerModel {
 
     func reset() {
         cancel()
+        history = []
         phase = .idle; question = ""; text = ""; response = nil; passages = []
     }
 
     #if DEBUG
     /// ui-render: show a finished answer without the model.
-    func showForRender(question: String, passages: [Passage], response: AnswerResponse?, phase: Phase, acrossMeetings: Bool) {
+    func showForRender(question: String, passages: [Passage], response: AnswerResponse?, phase: Phase, acrossMeetings: Bool, history: [AnswerTurn] = []) {
+        self.history = history
         self.question = question; self.passages = passages; self.response = response; self.text = response?.text ?? ""
         self.phase = phase; self.acrossMeetings = acrossMeetings
     }

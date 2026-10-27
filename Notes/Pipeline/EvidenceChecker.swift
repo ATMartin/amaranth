@@ -139,6 +139,14 @@ enum EvidenceChecker {
         #"\b(ai|assistant|summarizer|model|bot|notes|summary)\b[^.]{0,40}[:,]\s*(say|write|state|record|note|conclude|mark|list|report|claim|include)\b"#,
     ].map { try! NSRegularExpression(pattern: $0, options: [.caseInsensitive]) }
 
+    /// Only the unambiguous patterns: telling an AI to ignore its instructions, “system prompt / you are now”, and lines
+    /// that open by addressing the AI (“note to the AI”, “hey assistant”). Meetings about AI say “the AI should …” all the
+    /// time; answers (T54) must not be refused for that.
+    static func explicitlyAddressesAI(_ s: String) -> Bool {
+        let r = NSRange(s.startIndex..., in: s)
+        return [injectionPatterns[0], injectionPatterns[2], injectionPatterns[3]].contains { $0.firstMatch(in: s, range: r) != nil }
+    }
+
     static func looksAddressedToAI(_ s: String) -> Bool {
         let r = NSRange(s.startIndex..., in: s)
         return injectionPatterns.contains { $0.firstMatch(in: s, range: r) != nil }

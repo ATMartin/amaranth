@@ -13,6 +13,9 @@ public struct Passage: Hashable, Sendable {
         public var text: String
         /// This line matched the question (the others are context).
         public var matched: Bool
+        public init(segmentID: TranscriptSegmentID?, start: SessionTime?, speaker: String?, text: String, matched: Bool) {
+            self.segmentID = segmentID; self.start = start; self.speaker = speaker; self.text = text; self.matched = matched
+        }
     }
     public var meetingID: MeetingID
     public var meetingTitle: String
@@ -24,6 +27,12 @@ public struct Passage: Hashable, Sendable {
     public var evidence: [TranscriptEvidence]
     /// Higher is better (negated bm25 plus small boosts); comparable within one search only.
     public var score: Double
+
+    public init(meetingID: MeetingID, meetingTitle: String, meetingDate: Date, source: Source, ref: String, lines: [Line],
+                evidence: [TranscriptEvidence], score: Double) {
+        self.meetingID = meetingID; self.meetingTitle = meetingTitle; self.meetingDate = meetingDate; self.source = source
+        self.ref = ref; self.lines = lines; self.evidence = evidence; self.score = score
+    }
 }
 
 /// Finds the passages most likely to answer a natural-language question, using the FTS5 index only (no model, no
@@ -112,9 +121,35 @@ public struct Retriever: Sendable {
                 passages.append(Passage(meetingID: MeetingID(h.meetingID), meetingTitle: h.title, meetingDate: h.date, source: .notes, ref: h.ref,
                                         lines: [h.line], evidence: h.evidence, score: h.score * (1 + meetingBoost[h.meetingID, default: 0])))
             }
-            return Array(passages.sorted { $0.score > $1.score }.prefix(k))
+            let ranked = passages.sorted { $0.score > $1.score }
+            return meeting == nil ? Self.spread(ranked, k: k) : Array(ranked.prefix(k))
         }
     }
+
+    /// Across meetings (T55): every meeting that matches well (its best passage scores at least `crossMeetingFloor` of the
+    /// top one) gets its best passages in turn, so one long meeting can't fill all k slots and a question spanning
+    /// meetings sees each of them. Within the result, passages stay grouped by rank round.
+    static func spread(_ ranked: [Passage], k: Int, floor: Double = crossMeetingFloor) -> [Passage] {
+        guard let top = ranked.first?.score, top > 0 else { return Array(ranked.prefix(k)) }
+        var byMeeting: [(MeetingID, [Passage])] = []
+        for p in ranked {
+            if let i = byMeeting.firstIndex(where: { $0.0 == p.meetingID }) { byMeeting[i].1.append(p) } else { byMeeting.append((p.meetingID, [p])) }
+        }
+        let strong = byMeeting.filter { ($0.1.first?.score ?? 0) >= top * floor }
+        var out: [Passage] = []
+        var round = 0
+        while out.count < k, strong.contains(where: { $0.1.count > round }) {
+            for (_, ps) in strong where ps.count > round && out.count < k { out.append(ps[round]) }
+            round += 1
+        }
+        // Weaker meetings' passages fill any slots left, by score.
+        let used = Set(out.map { [$0.meetingID.rawValue, $0.ref, $0.source.rawValue] })
+        out += ranked.filter { !used.contains([$0.meetingID.rawValue, $0.ref, $0.source.rawValue]) }.prefix(max(0, k - out.count))
+        return out
+    }
+
+    /// A meeting's best passage must reach this share of the overall best to be spread in (cross-meeting scope).
+    static let crossMeetingFloor = 0.45
 
     struct Hit {
         var rowid: Int64, meetingID: String, kind: String, ref: String, score: Double, title: String, date: Date
@@ -156,7 +191,7 @@ public struct Retriever: Sendable {
         return w
     }
 
-    static let stopWords: Set<String> = [
+    public static let stopWords: Set<String> = [
         "a", "about", "above", "after", "again", "all", "also", "am", "an", "and", "any", "anyone", "anything", "are", "as", "at",
         "be", "been", "before", "being", "both", "but", "by", "can", "could", "did", "do", "does", "doing", "done", "during",
         "each", "else", "ever", "for", "from", "get", "got", "had", "has", "have", "having", "he", "her", "here", "him", "his",

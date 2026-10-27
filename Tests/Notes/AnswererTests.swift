@@ -104,3 +104,38 @@ struct AnswererTests {
         #expect(prompt.contains("Q: What is Rochelle renovating?\nA: The kitchen.") && prompt.contains("not evidence"))
     }
 }
+
+/// T55: follow-ups, cross-meeting answers and answer hygiene.
+@Suite("Answers across meetings and turns (T55)")
+struct AnswerFollowUpTests {
+    let meetings = [
+        AnswerPassage(label: "Leesa 1:1 (Oct 22, 2026) · 10:01", text: "[10:01] Speaker 2: Gusto is a big local client that is struggling to hire."),
+        AnswerPassage(label: "working-session (Oct 22, 2026) · 30:39", text: "[30:39] Speaker 4: We lost the Gusto agents at renewal."),
+        AnswerPassage(label: "Andrew 1:1 (Oct 22, 2026) · 05:54", text: "[05:54] Speaker 2: The AI should say when it isn't sure; we want it to flag that."),
+    ]
+
+    @Test func passageNumbersAreRemovedFromTheText() {
+        let r = AnswerChecker.check(#"{"answer": "Gusto came up in meeting [1] and (passage 2): Gusto struggles to hire [1, 2] and lost agents at renewal.", "citations": [1, 2], "confidence": "high"}"#,
+                                    passages: meetings)
+        #expect(!r.refused && r.citations == [1, 2])
+        #expect(r.text == "Gusto came up in one meeting and: Gusto struggles to hire and lost agents at renewal.")
+        #expect(AnswerChecker.withoutPassageNumbers("The meeting titled X (passages 1 and 3) decided.") == "The meeting titled X decided.")
+    }
+
+    @Test func passagesDoNotSayIsARefusal() {
+        let r = AnswerChecker.check(#"{"answer": "The passages do not specify the discount rate.", "citations": [1], "confidence": "low"}"#, passages: meetings)
+        #expect(r.refused && r.text == AnswerResponse.refusalText && r.citations.isEmpty)
+    }
+
+    /// Meetings about AI say “the AI should …”; only lines that address the AI outright are discounted.
+    @Test func ordinaryTalkAboutAIStillSupportsAnswers() {
+        let r = AnswerChecker.check(#"{"answer": "Speaker 2 wants the AI to say when it isn't sure and flag that.", "citations": [3], "confidence": "high"}"#, passages: meetings)
+        #expect(!r.refused)
+    }
+
+    @Test func crossMeetingPromptNamesMeetings() {
+        #expect(AnswerPrompts.system.contains("name a meeting by the title in its passage label"))
+        #expect(AnswerPrompts.system.contains("say what each relevant meeting said"))
+        #expect(AnswerPrompts.version == "answer-v2")
+    }
+}

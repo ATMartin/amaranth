@@ -46,3 +46,31 @@ struct AskAnythingTests {
         #expect(try store.search("budget", in: MeetingID("missing")).isEmpty)
     }
 }
+
+@Suite("Ask follow-ups (T55)")
+struct AskFollowUpTests {
+    let turn = [AnswerTurn(question: "What does Bob want to do about Gary's contract?", answer: "Extend it six months.")]
+
+    @Test func followUpsSearchWithThePreviousQuestion() {
+        for q in ["And when does it currently run out?", "Why?", "What did he say about that?", "what about the budget", "So who decides?"] {
+            #expect(AskFollowUp.isFollowUp(q), "\(q)")
+            #expect(AskFollowUp.retrievalQuery(q, history: turn).hasPrefix("What does Bob want"), "\(q)")
+        }
+        for q in ["What did Leesa say about hiring at Gusto?", "Which meetings talked about security vulnerabilities?"] {
+            #expect(!AskFollowUp.isFollowUp(q), "\(q)")
+            #expect(AskFollowUp.retrievalQuery(q, history: turn) == q)
+        }
+        #expect(AskFollowUp.retrievalQuery("And when is it due?", history: []) == "And when is it due?", "no history: as asked")
+        #expect(AskFollowUp.maxTurns == 3)
+    }
+
+    @Test func crossMeetingLabelsNameTheMeeting() {
+        let p = Passage(meetingID: MeetingID("m"), meetingTitle: "Leesa 1:1", meetingDate: Date(timeIntervalSince1970: 1_792_000_000), source: .transcript, ref: "s",
+                        lines: [.init(segmentID: TranscriptSegmentID("s"), start: .seconds(601), speaker: "Speaker 2", text: "Gusto is hiring.", matched: true)],
+                        evidence: [], score: 1)
+        #expect(AskPassages.label(p, acrossMeetings: false) == "10:01")
+        #expect(AskPassages.label(p, acrossMeetings: true) == "Leesa 1:1 · 10:01")
+        let rendered = AskPassages.render([p], acrossMeetings: true)[0]
+        #expect(rendered.label.hasPrefix("Leesa 1:1 (") && rendered.text == "[10:01] Speaker 2: Gusto is hiring.")
+    }
+}

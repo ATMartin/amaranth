@@ -32,7 +32,7 @@ enum AskEval {
         var id: String, kind: String, question: String, answer: String, refused: Bool, confidence: String, checkerNote: String?
         var passages: Int, retrievalHit: Bool, citations: [Int], citedLabels: [String], citationsValid: Bool, evidenceHit: Bool
         var correct: Bool, firstTextSeconds: Double?, totalSeconds: Double, promptTokens: Int, generatedTokens: Int
-        var citedMeetings: [String], historyTurns: Int, passagesUsed: Int, usedHit: Bool
+        var citedMeetings: [String], historyTurns: Int, passagesUsed: Int, usedHit: Bool, expectedMeetingsCited: Int
     }
 
     static func run(gguf: URL, questions: URL, results: URL, ids: Set<String>?, injection: Bool) throws {
@@ -59,20 +59,16 @@ enum AskEval {
         for q in set.questions where ids?.contains(q.id) ?? true {
             let scope: MeetingID? = q.scope == "meeting" ? q.meeting.flatMap { titles[$0] } : nil
             if q.scope == "meeting", scope == nil { print("[ask-eval] \(q.id): unknown meeting \(q.meeting ?? "-")"); continue }
-            let passages = try Retriever(store: store).search(q.question, in: scope)
+            // A follow-up is asked in the conversation of the question it follows (as in the app's ask panel).
             var history: [AnswerTurn] = []
             if let f = q.follows, let prev = answers[f] { history = [AnswerTurn(question: prev.question, answer: prev.answer)] }
-            // A follow-up's retrieval also uses the previous question, so "and when is it due?" finds the right lines.
-            var found = passages
-            if let f = q.follows, let prev = answers[f] {
-                found = try Retriever(store: store).search(prev.question + " " + q.question, in: scope)
-            }
+            let found = try Retriever(store: store).search(AskFollowUp.retrievalQuery(q.question, history: history), in: scope)
             let request = AnswerRequest(requestID: q.id, question: q.question, passages: AskPassages.render(found, acrossMeetings: scope == nil), history: history)
             if ProcessInfo.processInfo.environment["ASK_EVAL_DEBUG"] != nil {
                 let expected = Set(q.evidence)
                 for (i, p) in request.passages.enumerated() {
                     let hit = !expected.isDisjoint(with: found[i].lines.compactMap { $0.segmentID?.rawValue }) ? " <== expected" : ""
-                    print("  [\(i + 1)] \(p.label) (\(p.text.count) chars)\(hit)")
+                    print("  [\(i + 1)] \(p.label) (\(p.text.count) chars, score \(String(format: "%.2f", found[i].score)))\(hit)")
                 }
                 print("  RAW: " + (try rawOutput(request, gen: gen)))
             }
@@ -97,7 +93,8 @@ enum AskEval {
                           evidenceHit: evidenceHit, correct: correct, firstTextSeconds: r.firstTextSeconds, totalSeconds: r.totalSeconds,
                           promptTokens: r.promptTokens, generatedTokens: r.generatedTokens,
                           citedMeetings: Array(Set(cited.map(\.meetingTitle))).sorted(), historyTurns: history.count,
-                          passagesUsed: r.passagesUsed ?? found.count, usedHit: found.prefix(r.passagesUsed ?? found.count).contains(where: covers))
+                          passagesUsed: r.passagesUsed ?? found.count, usedHit: found.prefix(r.passagesUsed ?? found.count).contains(where: covers),
+                          expectedMeetingsCited: Set(cited.map(\.meetingTitle)).intersection(q.evidence_meetings ?? []).count)
             rows.append(row)
             print(String(format: "[ask-eval] %@ %@ first %.2f s total %.2f s  %@  cites %@  %@", q.id, correct ? "OK  " : "MISS",
                          r.firstTextSeconds ?? -1, r.totalSeconds, r.refused ? "REFUSED" : r.confidence.rawValue,
@@ -223,6 +220,15 @@ enum AskEval {
         md += "| … within the passages that fit the prompt budget | \(pct(answerable.filter(\.usedHit).count, answerable.count)) |\n"
         md += "| First answer text | \(stats(rows.compactMap(\.firstTextSeconds))) |\n"
         md += "| Full answer | \(stats(rows.map(\.totalSeconds))) |\n"
+        let cross = rows.filter { $0.kind == "cross" }
+        if !cross.isEmpty {
+            md += "| Cross-meeting: an expected line cited | \(pct(cross.filter(\.evidenceHit).count, cross.count)) |\n"
+            md += "| Cross-meeting: citations from 2+ of the expected meetings | \(pct(cross.filter { $0.expectedMeetingsCited >= 2 }.count, cross.count)) |\n"
+        }
+        let follow = rows.filter { $0.kind == "followup" }
+        if !follow.isEmpty {
+            md += "| Follow-ups answered citing an expected line (pronoun resolved) | \(pct(follow.filter(\.correct).count, follow.count)) |\n"
+        }
         if !injection.isEmpty { md += "| Injection suite | \(pct(injection.filter { $0["pass"] == "true" }.count, injection.count)) passed |\n" }
         md += "\n| id | kind | ok | first | total | answer | cited |\n|---|---|---|---|---|---|---|\n"
         for r in rows {

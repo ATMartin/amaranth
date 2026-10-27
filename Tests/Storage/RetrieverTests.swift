@@ -132,3 +132,18 @@ struct RetrieverTests {
         #expect(try reopened.withDB { try $0.run("PRAGMA user_version").first?["user_version"]?.int } == 4)
     }
 }
+
+@Suite("Retriever across meetings (T55)")
+struct RetrieverSpreadTests {
+    func p(_ m: String, _ ref: String, _ score: Double) -> Passage {
+        Passage(meetingID: MeetingID(m), meetingTitle: m, meetingDate: Date(), source: .transcript, ref: ref, lines: [], evidence: [], score: score)
+    }
+
+    @Test func strongMeetingsShareTheSlots() {
+        let ranked = [p("a", "1", 10), p("a", "2", 9.5), p("a", "3", 9), p("b", "1", 6), p("a", "4", 5), p("b", "2", 4), p("c", "1", 2)]
+        let out = Retriever.spread(ranked, k: 4)
+        #expect(out.map { "\($0.meetingID.rawValue)\($0.ref)" } == ["a1", "b1", "a2", "b2"], "a and b alternate; c (20% of the top) waits")
+        #expect(Retriever.spread(ranked, k: 7).map(\.meetingID.rawValue).last == "c", "weak meetings fill what's left")
+        #expect(Retriever.spread([], k: 4).isEmpty)
+    }
+}

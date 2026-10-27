@@ -156,7 +156,7 @@ final class LibraryModel {
     func closeAskPanel() {
         askPanelOpen = false
         askSelection = nil
-        answers?.cancel()
+        answers?.endSession()
     }
 
     private func runSearch() {

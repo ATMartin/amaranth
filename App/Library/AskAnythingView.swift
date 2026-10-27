@@ -210,6 +210,21 @@ struct AnswerSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppStyle.grid) {
+            // T55: the conversation so far (follow-ups are answered with it as context), oldest first, dimmed.
+            let earlier = answers.history.filter { $0.question != answers.question }
+            if !earlier.isEmpty {
+                VStack(alignment: .leading, spacing: AppStyle.half) {
+                    ForEach(Array(earlier.enumerated()), id: \.offset) { _, turn in
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(turn.question).appFont(.caption, weight: .semibold)
+                            Text(turn.answer).appFont(.caption).lineLimit(2)
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Earlier in this conversation")
+            }
             HStack(alignment: .firstTextBaseline, spacing: AppStyle.half) {
                 Image(systemName: "sparkles").foregroundStyle(Color.accentColor).accessibilityHidden(true)
                 Text(answers.question).appFont(.callout, weight: .semibold).lineLimit(2)

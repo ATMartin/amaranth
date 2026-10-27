@@ -348,6 +348,25 @@ enum UIRenderSelfTest {
                 text: AnswerResponse.refusalText, citations: [], confidence: .low, refused: true, promptTokens: 0, generatedTokens: 0,
                 firstTextSeconds: nil, totalSeconds: 0), phase: .done, acrossMeetings: false)
             _ = await host(MainView(), "ask-answer-refused", size: CGSize(width: 1200, height: 760))
+            // A follow-up (T55): the earlier turn shows above the answer.
+            answers.showForRender(question: "And who is finishing notarization?", passages: passages, response: AnswerResponse(
+                text: "Dana will finish notarization by Wednesday.", citations: cites, confidence: .high, refused: false, promptTokens: 0,
+                generatedTokens: 0, firstTextSeconds: nil, totalSeconds: 0), phase: .done, acrossMeetings: false,
+                history: [AnswerTurn(question: "When will they ship?", answer: "They decided to ship on Thursday, not Wednesday.")])
+            _ = await host(MainView(), "ask-answer-follow-up", size: CGSize(width: 1200, height: 760))
+            // A cross-meeting citation (T55) opens its own meeting at the cited line, from another meeting.
+            if let target = passages.first, let other = library.items.first(where: { $0.id != launch.id })?.id {
+                library.selection = other
+                for _ in 0..<40 where library.detail?.meeting.id != other { try? await Task.sleep(for: .milliseconds(50)) }
+                library.focusRowID = nil
+                library.open(citation: target)
+                for _ in 0..<40 where library.focusRowID == nil { try? await Task.sleep(for: .milliseconds(50)) }
+                let pass = library.selection == launch.id && library.detail?.meeting.id == launch.id && library.detailTab == .transcript
+                    && library.focusRowID != nil
+                SelfTest.log(["step": "ask-cross-citation", "from": other.rawValue, "to": launch.id.rawValue, "row": library.focusRowID ?? "-", "ok": "\(pass)"])
+                if !pass { ok = false }
+                library.focusRowID = nil
+            }
             // A citation chip opens the cited line in the transcript.
             if let first = answers.citedPassages.first ?? passages.first {
                 library.open(citation: first)
