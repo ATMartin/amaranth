@@ -2136,7 +2136,7 @@
       "id": "T67",
       "title": "Window content stuck scrolled below the content after Stop",
       "milestone": "Fixes",
-      "status": "open, not reproduced yet (reported by the user 2026-10-27; docs/qualification/bug-2026-10-27-scroll-stuck-after-stop.md)",
+      "status": "done (2026-10-27): cause was the recorder banner’s long \"Saved … to <path>\" line setting the split view’s minimum height; fixed in LibraryView, scripts/stop-layout.sh check, checklist item 59",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",

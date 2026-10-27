@@ -31,6 +31,9 @@ struct MainView: View {
                     }
                 }
             }
+            // Inside the measured area (T67): its wrapping text, measured at a near-zero width, otherwise became the split
+            // view's minimum height, taller than the window, pushing both columns' tops off screen after Stop.
+            .safeAreaInset(edge: .top, spacing: 0) { RecorderBanner(model: recorder) }
             // Content starts at the top and grows down; it never floats in the middle or bottom of the column. It never
             // sets the window's height either: the panes scroll inside whatever height the window has.
             .fillsOfferedSpace()
@@ -44,7 +47,6 @@ struct MainView: View {
                 }
             }
             .safeAreaInset(edge: .bottom, spacing: 0) { AskAnythingBar() }
-            .safeAreaInset(edge: .top, spacing: 0) { RecorderBanner(model: recorder) }
             // In the detail column's toolbar, not over the sidebar: with the sidebar open the sidebar's toolbar area is too
             // narrow for the recording strip, and AppKit moved Stop into the overflow menu.
             .toolbar { ToolbarItem(placement: .navigation) { RecordToolbarControl(model: recorder).fixedSize() } }

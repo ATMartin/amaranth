@@ -71,6 +71,9 @@ final class RecorderModel {
         self.health = state == nil ? [] : health
         eventPrompt = state == nil ? .none : prompt
     }
+
+    /// Stop layout probe only (T67): the banner's "Saved …" line, as after a real Stop.
+    func setResultForRender(_ text: String) { lastResult = text }
     #endif
 
     init(store: MeetingStore? = try? MeetingStore(root: MeetingStore.defaultRoot()), recover: Bool = true) {

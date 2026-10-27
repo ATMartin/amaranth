@@ -30,7 +30,11 @@ struct AmaranthApp: App {
 
     init() {
         let worker = WorkerClient()
+        #if DEBUG
+        let recorder = StopLayoutProbe.isRequested ? RecorderModel(store: StopLayoutProbe.store, recover: false) : RecorderModel()
+        #else
         let recorder = RecorderModel()
+        #endif
         let processing = ProcessingModel(store: recorder.store, worker: worker)
         let library = LibraryModel(store: recorder.store)
         recorder.processing = processing
@@ -82,13 +86,22 @@ struct AmaranthApp: App {
         // T61: the notification delegate must be set before launch finishes so a click that launches the app arrives.
         let reminders = ReminderController(calendar: calendar)
         reminders.recorder = recorder
-        if !SelfTest.isRequested { reminders.start() }
+        if !SelfTest.isRequested && !Self.probing { reminders.start() }
         _reminders = State(initialValue: reminders)
         _worker = State(initialValue: worker)
         _recorder = State(initialValue: recorder)
         _processing = State(initialValue: processing)
         _library = State(initialValue: library)
+        #if DEBUG
+        if StopLayoutProbe.isRequested { Task { @MainActor in await StopLayoutProbe.run(recorder: recorder, library: library) } }
+        #endif
     }
+
+    #if DEBUG
+    static var probing: Bool { StopLayoutProbe.isRequested }
+    #else
+    static let probing = false
+    #endif
 
     var body: some Scene {
         Window("Amaranth", id: "main") {

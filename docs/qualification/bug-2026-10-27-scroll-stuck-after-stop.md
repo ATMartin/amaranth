@@ -1,6 +1,6 @@
 # Bug: window content stuck scrolled below the content after Stop (2026-10-27)
 
-Status: **open, reported by the user, prioritized before Milestone J** (task T67). Not reproduced yet.
+Status: **fixed (T67)**. Reproduced in the real window; cause and fix under "Resolution" at the end.
 
 ## Report (user, 2026-10-27)
 
@@ -22,8 +22,9 @@ Observed, in short:
   (2026-10-26 17:43: strip moved to the detail toolbar, window clamped to the visible area, content no longer sets the
   window's minimum height) and Milestones M–O. The DMG built from f5321bb was not installed. Which build the user
   ran still needs confirming.
-- The saved frame for the `main` window is `268 0 1100 1084` on a `1728 × 1084` screen: the window is as tall as the
-  whole screen, including the menu-bar strip, i.e. taller than the visible area that `WindowFitsScreen` clamps to.
+- The saved frame for the `main` window is `268 0 1100 1084` on a `1728 × 1084` screen. (Correction: the second
+  rectangle in a saved frame is the screen's visible area, so the window was exactly the full visible height, not
+  taller.)
 - The app was not running when this was written, so the stuck window couldn't be inspected.
 
 ## Suspects to check first
@@ -50,3 +51,27 @@ Observed, in short:
 - After Stop, both columns start at the top of their content and scroll freely, at 900 pt and 1100 pt wide, sidebar
   open and closed, window at the screen's full visible height, with and without the event prompt.
 - A ui-render or self-test check that fails on the old behaviour; hands-on checklist item for the user.
+
+## Resolution (T67, 2026-10-27)
+
+- **Build:** the user ran the DMG built from f5321bb (after the 14d4fd4 window fixes). Relaunching cleared it.
+- **Reproduced** with `scripts/stop-layout.sh`, which drives the real `Window` scene of a Debug build (Debug-only
+  `--debug-stop-layout`, `App/Launch/StopLayoutProbe.swift`) on a throwaway fixture library at the screen's full
+  visible height: Record → stopping → Stop → the banner → Notes. It logs the window and every scroll view's frame and
+  fails a step when a scroll view reaches outside the window. Before the fix, at 1100 pt, both columns' scroll views
+  were 1,958 pt tall in a 1,084 pt window (origin −463), so their tops were about 411 pt above the window's top edge.
+  That matches the report: only the bottom of the notes showed, and scrolling rubber-banded because the scroll views
+  were already at their top.
+- **Cause:** none of the three suspects. Stop sets the result line "Saved N segments (… s) to <meeting folder path>"
+  in the recorder banner. The banner was a `safeAreaInset` outside the detail column's `fillsOfferedSpace()`, and its
+  text uses `fixedSize(vertical:)`. When SwiftUI computes the split view's minimum height, it measures the banner at a
+  near-zero width, where the long path wraps to hundreds of lines. That minimum (about 1,960 pt) exceeded the window,
+  and the split view was laid out at that height and centred, pushing both columns' tops off screen. Isolating the
+  steps showed that removing the strip, the Stop selection/tab switch and the calendar prompt changed nothing; setting
+  the banner line alone triggered it. Any long banner line (recovery message, error) could do the same.
+- **Fix:** the banner moved inside the measured area (`App/Library/LibraryView.swift`): it is now a `safeAreaInset` of
+  the detail content *before* `fillsOfferedSpace()`, so it is laid out at the column's real width and can no longer
+  set the split view's minimum height. No scroll position is forced.
+- **Check:** `scripts/stop-layout.sh` runs 1100 and 900 pt × sidebar open/closed × with/without the calendar prompt.
+  All 8 variants fail with the old layout and pass with the fix. Hands-on checklist item 59 in
+  `docs/qualification/ui-manual-checklist.md`.
