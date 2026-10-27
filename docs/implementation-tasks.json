@@ -34,7 +34,7 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "K → M → N → O → J → L → T21 → F → P (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
+    "milestone_order": "K → M → N → O → Fixes → J → L → T21 → F → P (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md"
@@ -56,7 +56,8 @@
     "M": "Calendar and people placeholders: T49-T51",
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
     "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
-    "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them"
+    "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them",
+    "Fixes": "Small fixes the user asked for before Milestone J (2026-10-27): T67 and any added alongside it. Each fix in its own commit"
   },
   "tasks": [
     {
@@ -2129,6 +2130,31 @@
         "Validator connects only the user's account read-only, logs counts only, and leaves the account as it found it."
       ],
       "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T67",
+      "title": "Window content stuck scrolled below the content after Stop",
+      "milestone": "Fixes",
+      "status": "open, not reproduced yet (reported by the user 2026-10-27; docs/qualification/bug-2026-10-27-scroll-stuck-after-stop.md)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/",
+        "Tests/",
+        "docs/qualification/"
+      ],
+      "context": "Read docs/qualification/bug-2026-10-27-scroll-stuck-after-stop.md first: the user's report, facts gathered, suspects (stale toolbar safe-area inset after the recording strip leaves the toolbar, the window frame / WindowFitsScreen, the tab switch at Stop) and what still needs collecting. Fix the cause, not the symptom (no forced scroll-to-top as the only fix).",
+      "deliverables": [
+        "Reproduction (ui-render, a self-test, or a scripted recording in the real window).",
+        "Fix at the cause, with a short note in the bug file saying what it was."
+      ],
+      "acceptance": [
+        "After Stop both columns start at the top and scroll freely at 900 and 1100 pt, sidebar open and closed, window at full visible height, with and without the event prompt.",
+        "A check that fails before the fix and passes after; hands-on checklist item."
+      ],
+      "fallback": "If it can't be reproduced, add logging of scroll insets and window frame around Stop and ask the user to capture the next occurrence.",
       "review_timestamps": []
     }
   ]
