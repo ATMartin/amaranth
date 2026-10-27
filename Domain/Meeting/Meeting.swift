@@ -11,7 +11,7 @@ public enum AudioAvailability: String, Hashable, Sendable, Codable {
     case deletedByUser
 }
 
-/// Someone in the meeting (T49). Free text for now; `.calendar` entries will come from a linked event (T51 spec).
+/// Someone in the meeting (T49). Free text, or `.calendar` when added from a linked event's attendees (T58).
 /// Not tied to transcript speakers: naming a speaker is still a separate edit.
 public struct Person: Hashable, Sendable, Codable {
     public enum Source: String, Hashable, Sendable, Codable {
@@ -20,14 +20,18 @@ public struct Person: Hashable, Sendable, Codable {
     }
     public var name: String
     public var source: Source
-    public init(name: String, source: Source = .manual) {
+    /// An attendee's address, kept only when "Keep attendee email addresses" is on (off by default, T58/T61). Never
+    /// exported.
+    public var email: String?
+    public init(name: String, source: Source = .manual, email: String? = nil) {
         self.name = name
         self.source = source
+        self.email = email
     }
 }
 
-/// The calendar event a recording belongs to (T49). Nothing fills this yet; see docs/decisions/0006 for the planned
-/// EventKit integration. `identifier` is the provider's event identifier, opaque to Amaranth.
+/// The calendar event a recording belongs to (T49): a snapshot taken when the user linked it (T57, docs/decisions/0006).
+/// `identifier` is the provider's event identifier, opaque to Amaranth.
 public struct LinkedEvent: Hashable, Sendable, Codable {
     public enum Source: String, Hashable, Sendable, Codable {
         /// The calendars configured on this Mac, read through EventKit.
@@ -39,13 +43,17 @@ public struct LinkedEvent: Hashable, Sendable, Codable {
     public var end: Date
     public var calendarName: String?
     public var source: Source
-    public init(identifier: String, title: String, start: Date, end: Date, calendarName: String? = nil, source: Source = .eventKit) {
+    /// Invited people without a display name, skipped rather than stored (T58); nil when there were none.
+    public var unnamedAttendees: Int?
+    public init(identifier: String, title: String, start: Date, end: Date, calendarName: String? = nil, source: Source = .eventKit,
+                unnamedAttendees: Int? = nil) {
         self.identifier = identifier
         self.title = title
         self.start = start
         self.end = end
         self.calendarName = calendarName
         self.source = source
+        self.unnamedAttendees = unnamedAttendees
     }
 }
 

@@ -218,9 +218,19 @@ enum UIRenderSelfTest {
                 _ = await host(MeetingDetailView(detail: d), "header-linked", size: CGSize(width: 900, height: 200))
                 _ = await host(MeetingDetailView(detail: d), "header-linked-narrow", size: CGSize(width: 560, height: 200))
             }
+            // T58: named attendees merged after the people already there, no room or unnamed guest, emails not kept.
+            let people = library.detail?.meeting.people ?? []
+            let peopleOK = people.prefix(4).map(\.name) == ["Dana Whitfield", "Ravi Patel", "Mei Chen", "Tomás Ortega"]
+                && people.contains(Person(name: "Alex Martin", source: .calendar)) && !people.contains { $0.name == "Room 4B" }
+                && library.detail?.meeting.linkedEvent?.unnamedAttendees == 1
             let pass = library.detail?.meeting.linkedEvent == linked && also.count == 2 && exported.contains("\"linkedEvent\"") && exported.contains(linked.title)
+                && peopleOK
             SelfTest.log(["step": "calendar-link", "linked": library.detail?.meeting.linkedEvent?.title ?? "-", "alsoLinked": "\(also.count)",
+                          "people": people.map { "\($0.name)(\($0.source.rawValue))" }.joined(separator: ", "), "peopleOK": "\(peopleOK)",
                           "jsonExportHasLink": "\(exported.contains("\"linkedEvent\""))", "ok": "\(pass)"])
+            if let d = library.detail {
+                _ = await host(PeopleEditor(people: d.meeting.people, save: { _ in }, cancel: {}), "people-editor-calendar", size: CGSize(width: 290, height: 270))
+            }
             if !pass { ok = false }
             for id in also.map(\.id) { library.unlink(id) }
             for _ in 0..<40 where library.detail?.meeting.linkedEvent != nil { try? await Task.sleep(for: .milliseconds(50)) }

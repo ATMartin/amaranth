@@ -197,14 +197,17 @@ struct PeopleChip: View {
     @State private var editing = false
     @State private var hovering = false
 
+    /// A linked event's invitees without a name (T58), counted but never stored.
+    var unnamed: Int { meeting.linkedEvent?.unnamedAttendees ?? 0 }
+
     var body: some View {
         Button { editing = true } label: {
-            HeaderChip(symbol: "person.2", text: MeetingPeople.chipLabel(meeting.people), style: .action, hovering: hovering)
+            HeaderChip(symbol: "person.2", text: MeetingPeople.chipLabel(meeting.people, unnamed: unnamed), style: .action, hovering: hovering)
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
-        .help(meeting.people.isEmpty ? "Add the people in this meeting" : MeetingPeople.fullList(meeting.people) + " (click to edit)")
-        .accessibilityLabel(MeetingPeople.fullList(meeting.people))
+        .help(meeting.people.isEmpty && unnamed == 0 ? "Add the people in this meeting" : MeetingPeople.fullList(meeting.people, unnamed: unnamed) + " (click to edit)")
+        .accessibilityLabel(MeetingPeople.fullList(meeting.people, unnamed: unnamed))
         .accessibilityHint("Edit the people in this meeting")
         .popover(isPresented: $editing, arrowEdge: .bottom) {
             PeopleEditor(people: meeting.people) { people in
@@ -236,6 +239,11 @@ struct PeopleEditor: View {
             Text("People").appFont(.headline)
             TextEditor(text: $text).appFont(.body).scrollIndicators(.never).frame(width: 260, height: 110)
                 .editableField(focused: $focused, as: .names, isEmpty: text.isEmpty, placeholder: "One name per line, or separated by commas")
+            if !MeetingPeople.calendarNames(people).isEmpty {
+                Label("From the calendar: " + MeetingPeople.calendarNames(people).joined(separator: ", "), systemImage: "calendar")
+                    .appFont(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                    .help("Added from the linked event. Unlinking keeps them; delete any you don't want here.")
+            }
             Text("Saved with this meeting and included in exports.").appFont(.caption).foregroundStyle(.secondary)
             HStack {
                 Spacer()

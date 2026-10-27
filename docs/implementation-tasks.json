@@ -1874,7 +1874,7 @@
       "id": "T58",
       "title": "Attendees become people",
       "milestone": "O",
-      "status": "accepted, in progress (Milestone O)",
+      "status": "done (CalendarLinking.link + MeetingStore.linkEvent: snapshot and merged people in one write; MeetingPeople.merging/namedAttendees/unnamedCount: rooms, resources, groups and unnamed skipped, current user first, existing people untouched, case-insensitive de-dup; LinkedEvent.unnamedAttendees (optional) → \"· N unnamed\" on the people chip; Person.email only with CalendarSettings.keepEmails (off), never exported; editor shows \"From the calendar\"; table tests + linked-meeting deletion-bytes test; evidence docs/qualification/evidence/2026-10-27/calendar-people; checklist item 54)",
       "optional": false,
       "depends_on": [
         "T57"

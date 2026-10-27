@@ -228,11 +228,12 @@ final class LibraryModel {
         perform { try store.setPeople(people, for: id) }
     }
 
-    /// Header calendar chip (T57): links (or re-links / updates) the meeting to an event occurrence as a snapshot.
+    /// Header calendar chip (T57): links (or re-links / updates) the meeting to an event occurrence as a snapshot and
+    /// merges its named attendees into the people (T58).
     func link(_ id: MeetingID, to event: CalendarEvent) {
         guard let store else { return }
-        let snapshot = CalendarLinking.snapshot(event)
-        perform { try store.setLinkedEvent(snapshot, for: id) }
+        let keepEmails = CalendarSettings.keepEmails()
+        perform { try CalendarLinking.link(event, to: id, in: store, keepEmails: keepEmails) }
     }
 
     /// Removes the link only; people added from the event stay (user decision 2026-10-27).

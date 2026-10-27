@@ -35,3 +35,17 @@ implementation choices the spec left open, task by task.
 - **Also linked to.** `MeetingStore.meetings(linkedTo:)` over the `linked_event_id` index, filtered to the same
   occurrence start.
 - **Narrow windows.** The header has a third, narrowest variant in which a linked event shows as its icon only.
+
+## T58 — attendees become people
+
+- **One link path.** `CalendarLinking.link` (header chip, Update, and T59's approved suggestion) writes the snapshot
+  and the merged people in one `MeetingStore.linkEvent` transaction, then re-indexes people for search.
+- **Who becomes a person.** Attendees of kind person (or unknown) with a display name. Rooms, resources and groups
+  (mailing lists) never do. Attendees without a name are counted in `LinkedEvent.unnamedAttendees` (optional, so
+  existing JSON is unchanged) and shown as "· 2 unnamed" on the people chip; nothing else about them is stored.
+- **Order and merging.** People already on the meeting keep their place, name, source and email; new attendees are
+  appended as `.calendar`, the current user first. Matching ignores case. Unlinking only clears the link.
+- **Emails.** `Person.email` (optional) is filled only when "Keep attendee email addresses" is on
+  (`CalendarSettings.keepEmailsKey`, off by default; the switch itself is in Settings → Calendar, T61). The people
+  editor keeps a stored email when the name is kept. JSON exports drop emails, so exports carry only the T49 fields.
+- **"Changed" ignores attendees.** The live comparison looks at identifier, title, times and calendar only.

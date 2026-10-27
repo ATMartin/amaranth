@@ -4,6 +4,7 @@ import Testing
 @testable import Export
 import ProcessingCore
 import Domain
+import Presentation
 
 /// A stored meeting with audio files, a published transcript (marker word inside), a summary, user notes and a
 /// private scratchpad.
@@ -213,6 +214,29 @@ struct SearchAndDeletionTests {
         #expect(try f.store.transcriptRevision(f.transcript.id) != nil && f.store.currentSummary(f.meeting) != nil)
         #expect(!(try f.store.search(f.marker)).isEmpty, "text stays searchable")
         #expect(throws: JobFailure.self) { try scheduler.enqueuePipeline(f.meeting) }
+    }
+
+    /// T58: a meeting linked through the real path (attendees merged, emails kept by the opt-in setting) loses the
+    /// event title, calendar people and their emails from the database bytes when deleted; exports never carry emails.
+    @Test func deletingALinkedMeetingRemovesEventAndCalendarPeopleBytes() throws {
+        let f = try LifecycleFixture()
+        defer { try? FileManager.default.removeItem(at: f.root) }
+        let event = CalendarEvent(identifier: "EK-marmotlantern", title: "Saffronwhale planning", start: Date(), end: Date().addingTimeInterval(1800),
+                                  calendarName: "Work", attendees: [CalendarAttendee(name: "Ottoline Brackenridge", email: "ottoline@quasarmail.example"),
+                                                                    CalendarAttendee(name: nil, email: "anon@quasarmail.example"),
+                                                                    CalendarAttendee(name: "Room Peregrine", kind: .room)])
+        try CalendarLinking.link(event, to: f.meeting, in: f.store, keepEmails: true)
+        let linked = try #require(try f.store.meeting(f.meeting))
+        #expect(linked.people == [Person(name: "Ottoline Brackenridge", source: .calendar, email: "ottoline@quasarmail.example")])
+        #expect(linked.linkedEvent?.unnamedAttendees == 1)
+        #expect(try f.databaseContains("Saffronwhale") && f.databaseContains("Ottoline") && f.databaseContains("quasarmail"))
+        #expect(try !f.databaseContains("anon@quasarmail") && !f.databaseContains("Room Peregrine"), "unnamed invitees and rooms are never stored")
+        let json = String(decoding: try Exporter.json(try f.input()), as: UTF8.self)
+        #expect(json.contains("Ottoline Brackenridge") && !json.contains("quasarmail"), "exports never carry attendee emails")
+        let scheduler = JobScheduler(store: f.store, executor: NoopExecutor(), configuration: .init(asrConfigHash: "a", diarizationConfigHash: "d"))
+        try scheduler.delete(f.meeting)
+        #expect(try !f.databaseContains("Saffronwhale") && !f.databaseContains("Ottoline") && !f.databaseContains("quasarmail")
+                && !f.databaseContains("marmotlantern"))
     }
 
     @Test func completeDeletionLeavesNoContentRowsFilesSearchEntriesOrBytes() throws {

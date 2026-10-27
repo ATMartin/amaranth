@@ -1,12 +1,26 @@
 public import Foundation
 public import Domain
+public import Storage
 
 /// Linking a recording to a calendar event from the header chip (T57, docs/decisions/0006 "Data mapping"). The link is
 /// a snapshot: nothing refreshes it unless the user presses Update.
 public enum CalendarLinking {
     /// The stored snapshot of an event occurrence.
     public static func snapshot(_ e: CalendarEvent) -> LinkedEvent {
-        LinkedEvent(identifier: e.identifier, title: e.title, start: e.start, end: e.end, calendarName: e.calendarName, source: .eventKit)
+        let unnamed = MeetingPeople.unnamedCount(e.attendees)
+        return LinkedEvent(identifier: e.identifier, title: e.title, start: e.start, end: e.end, calendarName: e.calendarName, source: .eventKit,
+                           unnamedAttendees: unnamed > 0 ? unnamed : nil)
+    }
+
+    /// Links `event` to the meeting and merges its attendees (T58), in one store write. The one path every link takes:
+    /// the header chip, Update, and an approved suggestion at Record (T59).
+    public static func link(_ event: CalendarEvent, to id: MeetingID, in store: MeetingStore, keepEmails: Bool = CalendarSettings.keepEmails()) throws {
+        try store.linkEvent(snapshot(event), for: id) { MeetingPeople.merging(event.attendees, into: $0, keepEmails: keepEmails) }
+    }
+
+    /// Title, times and calendar match (attendee changes don't count as "changed").
+    static func sameDetails(_ a: LinkedEvent, _ b: LinkedEvent) -> Bool {
+        a.identifier == b.identifier && a.title == b.title && a.start == b.start && a.end == b.end && a.calendarName == b.calendarName
     }
 
     /// The window the picker reads: the recording's local day.
@@ -60,7 +74,7 @@ public enum CalendarLinking {
         guard let match = same.first(where: { $0.start == linked.start })
                 ?? same.min(by: { abs($0.start.timeIntervalSince(linked.start)) < abs($1.start.timeIntervalSince(linked.start)) })
                     .flatMap({ abs($0.start.timeIntervalSince(linked.start)) < 86_400 ? $0 : nil }) else { return .missing }
-        return snapshot(match) == linked ? .current : .changed(match)
+        return sameDetails(snapshot(match), linked) ? .current : .changed(match)
     }
 
     /// The window to read when checking a snapshot: its start's day, a day either side (moved meetings).

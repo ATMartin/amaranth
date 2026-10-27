@@ -249,7 +249,10 @@ public enum Exporter {
     }
 
     public static func json(_ input: ExportInput, options: ExportOptions = ExportOptions(), exportedAt: Date = Date()) throws -> Data {
-        let doc = JSONDocument(format: jsonFormat, version: jsonVersion, exportedAt: exportedAt, meeting: input.meeting,
+        // Attendee emails (kept only by an opt-in setting, T58) never leave in exports.
+        var meeting = input.meeting
+        meeting.people = meeting.people.map { Person(name: $0.name, source: $0.source) }
+        let doc = JSONDocument(format: jsonFormat, version: jsonVersion, exportedAt: exportedAt, meeting: meeting,
                                speakers: Dictionary(input.transcript.speakers.map { ($0.id.rawValue, $0.displayName ?? $0.label) }, uniquingKeysWith: { a, _ in a }),
                                transcript: input.transcript, summary: options.includeNotes ? input.summary : nil,
                                userNotes: options.includeUserNotes ? input.userNotes : nil,

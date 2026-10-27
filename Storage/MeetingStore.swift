@@ -106,7 +106,7 @@ public final class MeetingStore: @unchecked Sendable {
         let cleaned = people.compactMap { p -> Person? in
             let name = p.name.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !name.isEmpty, seen.insert(name.lowercased()).inserted else { return nil }
-            return Person(name: name, source: p.source)
+            return Person(name: name, source: p.source, email: p.email)
         }
         try updateMetadata(id) { $0.people = cleaned }
         try withDB { db in try db.transaction { try Self.reindex(db, id) } }   // people are searchable (T53)
@@ -115,6 +115,21 @@ public final class MeetingStore: @unchecked Sendable {
     /// Links the meeting to a calendar event, or unlinks it with nil (T49). No-op for a missing or deleted meeting.
     public func setLinkedEvent(_ event: LinkedEvent?, for id: MeetingID) throws {
         try updateMetadata(id) { $0.linkedEvent = event }
+    }
+
+    /// Links an event and merges its attendees in one write (T58): `merge` gets the stored people and returns the new
+    /// list, so a concurrent people edit can't be lost between reading and writing.
+    public func linkEvent(_ event: LinkedEvent, for id: MeetingID, mergingPeople merge: ([Person]) -> [Person]) throws {
+        try updateMetadata(id) { m in
+            m.linkedEvent = event
+            var seen = Set<String>()
+            m.people = merge(m.people).compactMap { p in
+                let name = p.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !name.isEmpty, seen.insert(name.lowercased()).inserted else { return nil }
+                return Person(name: name, source: p.source, email: p.email)
+            }
+        }
+        try withDB { db in try db.transaction { try Self.reindex(db, id) } }   // people are searchable (T53)
     }
 
     /// Live meetings linked to the calendar event `identifier` (T57, via the `linked_event_id` index). Recurring
