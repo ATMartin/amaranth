@@ -235,17 +235,23 @@ public final class MeetingStore: @unchecked Sendable {
     }
 
     /// Ends a just-stopped recording early (T68's quiet-tail trim): removes the given segment and event rows and sets the
-    /// meeting's duration, in one transaction. The caller deletes the files and the journal lines.
+    /// meeting's duration and capture state, and rewrites events clipped to the new end, in one transaction. The caller
+    /// deletes the files and the journal lines.
     public func trimCapture(_ meeting: MeetingID, removingSegments segments: [AudioSegmentID], events: [CaptureEventID],
-                            duration: SessionDuration) throws {
+                            replacingEvents clipped: [CaptureEvent] = [], duration: SessionDuration, captureState: CaptureState? = nil) throws {
         try sync {
             try db.transaction {
                 for id in segments { try db.run("DELETE FROM audio_segments WHERE id = ? AND meeting_id = ?", [.text(id.rawValue), .text(meeting.rawValue)]) }
                 for id in events { try db.run("DELETE FROM capture_events WHERE id = ? AND meeting_id = ?", [.text(id.rawValue), .text(meeting.rawValue)]) }
+                for e in clipped where e.meetingID == meeting {
+                    try db.run("UPDATE capture_events SET end_ns = ?, json = ? WHERE id = ?", [.int(e.interval.end.nanoseconds), try json(e), .text(e.id.rawValue)])
+                }
                 guard let row = try db.run("SELECT json FROM meetings WHERE id = ?", [.text(meeting.rawValue)]).first?["json"]?.blob else { return }
                 var m = try ContractCoding.decode(Meeting.self, from: row)
                 m.duration = duration
-                try db.run("UPDATE meetings SET duration_ns = ?, json = ? WHERE id = ?", [.int(duration.nanoseconds), try json(m), .text(meeting.rawValue)])
+                if let captureState { m.captureState = captureState }
+                try db.run("UPDATE meetings SET duration_ns = ?, capture_state = ?, json = ? WHERE id = ?",
+                           [.int(duration.nanoseconds), .text(m.captureState.rawValue), try json(m), .text(meeting.rawValue)])
             }
         }
     }

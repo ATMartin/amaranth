@@ -9,8 +9,11 @@ OUT=${1:-${TMPDIR:-/tmp}/amaranth-stop-layout}
 mkdir -p "$OUT"
 # The check moves and resizes the real "main" window, which macOS saves: put the app's preferences back afterwards.
 DOMAIN=com.alexmartin.amaranth
-defaults export "$DOMAIN" "$OUT/defaults-before.plist"
-trap 'defaults import "$DOMAIN" "$OUT/defaults-before.plist"' EXIT
+if defaults export "$DOMAIN" "$OUT/defaults-before.plist" 2>/dev/null; then
+  trap 'defaults import "$DOMAIN" "$OUT/defaults-before.plist"' EXIT
+else
+  trap 'defaults delete "$DOMAIN" 2>/dev/null || true' EXIT   # there were none
+fi
 fail=0
 for width in "" --narrow; do
   for sidebar in "" --sidebar-closed; do

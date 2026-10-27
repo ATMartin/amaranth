@@ -146,7 +146,9 @@ struct RecordingStripContent: View {
                     .keyboardShortcut("p", modifiers: [.command, .shift]).help("Pause recording (⌘⇧P)")
             }
             Button(action: stop) { Label("Stop and Save", systemImage: "stop.fill") }.disabled(state == .stopping || state == .preparing)
-                .keyboardShortcut("s", modifiers: [.command, .shift]).help("Stop and save (⌘⇧S)")
+                .keyboardShortcut("s", modifiers: [.command, .shift])
+                .help(quiet != nil ? "Stop and make notes (⌘⇧S): the meeting ends 5 seconds after the last words; the quiet audio after that is deleted"
+                                   : "Stop and save (⌘⇧S)")
             if eventPrompt != .none {
                 // Icon only while "Quiet" shows: both don't fit beside Stop at a 900 pt window.
                 EventPromptContent(prompt: eventPrompt, link: link, dismiss: dismissEvent, compact: quiet != nil)
@@ -208,7 +210,7 @@ struct QuietAlertDetails: View {
             HStack {
                 Spacer()
                 Button("Keep Recording", action: keep)
-                Button("Stop & Make Notes", action: stop).keyboardShortcut(.defaultAction)
+                Button("Stop & Make Notes", action: stop)   // no default button: Return must not delete the quiet end
             }
         }
         .padding(14)

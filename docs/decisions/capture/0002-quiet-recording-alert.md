@@ -71,10 +71,14 @@ Either signal raises the alert.
   the quiet time restarts on resume. A new word clears a raised alert. After Keep Recording, or after speech resumes
   following an alert, the call-ended signal needs an app to use the microphone again first, so it can't repeat while
   people keep talking in the room after the call. `QuietAlertSettings` holds the keys, default and bounds.
+- Words decide only while live text keeps up: when any source is more than 15 s behind the recording, levels decide
+  (as when live text is off), so a lagging live text can neither raise the alert early nor make the trim cut speech
+  it hasn't read yet (after validation).
 - `Capture/Devices/MicrophoneUse.swift`: `kAudioHardwarePropertyProcessObjectList` and
   `kAudioProcessPropertyIsRunningInput`, skipping this process and `com.alexmartin.amaranth*`. Polled at 1 Hz off the
   main thread while recording. Nil (unknown) never counts as released.
-- `Capture/Recorder/CaptureTrim.swift` and `MeetingStore.trimCapture`: the trim above.
+- `Capture/Recorder/CaptureTrim.swift` and `MeetingStore.trimCapture`: the trim above. Events open across the cut
+  are clipped to the new end, and a meeting whose only gaps were in the tail becomes "captured" (no gaps).
 - App: `RecorderModel` (monitor, poll, `keepRecording()`, trim at `stop()`, the ask after Stop); the strip shows an
   amber "● Quiet 1:12" in place of the clock (the clock is in its tooltip and the menu bar). A click opens "Still
   recording?" with Keep Recording / Stop & Make Notes. While it shows, the calendar question shrinks to its icon:

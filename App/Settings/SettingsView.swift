@@ -100,7 +100,7 @@ struct RecordingSettings: View {
                     ForEach(QuietAlertSettings.choices, id: \.self) { Text(QuietAlertSettings.label($0)).tag($0) }
                 }
                 .disabled(!quietAlert)
-                Text("Asks “Still recording?” when no one has spoken for this long, or when the call app stops using the microphone. Amaranth never stops on its own. Stopping while it asks ends the meeting 5 seconds after the last words and deletes the quiet audio after that.")
+                Text("Asks “Still recording?” when no one has spoken for this long, or when the call app stops using the microphone. Amaranth never stops on its own. Stopping while it asks ends the meeting 5 seconds after the last words and deletes the quiet audio after that. Changes apply from the next recording.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Picker("My microphone is", selection: $microphoneMode) {

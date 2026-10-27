@@ -94,6 +94,12 @@ public struct LiveTranscriptState: Sendable {
         sources.values.flatMap(\.shown).sorted { $0.interval.start < $1.interval.start }
     }
 
+    /// Live text has decoded every source it has seen up to `within` seconds of `now` (T68: only then do its words say
+    /// whether someone is speaking).
+    public func isCaughtUp(at now: SessionTime, within seconds: Double) -> Bool {
+        sources.values.allSatisfy { (now - $0.processedUntil).seconds <= seconds }
+    }
+
     /// End of the newest word shown on any source (tentative words count: they are speech), for the quiet alert (T68).
     public var lastWordEnd: SessionTime? {
         // Each list is in time order, so its last word is its newest (read at 10 Hz: no full scan).

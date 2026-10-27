@@ -26,7 +26,15 @@ public enum CaptureTrim {
         let keptEnd = keep.map(\.interval.end.nanoseconds).max() ?? 0
         let newDuration = SessionDuration(nanoseconds: min(duration.nanoseconds, max(end.nanoseconds, keptEnd)))
         guard newDuration.nanoseconds < duration.nanoseconds else { return nil }
-        return Plan(keep: keep, drop: drop, dropEvents: events.filter { $0.interval.start >= end }, keptEvents: events.filter { $0.interval.start < end },
+        // Events running past the new end (an open gap or pause) are clipped to it, so nothing counts time after the end.
+        let newEnd = SessionTime(nanoseconds: newDuration.nanoseconds)
+        let kept = events.filter { $0.interval.start < end }.map { e -> CaptureEvent in
+            guard e.interval.end > newEnd else { return e }
+            var c = e
+            c.interval = SessionInterval(unchecked: e.interval.start, max(e.interval.start, newEnd))
+            return c
+        }
+        return Plan(keep: keep, drop: drop, dropEvents: events.filter { $0.interval.start >= end }, keptEvents: kept,
                     duration: newDuration, removedSeconds: duration.seconds - newDuration.seconds)
     }
 
@@ -36,13 +44,19 @@ public enum CaptureTrim {
 
     /// Applies `plan` to the stopped recording `r` and returns the result as it now is.
     public static func apply(_ plan: Plan, to r: CaptureResult, store: MeetingStore?) throws -> CaptureResult {
-        try store?.trimCapture(r.meetingID, removingSegments: plan.drop.map(\.id), events: plan.dropEvents.map(\.id), duration: plan.duration)
+        // "With gaps" only if a gap is left in the kept part.
+        var state = r.finalState
+        if state == .capturedWithGaps, !plan.keptEvents.contains(where: \.isMissingAudio) { state = .captured }
+        let clipped = plan.keptEvents.filter { k in r.events.first { $0.id == k.id }?.interval != k.interval }
+        try store?.trimCapture(r.meetingID, removingSegments: plan.drop.map(\.id), events: plan.dropEvents.map(\.id), replacingEvents: clipped,
+                               duration: plan.duration, captureState: state)
         for s in plan.drop { try? FileManager.default.removeItem(at: r.directory.appending(path: s.relativePath)) }
         try rewriteJournal(in: r.directory, dropping: Set(plan.drop.map(\.relativePath)), events: Set(plan.dropEvents.map(\.id)))
         var out = r
         out.segments = plan.keep
         out.events = plan.keptEvents
         out.duration = plan.duration
+        out.finalState = state
         return out
     }
 

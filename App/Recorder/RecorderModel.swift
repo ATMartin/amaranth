@@ -251,7 +251,9 @@ final class RecorderModel {
 
     private func updateQuiet() {
         guard var m = quietMonitor else { return }
-        let liveRunning = live?.status == .running
+        // Words decide only while live text keeps up with the audio: running more than 15 s behind, its newest word is
+        // stale (the alert would fire early, and the trim would cut speech it hasn't read yet), so levels decide instead.
+        let liveRunning = live?.status == .running && (live?.state.isCaughtUp(at: .seconds(elapsed), within: 15) ?? false)
         let input = QuietMonitor.Input(now: elapsed, recording: state == .recording, liveText: liveRunning,
                                        lastWordEnd: live?.state.lastWordEnd?.seconds,
                                        levelsSilent: !health.isEmpty && health.allSatisfy { Double($0.rmsLevelDBFS ?? -120) < RecorderPresentation.silentDBFS },
@@ -360,7 +362,8 @@ final class RecorderModel {
     /// Stop and save. While the quiet alert is up, the meeting ends at the last words + 5 s and the quiet tail is
     /// deleted (T68); otherwise nothing is trimmed.
     func stop() {
-        guard let s = session else { return }
+        // Once only: a late notification click or the disk guard during Stop must not finish the recording twice.
+        guard let s = session, state != .stopping else { return }
         poll?.invalidate()
         poll = nil
         let trimEnd = quietMonitor?.trimEnd(duration: s.now.seconds)

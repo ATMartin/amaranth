@@ -36,6 +36,10 @@ struct CaptureTrimTests {
         #expect(p.duration == .seconds(10))
         #expect(p.removedSeconds == 10)
         #expect(p.dropEvents == [pause] && p.keptEvents == [early])
+        // A gap open across the cut is clipped to the new end; one wholly in the tail goes.
+        let across = CaptureEvent(meetingID: m, source: .microphone, interval: .seconds(8, 18), kind: .gap, reasonCode: "device.lost", recoverable: true)
+        let clipped = try #require(CaptureTrim.plan(segments: segments, events: [across], duration: .seconds(20), end: .seconds(9)))
+        #expect(clipped.keptEvents.map(\.interval) == [.seconds(8, 10)])
         #expect(CaptureTrim.plan(segments: segments, events: [], duration: .seconds(20), end: .seconds(20)) == nil, "nothing to cut")
         #expect(CaptureTrim.plan(segments: segments, events: [], duration: .seconds(20), end: .seconds(19)) == nil, "the last segment holds the cut")
     }
@@ -48,13 +52,23 @@ struct CaptureTrimTests {
         let r = try await record(seconds: 6.5, root: root, store: store)
         try #require(r.segments.count >= 3)
         let cut = r.segments[1].interval.end   // keep two segments
-        let plan = try #require(CaptureTrim.plan(r, end: cut))
-        let out = try CaptureTrim.apply(plan, to: r, store: store)
+        // A gap only in the quiet tail: once trimmed, the meeting no longer has gaps.
+        let tailGap = CaptureEvent(meetingID: r.meetingID, source: .microphone, interval: SessionInterval(unchecked: cut + .seconds(1), cut + .seconds(1.5)),
+                                   kind: .gap, reasonCode: "test", recoverable: true)
+        try store.insertEvents([tailGap])
+        var withGap = r
+        withGap.events.append(tailGap)
+        withGap.finalState = .capturedWithGaps
+        let plan = try #require(CaptureTrim.plan(withGap, end: cut))
+        #expect(plan.dropEvents.map(\.id) == [tailGap.id])
+        let out = try CaptureTrim.apply(plan, to: withGap, store: store)
+        #expect(out.finalState == .captured)
 
         #expect(out.segments.map(\.id) == Array(r.segments.prefix(2)).map(\.id))
         #expect(try store.segments(r.meetingID).map(\.id) == out.segments.map(\.id))
         #expect(try store.meeting(r.meetingID)?.duration == plan.duration)
         #expect(plan.duration.seconds < r.duration.seconds)
+        #expect(try store.meeting(r.meetingID)?.captureState == .captured)
         for s in plan.drop { #expect(!FileManager.default.fileExists(atPath: r.directory.appending(path: s.relativePath).path)) }
         for s in plan.keep { #expect(FileManager.default.fileExists(atPath: r.directory.appending(path: s.relativePath).path)) }
         let journal = try String(contentsOf: r.directory.appending(path: "journal.jsonl"), encoding: .utf8)
