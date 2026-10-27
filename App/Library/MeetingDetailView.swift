@@ -78,11 +78,12 @@ struct MeetingDetailView: View {
             // Static: renaming lives in the sidebar card's context menu (T26).
             Text(detail.meeting.title).appFont(.title).lineLimit(1)
             HStack(spacing: AppStyle.grid) {
-                // T50: small chips like Granola's header; date and the calendar placeholder are not editable.
-                // Narrow windows drop the time and the placeholder's words before anything truncates.
+                // T50: small chips like Granola's header; the date is not editable. Narrow windows drop the time and the
+                // calendar chip's words, then a linked event's title, before anything truncates.
                 ViewThatFits(in: .horizontal) {
                     headerChips(compact: false)
                     headerChips(compact: true)
+                    headerChips(compact: true, eventTitle: false)
                 }
                 Text(TranscriptRows.clock(SessionTime(nanoseconds: detail.meeting.duration.nanoseconds))).monospacedDigit().foregroundStyle(.secondary)
                 // Quick review: one glyph (hover for its meaning); Details on: both full badges.
@@ -101,12 +102,13 @@ struct MeetingDetailView: View {
         .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 4).padding(.bottom, AppStyle.grid)
     }
 
-    func headerChips(compact: Bool) -> some View {
+    /// `eventTitle: false` is the narrowest variant: a linked event shows as its icon only (the tooltip names it).
+    func headerChips(compact: Bool, eventTitle: Bool = true) -> some View {
         HStack(spacing: AppStyle.grid) {
             HeaderChip(symbol: "calendar", text: detail.meeting.createdAt.formatted(date: .abbreviated, time: compact ? .omitted : .shortened))
                 .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
             PeopleChip(meeting: detail.meeting).id(detail.meeting.id)
-            CalendarLinkPlaceholderChip(compact: compact)
+            CalendarLinkChip(meeting: detail.meeting, compact: compact, iconOnly: !eventTitle).id(detail.meeting.id)
         }
         .fixedSize()
     }
@@ -167,6 +169,8 @@ struct HeaderChip: View {
     let text: String
     var style: Style = .info
     var hovering = false
+    /// Changed or missing calendar event (T57): text and icon in the attention colour.
+    var attention = false
 
     var body: some View {
         HStack(spacing: AppStyle.half) {
@@ -174,7 +178,7 @@ struct HeaderChip: View {
             if !text.isEmpty { Text(text).lineLimit(1) }
         }
         .appFont(.callout)
-        .foregroundStyle(style == .inert ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.secondary))
+        .foregroundStyle(attention ? AnyShapeStyle(Color.statusAttention) : style == .inert ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.secondary))
         .padding(.horizontal, AppStyle.grid).padding(.vertical, 3)
         .background {
             if style != .inert { Capsule().fill(hovering ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.quaternary)) }
@@ -244,22 +248,6 @@ struct PeopleEditor: View {
         }
         .padding(12)
         .onAppear { focused = .names }
-    }
-}
-
-/// Placeholder for calendar linking (T50): visibly inert until Milestone O (docs/decisions/0006). Not a button, so it
-/// takes no clicks or focus; the tooltip says why.
-struct CalendarLinkPlaceholderChip: View {
-    var compact = false
-
-    var body: some View {
-        HeaderChip(symbol: "link", text: compact ? "" : "Link calendar event", style: .inert)
-            .help("Calendar linking is planned")
-            .accessibilityElement(children: .ignore)
-            .accessibilityAddTraits(.isStaticText)
-            .accessibilityLabel("Link calendar event")
-            .accessibilityValue("Not available yet")
-            .accessibilityHint("Calendar linking is planned")
     }
 }
 

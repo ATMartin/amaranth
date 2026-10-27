@@ -4,6 +4,7 @@ import Domain
 import DomainFixtures
 import Storage
 import Presentation
+import Export
 
 /// `Amaranth --self-test ui-render --self-test-output <dir>`: builds the real views over a temporary store (fixture
 /// meetings plus a synthetic two-hour meeting), lays them out offscreen, writes PNGs, and reports layout/render times.
@@ -41,6 +42,9 @@ enum UIRenderSelfTest {
         let library = LibraryModel(store: store)
         let playback = PlaybackModel()
         let live = LiveTextModel(client: worker)
+        // A fake calendar (T57): the header chip reads it; the user's calendars are never touched.
+        let calendarSource = FakeCalendarSource(status: .fullAccess, events: Self.calendarEvents(on: Date()))
+        let calendar = CalendarModel(source: calendarSource)
         UserDefaults.standard.set(true, forKey: "onboarded")
         // Editors expanded (T24) without touching the user's own expansion preferences.
         // Fixed names: cfprefsd may write an empty plist for a suite after it's removed, so reuse two instead of leaving one
@@ -60,7 +64,7 @@ enum UIRenderSelfTest {
         var ok = true
         func makeView<V: View>(_ v: V, size: CGSize) -> NSView {
             let view = NSHostingView(rootView: v.textSize(textSize).environment(worker).environment(models).environment(recorder)
-                .environment(library).environment(playback).environment(live).frame(width: size.width, height: size.height)
+                .environment(library).environment(playback).environment(live).environment(calendar).frame(width: size.width, height: size.height)
                 .background(Color(nsColor: .windowBackgroundColor)))
             // Offscreen windows don't draw vibrancy; force an opaque, fixed appearance so captures are readable.
             view.appearance = appearance
@@ -163,6 +167,64 @@ enum UIRenderSelfTest {
         // Header people editor (T50): with names and empty.
         _ = await host(PeopleEditor(people: ["Dana Whitfield", "Ravi Patel"].map { Person(name: $0) }, save: { _ in }, cancel: {}), "people-editor", size: CGSize(width: 290, height: 230))
         _ = await host(PeopleEditor(people: [], save: { _ in }, cancel: {}), "people-editor-empty", size: CGSize(width: 290, height: 230))
+        // Calendar chip (T57): every state, each over its own fake calendar, then the popovers' contents.
+        if let long = library.items.first(where: { $0.id == MeetingID("ui-long") }), let m = try? store.meeting(long.id) {
+            let events = Self.calendarEvents(on: m.createdAt)
+            calendarSource.setEvents(events)
+            let linked = CalendarLinking.snapshot(events[0])
+            var current = m; current.linkedEvent = linked
+            var changed = m; changed.linkedEvent = LinkedEvent(identifier: linked.identifier, title: "Roadmap review", start: linked.start,
+                                                              end: linked.end, calendarName: linked.calendarName)
+            var missing = m; missing.linkedEvent = LinkedEvent(identifier: "deleted-event", title: "Vendor call", start: linked.start, end: linked.end)
+            let cases: [(String, CalendarAuthorization, Meeting)] = [
+                ("not determined", .notDetermined, m), ("full access, unlinked", .fullAccess, m), ("denied", .denied, m),
+                ("write-only", .writeOnly, m), ("restricted", .restricted, m), ("linked", .fullAccess, current),
+                ("changed since linking", .fullAccess, changed), ("no longer in calendar", .fullAccess, missing), ("linked, access off", .denied, current),
+            ]
+            _ = await host(VStack(alignment: .leading, spacing: 10) {
+                ForEach(Array(cases.enumerated()), id: \.offset) { _, c in
+                    HStack {
+                        Text(c.0).appFont(.caption).foregroundStyle(.secondary).frame(width: 150, alignment: .leading)
+                        CalendarLinkChip(meeting: c.2).environment(CalendarModel(source: FakeCalendarSource(status: c.1, events: events)))
+                        Spacer()
+                    }
+                }
+            }.padding(), "calendar-chip-states", size: CGSize(width: 520, height: 380))
+            _ = await host(CalendarEventPicker(events: CalendarLinking.pickerEvents(events, recordedAt: m.createdAt), recordedAt: m.createdAt) { _ in },
+                           "calendar-picker", size: CGSize(width: 340, height: 330))
+            _ = await host(CalendarEventPicker(events: [], recordedAt: m.createdAt) { _ in }, "calendar-picker-empty", size: CGSize(width: 340, height: 180))
+            for (name, status, also) in [("current", CalendarLinking.LiveStatus.current, [String]()), ("changed", .changed(events[0]), []),
+                                         ("missing", .missing, []), ("also-linked", .current, ["Roadmap sync (dropped call)"])] {
+                _ = await host(LinkedEventDetails(event: name == "changed" ? changed.linkedEvent! : linked, status: status, also: also, offersEventTitle: true,
+                                                  update: {}, useTitle: {}, change: {}, unlink: {}), "calendar-linked-\(name)", size: CGSize(width: 340, height: 190))
+            }
+            _ = await host(LinkedEventDetails(event: linked, status: .unknown, also: [], offersEventTitle: false, accessOff: true,
+                                              update: {}, useTitle: {}, change: {}, unlink: {}), "calendar-linked-access-off", size: CGSize(width: 340, height: 170))
+            for kind in [CalendarAccessMessage.Kind.off, .managed, .afterRecording] {
+                _ = await host(CalendarAccessMessage(kind: kind), "calendar-access-\(kind)", size: CGSize(width: 320, height: 190))
+            }
+            // The real path: link from the chip's action, then the header shows the event; a second recording of the
+            // same occurrence is "also linked"; the JSON export carries the link.
+            library.selection = long.id
+            for _ in 0..<40 where library.detail?.meeting.id != long.id { try? await Task.sleep(for: .milliseconds(50)) }
+            library.link(long.id, to: events[0])
+            for _ in 0..<40 where library.detail?.meeting.linkedEvent == nil { try? await Task.sleep(for: .milliseconds(50)) }
+            if let other = library.items.first(where: { $0.id != long.id }) { library.link(other.id, to: events[0]) }
+            try? await Task.sleep(for: .milliseconds(300))
+            let also = (try? store.meetings(linkedTo: linked.identifier)) ?? []
+            let exported = library.detail.flatMap { d in d.displayTranscript.map { ExportInput(meeting: d.meeting, transcript: $0, summary: d.summary, userNotes: d.userNotes, scratchpad: d.scratchpad) } }
+                .flatMap { try? Exporter.json($0) }.map { String(decoding: $0, as: UTF8.self) } ?? ""
+            if let d = library.detail {
+                _ = await host(MeetingDetailView(detail: d), "header-linked", size: CGSize(width: 900, height: 200))
+                _ = await host(MeetingDetailView(detail: d), "header-linked-narrow", size: CGSize(width: 560, height: 200))
+            }
+            let pass = library.detail?.meeting.linkedEvent == linked && also.count == 2 && exported.contains("\"linkedEvent\"") && exported.contains(linked.title)
+            SelfTest.log(["step": "calendar-link", "linked": library.detail?.meeting.linkedEvent?.title ?? "-", "alsoLinked": "\(also.count)",
+                          "jsonExportHasLink": "\(exported.contains("\"linkedEvent\""))", "ok": "\(pass)"])
+            if !pass { ok = false }
+            for id in also.map(\.id) { library.unlink(id) }
+            for _ in 0..<40 where library.detail?.meeting.linkedEvent != nil { try? await Task.sleep(for: .milliseconds(50)) }
+        }
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
         _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 360, height: 760))
         // Toolbar recorder (T31): idle control, this meeting's options, the strip in each state, the banner.
@@ -212,7 +274,7 @@ enum UIRenderSelfTest {
             library.selection = first.id
             for _ in 0..<40 where library.detail?.meeting.id != first.id { try? await Task.sleep(for: .milliseconds(50)) }
             let view = NSHostingView(rootView: MainView().textSize(textSize).environment(worker).environment(models).environment(recorder)
-                .environment(library).environment(playback).environment(live).frame(width: 1200, height: 760))
+                .environment(library).environment(playback).environment(live).environment(calendar).frame(width: 1200, height: 760))
             view.sceneBridgingOptions = [.toolbars]
             let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 1200, height: 760), styleMask: [.titled, .resizable], backing: .buffered, defer: false)
             window.appearance = appearance
@@ -239,7 +301,7 @@ enum UIRenderSelfTest {
                 .init(source: .systemOutput, status: .healthy, peakLevelDBFS: -24, deviceName: "System audio")])
             for width in [1100.0, 900.0] {
                 let rec = NSHostingView(rootView: MainView().textSize(textSize).environment(worker).environment(models).environment(recorder)
-                    .environment(library).environment(playback).environment(live).frame(width: width, height: 600))
+                    .environment(library).environment(playback).environment(live).environment(calendar).frame(width: width, height: 600))
                 rec.sceneBridgingOptions = [.toolbars]
                 let recWindow = NSWindow(contentRect: CGRect(x: 0, y: 0, width: width, height: 600), styleMask: [.titled, .resizable], backing: .buffered, defer: false)
                 recWindow.appearance = appearance
@@ -395,6 +457,23 @@ enum UIRenderSelfTest {
         if let t = view as? NSTableView { return t }
         for v in view.subviews { if let t = table(in: v) { return t } }
         return nil
+    }
+
+    /// A day of fixture events around `date` (T57): the linked one first, a declined one, an all-day one, a cancelled
+    /// one (never shown), and attendees including a room and an unnamed guest.
+    static func calendarEvents(on date: Date) -> [CalendarEvent] {
+        let t = date.addingTimeInterval(-300)
+        let people = [CalendarAttendee(name: "Alex Martin", isCurrentUser: true), CalendarAttendee(name: "Dana Whitfield"),
+                      CalendarAttendee(name: "Ravi Patel"), CalendarAttendee(name: "Room 4B", kind: .room), CalendarAttendee(name: nil, email: "guest@example.com")]
+        return [
+            CalendarEvent(identifier: "evt-roadmap", title: "Roadmap sync", start: t, end: t.addingTimeInterval(1800), calendarName: "Work", attendees: people),
+            CalendarEvent(identifier: "evt-1on1", title: "1:1 with Dana", start: t.addingTimeInterval(3600), end: t.addingTimeInterval(5400), isRecurring: true,
+                          calendarName: "Work", attendees: [CalendarAttendee(name: "Alex Martin", response: .declined, isCurrentUser: true)]),
+            CalendarEvent(identifier: "evt-lunch", title: "Team lunch", start: t.addingTimeInterval(-7200), end: t.addingTimeInterval(-3600), calendarName: "Home"),
+            CalendarEvent(identifier: "evt-cancelled", title: "Cancelled standup", start: t, end: t.addingTimeInterval(900), isCancelled: true, calendarName: "Work"),
+            CalendarEvent(identifier: "evt-offsite", title: "Offsite week", start: Calendar.current.startOfDay(for: date),
+                          end: Calendar.current.startOfDay(for: date).addingTimeInterval(86_400), isAllDay: true, calendarName: "Work"),
+        ]
     }
 
     /// Every SourceHealth status appears in at least one strip, plus the low-disk glyph.

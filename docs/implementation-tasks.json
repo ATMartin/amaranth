@@ -1843,7 +1843,7 @@
       "id": "T57",
       "title": "Link and unlink a recording from the header chip",
       "milestone": "O",
-      "status": "accepted, in progress (Milestone O)",
+      "status": "done (App/Calendar/CalendarLinkChip replaces the T50 placeholder: picker of the recording's day (nearest first, all-day last, search), linked/changed (Update)/missing/also-linked/access-off/managed/ask-after-recording states, Use Event Title button, Unlink keeps people; Presentation/CalendarLinking + CalendarChip; MeetingStore.meetings(linkedTo:); narrowest header variant shows the event icon only; ui-render calendar-chip-states, popovers and a link → export → also-linked check; evidence docs/qualification/evidence/2026-10-27/calendar-link; decision docs/decisions/calendar/0001; checklist item 53)",
       "optional": false,
       "depends_on": [
         "T56",

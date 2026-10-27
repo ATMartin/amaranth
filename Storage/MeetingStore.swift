@@ -117,6 +117,15 @@ public final class MeetingStore: @unchecked Sendable {
         try updateMetadata(id) { $0.linkedEvent = event }
     }
 
+    /// Live meetings linked to the calendar event `identifier` (T57, via the `linked_event_id` index). Recurring
+    /// occurrences share an identifier; callers compare `linkedEvent.start` to tell them apart.
+    public func meetings(linkedTo identifier: String) throws -> [Meeting] {
+        try sync {
+            try decode(Meeting.self, db.run("SELECT json FROM meetings WHERE linked_event_id = ? AND deleted_at IS NULL ORDER BY created_at DESC",
+                                            [.text(identifier)]))
+        }
+    }
+
     private func updateMetadata(_ id: MeetingID, _ change: (inout Meeting) -> Void) throws {
         try sync {
             try db.transaction {

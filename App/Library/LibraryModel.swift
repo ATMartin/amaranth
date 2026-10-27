@@ -228,6 +228,19 @@ final class LibraryModel {
         perform { try store.setPeople(people, for: id) }
     }
 
+    /// Header calendar chip (T57): links (or re-links / updates) the meeting to an event occurrence as a snapshot.
+    func link(_ id: MeetingID, to event: CalendarEvent) {
+        guard let store else { return }
+        let snapshot = CalendarLinking.snapshot(event)
+        perform { try store.setLinkedEvent(snapshot, for: id) }
+    }
+
+    /// Removes the link only; people added from the event stay (user decision 2026-10-27).
+    func unlink(_ id: MeetingID) {
+        guard let store else { return }
+        perform { try store.setLinkedEvent(nil, for: id) }
+    }
+
     /// Stores a user edit and re-runs speaker reconciliation (cheap); notes become stale, never silently rewritten.
     func apply(_ edit: UserEdit) {
         guard let store else { return }

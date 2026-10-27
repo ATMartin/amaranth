@@ -18,3 +18,20 @@ implementation choices the spec left open, task by task.
   (`EKEventStore.authorizationStatus`, which never prompts) and creates the `EKEventStore` lazily.
 - **Self-test.** `--self-test calendar-access` asks (if undecided) and reads three days of events, logging counts
   only, never titles or names. It needs a person, like the capture trials, and is listed in `scripts/check.sh`.
+
+## T57 — the header chip
+
+- **States.** `CalendarChip.state` decides: a stored link always shows (title and time), even without access, because
+  the snapshot is ours; with access it is compared with the calendar (`CalendarLinking.liveStatus`): same occurrence
+  (identifier + start), else the same identifier's nearest occurrence within a day (a moved meeting → "changed");
+  nothing → "No longer in your calendar". Next week's occurrence of a recurring event never counts as this one.
+  Unlinked: "Link calendar event…" (asks on click), "Link calendar event" (picker), "Calendar access is off" (popover
+  with Open Privacy Settings), or the inert dashed chip when an administrator restricts access.
+- **Prompt while recording.** If access was never decided and a recording is running, the click explains that
+  Amaranth asks after the recording, instead of prompting.
+- **Picker.** The recording's local day; timed events nearest to the recording's start first (zero distance while
+  inside the event), all-day events last, cancelled ones hidden, declined ones marked. Search covers the title,
+  calendar and attendee names.
+- **Also linked to.** `MeetingStore.meetings(linkedTo:)` over the `linked_event_id` index, filtered to the same
+  occurrence start.
+- **Narrow windows.** The header has a third, narrowest variant in which a linked event shows as its icon only.

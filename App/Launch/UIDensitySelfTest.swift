@@ -48,7 +48,8 @@ enum UIDensitySelfTest {
         for tab in [LibraryModel.DetailTab.transcript, .notes] {
             library.detailTab = tab
             let view = NSHostingView(rootView: textSized(MainView().defaultAppStorage(defaults), arg("--text-size"), style: arg("--transcript-style")).environment(worker).environment(models).environment(recorder)
-                .environment(library).environment(playback).environment(live).frame(width: size.width, height: size.height)
+                .environment(library).environment(playback).environment(live).environment(CalendarModel(source: FakeCalendarSource(status: .notDetermined)))
+                .frame(width: size.width, height: size.height)
                 .background(Color(nsColor: .windowBackgroundColor)))
             view.appearance = NSAppearance(named: .aqua)
             let window = NSWindow(contentRect: CGRect(origin: .zero, size: size), styleMask: [.titled], backing: .buffered, defer: false)
