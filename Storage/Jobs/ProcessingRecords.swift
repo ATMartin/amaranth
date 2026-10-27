@@ -105,7 +105,10 @@ extension MeetingStore {
                 try db.run("INSERT OR REPLACE INTO user_edits (id, meeting_id, sequence, conflict, json) VALUES (?,?,?,?,?)",
                            [.text(e.id.rawValue), .text(e.meetingID.rawValue), .int(Int64(e.sequence)), .text(e.conflict.rawValue),
                             .blob(try ContractCoding.encode(e))])
-                if case .correctText = e.operation { try Self.reindex(db, e.meetingID) }   // search reflects corrections
+                switch e.operation {   // search reflects corrections and speaker names at once, before reconciliation runs
+                case .correctText, .renameSpeaker: try Self.reindex(db, e.meetingID)
+                default: break
+                }
             }
         }
     }

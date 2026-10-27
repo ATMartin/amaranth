@@ -1725,7 +1725,7 @@
       "id": "T53",
       "title": "Retrieval layer: speaker and people names in the index, passage ranking, evidence references",
       "milestone": "N",
-      "status": "planned",
+      "status": "done (schema v4 speaker/evidence columns, speaker and person kinds, Storage/Search/Retriever.swift; Tests/Storage/RetrieverTests + RetrieverCorpusTests; decision docs/decisions/data/0002-retrieval.md: longest meeting median 0.6 ms, max 8.4 ms)",
       "optional": false,
       "depends_on": [
         "T52",

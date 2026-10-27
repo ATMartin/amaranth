@@ -24,8 +24,8 @@ public final class MeetingStore: @unchecked Sendable {
             try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
             chmod(dir.path, 0o700)
         }
-        // Databases created before search existed get their index built once.
-        if previousVersion == 1 { try rebuildSearchIndex() }
+        // Databases created before search existed (v1), or before the v4 index layout (T53), get their index built once.
+        if (1..<4).contains(previousVersion) { try rebuildSearchIndex() }
     }
 
     public static func defaultRoot() -> URL {
@@ -109,6 +109,7 @@ public final class MeetingStore: @unchecked Sendable {
             return Person(name: name, source: p.source)
         }
         try updateMetadata(id) { $0.people = cleaned }
+        try withDB { db in try db.transaction { try Self.reindex(db, id) } }   // people are searchable (T53)
     }
 
     /// Links the meeting to a calendar event, or unlinks it with nil (T49). No-op for a missing or deleted meeting.

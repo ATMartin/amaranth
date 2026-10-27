@@ -126,6 +126,17 @@ enum Schema {
         ALTER TABLE meetings ADD COLUMN linked_event_id TEXT;
         CREATE INDEX meetings_by_linked_event ON meetings (linked_event_id);
         """,
+        // v4 (T53): retrieval for “ask anything”. Transcript rows carry the speaker's shown name in their own column (so
+        // “what did Rochelle say about the kitchen” matches her lines), and an unindexed `evidence` column with the row's
+        // TranscriptEvidence refs (JSON) so passages cite the transcript without decoding it. Speaker names and meeting
+        // people also get rows of their own (kinds `speaker`, `person`). MeetingStore.init rebuilds the index once.
+        """
+        DROP TABLE search_index;
+        CREATE VIRTUAL TABLE search_index USING fts5(
+            meeting_id UNINDEXED, kind UNINDEXED, ref UNINDEXED, start_ns UNINDEXED, text, speaker, evidence UNINDEXED,
+            tokenize='unicode61 remove_diacritics 2'
+        );
+        """,
     ]
 
     /// Applies pending migrations; returns the version the database had before.
