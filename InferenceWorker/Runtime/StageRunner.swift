@@ -29,7 +29,8 @@ public final class ModelProvider: @unchecked Sendable {
     /// loads the model twice. Released with the notes model.
     private var answerModel: LlamaRunner?
     public static let answerConfiguration: LlamaRunner.Configuration = {
-        var c = LlamaRunner.Configuration(); c.contextTokens = 6144; c.parallel = 1; c.kvTokens = 6144; return c
+        // The prompt budget (2,200 tokens) plus 320 output tokens fits with room to spare (Answerer); measured +436 MB.
+        var c = LlamaRunner.Configuration(); c.contextTokens = 3072; c.parallel = 1; c.kvTokens = 3072; return c
     }()
     /// Manifest ID of the notes model (the pack's summary role).
     public static let notesManifestID = "qwen3-4b-instruct-2507-q4_k_m"

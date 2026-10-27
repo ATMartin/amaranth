@@ -1,3 +1,4 @@
+import ASR
 import Domain
 import Foundation
 import Notes
@@ -6,7 +7,7 @@ import Storage
 
 // T54/T55: "ask anything" over the corpus meetings, end to end except the UI: retrieval (Storage.Retriever), passage
 // rendering (Presentation.AskPassages), the answer prompt and checker (Notes.Answerer) on the notes model, with the app's
-// answer context (6,144 tokens, one sequence, sharing the notes model's weights).
+// answer context (3,072 tokens, one sequence, sharing the notes model's weights).
 //
 //   amaranth-bench ask-eval <model.gguf> <questions.json> <results-dir> [--only q01,q02] [--range q01-q20] [--no-injection]
 //
@@ -44,10 +45,25 @@ enum AskEval {
         for m in try store.meetings() where m.deletedAt == nil { titles[m.title] = m.id }
         print("[ask-eval] library: \(titles.keys.sorted().joined(separator: ", "))")
 
+        // What an answer costs the next transcription: the worker releases the speech models when it loads the notes model,
+        // so the next job loads them again (2 decoders + 2 VADs, as ModelProvider.transcriptionPool; Core ML cache warm).
+        let modelStore = gguf.deletingLastPathComponent().deletingLastPathComponent()
+        if FileManager.default.fileExists(atPath: modelStore.appending(path: "parakeet-tdt-0.6b-v3-coreml").path) {
+            for attempt in 1...2 {
+                let t0 = ContinuousClock.now
+                let pool = try (0..<2).map { _ in
+                    (try ParakeetASR(directory: modelStore.appending(path: "parakeet-tdt-0.6b-v3-coreml"), manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: "local"),
+                     try SileroVAD(modelFile: modelStore.appending(path: "silero-vad-coreml/silero-vad-unified-256ms-v6.2.1.mlmodelc")))
+                }
+                print(String(format: "[ask-eval] speech models reload (attempt %d): %.2f s for %d decoders + VADs", attempt, Perf.seconds(since: t0), pool.count))
+            }
+        }
         let notes = try LlamaRunner(gguf: gguf, manifestID: ModelManifestID("qwen3-4b-instruct-2507-q4_k_m"), revision: "local")
         var answerConfig = LlamaRunner.Configuration()
-        answerConfig.contextTokens = 6144; answerConfig.parallel = 1; answerConfig.kvTokens = 6144
+        answerConfig.contextTokens = 3072; answerConfig.parallel = 1; answerConfig.kvTokens = 3072
+        let before = footprintMB()
         let gen = try LlamaRunner(sharing: notes, configuration: answerConfig)
+        print(String(format: "[ask-eval] memory: notes model + its context %.0f MB; answer context adds %.0f MB", before, footprintMB() - before))
         print(String(format: "[ask-eval] model loaded in %.1f s (+ answer context %.2f s); prompt %@", notes.loadSeconds, gen.loadSeconds, AnswerPrompts.version))
 
         let set = try JSONDecoder().decode(QuestionSet.self, from: Data(contentsOf: questions))
@@ -194,7 +210,7 @@ enum AskEval {
     }
 
     static func rawOutput(_ request: AnswerRequest, gen: LlamaRunner) throws -> String {
-        let prompt = gen.chatPrompt(system: AnswerPrompts.systemPrompt, user: AnswerPrompts.userPrompt(request))
+        let (prompt, _) = Answerer.fittedPrompt(request, generator: gen)
         return try gen.generate(prompt: prompt, grammar: AnswerPrompts.grammarText, maxTokens: AnswerPrompts.maxTokens, cancellation: CancellationToken()).text
     }
 
@@ -213,7 +229,7 @@ enum AskEval {
         md += "| Metric | Result |\n|---|---|\n"
         md += "| Questions | \(rows.count) (\(answerable.count) answerable, \(rows.count - answerable.count) unanswerable) |\n"
         md += "| Citation validity (every citation names a passage whose evidence resolves) | \(pct(rows.filter(\.citationsValid).count, rows.count)) |\n"
-        md += "| Correct (answerable: answered citing an expected line; unanswerable: refused) | \(pct(rows.filter(\.correct).count, rows.count)) |\n"
+        md += "| Cited an expected line (answerable) or refused (unanswerable); not a judgement of the answer text | \(pct(rows.filter(\.correct).count, rows.count)) |\n"
         md += "| Answerable answered with an expected line cited | \(pct(answerable.filter(\.evidenceHit).count, answerable.count)) |\n"
         md += "| Answerable refused | \(pct(answerable.filter(\.refused).count, answerable.count)) |\n"
         md += "| Retrieval found an expected line (top 12) | \(pct(answerable.filter(\.retrievalHit).count, answerable.count)) |\n"
@@ -227,7 +243,7 @@ enum AskEval {
         }
         let follow = rows.filter { $0.kind == "followup" }
         if !follow.isEmpty {
-            md += "| Follow-ups answered citing an expected line (pronoun resolved) | \(pct(follow.filter(\.correct).count, follow.count)) |\n"
+            md += "| Follow-ups answered citing an expected line | \(pct(follow.filter(\.correct).count, follow.count)) |\n"
         }
         if !injection.isEmpty { md += "| Injection suite | \(pct(injection.filter { $0["pass"] == "true" }.count, injection.count)) passed |\n" }
         md += "\n| id | kind | ok | first | total | answer | cited |\n|---|---|---|---|---|---|---|\n"
@@ -238,4 +254,12 @@ enum AskEval {
         try md.write(to: results.appending(path: "report.md"), atomically: true, encoding: .utf8)
         print(md.components(separatedBy: "\n\n| id")[0])
     }
+}
+
+/// This process's physical footprint (what Activity Monitor shows as Memory), in MB.
+func footprintMB() -> Double {
+    var info = task_vm_info_data_t()
+    var count = mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size / MemoryLayout<natural_t>.size)
+    let kr = withUnsafeMutablePointer(to: &info) { $0.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { task_info(mach_task_self_, task_flavor_t(TASK_VM_INFO), $0, &count) } }
+    return kr == KERN_SUCCESS ? Double(info.phys_footprint) / 1_048_576 : 0
 }

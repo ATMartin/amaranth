@@ -13,7 +13,9 @@ final class LibraryModel {
     var selection: MeetingID? { didSet { if oldValue != selection { reloadDetail(); if askPanelOpen, askScope == .thisMeeting { runSearch() } } } }
     private(set) var detail: MeetingDetail?
     /// The “Ask anything” field's text (T52). Searched on submit, then live while the results panel is open.
-    var query = "" { didSet { if askPanelOpen { runSearch() }; askSelection = nil } }
+    /// Only a real change re-searches and drops the ↑/↓ highlight: the field re-sets the same text when Return commits it,
+    /// and that must not clear the hit Return is about to open.
+    var query = "" { didSet { guard query != oldValue else { return }; if askPanelOpen { runSearch() }; askSelection = nil } }
     private(set) var hits: [SearchHit] = []
     /// “This meeting” (the meeting on screen) or “All meetings”; ⌘K switches to All meetings.
     var askScope: AskScope = .thisMeeting { didSet { if askPanelOpen { runSearch(); reaskIfAnswered() } } }
@@ -162,7 +164,10 @@ final class LibraryModel {
     private func runSearch() {
         guard let store, !query.trimmingCharacters(in: .whitespaces).isEmpty else { hits = []; return }
         // Questions search by their content words (“when will they ship?” → “ship”), like the retriever (T54).
-        hits = (try? store.search(Retriever.terms(query).joined(separator: " "), in: AskResults.effectiveScope(askScope, meeting: selection))) ?? []
+        let terms = Retriever.terms(query).joined(separator: " "), scope = AskResults.effectiveScope(askScope, meeting: selection)
+        hits = (try? store.search(terms, in: scope)) ?? []
+        // A question rarely has every word on one line: then list lines with any of them, best first.
+        if hits.isEmpty { hits = (try? store.search(terms, in: scope, anyTerm: true)) ?? [] }
         if let i = askSelection, i >= hits.count { askSelection = nil }
     }
 

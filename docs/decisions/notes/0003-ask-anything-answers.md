@@ -12,8 +12,8 @@ The notes model (Qwen3-4B-Instruct-2507 Q4_K_M) answers a question from the pass
 - The fixed refusal is "I couldn't find that in these meetings."; questions about the model's instructions get it too.
 - Output is grammar-constrained JSON `{answer, citations, confidence}`, answer first, so it streams.
 
-**Prompt budget: 2,600 tokens.**
-- Prefill runs at about 950 tokens/s, so the first word appears within about 3 s.
+**Prompt budget: 2,200 tokens** (2,600 in T54; lowered after validation, see below).
+- Prefill runs at about 950 tokens/s, so the first word appears within about 2.3 s, under the 3 s target with margin.
 - Passages are dropped from the end (lowest ranked) until the prompt fits.
 - Matched transcript lines keep up to 900 characters; context lines keep 320.
 
@@ -31,14 +31,14 @@ lines.
 **Worker.**
 - New `WorkerRequest.answer` request type. It is not a processing stage, and nothing is stored.
 - Streaming goes through the new `InferenceWorkerClientXPC.answerProgress`. Cancel uses the request ID.
-- Answers run in their own llama context: 6,144 tokens, one sequence, sharing the loaded notes weights (KV only). They
-  never queue behind a notes batch.
+- Answers run in their own llama context: 3,072 tokens (6,144 in T54), one sequence, sharing the loaded notes weights.
+  It adds about 436 MB to the worker (measured) and never queues behind a notes batch.
 
 **Yielding (as notes do, notes/0002).**
 - Loading the notes model releases the speech models, so the app only asks the model when no recording is active and no
   transcript work is queued or running.
 - Otherwise the panel says why the answer waits, keeps the search matches, and answers when the Mac is free.
-- Esc, closing the panel, or a new question cancels.
+- Esc, closing the panel, a new question, or pressing Record cancels.
 
 **UI.** The answer section sits above the matches in the T52 panel:
 - the question;
@@ -112,7 +112,7 @@ Fallback (answer from notes items only) not needed.
 - q31–q42: 6 follow-up pairs.
 - Expected evidence lines were written by the same independent agent as q01–q20.
 
-**Results.** All 42 questions + the injection suite, offline, `answer-v2` (`Benchmarks/Results/2026-10-27-ask-t55/`):
+**Results.** All 42 questions + the injection suite, offline, `answer-v2` (run directory superseded by `ask-n-final`, below):
 
 | Metric | Result |
 |---|---|
@@ -128,3 +128,53 @@ Fallback (answer from notes items only) not needed.
 The context added for follow-ups doesn't slow answers measurably, so the single-turn fallback is not needed. The 2
 misses are refusals (q10, q30), not wrong answers. The cross-meeting run before `answer-v2` and the checker fixes cited
 2+ meetings for 4/11 questions and answered 14/22 q21–q42 correctly.
+
+## After validation (2026-10-27)
+
+The independent validator (Sonnet) passed the milestone with fixes:
+`docs/qualification/milestone-n-verdict-v1.md`, `docs/qualification/milestone-n-changes-after-verdict-v1.md`.
+
+**Changes.**
+- Return now opens the ↑/↓-highlighted hit; committing the field had cleared the highlight.
+- With no line holding every word of a question, keyword matches fall back to lines with any of the words.
+- Record cancels an answer in progress.
+- The answer context went from 6,144 to 3,072 tokens.
+- The prompt budget went from 2,600 to 2,200 tokens.
+
+**Resources.**
+- The answer context adds 436 MB to the worker, on top of 3.6 GB for the notes model and its own context.
+- Loading the notes model for an answer releases the speech models; the next transcription reloads them in 0.2 s
+  (2 decoders + 2 VADs, Core ML cache warm; measured in `ask-eval`).
+
+**What the metrics mean.** The eval's "correct" counts an answer whose citations include an expected evidence line, or a
+refusal for an unanswerable question. It does not judge the answer text. A hand grading of the 42 final answers against
+the expected answers:
+
+| Grade | Count | Questions |
+|---|---|---|
+| Right | 31 | |
+| Partly right (incomplete, or one detail not in the meeting) | 6 | q05, q15, q20, q22, q23, q27 |
+| Wrong | 3 | q18 (says $100, expected $200), q26 (invents a meeting title), q41 (lists passage labels instead of a status) |
+| Refused although answerable | 2 | q10, q30 |
+
+The "may be wrong" caption and the citation chips exist for exactly these cases.
+
+**The question set is not held out.** It was written independently from the transcripts. After seeing its results, the
+`answer-v2` prompt, the checker fixes and the prompt budget were tuned on it. A future held-out set should come from
+meetings recorded after 2026-10-27.
+
+**Final run** (all 42 questions + injection, offline, `answer-v2`, 2,200-token budget, 3,072-token context;
+`Benchmarks/Results/2026-10-27-ask-n-final/`):
+
+| Metric | Result |
+|---|---|
+| Citation validity | 42/42 |
+| Cited an expected line or refused when unanswerable | 40/42 (q01–q20: 19/20) |
+| Cross-meeting: an expected line cited | 10/11 |
+| Cross-meeting: citations from 2+ of the expected meetings | 7/11 (8/11 with the 2,600-token budget) |
+| Follow-ups citing the expected line | 6/6 |
+| First answer text | median 1.81 s · max 2.23 s |
+| Full answer | median 2.63 s · max 4.60 s |
+| Injection suite | 15/15 |
+
+The earlier `ask-t55` run directory is superseded by this one and was removed; `ask-t54b` stays as the T54 record.

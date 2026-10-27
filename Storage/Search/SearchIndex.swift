@@ -29,12 +29,13 @@ public struct SearchHit: Hashable, Sendable {
 /// The private scratchpad is never indexed.
 extension MeetingStore {
     /// `meeting`: only that meeting's rows (the ask field's "This meeting" scope); nil searches every meeting.
-    public func search(_ query: String, in meeting: MeetingID? = nil, limit: Int = 50) throws -> [SearchHit] {
+    /// `anyTerm`: match lines with any of the words (ranked by bm25) instead of all of them.
+    public func search(_ query: String, in meeting: MeetingID? = nil, anyTerm: Bool = false, limit: Int = 50) throws -> [SearchHit] {
         let tokens = query.lowercased().split { !$0.isLetter && !$0.isNumber && $0 != "'" }.map(String.init).filter { !$0.isEmpty }
         guard !tokens.isEmpty else { return [] }
         // Each token is a quoted prefix term, so user input can never inject FTS syntax.
         // Only the text column: a speaker's name must not match every one of their lines here (the retriever uses it).
-        let match = "text : (" + tokens.map { "\"\($0.replacingOccurrences(of: "\"", with: ""))\"*" }.joined(separator: " ") + ")"
+        let match = "text : (" + tokens.map { "\"\($0.replacingOccurrences(of: "\"", with: ""))\"*" }.joined(separator: anyTerm ? " OR " : " ") + ")"
         var bindings: [SQLiteDB.Value] = [.text(match)]
         if let meeting { bindings.append(.text(meeting.rawValue)) }
         bindings.append(.int(Int64(limit)))

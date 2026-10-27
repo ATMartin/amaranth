@@ -24,7 +24,10 @@ line they said.
 - Runs them as quoted prefix terms, OR-ed, over `text` and `speaker`, ranked by bm25 (text weight 1.0, speaker 0.6).
 - Reads 200 candidate rows.
 - Builds transcript passages as ±2-line windows from adjacent rowids. Reindex inserts lines in transcript order, so
-  no transcript decoding is needed. Windows whose context would overlap are merged, so no line appears twice.
+  no transcript decoding is needed. Nearby hits share a window only while its matched lines stay within 6 rows of each
+  other (`maxSpan`), so a run of hits can't chain into one huge passage. Better passages claim their lines first, so
+  no line appears in two passages. (The first version merged any overlapping windows; on a real meeting that built one
+  21,000-character passage, see notes/0003.)
 - Turns each notes item into a passage of its own.
 - A meeting whose title or people match the question gets a 15% boost.
 - Returns the top k = 12 passages with their evidence refs.
@@ -38,8 +41,12 @@ transcripts and notes) and a copy of the work-Mac library. It runs 10 questions 
 
 | Scope | Median | Max |
 |---|---|---|
-| Longest corpus meeting (working session, 71 min, 550 lines) | 0.6 ms | 8.4 ms |
-| All corpus meetings | 1.2 ms | 11.2 ms |
-| Work-Mac library copy (6 meetings, real) | 1.6 ms | 13.7 ms |
+| Longest corpus meeting (working session, 71 min, 550 lines) | 0.8 ms | 12.0 ms |
+| All corpus meetings | 1.4 ms | 15.4 ms |
+| Work-Mac library copy (6 meetings, real) | 1.8 ms | 16.0 ms |
+
+These are re-measured with the final windowing; the first version measured 0.6 / 8.4 ms on the longest meeting. The
+independent validator measured 0.8 / 11.9 ms. Unit tests cover the 6-row cap and the no-shared-lines rule
+(`RetrieverWindowTests`), and the spread across meetings (`RetrieverSpreadTests`, notes/0003 T55).
 
 Target: < 50 ms. Opening the work-Mac copy migrates it v2 → v4 and rebuilds the index in 260 ms.

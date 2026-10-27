@@ -43,12 +43,20 @@ enum UIRenderSelfTest {
         let live = LiveTextModel(client: worker)
         UserDefaults.standard.set(true, forKey: "onboarded")
         // Editors expanded (T24) without touching the user's own expansion preferences.
-        let expandedSuite = "amaranth-ui-render-\(UUID())"
+        // Fixed names: cfprefsd may write an empty plist for a suite after it's removed, so reuse two instead of leaving one
+        // per run in ~/Library/Preferences. Each run starts them empty.
+        let expandedSuite = "amaranth-ui-render-expanded"
+        UserDefaults.standard.removePersistentDomain(forName: expandedSuite)
         let expanded = UserDefaults(suiteName: expandedSuite)!
         expanded.set(true, forKey: "notesUserNotesExpanded"); expanded.set(true, forKey: "notesScratchpadExpanded")
-        let collapsedSuite = "amaranth-ui-render-\(UUID())"
+        let collapsedSuite = "amaranth-ui-render-collapsed"
+        UserDefaults.standard.removePersistentDomain(forName: collapsedSuite)
         let collapsed = UserDefaults(suiteName: collapsedSuite)!   // empty: every preference at its default
-        defer { for s in [expandedSuite, collapsedSuite] { UserDefaults.standard.removePersistentDomain(forName: s) } }
+        defer {
+            for s in [expandedSuite, collapsedSuite] {
+                UserDefaults.standard.removePersistentDomain(forName: s)
+            }
+        }
         var ok = true
         func makeView<V: View>(_ v: V, size: CGSize) -> NSView {
             let view = NSHostingView(rootView: v.textSize(textSize).environment(worker).environment(models).environment(recorder)
@@ -289,6 +297,8 @@ enum UIRenderSelfTest {
             let thisHits = library.hits
             let thisOK = !thisHits.isEmpty && thisHits.allSatisfy { $0.meetingID == long.id }
             library.moveAskSelection(by: 1); library.moveAskSelection(by: 1); library.moveAskSelection(by: -1)
+            // Return commits the field, which sets the same text again: that must keep the highlight (validator must-fix).
+            library.query = library.query
             let selOK = library.askSelection == 0
             _ = await host(MainView(), "ask-this-meeting", size: CGSize(width: 1200, height: 760))
             library.askAllMeetings()

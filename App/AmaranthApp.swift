@@ -33,7 +33,8 @@ struct AmaranthApp: App {
         recorder.processing = processing
         library.processing = processing
         processing.onChange = { [weak library] in library?.reload() }
-        recorder.onStarted = { [weak library] id in library?.recordingStarted(id) }
+        // An answer in progress stops at Record: the speech models need the Mac (T54 yields like notes).
+        recorder.onStarted = { [weak library] id in library?.answers?.cancel(); library?.recordingStarted(id) }
         recorder.onFinished = { [weak library] id in library?.recordingStopped(id) }
         library.notesModelReady = ModelSetupModel.isReady
         // T54: answers from the notes model, only while it can't push the speech models out (notes 0002, processing 0003).

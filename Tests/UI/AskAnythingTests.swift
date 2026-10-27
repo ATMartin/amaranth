@@ -44,6 +44,8 @@ struct AskAnythingTests {
         #expect(Set(try store.search("budget").map(\.meetingID)) == [a.id, b.id])
         #expect(try store.search("budget", in: a.id).map(\.meetingID) == [a.id])
         #expect(try store.search("budget", in: MeetingID("missing")).isEmpty)
+        #expect(try store.search("budget unicorn").isEmpty)
+        #expect(try store.search("budget unicorn", anyTerm: true).count == 2, "fallback: any of the words")
     }
 }
 

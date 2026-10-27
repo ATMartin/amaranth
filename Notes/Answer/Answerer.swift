@@ -65,14 +65,13 @@ public enum AnswerPrompts {
 
 public enum Answerer {
     /// Prompt tokens at most. Prefill runs at about 950 tokens/s on the M2 Max (answer context, one sequence), so this
-    /// keeps the first word of the answer within about 3 s (T54 target).
-    public static let promptBudget = 2600
+    /// keeps the first word of the answer within about 2.3 s, under the 3 s target with margin (T54).
+    public static let promptBudget = 2200
 
-    /// Answers `request` with `generator`, streaming the answer text through `onPartial`. Passages beyond the prompt
-    /// budget (or the generator's context) are dropped from the end: the retriever ranks best first.
-    public static func answer(_ request: AnswerRequest, generator: any TextGenerator, cancellation: CancellationToken,
-                              promptBudget: Int = promptBudget, onPartial: (String) -> Void = { _ in }) throws -> AnswerResponse {
-        let t0 = ContinuousClock.now
+    /// The chat prompt for `request`, with passages dropped from the end until it fits the budget and the context (with
+    /// room for the answer); also returns the request as sent.
+    public static func fittedPrompt(_ request: AnswerRequest, generator: any TextGenerator,
+                                    promptBudget: Int = promptBudget) -> (String, AnswerRequest) {
         var req = request
         req.passages = req.passages.map { AnswerPassage(label: $0.label, text: String($0.text.prefix(2400))) }
         var prompt = generator.chatPrompt(system: AnswerPrompts.system, user: AnswerPrompts.user(req))
@@ -81,6 +80,15 @@ public enum Answerer {
             req.passages.removeLast()
             prompt = generator.chatPrompt(system: AnswerPrompts.system, user: AnswerPrompts.user(req))
         }
+        return (prompt, req)
+    }
+
+    /// Answers `request` with `generator`, streaming the answer text through `onPartial`. Passages beyond the prompt
+    /// budget (or the generator's context) are dropped from the end: the retriever ranks best first.
+    public static func answer(_ request: AnswerRequest, generator: any TextGenerator, cancellation: CancellationToken,
+                              promptBudget: Int = promptBudget, onPartial: (String) -> Void = { _ in }) throws -> AnswerResponse {
+        let t0 = ContinuousClock.now
+        let (prompt, req) = fittedPrompt(request, generator: generator, promptBudget: promptBudget)
         guard !req.passages.isEmpty else {
             return AnswerResponse(text: AnswerPrompts.refusal, citations: [], confidence: .low, refused: true, checkerNote: "no passages",
                                   promptTokens: 0, generatedTokens: 0, firstTextSeconds: nil, totalSeconds: Perf.seconds(since: t0))

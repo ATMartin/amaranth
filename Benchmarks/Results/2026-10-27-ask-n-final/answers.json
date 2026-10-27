@@ -19,7 +19,7 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 0.655494875,
+    "firstTextSeconds" : 0.705566292,
     "generatedTokens" : 36,
     "historyTurns" : 0,
     "id" : "q01",
@@ -30,7 +30,7 @@
     "question" : "What did they decide to call the section that was labelled \"establishment\"?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 0.994335583,
+    "totalSeconds" : 1.058619292,
     "usedHit" : true
   },
   {
@@ -49,7 +49,7 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 0.72171725,
+    "firstTextSeconds" : 0.832747792,
     "generatedTokens" : 28,
     "historyTurns" : 0,
     "id" : "q02",
@@ -60,11 +60,11 @@
     "question" : "How often did they agree to meet from now on?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 0.981587209,
+    "totalSeconds" : 1.104679125,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 2 said the company tracks client-validated outcomes to ensure that their work aligns with explicit client goals and to measure value that clients have actually realized. This helps prevent situations where the work done does not serve the client's revenue or business objectives, and it provides a way to validate outcomes through direct client feedback.",
+    "answer" : "Speaker 2 said the company tracks client-validated outcomes to ensure that their work aligns with explicit client goals and delivers measurable value, providing a way to measure and validate what they are doing for the client, especially when the initial project scope differs from what the client actually needs.",
     "citations" : [
       2,
       3,
@@ -83,32 +83,30 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.229413458,
-    "generatedTokens" : 90,
+    "firstTextSeconds" : 2.227319542,
+    "generatedTokens" : 82,
     "historyTurns" : 0,
     "id" : "q03",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 8,
-    "promptTokens" : 2552,
+    "passagesUsed" : 6,
+    "promptTokens" : 2185,
     "question" : "Why did Speaker 2 say the company tracks client-validated outcomes?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.237955291,
+    "totalSeconds" : 3.207146583,
     "usedHit" : true
   },
   {
     "answer" : "Leesa and Chris are expected to stay on the contract until the end of the year.",
     "citations" : [
       1,
-      3,
-      7
+      3
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "notes",
-      "12:34",
-      "notes"
+      "12:34"
     ],
     "citedMeetings" : [
       "Leesa 1:1"
@@ -117,18 +115,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.992583875,
-    "generatedTokens" : 44,
+    "firstTextSeconds" : 1.812135708,
+    "generatedTokens" : 41,
     "historyTurns" : 0,
     "id" : "q04",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 10,
-    "promptTokens" : 2347,
+    "passagesUsed" : 8,
+    "promptTokens" : 2010,
     "question" : "Until when are Leesa and Chris expected to stay on the contract?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.4529838330000002,
+    "totalSeconds" : 2.234075541,
     "usedHit" : true
   },
   {
@@ -136,14 +134,12 @@
     "citations" : [
       1,
       3,
-      5,
       6,
       8
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "18:00",
-      "notes",
       "notes",
       "19:10",
       "20:05"
@@ -155,18 +151,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.962869584,
-    "generatedTokens" : 83,
+    "firstTextSeconds" : 1.7484542090000001,
+    "generatedTokens" : 79,
     "historyTurns" : 0,
     "id" : "q05",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2324,
+    "passagesUsed" : 11,
+    "promptTokens" : 2050,
     "question" : "Who is ETC and why is Emily nervous about working with them?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.874347,
+    "totalSeconds" : 2.652896459,
     "usedHit" : true
   },
   {
@@ -185,7 +181,7 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.8175849579999999,
+    "firstTextSeconds" : 1.934729,
     "generatedTokens" : 45,
     "historyTurns" : 0,
     "id" : "q06",
@@ -196,11 +192,11 @@
     "question" : "What did Gary do when news of the AI-discovered website vulnerability came out?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.299292333,
+    "totalSeconds" : 2.475660834,
     "usedHit" : true
   },
   {
-    "answer" : "Bob is looking for new hires who can take Figma designs, add a little opinion, and build websites using a consistent template—specifically, design-web dev 'switch hitters' who are cheaper and financially viable. He wants to start with someone potentially within another month.",
+    "answer" : "Bob is looking for lower-cost, design-web dev 'switch hitter' type engineers who can take Figma designs, add a little opinion, and make them happen. He wants to start with someone potentially within another month.",
     "citations" : [
       7
     ],
@@ -215,23 +211,23 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.150426375,
-    "generatedTokens" : 74,
+    "firstTextSeconds" : 1.888343791,
+    "generatedTokens" : 64,
     "historyTurns" : 0,
     "id" : "q07",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2489,
+    "passagesUsed" : 10,
+    "promptTokens" : 2184,
     "question" : "What kind of new hires is Bob looking for, and how soon does he want them?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.963880125,
+    "totalSeconds" : 2.63433875,
     "usedHit" : true
   },
   {
     "answer" : "I couldn't find that in these meetings.",
-    "checkerNote" : "model refused (citations dropped)",
+    "checkerNote" : "model refused",
     "citations" : [
 
     ],
@@ -246,18 +242,18 @@
     "correct" : true,
     "evidenceHit" : false,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.20231325,
-    "generatedTokens" : 41,
+    "firstTextSeconds" : 1.5553497090000001,
+    "generatedTokens" : 24,
     "historyTurns" : 0,
     "id" : "q08",
     "kind" : "unanswerable",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2535,
+    "passagesUsed" : 9,
+    "promptTokens" : 1879,
     "question" : "What discount rate was offered for Rob on the Public Storage technical BA role?",
     "refused" : true,
     "retrievalHit" : false,
-    "totalSeconds" : 2.620926625,
+    "totalSeconds" : 1.8407421670000002,
     "usedHit" : false
   },
   {
@@ -278,7 +274,7 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.336110209,
+    "firstTextSeconds" : 1.4400363330000001,
     "generatedTokens" : 39,
     "historyTurns" : 0,
     "id" : "q09",
@@ -289,7 +285,7 @@
     "question" : "Who offered to reach out to Infinite Red about referring React Native work?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 1.72733475,
+    "totalSeconds" : 1.836587542,
     "usedHit" : true
   },
   {
@@ -309,36 +305,34 @@
     "correct" : false,
     "evidenceHit" : false,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.866616166,
-    "generatedTokens" : 28,
+    "firstTextSeconds" : 1.695105708,
+    "generatedTokens" : 24,
     "historyTurns" : 0,
     "id" : "q10",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2231,
+    "passagesUsed" : 11,
+    "promptTokens" : 1992,
     "question" : "What time estimate did they put on the payout section?",
     "refused" : true,
     "retrievalHit" : true,
-    "totalSeconds" : 2.146883041,
+    "totalSeconds" : 1.981348041,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 2 wants the design to say exactly how things should be built to prevent the tech team from making assumptions, which leads to frustration, disillusionment, and potential departures. Currently, designs are not thought out up front, resulting in the tech team having to 'figure it out' and ending up with incorrect assumptions. Speaker 2 emphasizes that every button and function should be designed and its functionality defined upfront, so the tech team is not left in a 'big lurch' or making assumptions that lead to failure.",
+    "answer" : "Speaker 2 wants the design to say exactly how things should be built to avoid leaving the tech team in a 'big lurch' and to prevent them from making assumptions about functionality. This approach ensures that the tech team is not left frustrated or disillusioned when their assumptions are wrong, which could lead to them quitting. Speaker 2 emphasizes that designs must be thought out up front with clear, defined functionality, not just 'junk thrown over the fence' and left for the tech team to figure out.",
     "citations" : [
       1,
       2,
       3,
-      4,
-      5
+      4
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "03:41",
       "02:23",
       "11:29",
-      "13:52",
-      "09:54"
+      "13:52"
     ],
     "citedMeetings" : [
       "youtopia-review-session"
@@ -347,18 +341,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.224154875,
-    "generatedTokens" : 136,
+    "firstTextSeconds" : 1.9179727500000001,
+    "generatedTokens" : 130,
     "historyTurns" : 0,
     "id" : "q11",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 5,
-    "promptTokens" : 2562,
+    "passagesUsed" : 4,
+    "promptTokens" : 2135,
     "question" : "Why does Speaker 2 want the design to say exactly how things should be built instead of leaving it to the tech team?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.767872584,
+    "totalSeconds" : 3.479645167,
     "usedHit" : true
   },
   {
@@ -378,22 +372,22 @@
     "correct" : true,
     "evidenceHit" : false,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.879998583,
+    "firstTextSeconds" : 1.921579667,
     "generatedTokens" : 27,
     "historyTurns" : 0,
     "id" : "q12",
     "kind" : "unanswerable",
     "passages" : 12,
-    "passagesUsed" : 6,
-    "promptTokens" : 2212,
+    "passagesUsed" : 5,
+    "promptTokens" : 2156,
     "question" : "How much did Cardinal Health pay for the AI fluency engagement?",
     "refused" : true,
     "retrievalHit" : false,
-    "totalSeconds" : 2.148236625,
+    "totalSeconds" : 2.189896,
     "usedHit" : false
   },
   {
-    "answer" : "The team settled on using GPT-5.4 as the model and Pi as the agent harness.",
+    "answer" : "The team settled on using GPT-5.4 and Pi as the agent harness.",
     "citations" : [
       2,
       3
@@ -410,23 +404,22 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.187539709,
-    "generatedTokens" : 44,
+    "firstTextSeconds" : 1.8359031670000001,
+    "generatedTokens" : 41,
     "historyTurns" : 0,
     "id" : "q13",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 6,
-    "promptTokens" : 2526,
+    "passagesUsed" : 5,
+    "promptTokens" : 2118,
     "question" : "Which model and agent harness did the team settle on for the Cardinal Health engineers?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.651764,
+    "totalSeconds" : 2.318801167,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 1's original plan to port mruby to Prism was not completed as someone else had already done it. He noted that while he was on a tangent, someone else had already ported mruby to Prism, and he only added mruby to the list of Prism VMs in the documentation, which was rejected by others as silly.",
-    "checkerNote" : "names not in the cited passages: [\"VMs\"]",
+    "answer" : "Speaker 1's original plan to port mruby to Prism was not completed as a formal effort, as someone else had already done it. Speaker 1 notes that while he was on a tangent exploring the topic, someone else had already ported mruby to Prism, and he only managed to sneak mruby into the documentation, which was rejected by others as silly.",
     "citations" : [
       3
     ],
@@ -437,60 +430,60 @@
     "citedMeetings" : [
       "hangout-ruby-session"
     ],
-    "confidence" : "low",
+    "confidence" : "high",
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.161819208,
-    "generatedTokens" : 89,
+    "firstTextSeconds" : 1.858193708,
+    "generatedTokens" : 94,
     "historyTurns" : 0,
     "id" : "q14",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 7,
-    "promptTokens" : 2493,
+    "passagesUsed" : 6,
+    "promptTokens" : 2111,
     "question" : "What happened to his original plan to port mruby to Prism?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.153783,
+    "totalSeconds" : 2.89605725,
     "usedHit" : true
   },
   {
-    "answer" : "His spreadsheet VM has simplified instructions, with the original 119 opcodes of the MRuby VM broken down into five instructions instead of one, making them manageable for human execution.",
+    "answer" : "The spreadsheet VM has simplified instructions broken down into five steps instead of one, as compared to the original 119 opcodes of the mruby VM.",
     "citations" : [
       2,
       3,
-      6
+      1
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "notes",
       "notes",
-      "08:38"
+      "12:01"
     ],
     "citedMeetings" : [
       "hangout-ruby-session"
     ],
-    "confidence" : "high",
+    "confidence" : "medium",
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.005446958,
-    "generatedTokens" : 63,
+    "firstTextSeconds" : 1.758471542,
+    "generatedTokens" : 58,
     "historyTurns" : 0,
     "id" : "q15",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 6,
-    "promptTokens" : 2360,
+    "passagesUsed" : 5,
+    "promptTokens" : 2028,
     "question" : "How many instructions does his spreadsheet VM have compared with mruby?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.688399375,
+    "totalSeconds" : 2.426494375,
     "usedHit" : true
   },
   {
-    "answer" : "Alex shared that the entire internal team related to the work at A sixteen Z was let go, though they are sticking around for a month. He noted that they were informed today and that the primary stakeholder is doing follow-up. He mentioned that this has been a tumultuous project and that he will be sending emails on the matter.",
+    "answer" : "Alex shared that he had just learned the entire internal team related to the work at A sixteen Z had been let go, and they were sticking around for a month but had been informed today. He noted that the primary stakeholder was doing follow-up and that the situation had been tumultuous.",
     "citations" : [
       7
     ],
@@ -505,18 +498,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.278813417,
-    "generatedTokens" : 87,
+    "firstTextSeconds" : 1.530140042,
+    "generatedTokens" : 78,
     "historyTurns" : 0,
     "id" : "q16",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 11,
-    "promptTokens" : 2593,
+    "passagesUsed" : 8,
+    "promptTokens" : 1851,
     "question" : "What news did Alex share at the start of the call?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.340802833,
+    "totalSeconds" : 2.419775292,
     "usedHit" : true
   },
   {
@@ -535,22 +528,22 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.255540084,
-    "generatedTokens" : 41,
+    "firstTextSeconds" : 1.862927792,
+    "generatedTokens" : 40,
     "historyTurns" : 0,
     "id" : "q17",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 10,
-    "promptTokens" : 2566,
+    "passagesUsed" : 8,
+    "promptTokens" : 2170,
     "question" : "What did Speaker 2 say is the biggest piece of the non-billable overhead?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.6870967500000003,
+    "totalSeconds" : 2.2846311249999998,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 6 suggested adding a $200 per agent administrative fee to the invoice.",
+    "answer" : "Speaker 6 suggested adding a hundred dollars per agent administrative fee to the invoice.",
     "citations" : [
       1,
       2,
@@ -571,22 +564,22 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.999285542,
-    "generatedTokens" : 44,
+    "firstTextSeconds" : 1.723312792,
+    "generatedTokens" : 42,
     "historyTurns" : 0,
     "id" : "q18",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 7,
-    "promptTokens" : 2352,
+    "passagesUsed" : 6,
+    "promptTokens" : 1984,
     "question" : "How much per agent did Speaker 6 suggest adding to the invoice?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.47372,
+    "totalSeconds" : 2.16697825,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 3 mentioned that Peter Drucker categorized people into three buckets: builders, sellers, or measurers. According to Speaker 3, Cloudflare's layoffs primarily occurred in the measurement category, as AI has made measurement activities easier. Speaker 3 noted that this was a theory and expressed uncertainty about whether they fully agree with it.",
+    "answer" : "Speaker 3 mentioned that Peter Drucker categorized people into three buckets: builders, sellers, or measurers. According to Speaker 3, Cloudflare's layoffs primarily occurred in the measurement category, as AI has made measurement activities easier. Speaker 3 noted that this was a theory they didn't necessarily fully agree with.",
     "citations" : [
       1
     ],
@@ -601,23 +594,23 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.061762208,
-    "generatedTokens" : 84,
+    "firstTextSeconds" : 1.9448154579999999,
+    "generatedTokens" : 83,
     "historyTurns" : 0,
     "id" : "q19",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 7,
-    "promptTokens" : 2416,
+    "passagesUsed" : 6,
+    "promptTokens" : 2183,
     "question" : "What did Speaker 3 say about the Peter Drucker framework?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.992792625,
+    "totalSeconds" : 2.9032268329999997,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 8 compared the overhead fee to restaurant health care fees.",
-    "checkerNote" : "partial support 0.29",
+    "answer" : "Speaker 8 compared the overhead fee to restaurant health care fees, specifically mentioning that it's common in the Oregon area and that it leaves them frustrated because they feel like they're paying for operating costs without clear value.",
+    "checkerNote" : "partial support 0.46",
     "citations" : [
       3
     ],
@@ -632,18 +625,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.995213291,
-    "generatedTokens" : 30,
+    "firstTextSeconds" : 1.693825667,
+    "generatedTokens" : 60,
     "historyTurns" : 0,
     "id" : "q20",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 9,
-    "promptTokens" : 2368,
+    "passagesUsed" : 7,
+    "promptTokens" : 1968,
     "question" : "What did Speaker 8 compare the overhead fee to?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.315577708,
+    "totalSeconds" : 2.376141542,
     "usedHit" : true
   },
   {
@@ -673,7 +666,7 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 2,
-    "firstTextSeconds" : 1.6740730419999998,
+    "firstTextSeconds" : 1.731638083,
     "generatedTokens" : 236,
     "historyTurns" : 0,
     "id" : "q21",
@@ -684,19 +677,17 @@
     "question" : "Which meetings talked about Gusto and what was said about it?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 4.365848167,
+    "totalSeconds" : 4.555920917,
     "usedHit" : true
   },
   {
-    "answer" : "The Alamo rewrite is mentioned in one meeting, where Speaker 6 notes that Rob has a double submit with Alamo and Public Storage, and that the Alamo rewrite is a bit of a stretch due to Rob lacking native mobile experience, though it is described as very AI forward and a team he would get along with well. A meeting note in also lists Rob as a backfill candidate for Alamo, supporting the context of the rewrite discussion.",
+    "answer" : "The Alamo rewrite is mentioned in one meeting, where Speaker 6 notes that Rob has a double submit with Alamo and Public Storage. Rob's experience with Alamo is described as a 'little bit of a stretch' due to limited native mobile experience, but the project is considered AI-forward and Rob would get along well with the team. A meeting with the manager is scheduled to determine if Rob is a good fit.",
     "citations" : [
-      1,
-      7
+      1
     ],
     "citationsValid" : true,
     "citedLabels" : [
-      "Staffing with transcription · 01:06",
-      "Staffing with transcription · notes"
+      "Staffing with transcription · 01:06"
     ],
     "citedMeetings" : [
       "Staffing with transcription"
@@ -705,32 +696,34 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 1,
-    "firstTextSeconds" : 2.135126167,
-    "generatedTokens" : 117,
+    "firstTextSeconds" : 1.9177522919999999,
+    "generatedTokens" : 106,
     "historyTurns" : 0,
     "id" : "q22",
     "kind" : "cross",
     "passages" : 12,
-    "passagesUsed" : 9,
-    "promptTokens" : 2464,
+    "passagesUsed" : 7,
+    "promptTokens" : 2158,
     "question" : "Which meetings mention the Alamo rewrite and what is happening there?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.454455833,
+    "totalSeconds" : 3.153459917,
     "usedHit" : true
   },
   {
-    "answer" : "Chris has a contract ending around the end of the year, as Speaker 2 states they will be on through the end of the year. Steve will not be extended beyond the current contract, meaning his engagement ends this year. The engagement at Cardinal Health has a potential extension through December.",
+    "answer" : "Chris has a contract ending around the end of the year, as Speaker 2 states they will be on through the end of the year. Steve will not be extended beyond the current contract, as the team committed to his roll-off this year. The engagement at Cardinal Health has a potential extension through December.",
     "citations" : [
       1,
       3,
-      8
+      8,
+      9
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "Leesa 1:1 · 12:34",
       "Staffing with transcription · 03:36",
-      "hangout-ai-session · notes"
+      "hangout-ai-session · notes",
+      "Staffing with transcription · notes"
     ],
     "citedMeetings" : [
       "Leesa 1:1",
@@ -741,38 +734,38 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 2,
-    "firstTextSeconds" : 2.141799166,
-    "generatedTokens" : 83,
+    "firstTextSeconds" : 1.686620834,
+    "generatedTokens" : 90,
     "historyTurns" : 0,
     "id" : "q23",
     "kind" : "cross",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2434,
+    "passagesUsed" : 9,
+    "promptTokens" : 1999,
     "question" : "Who has a contract or engagement ending around December or the end of the year?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.07178375,
+    "totalSeconds" : 2.724814042,
     "usedHit" : true
   },
   {
-    "answer" : "The meetings that talked about security vulnerabilities or breaches are Moxee: Bob Bird check-in (Oct 22, 2026), hangout-ai-session (Oct 22, 2026), and Andrew 1:1 (Oct 22, 2026). In the Moxee meeting, concerns are raised about AI-driven cyberattacks on critical infrastructure and a vulnerability found in code bases. In the hangout-ai-session, discussions include vulnerability checks in software development and an AI agent detecting vulnerabilities in shared prompts. In Andrew 1:1, a client security incident is described where an employee is selling GPU access with full admin credentials, resulting in financial loss and investor scrutiny.",
+    "answer" : "The Moxee: Bob Bird check-in (Oct 22, 2026) meeting discussed concerns about AI-driven cyberattacks on critical infrastructure and mentioned vulnerabilities in code bases and password exposure in GitHub repositories. The hangout-ai-session (Oct 22, 2026) meeting talked about AI-driven vulnerability checks and the use of AI agents to detect vulnerabilities in code. The Andrew 1:1 (Oct 22, 2026) meeting referenced a client security incident involving the sale of GPU access with admin credentials, resulting in financial loss and investor scrutiny.",
     "citations" : [
       1,
-      2,
       4,
       5,
-      6,
-      7
+      7,
+      9,
+      6
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "Moxee: Bob Bird check-in · notes",
-      "hangout-ai-session · 23:48",
       "Moxee: Bob Bird check-in · 06:49",
       "hangout-ai-session · notes",
-      "Andrew 1:1 · notes",
-      "Moxee: Bob Bird check-in · 07:35"
+      "Moxee: Bob Bird check-in · 07:35",
+      "Andrew 1:1 · 05:54",
+      "Andrew 1:1 · notes"
     ],
     "citedMeetings" : [
       "Andrew 1:1",
@@ -783,63 +776,56 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 3,
-    "firstTextSeconds" : 2.307480583,
-    "generatedTokens" : 183,
+    "firstTextSeconds" : 1.825450542,
+    "generatedTokens" : 158,
     "historyTurns" : 0,
     "id" : "q24",
     "kind" : "cross",
     "passages" : 11,
-    "passagesUsed" : 11,
-    "promptTokens" : 2540,
+    "passagesUsed" : 9,
+    "promptTokens" : 2115,
     "question" : "Which meetings talked about security vulnerabilities or breaches?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 4.4179905,
+    "totalSeconds" : 3.705414167,
     "usedHit" : true
   },
   {
-    "answer" : "Gift Health came up in multiple meetings. In Staffing with transcription (Oct 22, 2026), Speaker 2 mentions Gift Health as a client with a large team of 26 agents, noting it is an exception where EPs were not removed. In working-session (Oct 22, 2026), Speaker 2 discusses Gift Health as a client where EPs were able to be renegotiated and retained, highlighting its scale and significance. In Leesa 1:1 (Oct 22, 2026), Speaker 2 confirms Gift Health as one of the clients where a person has been engaged, and notes that it was one of the clients where the engagement began, alongside Abercrombie and Fitch.",
-    "checkerNote" : "names not in the cited passages: [\"Abercrombie\", \"Fitch\"]",
+    "answer" : "Gift Health came up in multiple meetings. In the staffing meeting, Speaker 2 mentions Gift Health in the context of hiring and staffing, noting that Natalie Aylman is being presented for a role in Gift Health and that Kevin Baraboo is coming back. In the working-session, Speaker 2 discusses Gift Health as a client where an EP was removed for most clients, but Gift Health is an exception with 26 agents on it and is noted as being in an economy of scale. In the Leesa 1:1 meeting notes, Speaker 2 is to share a list of current clients including Gift Health, especially those hiring for design roles.",
     "citations" : [
       1,
       2,
       3,
-      4,
-      5,
-      6
+      7
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "Staffing with transcription · 06:14",
       "working-session · 25:08",
       "Leesa 1:1 · notes",
-      "hangout-ai-session · 06:48",
-      "youtopia-review-session · 04:28",
-      "Staffing with transcription · 04:22"
+      "working-session · 25:38"
     ],
     "citedMeetings" : [
       "Leesa 1:1",
       "Staffing with transcription",
-      "hangout-ai-session",
-      "working-session",
-      "youtopia-review-session"
+      "working-session"
     ],
-    "confidence" : "low",
+    "confidence" : "high",
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 3,
-    "firstTextSeconds" : 2.291906458,
-    "generatedTokens" : 190,
+    "firstTextSeconds" : 1.8059619169999999,
+    "generatedTokens" : 158,
     "historyTurns" : 0,
     "id" : "q25",
     "kind" : "cross",
     "passages" : 12,
-    "passagesUsed" : 9,
-    "promptTokens" : 2416,
+    "passagesUsed" : 7,
+    "promptTokens" : 2062,
     "question" : "Where did Gift Health come up and what was said?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 4.649405458,
+    "totalSeconds" : 3.654424,
     "usedHit" : true
   },
   {
@@ -858,7 +844,7 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 1,
-    "firstTextSeconds" : 1.990982,
+    "firstTextSeconds" : 1.863835709,
     "generatedTokens" : 76,
     "historyTurns" : 0,
     "id" : "q26",
@@ -869,42 +855,39 @@
     "question" : "Which meetings talked about standardizing on particular AI coding tools?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.847030666,
+    "totalSeconds" : 2.744124917,
     "usedHit" : true
   },
   {
-    "answer" : "A reorg or restructuring came up in the Leesa 1:1 meeting on Oct 22, 2026, where Speaker 1 and Speaker 2 discuss the recent reorg at Magenta, including changes in reporting lines and team responsibilities, with Speaker 2 now responsible for all divisions except commercial. Speaker 2 also states that the reorg already happened and there may be another one coming. Additionally, in the working-session, Speaker 4 raises the question of whether a reorg is needed, suggesting a need to restructure roles to better align with business needs.",
+    "answer" : "A reorg or restructuring came up in the Leesa 1:1 meeting on Oct 22, 2026, where Speaker 1 mentions that there are many changes, including more meetings, lost previous meetings, and a new team member. Speaker 2 confirms that the reorg already happened and suggests there may be another one coming. The notes from the meeting state that Speaker 2 is now responsible for all divisions except commercial.",
     "citations" : [
       1,
-      7,
-      3
+      7
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "Leesa 1:1 · 02:00",
-      "Leesa 1:1 · notes",
-      "working-session · 1:05:23"
+      "Leesa 1:1 · notes"
     ],
     "citedMeetings" : [
-      "Leesa 1:1",
-      "working-session"
+      "Leesa 1:1"
     ],
     "confidence" : "high",
     "correct" : true,
     "evidenceHit" : true,
-    "expectedMeetingsCited" : 2,
-    "firstTextSeconds" : 2.27556725,
-    "generatedTokens" : 146,
+    "expectedMeetingsCited" : 1,
+    "firstTextSeconds" : 2.021413709,
+    "generatedTokens" : 114,
     "historyTurns" : 0,
     "id" : "q27",
     "kind" : "cross",
     "passages" : 12,
-    "passagesUsed" : 9,
-    "promptTokens" : 2447,
+    "passagesUsed" : 7,
+    "promptTokens" : 2165,
     "question" : "Where did a reorg or restructuring come up, and what was it about?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 4.032957208,
+    "totalSeconds" : 3.518910125,
     "usedHit" : true
   },
   {
@@ -912,15 +895,13 @@
     "citations" : [
       1,
       3,
-      6,
-      7
+      6
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "working-session · 17:12",
       "Staffing with transcription · notes",
-      "Andrew 1:1 · 07:55",
-      "Staffing with transcription · 11:06"
+      "Andrew 1:1 · 07:55"
     ],
     "citedMeetings" : [
       "Andrew 1:1",
@@ -931,18 +912,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 3,
-    "firstTextSeconds" : 2.7480335,
-    "generatedTokens" : 66,
+    "firstTextSeconds" : 1.941085208,
+    "generatedTokens" : 63,
     "historyTurns" : 0,
     "id" : "q28",
     "kind" : "cross",
     "passages" : 12,
-    "passagesUsed" : 10,
-    "promptTokens" : 2587,
+    "passagesUsed" : 7,
+    "promptTokens" : 2030,
     "question" : "Who was mentioned as being out sick or on leave?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.569797125,
+    "totalSeconds" : 2.794221291,
     "usedHit" : true
   },
   {
@@ -950,17 +931,17 @@
     "citations" : [
       1,
       3,
+      4,
       5,
       6,
-      8,
-      10
+      8
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "youtopia-review-session · 16:13",
       "youtopia-review-session · notes",
+      "test-youtopia-recording · 01:26",
       "youtopia-review-session · notes",
-      "test-youtopia-recording · notes",
       "test-youtopia-recording · notes",
       "test-youtopia-recording · notes"
     ],
@@ -972,23 +953,23 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 2,
-    "firstTextSeconds" : 2.222155667,
-    "generatedTokens" : 114,
+    "firstTextSeconds" : 1.635220583,
+    "generatedTokens" : 113,
     "historyTurns" : 0,
     "id" : "q29",
     "kind" : "cross",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2265,
+    "passagesUsed" : 10,
+    "promptTokens" : 1782,
     "question" : "Which meetings discussed the green tappable button design standard?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.685830459,
+    "totalSeconds" : 3.206772166,
     "usedHit" : true
   },
   {
     "answer" : "I couldn't find that in these meetings.",
-    "checkerNote" : "no citations",
+    "checkerNote" : "model refused",
     "citations" : [
 
     ],
@@ -1003,34 +984,36 @@
     "correct" : false,
     "evidenceHit" : false,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.430837125,
-    "generatedTokens" : 33,
+    "firstTextSeconds" : 2.035747167,
+    "generatedTokens" : 24,
     "historyTurns" : 0,
     "id" : "q30",
     "kind" : "cross",
     "passages" : 12,
-    "passagesUsed" : 11,
-    "promptTokens" : 2508,
+    "passagesUsed" : 9,
+    "promptTokens" : 2146,
     "question" : "Where did budgets come up as a reason for staffing changes?",
     "refused" : true,
     "retrievalHit" : true,
-    "totalSeconds" : 2.769390333,
+    "totalSeconds" : 2.324320458,
     "usedHit" : false
   },
   {
-    "answer" : "Bob wants to extend Gary's contract, as he expresses a desire to keep Gary on for at least another six months, possibly longer, since he enjoys the work and the team. He also indicates that Gary's current contract ends in December and that a six-month interval was previously agreed upon.",
+    "answer" : "Bob wants to extend Gary's contract, as he expresses a desire for more support and confirms that he would want to extend Gary's involvement, stating that he would 'hundred percent' want to extend it. Speaker 2 notes that Gary currently wraps up in December and that a six-month interval was previously agreed upon.",
     "citations" : [
       1,
       3,
       6,
-      12
+      7,
+      8
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "16:58",
       "13:24",
       "09:51",
-      "10:13"
+      "06:09",
+      "06:32"
     ],
     "citedMeetings" : [
       "Moxee: Bob Bird check-in"
@@ -1039,23 +1022,23 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.675030583,
-    "generatedTokens" : 88,
+    "firstTextSeconds" : 1.9392085,
+    "generatedTokens" : 96,
     "historyTurns" : 0,
     "id" : "q31",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2564,
+    "passagesUsed" : 9,
+    "promptTokens" : 2027,
     "question" : "What does Bob want to do about Gary's contract?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.780603833,
+    "totalSeconds" : 3.11013225,
     "usedHit" : true
   },
   {
-    "answer" : "Gary's current contract ends in December.",
-    "checkerNote" : "partial support 0.40",
+    "answer" : "Gary's current contract runs out in December.",
+    "checkerNote" : "partial support 0.33",
     "citations" : [
       3
     ],
@@ -1070,18 +1053,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.971071792,
-    "generatedTokens" : 28,
+    "firstTextSeconds" : 1.477910667,
+    "generatedTokens" : 29,
     "historyTurns" : 1,
     "id" : "q32",
     "kind" : "followup",
     "passages" : 12,
-    "passagesUsed" : 9,
-    "promptTokens" : 2305,
+    "passagesUsed" : 7,
+    "promptTokens" : 2044,
     "question" : "And when does it currently run out?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.246698334,
+    "totalSeconds" : 1.817664375,
     "usedHit" : true
   },
   {
@@ -1089,12 +1072,14 @@
     "citations" : [
       1,
       2,
+      4,
       5
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "09:50",
       "notes",
+      "07:06",
       "08:56"
     ],
     "citedMeetings" : [
@@ -1104,22 +1089,22 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.35999775,
-    "generatedTokens" : 29,
+    "firstTextSeconds" : 1.92199725,
+    "generatedTokens" : 32,
     "historyTurns" : 0,
     "id" : "q33",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 9,
-    "promptTokens" : 2389,
+    "passagesUsed" : 7,
+    "promptTokens" : 2166,
     "question" : "Which big local company did Alex say is hiring designers, besides Gift Health?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.652078375,
+    "totalSeconds" : 2.245795792,
     "usedHit" : true
   },
   {
-    "answer" : "Gusto is struggling to hire because every time they open a job posting, they receive three thousand AI applications, which makes it difficult to filter through the applications and hire effectively.",
+    "answer" : "Gusto is struggling to hire because every time they open a job posting, they receive three thousand AI applications, which makes it difficult to filter through the applications and get work moving. This issue is attributed to the market being 'weird' rather than being due to its location in Davidson, North Carolina.",
     "citations" : [
       1,
       2,
@@ -1140,32 +1125,34 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.095659709,
-    "generatedTokens" : 64,
+    "firstTextSeconds" : 1.343013584,
+    "generatedTokens" : 90,
     "historyTurns" : 1,
     "id" : "q34",
     "kind" : "followup",
     "passages" : 12,
-    "passagesUsed" : 9,
-    "promptTokens" : 2427,
+    "passagesUsed" : 6,
+    "promptTokens" : 1970,
     "question" : "Why is it struggling to hire?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.816946334,
+    "totalSeconds" : 2.38291825,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 4 suggested introducing a nominal operational overhead fee—such as an administrative or operations fee—instead of listing the engagement partner role as a specific line-item cost.",
+    "answer" : "Speaker 4 suggested introducing a nominal operational overhead fee—such as an administrative or operations fee—instead of listing the engagement partner role as a specific line-item cost. This approach would be evaluated based on the client's appetite and clear value justification.",
     "citations" : [
       1,
       2,
-      6
+      6,
+      7
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "39:10",
       "notes",
-      "38:30"
+      "38:30",
+      "notes"
     ],
     "citedMeetings" : [
       "working-session"
@@ -1174,22 +1161,22 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.678979458,
-    "generatedTokens" : 59,
+    "firstTextSeconds" : 1.947973584,
+    "generatedTokens" : 78,
     "historyTurns" : 0,
     "id" : "q35",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2581,
+    "passagesUsed" : 11,
+    "promptTokens" : 2198,
     "question" : "What did Speaker 4 suggest instead of listing the engagement partner as a line-item cost?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.396017708,
+    "totalSeconds" : 2.8571045,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 4 suggested supporting 30 people at a time in the proposed operating model.",
+    "answer" : "Speaker 4 mentioned supporting '30 at a time' as an example, indicating that the model could cover 30 people.",
     "citations" : [
       1
     ],
@@ -1204,36 +1191,34 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.288625042,
-    "generatedTokens" : 38,
+    "firstTextSeconds" : 1.266665041,
+    "generatedTokens" : 47,
     "historyTurns" : 1,
     "id" : "q36",
     "kind" : "followup",
     "passages" : 12,
-    "passagesUsed" : 10,
-    "promptTokens" : 2572,
+    "passagesUsed" : 6,
+    "promptTokens" : 1880,
     "question" : "How many people would that cover?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.688308917,
+    "totalSeconds" : 1.7995661250000001,
     "usedHit" : true
   },
   {
-    "answer" : "Once the design is signed off, Speaker 2 said the tech team should sign off on the design as well, and they should conduct a screen-by-screen review session—lasting one to five hours—to ensure clarity on how each feature functions and to answer any questions about the design. This would help prevent assumptions and ensure the tech team is aligned with the intended design.",
+    "answer" : "Once the design is signed off, Speaker 2 said the next step should be for the tech team to sign off on the design. This would involve having the tech team sit in a session—lasting one to five hours—where they go screen by screen to ask questions about how the design functions and works.",
     "citations" : [
       1,
       2,
       3,
-      4,
-      6
+      4
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "09:54",
       "03:41",
       "11:29",
-      "02:23",
-      "13:21"
+      "02:23"
     ],
     "citedMeetings" : [
       "youtopia-review-session"
@@ -1242,32 +1227,32 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.516683167,
-    "generatedTokens" : 102,
+    "firstTextSeconds" : 1.8453725840000001,
+    "generatedTokens" : 88,
     "historyTurns" : 0,
     "id" : "q37",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 8,
-    "promptTokens" : 2504,
+    "passagesUsed" : 5,
+    "promptTokens" : 2148,
     "question" : "What did Speaker 2 say should happen once the design is signed off?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.833018542,
+    "totalSeconds" : 2.882890334,
     "usedHit" : true
   },
   {
     "answer" : "The session would last one to five hours.",
     "citations" : [
       1,
-      3,
-      6
+      2,
+      3
     ],
     "citationsValid" : true,
     "citedLabels" : [
       "09:54",
-      "notes",
-      "11:45"
+      "13:52",
+      "notes"
     ],
     "citedMeetings" : [
       "youtopia-review-session"
@@ -1276,29 +1261,28 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 1.973689625,
-    "generatedTokens" : 35,
+    "firstTextSeconds" : 1.345099833,
+    "generatedTokens" : 32,
     "historyTurns" : 1,
     "id" : "q38",
     "kind" : "followup",
     "passages" : 12,
-    "passagesUsed" : 6,
-    "promptTokens" : 2419,
+    "passagesUsed" : 5,
+    "promptTokens" : 1977,
     "question" : "How long would that session be?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.391195667,
+    "totalSeconds" : 1.664432167,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 1 tested his spreadsheet formulas by using a spreadsheet engine, specifically LibreOffice's CLI, which converts spreadsheets to HTML, allowing him to run unit tests on his formulas. He also developed a custom executor that runs programs autonomously by reading and writing to spreadsheets, enabling end-to-end testing of the VM.",
+    "answer" : "Speaker 1 tested his spreadsheet formulas by using a spreadsheet engine, specifically LibreOffice's CLI, which converts spreadsheets to HTML. This allowed him to extract the output of his formulas, enabling unit tests. He also developed a custom executor that runs programs autonomously by reading and writing to spreadsheets, allowing for end-to-end testing of the VM.",
     "citations" : [
       1,
       3,
       4,
       5,
-      6,
-      10
+      6
     ],
     "citationsValid" : true,
     "citedLabels" : [
@@ -1306,8 +1290,7 @@
       "notes",
       "20:48",
       "06:31",
-      "22:55",
-      "notes"
+      "22:55"
     ],
     "citedMeetings" : [
       "hangout-ruby-session"
@@ -1316,30 +1299,28 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.512009125,
-    "generatedTokens" : 100,
+    "firstTextSeconds" : 1.804904875,
+    "generatedTokens" : 102,
     "historyTurns" : 0,
     "id" : "q39",
     "kind" : "single",
     "passages" : 12,
-    "passagesUsed" : 12,
-    "promptTokens" : 2555,
+    "passagesUsed" : 8,
+    "promptTokens" : 2100,
     "question" : "How did he test his spreadsheet formulas?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.761052958,
+    "totalSeconds" : 2.987096625,
     "usedHit" : true
   },
   {
     "answer" : "It took about a second for LibreOffice's CLI to convert a spreadsheet to HTML.",
     "citations" : [
-      1,
-      5
+      1
     ],
     "citationsValid" : true,
     "citedLabels" : [
-      "19:51",
-      "20:48"
+      "19:51"
     ],
     "citedMeetings" : [
       "hangout-ruby-session"
@@ -1348,18 +1329,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.014902125,
-    "generatedTokens" : 40,
+    "firstTextSeconds" : 1.308730791,
+    "generatedTokens" : 36,
     "historyTurns" : 1,
     "id" : "q40",
     "kind" : "followup",
     "passages" : 12,
-    "passagesUsed" : 6,
-    "promptTokens" : 2435,
+    "passagesUsed" : 5,
+    "promptTokens" : 1972,
     "question" : "How long did that take?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 2.451739209,
+    "totalSeconds" : 1.718276916,
     "usedHit" : true
   },
   {
@@ -1389,7 +1370,7 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 2,
-    "firstTextSeconds" : 1.636896917,
+    "firstTextSeconds" : 1.491891291,
     "generatedTokens" : 247,
     "historyTurns" : 0,
     "id" : "q41",
@@ -1400,18 +1381,18 @@
     "question" : "Which meetings mention Carnes and what is his status?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 4.706229125,
+    "totalSeconds" : 4.5995877499999995,
     "usedHit" : true
   },
   {
-    "answer" : "Speaker 3 said staffing failed Carnes because, despite knowing he would not succeed in heavy AI engagements like public storage, the team continued to assign him to such roles. This indicates a failure in staffing models and a lack of proper assessment or rotation practices.",
+    "answer" : "Speaker 3 said staffing failed Carnes because he knew Carnes would not succeed in heavy AI engagements like public storage, yet the team continued to assign him to such roles. This indicates a failure in staffing models and a lack of proper assessment or rotation practices.",
     "citations" : [
       1,
       2,
       3,
       4,
       5,
-      8
+      6
     ],
     "citationsValid" : true,
     "citedLabels" : [
@@ -1420,7 +1401,7 @@
       "Staffing with transcription · notes",
       "Staffing with transcription · notes",
       "Staffing with transcription · notes",
-      "Staffing with transcription · 16:35"
+      "Staffing with transcription · 04:58"
     ],
     "citedMeetings" : [
       "Staffing with transcription"
@@ -1429,18 +1410,18 @@
     "correct" : true,
     "evidenceHit" : true,
     "expectedMeetingsCited" : 0,
-    "firstTextSeconds" : 2.4494730000000002,
-    "generatedTokens" : 85,
+    "firstTextSeconds" : 1.9098602919999998,
+    "generatedTokens" : 86,
     "historyTurns" : 1,
     "id" : "q42",
     "kind" : "followup",
     "passages" : 12,
-    "passagesUsed" : 11,
-    "promptTokens" : 2431,
+    "passagesUsed" : 9,
+    "promptTokens" : 2093,
     "question" : "Why did Speaker 3 say staffing failed him?",
     "refused" : false,
     "retrievalHit" : true,
-    "totalSeconds" : 3.566234,
+    "totalSeconds" : 2.897713333,
     "usedHit" : true
   }
 ]

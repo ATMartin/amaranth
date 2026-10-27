@@ -147,3 +147,37 @@ struct RetrieverSpreadTests {
         #expect(Retriever.spread([], k: 4).isEmpty)
     }
 }
+
+@Suite("Retriever windows (T53/T54)")
+struct RetrieverWindowTests {
+    /// Thirty consecutive lines all mention the kitchen: windows must not chain into one huge passage (each spans at most
+    /// `maxSpan` matched rows plus ±2 lines of context) and no line may appear in two passages.
+    @Test func windowsStayShortAndNeverShareLines() throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "amr-win-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = try MeetingStore(root: root)
+        let m = MeetingID("win"), rev = RevisionID("win-r1")
+        var segs: [TranscriptSegment] = []
+        for i in 0..<30 {
+            let t0 = Double(i) * 5
+            var words: [Word] = []
+            for (j, w) in ["the", "kitchen", "plan", "step", "\(i)"].enumerated() {
+                let a = t0 + Double(j) * 0.5
+                words.append(Word(id: WordID("w\(i)-\(j)"), text: w, interval: .seconds(a, a + 0.4), source: .microphone))
+            }
+            segs.append(TranscriptSegment(id: TranscriptSegmentID("w\(i)"), source: .microphone, interval: .seconds(t0, t0 + 4), words: words, speaker: .unknown))
+        }
+        try store.upsertMeeting(Meeting(id: m, title: "Renovation", createdAt: Date(), captureState: .captured, duration: .seconds(150)))
+        _ = try store.publishTranscript(TranscriptRevision(id: rev, meetingID: m, kind: .final, stage: .asr, createdAt: Date(),
+                                                           producer: ProducerInfo(component: "t", configHash: "t"), segments: segs, coverage: []))
+        let r = Retriever(store: store, k: 30)
+        let passages = try r.search("kitchen plan", in: m)
+        #expect(passages.count >= 3)
+        var seen = Set<String>()
+        for p in passages {
+            let ids = p.lines.compactMap { $0.segmentID?.rawValue }
+            #expect(ids.count <= r.maxSpan + 1 + 2 * r.window, "\(ids.count) lines")
+            for id in ids { #expect(seen.insert(id).inserted, "\(id) appears twice") }
+        }
+    }
+}
