@@ -53,6 +53,25 @@ final class WorkerService: NSObject, InferenceWorkerXPC, @unchecked Sendable {
                     reply(try? WorkerIPCCodec.encode(WorkerResponse.failed(jobID: JobID("incremental"), errorCode: String(describing: error).prefix(300).description)), nil)
                 }
             }
+        case .answer(let request):
+            nonisolated(unsafe) let client = connection?.remoteObjectProxy as? any InferenceWorkerClientXPC
+            let token = CancellationToken(), id = JobID(request.requestID)
+            lock.withLock { tokens[id] = token }
+            let runner = self.runner
+            Task {
+                defer { self.lock.withLock { self.tokens[id] = nil } }
+                let response: WorkerResponse
+                do {
+                    response = .answer(try runner.answer(request, cancellation: token) { partial in
+                        if let data = try? WorkerIPCCodec.encode(AnswerProgress(requestID: request.requestID, partial: partial)) { client?.answerProgress(data) }
+                    })
+                } catch is CancellationError {
+                    response = .cancelled(jobID: id)
+                } catch {
+                    response = .failed(jobID: id, errorCode: String(describing: error).prefix(300).description)
+                }
+                reply(try? WorkerIPCCodec.encode(response), nil)
+            }
         case .run(let job):
             // NSXPC proxies are thread-safe; the protocol just is not annotated Sendable.
             nonisolated(unsafe) let client = connection?.remoteObjectProxy as? any InferenceWorkerClientXPC

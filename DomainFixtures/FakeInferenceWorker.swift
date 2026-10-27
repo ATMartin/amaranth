@@ -33,6 +33,14 @@ public actor FakeInferenceWorker {
         case .incremental:
             // Fixture: accepts the segments, produces nothing.
             return .incremental(IncrementalResponse(sources: [], busy: false))
+        case .answer(let r):
+            // Fixture: no model; cites the first passage with its first line, or refuses without passages.
+            guard let first = r.passages.first else {
+                return .answer(AnswerResponse(text: AnswerResponse.refusalText, citations: [], confidence: .low, refused: true, promptTokens: 0,
+                                              generatedTokens: 0, firstTextSeconds: nil, totalSeconds: 0))
+            }
+            return .answer(AnswerResponse(text: String(first.text.prefix(120)), citations: [1], confidence: .medium, refused: false, promptTokens: 0,
+                                          generatedTokens: 0, firstTextSeconds: 0, totalSeconds: 0))
         }
     }
 

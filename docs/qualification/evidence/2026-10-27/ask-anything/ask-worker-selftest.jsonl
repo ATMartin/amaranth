@@ -1,0 +1,3 @@
+{"answer":"They will ship on Thursday, and the notarization step is still missing.","checker":"-","citations":"notes, 00:12","firstTextSeconds":"0.58","ok":"true","phase":"done","question":"When will they ship, and what is still missing?","step":"ask","streamedUpdates":"4","wallSeconds":"2.85","workerSeconds":"0.96"}
+{"answer":"I couldn't find that in these meetings.","checker":"no passages","citations":"","firstTextSeconds":"-","ok":"true","phase":"done","question":"What did they decide about the office lease?","step":"ask","streamedUpdates":"0","wallSeconds":"0.05","workerSeconds":"0.00"}
+{"result":"pass","test":"ask-worker"}

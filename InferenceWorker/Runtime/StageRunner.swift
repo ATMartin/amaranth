@@ -25,6 +25,12 @@ public final class ModelProvider: @unchecked Sendable {
     public var vadCount = 2
     private var diarizer: FluidDiarizer?
     private var notesModel: LlamaRunner?
+    /// T54: a small context of its own over the notes model's weights, so an answer neither waits for a notes batch nor
+    /// loads the model twice. Released with the notes model.
+    private var answerModel: LlamaRunner?
+    public static let answerConfiguration: LlamaRunner.Configuration = {
+        var c = LlamaRunner.Configuration(); c.contextTokens = 6144; c.parallel = 1; c.kvTokens = 6144; return c
+    }()
     /// Manifest ID of the notes model (the pack's summary role).
     public static let notesManifestID = "qwen3-4b-instruct-2507-q4_k_m"
 
@@ -64,7 +70,7 @@ public final class ModelProvider: @unchecked Sendable {
     public func live() throws -> ParakeetASR {
         try lock.withLock {
             if let liveASR { return liveASR }
-            notesModel = nil
+            notesModel = nil; answerModel = nil
             let (dir, rev) = try resolveDirectory("parakeet-tdt-0.6b-v3-coreml")
             let d = try Perf.measure("model.load.asr") { try ParakeetASR(directory: dir, manifestID: ModelManifestID("parakeet-tdt-0.6b-v3-coreml"), revision: rev) }
             liveASR = d
@@ -76,7 +82,7 @@ public final class ModelProvider: @unchecked Sendable {
     public func incremental() throws -> (ParakeetASR, SileroVAD) {
         try lock.withLock {
             if let incrementalASR { return incrementalASR }
-            notesModel = nil
+            notesModel = nil; answerModel = nil
             let (dir, rev) = try resolveDirectory("parakeet-tdt-0.6b-v3-coreml")
             let (vadDir, _) = try resolveDirectory("silero-vad-coreml")
             let e = try Perf.measure("model.load.asr") {
@@ -91,7 +97,7 @@ public final class ModelProvider: @unchecked Sendable {
     public func transcriptionPool() throws -> (decoders: [ParakeetASR], vads: [SileroVAD]) {
         try lock.withLock {
             if let asr { return asr }
-            notesModel = nil
+            notesModel = nil; answerModel = nil
             let (dir, rev) = try resolveDirectory("parakeet-tdt-0.6b-v3-coreml")
             let (vadDir, _) = try resolveDirectory("silero-vad-coreml")
             let pool = try Perf.measure("model.load.asr") {
@@ -108,7 +114,7 @@ public final class ModelProvider: @unchecked Sendable {
     public func diarization() throws -> FluidDiarizer {
         try lock.withLock {
             if let diarizer { return diarizer }
-            notesModel = nil
+            notesModel = nil; answerModel = nil
             let (dir, rev) = try resolveDirectory("speaker-diarization-coreml")
             let d = try Perf.measure("model.load.diarization") {
                 try FluidDiarizer(directory: dir, manifestID: ModelManifestID("speaker-diarization-coreml"), revision: rev)
@@ -132,7 +138,19 @@ public final class ModelProvider: @unchecked Sendable {
         }
     }
 
-    public func unloadAll() { lock.withLock { asr = nil; diarizer = nil; notesModel = nil; liveASR = nil; incrementalASR = nil } }
+    /// The answer context (T54). Loads the notes model first if needed, which releases ASR and diarization: the app
+    /// only asks while no recording or transcript work is active.
+    public func answers() throws -> LlamaRunner {
+        let notes = try notes()
+        return try lock.withLock {
+            if let answerModel { return answerModel }
+            let r = try Perf.measure("model.load.answers") { try LlamaRunner(sharing: notes, configuration: Self.answerConfiguration) }
+            answerModel = r
+            return r
+        }
+    }
+
+    public func unloadAll() { lock.withLock { asr = nil; diarizer = nil; notesModel = nil; answerModel = nil; liveASR = nil; incrementalASR = nil } }
 }
 
 /// Executes one stage from `input.json` in the job's work directory and writes `output.json` (atomically).
@@ -176,6 +194,11 @@ public final class StageRunner: @unchecked Sendable {
                      source: s.source, quality: ASRQuality(engine: "parakeet-tdt-0.6b-v3", values: ["tokenConfidenceMean": w.tokenConfidence]))
             })
         }, busy: false)
+    }
+
+    /// “Ask anything” (T54): answers from the request's passages with the notes model; `onPartial` gets the answer so far.
+    public func answer(_ r: AnswerRequest, cancellation: CancellationToken, onPartial: @escaping (String) -> Void) throws -> AnswerResponse {
+        try Answerer.answer(r, generator: try models.answers(), cancellation: cancellation, onPartial: onPartial)
     }
 
     /// Loads (and so compiles, on first use on this Mac) the transcription and diarization models.

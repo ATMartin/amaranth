@@ -34,6 +34,8 @@ public struct Retriever: Sendable {
     public var k = 12
     /// Transcript lines of context on each side of a matching line.
     public var window = 2
+    /// Most rows between the first and last matching line of one passage.
+    public var maxSpan = 6
     /// Candidate rows read from FTS before windowing.
     var candidates = 200
 
@@ -75,27 +77,32 @@ public struct Retriever: Sendable {
                 }
             }
             var passages: [Passage] = []
-            // Transcript: windows around each hit, merged when their context would overlap (no line appears in two
-            // passages); the passage keeps its best hit's score plus a little for every further hit inside it.
+            // Transcript: windows around each hit. Nearby hits share a window while it stays short (at most `maxSpan`
+            // matched rows apart), so a run of hits can't chain into one huge passage; the passage keeps its best hit's
+            // score plus a little for every further hit inside it. No line appears in two passages: better passages
+            // claim their context lines first.
             var windows: [(meeting: String, lo: Int64, hi: Int64, hits: [Hit])] = []
             let reach = Int64(2 * window)
             for h in hits.filter({ $0.kind == "transcript" }).sorted(by: { ($0.meetingID, $0.rowid) < ($1.meetingID, $1.rowid) }) {
-                if let i = windows.lastIndex(where: { $0.meeting == h.meetingID && h.rowid <= $0.hi + reach }) {
+                if let i = windows.lastIndex(where: { $0.meeting == h.meetingID && h.rowid <= $0.hi + reach && h.rowid - $0.lo <= Int64(maxSpan) }) {
                     windows[i].lo = min(windows[i].lo, h.rowid); windows[i].hi = max(windows[i].hi, h.rowid); windows[i].hits.append(h)
                 } else {
                     windows.append((h.meetingID, h.rowid, h.rowid, [h]))
                 }
             }
-            for w in windows {
-                let matched = Set(w.hits.map(\.rowid))
-                let best = w.hits.max { $0.score < $1.score }!
+            var claimed = Set<Int64>()
+            for w in windows.sorted(by: { $0.hits.map(\.score).max()! > $1.hits.map(\.score).max()! }) {
+                let matched = Set(w.hits.map(\.rowid)).subtracting(claimed)
+                guard !matched.isEmpty else { continue }
+                let best = w.hits.filter { matched.contains($0.rowid) }.max { $0.score < $1.score }!
                 let context = try db.run("""
                     SELECT rowid AS rid, kind, meeting_id, ref, start_ns, text, speaker, evidence FROM search_index
                     WHERE rowid BETWEEN ? AND ?
                     """, [.int(w.lo - Int64(window)), .int(w.hi + Int64(window))])
-                    .filter { $0["meeting_id"]?.text == w.meeting && $0["kind"]?.text == "transcript" }
+                    .filter { $0["meeting_id"]?.text == w.meeting && $0["kind"]?.text == "transcript" && !claimed.contains($0["rid"]?.int ?? -1) }
                     .sorted { ($0["start_ns"]?.int ?? 0, $0["rid"]?.int ?? 0) < ($1["start_ns"]?.int ?? 0, $1["rid"]?.int ?? 0) }
-                let extra = w.hits.map(\.score).sorted(by: >).dropFirst().reduce(0) { $0 + $1 * 0.25 }
+                claimed.formUnion(context.compactMap { $0["rid"]?.int })
+                let extra = w.hits.filter { matched.contains($0.rowid) }.map(\.score).sorted(by: >).dropFirst().reduce(0) { $0 + $1 * 0.25 }
                 passages.append(Passage(meetingID: MeetingID(w.meeting), meetingTitle: best.title, meetingDate: best.date, source: .transcript, ref: best.ref,
                                         lines: context.map { Self.line($0, matched: matched.contains($0["rid"]?.int ?? -1)) },
                                         evidence: context.flatMap(Self.evidence),

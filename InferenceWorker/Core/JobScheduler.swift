@@ -242,7 +242,7 @@ public final class JobScheduler: @unchecked Sendable {
 
     /// Transcript work (any stage but notes) that is queued, running or suspended. While it exists, notes don't start, and
     /// running notes yield at their next model call.
-    static func blocksNotes(_ j: ProcessingJob) -> Bool {
+    public static func blocksNotes(_ j: ProcessingJob) -> Bool {
         j.key.stage != .notes && [.queued, .running, .suspended].contains(j.state) && j.suspension != .userPaused
     }
 

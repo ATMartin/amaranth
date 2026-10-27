@@ -22,6 +22,8 @@ public protocol InferenceWorkerXPC {
 @objc(AMRInferenceWorkerClientXPC)
 public protocol InferenceWorkerClientXPC {
     func progress(_ update: Data)
+    /// The answer so far while an `.answer` request generates (T54): `Versioned<AnswerProgress>` JSON.
+    func answerProgress(_ update: Data)
 }
 
 public struct JobDescriptor: Hashable, Sendable, Codable {
@@ -55,6 +57,67 @@ public enum WorkerRequest: Hashable, Sendable, Codable {
     /// Final-quality transcription while recording (T19). Carries segments committed since the worker's last reply;
     /// the worker keeps per-meeting state, works for up to `budgetSeconds`, and replies `.incremental`.
     case incremental(IncrementalRequest)
+    /// “Ask anything” (T54): answer a question from the passages retrieved for it, with the notes model. Interactive and
+    /// short; nothing is stored. Cancel with `cancel(jobID: requestID)`. Replies `.answer`.
+    case answer(AnswerRequest)
+}
+
+/// One retrieved passage as the model sees it: a label (meeting, time) and its lines, already rendered as text.
+public struct AnswerPassage: Hashable, Sendable, Codable {
+    public var label: String
+    public var text: String
+    public init(label: String, text: String) { self.label = label; self.text = text }
+}
+
+/// A previous question and its answer in the same session (T55 follow-ups).
+public struct AnswerTurn: Hashable, Sendable, Codable {
+    public var question: String
+    public var answer: String
+    public init(question: String, answer: String) { self.question = question; self.answer = answer }
+}
+
+public struct AnswerRequest: Hashable, Sendable, Codable {
+    public var requestID: String
+    public var question: String
+    /// Numbered 1… in the prompt, in this order; citations refer to these numbers.
+    public var passages: [AnswerPassage]
+    public var history: [AnswerTurn]
+    public init(requestID: String, question: String, passages: [AnswerPassage], history: [AnswerTurn] = []) {
+        self.requestID = requestID; self.question = question; self.passages = passages; self.history = history
+    }
+}
+
+public struct AnswerProgress: Hashable, Sendable, Codable {
+    public var requestID: String
+    /// The answer text generated so far (not yet checked).
+    public var partial: String
+    public init(requestID: String, partial: String) { self.requestID = requestID; self.partial = partial }
+}
+
+public struct AnswerResponse: Hashable, Sendable, Codable {
+    public enum Confidence: String, Hashable, Sendable, Codable { case high, medium, low }
+    /// What the answer says when the passages don't support one.
+    public static let refusalText = "I couldn't find that in these meetings."
+    /// The checked answer; the refusal sentence when `refused`.
+    public var text: String
+    /// 1-based passage numbers, each one a passage of the request.
+    public var citations: [Int]
+    public var confidence: Confidence
+    public var refused: Bool
+    /// Why the checker changed the model's answer (diagnostics), if it did.
+    public var checkerNote: String?
+    public var promptTokens: Int
+    public var generatedTokens: Int
+    /// From the request arriving to the first character of answer text, and to the end.
+    public var firstTextSeconds: Double?
+    public var totalSeconds: Double
+    /// Passages that fit the prompt budget (the first n of the request); citations are within these.
+    public var passagesUsed: Int?
+    public init(text: String, citations: [Int], confidence: Confidence, refused: Bool, checkerNote: String? = nil, promptTokens: Int,
+                generatedTokens: Int, firstTextSeconds: Double?, totalSeconds: Double) {
+        self.text = text; self.citations = citations; self.confidence = confidence; self.refused = refused; self.checkerNote = checkerNote
+        self.promptTokens = promptTokens; self.generatedTokens = generatedTokens; self.firstTextSeconds = firstTextSeconds; self.totalSeconds = totalSeconds
+    }
 }
 
 /// Incremental processing input. Only durable (committed) audio is read; capture is never touched.
@@ -159,6 +222,7 @@ public enum WorkerResponse: Hashable, Sendable, Codable {
     case acknowledged
     case live(LiveResponse)
     case incremental(IncrementalResponse)
+    case answer(AnswerResponse)
 }
 
 public enum WorkerIPCCodec {

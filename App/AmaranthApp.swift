@@ -36,6 +36,17 @@ struct AmaranthApp: App {
         recorder.onStarted = { [weak library] id in library?.recordingStarted(id) }
         recorder.onFinished = { [weak library] id in library?.recordingStopped(id) }
         library.notesModelReady = ModelSetupModel.isReady
+        // T54: answers from the notes model, only while it can't push the speech models out (notes 0002, processing 0003).
+        let answers = AnswerModel(store: recorder.store, worker: worker)
+        answers.modelReady = ModelSetupModel.isReady
+        answers.busyReason = { [weak recorder, weak processing] in
+            if recorder?.inSession == true { return "Answers wait until the recording ends. The search matches are below." }
+            if processing?.transcriptWorkActive == true {
+                return "Waiting for transcription to finish… The search matches are below."
+            }
+            return nil
+        }
+        library.answers = answers
         AppDelegate.recorder = recorder
         let live = LiveTextModel(client: worker)
         recorder.live = live

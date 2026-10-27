@@ -82,6 +82,10 @@ struct AskResultsPanel: View {
             }
             .padding(.horizontal, AppStyle.grid + 4).padding(.vertical, AppStyle.grid)
             Divider()
+            if let answers = library.answers, answers.phase != .idle {
+                AnswerSection(answers: answers)
+                Divider()
+            }
             ScrollViewReader { proxy in
                 ScrollView {
                     results(groups)
@@ -114,6 +118,11 @@ struct AskResultsPanel: View {
             .padding(AppStyle.grid + 4)
         } else {
             VStack(alignment: .leading, spacing: 0) {   // at most 50 hits: no need for lazy rows
+                if library.answers.map({ $0.phase != .idle }) ?? false {
+                    Text("Matches").appFont(.caption, weight: .semibold).foregroundStyle(.secondary)
+                        .padding(.horizontal, AppStyle.grid + 4).padding(.top, AppStyle.half)
+                        .accessibilityAddTraits(.isHeader)
+                }
                 let offsets = groupOffsets(groups)
                 ForEach(Array(groups.enumerated()), id: \.offset) { gi, group in
                     groupHeader(group)
@@ -190,5 +199,87 @@ enum SearchSnippet {
             bold.toggle()
         }
         return out
+    }
+}
+
+/// The model's answer above the matches (T54): the question, the answer streaming in, citation chips that jump to the
+/// cited line, and a caption that it comes from the local model.
+struct AnswerSection: View {
+    let answers: AnswerModel
+    @Environment(LibraryModel.self) private var library
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppStyle.grid) {
+            HStack(alignment: .firstTextBaseline, spacing: AppStyle.half) {
+                Image(systemName: "sparkles").foregroundStyle(Color.accentColor).accessibilityHidden(true)
+                Text(answers.question).appFont(.callout, weight: .semibold).lineLimit(2)
+                Spacer(minLength: 0)
+            }
+            switch answers.phase {
+            case .thinking:
+                HStack(spacing: AppStyle.grid) { ProgressView().controlSize(.small); Text("Reading the meetings…").foregroundStyle(.secondary) }
+                    .appFont(.callout)
+            case .waiting(let reason), .unavailable(let reason), .failed(let reason):
+                Label(reason, systemImage: answers.phase == .unavailable(reason) ? "info.circle" : "hourglass")
+                    .appFont(.callout).foregroundStyle(.secondary)
+            case .streaming, .done:
+                Text(answers.text).appFont(.body).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(answers.response?.refused == true ? AnyShapeStyle(.secondary) : AnyShapeStyle(.primary))
+                if !answers.citedPassages.isEmpty {
+                    FlowChips(passages: answers.citedPassages, acrossMeetings: answers.acrossMeetings) { library.open(citation: $0) }
+                }
+                if answers.phase == .done, answers.response?.refused == false {
+                    Text(caption).appFont(.caption).foregroundStyle(.secondary)
+                }
+            case .idle: EmptyView()
+            }
+        }
+        .padding(.horizontal, AppStyle.grid + 4).padding(.vertical, AppStyle.grid)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Answer")
+    }
+
+    var caption: String {
+        let base = "This answer is from the local model and may be wrong."
+        return answers.response?.confidence == .low ? base + " It is unsure about part of it: check the cited lines." : base
+    }
+}
+
+/// Citation chips: “12:34” within a meeting, “Leesa 1:1 · 12:34” across meetings. Click to open the cited line.
+struct FlowChips: View {
+    let passages: [Passage]
+    let acrossMeetings: Bool
+    let open: (Passage) -> Void
+
+    var body: some View {
+        // Chips wrap onto more lines rather than truncating.
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: AppStyle.half) { chips }
+            VStack(alignment: .leading, spacing: AppStyle.half) { chips }
+        }
+    }
+
+    @ViewBuilder var chips: some View {
+        ForEach(Array(passages.enumerated()), id: \.offset) { _, p in
+            CitationChip(label: AskPassages.label(p, acrossMeetings: acrossMeetings), notes: p.source == .notes) { open(p) }
+        }
+    }
+}
+
+struct CitationChip: View {
+    let label: String
+    let notes: Bool
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            HeaderChip(symbol: notes ? "list.bullet" : "text.quote", text: label, style: .action, hovering: hovering)
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering = $0 }
+        .help(notes ? "Open the note this came from" : "Show this line in the transcript")
+        .accessibilityLabel("Source: \(label)")
     }
 }

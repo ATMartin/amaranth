@@ -96,6 +96,9 @@ final class WorkerClient {
     /// Routes worker progress for `job` to `handler` (called off the main thread).
     nonisolated func register(_ job: JobID, handler: @escaping @Sendable (WorkerProgress) -> Void) { progressSink.register(job, handler) }
     nonisolated func unregister(_ job: JobID) { progressSink.unregister(job) }
+    /// Routes the streamed text of answer `requestID` (T54) to `handler` (called off the main thread).
+    nonisolated func registerAnswer(_ requestID: String, handler: @escaping @Sendable (String) -> Void) { progressSink.registerAnswer(requestID, handler) }
+    nonisolated func unregisterAnswer(_ requestID: String) { progressSink.registerAnswer(requestID, nil) }
     var currentWorkerPID: Int32? { workerPID }
 
     func cancel(_ job: JobID) {
@@ -120,6 +123,12 @@ private final class ProgressSink: NSObject, InferenceWorkerClientXPC, @unchecked
     private var handlers: [JobID: @Sendable (WorkerProgress) -> Void] = [:]
     func register(_ id: JobID, _ h: @escaping @Sendable (WorkerProgress) -> Void) { lock.withLock { handlers[id] = h } }
     func unregister(_ id: JobID) { lock.withLock { handlers[id] = nil } }
+    private var answerHandlers: [String: @Sendable (String) -> Void] = [:]
+    func registerAnswer(_ id: String, _ h: (@Sendable (String) -> Void)?) { lock.withLock { answerHandlers[id] = h } }
+    func answerProgress(_ update: Data) {
+        guard let p = try? WorkerIPCCodec.decode(AnswerProgress.self, from: update) else { return }
+        lock.withLock { answerHandlers[p.requestID] }?(p.partial)
+    }
     /// Called on an XPC queue; routes to the job's handler without hopping to the main actor.
     func progress(_ update: Data) {
         guard let p = try? WorkerIPCCodec.decode(WorkerProgress.self, from: update) else { return }

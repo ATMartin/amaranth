@@ -16,12 +16,15 @@ final class LibraryModel {
     var query = "" { didSet { if askPanelOpen { runSearch() }; askSelection = nil } }
     private(set) var hits: [SearchHit] = []
     /// “This meeting” (the meeting on screen) or “All meetings”; ⌘K switches to All meetings.
-    var askScope: AskScope = .thisMeeting { didSet { if askPanelOpen { runSearch() } } }
+    var askScope: AskScope = .thisMeeting { didSet { if askPanelOpen { runSearch(); reaskIfAnswered() } } }
     private(set) var askPanelOpen = false
     /// Hit highlighted with ↑/↓ (index into the panel's flattened order); Return opens it.
     var askSelection: Int?
-    /// A hit opened in a meeting that is still loading: applied once its detail arrives.
-    private var pendingJump: SearchHit?
+    /// A hit or citation opened in a meeting that is still loading: applied once its detail arrives.
+    private var pendingJump: Jump?
+    private enum Jump { case hit(SearchHit), evidence(MeetingID, TranscriptEvidence?, notes: Bool) }
+    /// T54: answers from the local model, shown above the matches. Nil in contexts without a worker (ui-render).
+    var answers: AnswerModel?
     private(set) var error: String?
     /// Transcript row to scroll to and highlight (set by evidence links and search hits).
     var focusRowID: String?
@@ -90,7 +93,11 @@ final class LibraryModel {
             setTabByRule(chosenTabs[id] ?? (d.defaultTab(isRecording: false) == .notes ? .notes : .transcript))
         }
         if notesSwitch.shouldSwitchToNotes(viewing: id, hasSummary: d.summary != nil) { setTabByRule(.notes) }
-        if let hit = pendingJump, hit.meetingID == id { pendingJump = nil; jump(to: hit, in: d) }
+        switch pendingJump {
+        case .hit(let hit) where hit.meetingID == id: pendingJump = nil; jump(to: hit, in: d)
+        case .evidence(let m, let e, let notes) where m == id: pendingJump = nil; jump(to: e, notes: notes, in: d)
+        default: break
+        }
     }
 
     private func setTabByRule(_ tab: DetailTab) {
@@ -131,6 +138,13 @@ final class LibraryModel {
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         askPanelOpen = true
         runSearch()
+        answers?.ask(query, in: AskResults.effectiveScope(askScope, meeting: selection))
+    }
+
+    /// The scope switched with an answer on screen: answer again over the new scope.
+    private func reaskIfAnswered() {
+        guard let answers, answers.phase != .idle, !answers.question.isEmpty else { return }
+        answers.ask(answers.question, in: AskResults.effectiveScope(askScope, meeting: selection))
     }
 
     func moveAskSelection(by delta: Int) {
@@ -142,11 +156,13 @@ final class LibraryModel {
     func closeAskPanel() {
         askPanelOpen = false
         askSelection = nil
+        answers?.cancel()
     }
 
     private func runSearch() {
         guard let store, !query.trimmingCharacters(in: .whitespaces).isEmpty else { hits = []; return }
-        hits = (try? store.search(query, in: AskResults.effectiveScope(askScope, meeting: selection))) ?? []
+        // Questions search by their content words (“when will they ship?” → “ship”), like the retriever (T54).
+        hits = (try? store.search(Retriever.terms(query).joined(separator: " "), in: AskResults.effectiveScope(askScope, meeting: selection))) ?? []
         if let i = askSelection, i >= hits.count { askSelection = nil }
     }
 
@@ -156,9 +172,27 @@ final class LibraryModel {
         if selection == hit.meetingID, let d = detail, d.meeting.id == hit.meetingID {
             jump(to: hit, in: d)
         } else {
-            pendingJump = hit
+            pendingJump = .hit(hit)
             selection = hit.meetingID
         }
+    }
+
+    /// A citation chip (T54): the cited line in the transcript, like a notes evidence link; a note without transcript
+    /// evidence opens Notes. The panel stays open so the other citations remain a click away.
+    func open(citation p: Passage) {
+        let e = AskPassages.jumpEvidence(p), notes = p.source == .notes && e == nil
+        if selection == p.meetingID, let d = detail, d.meeting.id == p.meetingID {
+            jump(to: e, notes: notes, in: d)
+        } else {
+            pendingJump = .evidence(p.meetingID, e, notes: notes)
+            selection = p.meetingID
+        }
+    }
+
+    private func jump(to e: TranscriptEvidence?, notes: Bool, in d: MeetingDetail) {
+        guard !notes, let e, let t = d.transcript, let row = TranscriptRows.row(for: e, in: d.rows, revision: t) else { detailTab = .notes; return }
+        detailTab = .transcript
+        focusRowID = row.id
     }
 
     private func jump(to hit: SearchHit, in d: MeetingDetail) {

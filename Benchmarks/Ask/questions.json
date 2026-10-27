@@ -1,0 +1,559 @@
+{
+  "version": 1,
+  "note": "Written by reading the eight meeting transcripts in full; questions phrased from a vague user memory, evidence segment ids checked against the transcript files by script.",
+  "questions": [
+    {
+      "id": "q01",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "test-youtopia-recording",
+      "question": "What did they decide to call the section that was labelled \"establishment\"?",
+      "expected_answer": "They agreed to call it \"facility\" because producers call their building a facility.",
+      "evidence": [
+        "seg-02dbbacc-e949-4309-b4d2-550456e12849",
+        "seg-6a72618b-57e7-4984-aacd-2a81c7cdb421"
+      ]
+    },
+    {
+      "id": "q02",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Andrew 1:1",
+      "question": "How often did they agree to meet from now on?",
+      "expected_answer": "Every other week, alternating with the group huddle.",
+      "evidence": [
+        "seg-478450c6-7a00-47f5-ba1f-2d7deec83638",
+        "seg-dc12ac56-0fc6-48ce-a362-4433edde1e83"
+      ]
+    },
+    {
+      "id": "q03",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Andrew 1:1",
+      "question": "Why did Speaker 2 say the company tracks client-validated outcomes?",
+      "expected_answer": "So the work serves an end the client explicitly wants and the value can be measured, rather than just doing what the client or manager asks.",
+      "evidence": [
+        "seg-5dbd0dc5-6c7b-49d3-9bf4-97bf54461b87",
+        "seg-d525aec9-47ce-4705-a634-f95a0b08c654"
+      ]
+    },
+    {
+      "id": "q04",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Leesa 1:1",
+      "question": "Until when are Leesa and Chris expected to stay on the contract?",
+      "expected_answer": "Through the end of the year; the budget is not expected to change.",
+      "evidence": [
+        "seg-5a2de740-4464-451f-ae5c-49bd5d5187bd",
+        "seg-71e7938e-cda7-4762-9ca7-8b36af757617"
+      ]
+    },
+    {
+      "id": "q05",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Leesa 1:1",
+      "question": "Who is ETC and why is Emily nervous about working with them?",
+      "expected_answer": "ETC is the Chennai, India team; half the work is being offshored to them and Emily is nervous about their reputation.",
+      "evidence": [
+        "seg-4f554c46-6663-42e7-bcfe-81f1cf1d37c5",
+        "seg-8b803bf2-2c22-4d6f-acf1-306e0de05b52",
+        "seg-73d3c667-aa28-4291-909a-6b69e881290f"
+      ]
+    },
+    {
+      "id": "q06",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Moxee: Bob Bird check-in",
+      "question": "What did Gary do when news of the AI-discovered website vulnerability came out?",
+      "expected_answer": "He saw it proactively and had already put in the fix before Bob came online.",
+      "evidence": [
+        "seg-f6f0e584-d789-4e67-ac5a-fcbe9cfb4b23",
+        "seg-ba252e25-c798-43e0-9d03-29e3e4b89790"
+      ]
+    },
+    {
+      "id": "q07",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Moxee: Bob Bird check-in",
+      "question": "What kind of new hires is Bob looking for, and how soon does he want them?",
+      "expected_answer": "Lower-cost front-end/web people who can run a playbook, starting within about a month.",
+      "evidence": [
+        "seg-a66d06a3-bc90-4274-8d97-06c0e9f7bc1a",
+        "seg-c978aaaf-400d-4586-b1eb-014dba980be5"
+      ]
+    },
+    {
+      "id": "q08",
+      "kind": "unanswerable",
+      "scope": "meeting",
+      "meeting": "Staffing with transcription",
+      "question": "What discount rate was offered for Rob on the Public Storage technical BA role?",
+      "expected_answer": "Not stated; the transcript only says he was offered at a discount.",
+      "evidence": []
+    },
+    {
+      "id": "q09",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Staffing with transcription",
+      "question": "Who offered to reach out to Infinite Red about referring React Native work?",
+      "expected_answer": "Speaker 5 (Dave) offered to contact Jamin Holmgren.",
+      "evidence": [
+        "seg-ef285c8d-f777-4c35-96ad-54b6922d3a0f",
+        "seg-0a90e61e-a68b-42da-b0ae-84c437995069"
+      ]
+    },
+    {
+      "id": "q10",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "youtopia-review-session",
+      "question": "What time estimate did they put on the payout section?",
+      "expected_answer": "One to two minutes.",
+      "evidence": [
+        "seg-f81b8a54-5a2a-413c-91f3-7e6652ed149c",
+        "seg-4e196440-1125-465c-a60a-38b11fff6746"
+      ]
+    },
+    {
+      "id": "q11",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "youtopia-review-session",
+      "question": "Why does Speaker 2 want the design to say exactly how things should be built instead of leaving it to the tech team?",
+      "expected_answer": "Otherwise the tech team is left in limbo, makes assumptions that turn out wrong, and gets frustrated and may quit.",
+      "evidence": [
+        "seg-1d6e680d-424e-43be-aef7-2bb6efb01bcb",
+        "seg-a852b289-d7f6-44f3-9eec-4eff8d45a4f4",
+        "seg-3eac0431-9902-4c25-b23d-031b150e8e43"
+      ]
+    },
+    {
+      "id": "q12",
+      "kind": "unanswerable",
+      "scope": "meeting",
+      "meeting": "hangout-ai-session",
+      "question": "How much did Cardinal Health pay for the AI fluency engagement?",
+      "expected_answer": "Not stated in the meeting.",
+      "evidence": []
+    },
+    {
+      "id": "q13",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "hangout-ai-session",
+      "question": "Which model and agent harness did the team settle on for the Cardinal Health engineers?",
+      "expected_answer": "GPT 5.4 with the open-source Pi harness, using their existing GitHub Copilot licenses.",
+      "evidence": [
+        "seg-6e44604a-f596-4fc3-96cb-f09712b05363",
+        "seg-5a24489c-0778-4c5c-9c50-652dc2f96000"
+      ]
+    },
+    {
+      "id": "q14",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "hangout-ruby-session",
+      "question": "What happened to his original plan to port mruby to Prism?",
+      "expected_answer": "While he was on a tangent, someone else did it.",
+      "evidence": [
+        "seg-6018925d-221b-4d41-b1f3-f145f15c4c45"
+      ]
+    },
+    {
+      "id": "q15",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "hangout-ruby-session",
+      "question": "How many instructions does his spreadsheet VM have compared with mruby?",
+      "expected_answer": "Five instructions, versus 119 opcodes in mruby.",
+      "evidence": [
+        "seg-9d2fd2e9-ec77-418c-94a9-d0ace5c7fea7",
+        "seg-9fbf9096-1de3-47a4-b327-b021e20b9689"
+      ]
+    },
+    {
+      "id": "q16",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "working-session",
+      "question": "What news did Alex share at the start of the call?",
+      "expected_answer": "The entire internal team he worked with at A16Z was let go that day.",
+      "evidence": [
+        "seg-72dfca47-95d4-408d-a25c-08d33ec54c48",
+        "seg-d3498e5f-22ca-4e58-acd8-b96f08068dc4"
+      ]
+    },
+    {
+      "id": "q17",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "working-session",
+      "question": "What did Speaker 2 say is the biggest piece of the non-billable overhead?",
+      "expected_answer": "The engagement partner cluster.",
+      "evidence": [
+        "seg-e802ca04-6166-4a84-9729-1ae156a6c847",
+        "seg-cee772c7-b575-4de8-8823-31595fb47ce4"
+      ]
+    },
+    {
+      "id": "q18",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "working-session",
+      "question": "How much per agent did Speaker 6 suggest adding to the invoice?",
+      "expected_answer": "Around $200 a week per agent as an administrative fee.",
+      "evidence": [
+        "seg-8f51fc04-b848-4496-84e2-aaab532c6c5e",
+        "seg-454c29c1-f5f5-4a4f-9a9b-39698debf59e"
+      ]
+    },
+    {
+      "id": "q19",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "working-session",
+      "question": "What did Speaker 3 say about the Peter Drucker framework?",
+      "expected_answer": "People fall into builders, sellers and measurers, and Cloudflare's layoffs were almost all in the measurement function.",
+      "evidence": [
+        "seg-f6d22a73-4658-4fb9-9b3b-f9284cc187f3",
+        "seg-28e669a0-af3b-4bc7-95ab-50bbe72f4672"
+      ]
+    },
+    {
+      "id": "q20",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "working-session",
+      "question": "What did Speaker 8 compare the overhead fee to?",
+      "expected_answer": "A local restaurant that adds a ten percent charge for workers' health care to the bill.",
+      "evidence": [
+        "seg-6e535300-480b-4488-ae36-4c78a4a690c4",
+        "seg-6797cc9e-a82f-49d7-acfc-df9943038c18"
+      ]
+    },
+    {
+      "id": "q21",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Which meetings talked about Gusto and what was said about it?",
+      "expected_answer": "Leesa 1:1: Gusto is a big local client exploring less contracting but struggling to hire; working-session: Alex's EP billing was pulled off Gusto when agents were lost at renewal.",
+      "evidence": [
+        "seg-613c8b5e-a4f5-4aaa-9c6d-125f7b6c518d",
+        "seg-700ff648-95bc-4a6c-8528-a20c2477fa9a",
+        "seg-6ea6131d-470f-40eb-bc64-12dbef96f75a",
+        "seg-f0878c98-a12d-4b05-b628-4de59d184da9"
+      ],
+      "evidence_meetings": [
+        "Leesa 1:1",
+        "working-session"
+      ]
+    },
+    {
+      "id": "q22",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Which meetings mention the Alamo rewrite and what is happening there?",
+      "expected_answer": "Andrew 1:1: Alamo is rebuilding its native apps with native code instead of Ionic and wants help; Staffing: Rob may be presented for the Alamo rewrite.",
+      "evidence": [
+        "seg-048d1129-48e5-45d3-aa3f-4befd89e88bc",
+        "seg-f1da97a9-2018-4fde-99f5-acf1e33a7c09",
+        "seg-d760c3ae-8219-4b4d-8c40-81edc5b245fb"
+      ],
+      "evidence_meetings": [
+        "Andrew 1:1",
+        "Staffing with transcription"
+      ]
+    },
+    {
+      "id": "q23",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Who has a contract or engagement ending around December or the end of the year?",
+      "expected_answer": "Leesa and Chris (through end of year), Gary (wraps up in December, likely extended) and Patrick (cannot continue past December).",
+      "evidence": [
+        "seg-71e7938e-cda7-4762-9ca7-8b36af757617",
+        "seg-096c3cf0-f1ff-46c0-b81f-5058d071740c",
+        "seg-87b2d63a-6c73-4c33-9dc3-d123c6b7b96e"
+      ],
+      "evidence_meetings": [
+        "Leesa 1:1",
+        "Moxee: Bob Bird check-in",
+        "Staffing with transcription"
+      ]
+    },
+    {
+      "id": "q24",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Which meetings talked about security vulnerabilities or breaches?",
+      "expected_answer": "Moxee: Gary fixed an AI-found vulnerability; Andrew 1:1: an employee took an admin key and sold access; hangout-ai: a vulnerability-check prompt became a custom skill.",
+      "evidence": [
+        "seg-ba252e25-c798-43e0-9d03-29e3e4b89790",
+        "seg-25f9a4d1-768e-4408-a90d-ecd254bca28d",
+        "seg-02eb2f04-a7d5-4a0d-bf21-3d4f7edbf51b"
+      ],
+      "evidence_meetings": [
+        "Moxee: Bob Bird check-in",
+        "Andrew 1:1",
+        "hangout-ai-session"
+      ]
+    },
+    {
+      "id": "q25",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Where did Gift Health come up and what was said?",
+      "expected_answer": "Leesa: Gift Health is hiring designers; working-session: about 26 agents there; Staffing: more people placed there.",
+      "evidence": [
+        "seg-ae06f943-0f9e-47b3-abe4-af2dd4e50793",
+        "seg-d08e60a1-d2d2-4648-b38b-9f34566d0155",
+        "seg-1a267c26-2512-42be-9bcd-8039c14aa7e1"
+      ],
+      "evidence_meetings": [
+        "Leesa 1:1",
+        "working-session",
+        "Staffing with transcription"
+      ]
+    },
+    {
+      "id": "q26",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Which meetings talked about standardizing on particular AI coding tools?",
+      "expected_answer": "Moxee: Bob's team settled on Claude with one business account; hangout-ai: Cardinal Health team uses GPT 5.4 with Pi on GitHub Copilot.",
+      "evidence": [
+        "seg-80a460c4-b4b7-436b-a9dd-a2874558ed40",
+        "seg-6e44604a-f596-4fc3-96cb-f09712b05363"
+      ],
+      "evidence_meetings": [
+        "Moxee: Bob Bird check-in",
+        "hangout-ai-session"
+      ]
+    },
+    {
+      "id": "q27",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Where did a reorg or restructuring come up, and what was it about?",
+      "expected_answer": "Leesa 1:1: Emily's org was reorganized; working-session: A16Z restructured and let go its internal team.",
+      "evidence": [
+        "seg-5e5aacf9-42ea-4aa2-adae-b6ac23a4a3e6",
+        "seg-592a7255-6b1a-4716-ba07-2c3691b27036"
+      ],
+      "evidence_meetings": [
+        "Leesa 1:1",
+        "working-session"
+      ]
+    },
+    {
+      "id": "q28",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Who was mentioned as being out sick or on leave?",
+      "expected_answer": "Andrew 1:1: the staff engineer on paternity leave; working-session: Speaker 2 was sick all weekend; Staffing: Jacob taking extended leave.",
+      "evidence": [
+        "seg-b125cd99-c042-4d1f-a8b5-8467d55df462",
+        "seg-02f9df74-aa71-4cb9-8a74-0a07859e3cb0",
+        "seg-ef8d2b79-61b7-43f3-9acd-007eb5224a2e"
+      ],
+      "evidence_meetings": [
+        "Andrew 1:1",
+        "working-session",
+        "Staffing with transcription"
+      ]
+    },
+    {
+      "id": "q29",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Which meetings discussed the green tappable button design standard?",
+      "expected_answer": "Both youtopia meetings: tappable buttons get a light green fill and a solid green border across all apps.",
+      "evidence": [
+        "seg-0689941d-f930-49ff-a019-049420633622",
+        "seg-d813f210-20a2-4cf0-af0c-efcd85140f3e",
+        "seg-7b2e668d-9c05-44b5-983b-32f4033256dd"
+      ],
+      "evidence_meetings": [
+        "youtopia-review-session",
+        "test-youtopia-recording"
+      ]
+    },
+    {
+      "id": "q30",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Where did budgets come up as a reason for staffing changes?",
+      "expected_answer": "Leesa 1:1: clients holding contractors back to see budgets; Staffing: Harpin's 2027 budget not yet approved.",
+      "evidence": [
+        "seg-5d8f2291-a4e4-4d20-a81d-c90a0f877e0a",
+        "seg-f5800339-699d-460e-bff9-cfdec2e29f89"
+      ],
+      "evidence_meetings": [
+        "Leesa 1:1",
+        "Staffing with transcription"
+      ]
+    },
+    {
+      "id": "q31",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Moxee: Bob Bird check-in",
+      "question": "What does Bob want to do about Gary's contract?",
+      "expected_answer": "Extend him another six months as long as he likes the work.",
+      "evidence": [
+        "seg-12a544bb-7115-421b-9f83-fdad9982c0ee",
+        "seg-7af51b5c-f6ba-457e-a409-3a74daf77f81"
+      ]
+    },
+    {
+      "id": "q32",
+      "kind": "followup",
+      "scope": "meeting",
+      "meeting": "Moxee: Bob Bird check-in",
+      "question": "And when does it currently run out?",
+      "expected_answer": "December.",
+      "evidence": [
+        "seg-096c3cf0-f1ff-46c0-b81f-5058d071740c"
+      ],
+      "follows": "q31",
+      "subject": "Gary's current contract"
+    },
+    {
+      "id": "q33",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "Leesa 1:1",
+      "question": "Which big local company did Alex say is hiring designers, besides Gift Health?",
+      "expected_answer": "Gusto.",
+      "evidence": [
+        "seg-ae06f943-0f9e-47b3-abe4-af2dd4e50793",
+        "seg-613c8b5e-a4f5-4aaa-9c6d-125f7b6c518d"
+      ]
+    },
+    {
+      "id": "q34",
+      "kind": "followup",
+      "scope": "meeting",
+      "meeting": "Leesa 1:1",
+      "question": "Why is it struggling to hire?",
+      "expected_answer": "It is a weird market and every job opening draws about three thousand AI-generated applications.",
+      "evidence": [
+        "seg-57f2c1f1-bcee-46f6-b1eb-0b55331da83a",
+        "seg-700ff648-95bc-4a6c-8528-a20c2477fa9a"
+      ],
+      "follows": "q33",
+      "subject": "Gusto"
+    },
+    {
+      "id": "q35",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "working-session",
+      "question": "What did Speaker 4 suggest instead of listing the engagement partner as a line-item cost?",
+      "expected_answer": "A nominal operations, overhead or administrative fee not tied to a specific role.",
+      "evidence": [
+        "seg-168469a1-3ff7-4964-b5c0-b220162d63af",
+        "seg-a12d72f5-aac7-4111-a47b-4fc1a69a3581",
+        "seg-fb3347a2-801b-498f-bb37-72940c2a8837"
+      ]
+    },
+    {
+      "id": "q36",
+      "kind": "followup",
+      "scope": "meeting",
+      "meeting": "working-session",
+      "question": "How many people would that cover?",
+      "expected_answer": "About 30 people at a time.",
+      "evidence": [
+        "seg-61fca13c-bb71-471f-a7d7-f330781bb544",
+        "seg-f1b36d21-f587-469c-ad2c-bcf4afc65bd4"
+      ],
+      "follows": "q35",
+      "subject": "the nominal administrative fee"
+    },
+    {
+      "id": "q37",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "youtopia-review-session",
+      "question": "What did Speaker 2 say should happen once the design is signed off?",
+      "expected_answer": "The tech team signs off on the design in a screen-by-screen review session.",
+      "evidence": [
+        "seg-0a040398-0fe4-48f9-9ed9-cc91c1d9d56e",
+        "seg-b5e6eed7-893b-4c09-9196-2ac569c4eea8"
+      ]
+    },
+    {
+      "id": "q38",
+      "kind": "followup",
+      "scope": "meeting",
+      "meeting": "youtopia-review-session",
+      "question": "How long would that session be?",
+      "expected_answer": "From one or two hours up to five hours.",
+      "evidence": [
+        "seg-b5e6eed7-893b-4c09-9196-2ac569c4eea8"
+      ],
+      "follows": "q37",
+      "subject": "the tech team review session"
+    },
+    {
+      "id": "q39",
+      "kind": "single",
+      "scope": "meeting",
+      "meeting": "hangout-ruby-session",
+      "question": "How did he test his spreadsheet formulas?",
+      "expected_answer": "By using LibreOffice's CLI to convert the spreadsheet to HTML and unit-testing the output.",
+      "evidence": [
+        "seg-d4d56d11-0c37-4cfc-a588-085ffdc0baff",
+        "seg-6c335bd9-5516-4677-9491-741e4d79e927"
+      ]
+    },
+    {
+      "id": "q40",
+      "kind": "followup",
+      "scope": "meeting",
+      "meeting": "hangout-ruby-session",
+      "question": "How long did that take?",
+      "expected_answer": "About a second.",
+      "evidence": [
+        "seg-6c335bd9-5516-4677-9491-741e4d79e927"
+      ],
+      "follows": "q39",
+      "subject": "the LibreOffice conversion"
+    },
+    {
+      "id": "q41",
+      "kind": "cross",
+      "scope": "all",
+      "question": "Which meetings mention Carnes and what is his status?",
+      "expected_answer": "Staffing: he is being taken off next Friday if the client does not respond; working-session: not yet rolled off but very likely.",
+      "evidence": [
+        "seg-3b74aae1-a0f7-40eb-ba72-daf76c0014cc",
+        "seg-ad261fa5-4bd5-4964-b15f-26a06b49919c"
+      ],
+      "evidence_meetings": [
+        "Staffing with transcription",
+        "working-session"
+      ]
+    },
+    {
+      "id": "q42",
+      "kind": "followup",
+      "scope": "all",
+      "question": "Why did Speaker 3 say staffing failed him?",
+      "expected_answer": "They knew he would not succeed on a heavy AI engagement like Public Storage yet kept putting him on it.",
+      "evidence": [
+        "seg-ddac8617-a766-4658-b342-186b0dd022ab",
+        "seg-e2a4dba2-6b09-4a60-b839-a13f5b500d10"
+      ],
+      "follows": "q41",
+      "subject": "Carnes"
+    }
+  ]
+}

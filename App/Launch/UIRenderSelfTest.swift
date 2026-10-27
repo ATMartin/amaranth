@@ -321,6 +321,44 @@ enum UIRenderSelfTest {
             library.focusRowID = nil
         }
         // The sidebar has no search field any more (T52); ⌘K focuses the ask field instead.
+        // Answers (T54): a finished answer with citation chips above the matches, waiting, and a refusal.
+        #if DEBUG
+        if let launch = library.items.first(where: { $0.id == Fixtures.twoSourceConversation.meeting.id }) {
+            library.selection = launch.id
+            for _ in 0..<40 where library.detail?.meeting.id != launch.id { try? await Task.sleep(for: .milliseconds(50)) }
+            let passages = (try? Retriever(store: store).search("When will they ship?", in: launch.id)) ?? []
+            let cites = Array(1...min(2, passages.count))
+            library.askScope = .thisMeeting
+            library.query = "When will they ship?"
+            library.submitAsk()   // the matches; the answer is shown directly below (no model here)
+            let answers = AnswerModel(store: store, worker: nil)
+            library.answers = answers
+            answers.showForRender(question: "When will they ship?", passages: passages, response: AnswerResponse(
+                text: "They decided to ship on Thursday, not Wednesday, once Dana finishes notarization.", citations: cites, confidence: .high,
+                refused: false, promptTokens: 0, generatedTokens: 0, firstTextSeconds: nil, totalSeconds: 0), phase: .done, acrossMeetings: false)
+            _ = await host(MainView(), "ask-answer", size: CGSize(width: 1200, height: 760))
+            answers.showForRender(question: "When will they ship?", passages: passages, response: AnswerResponse(
+                text: "They decided to ship on Thursday, not Wednesday.", citations: cites, confidence: .high, refused: false,
+                promptTokens: 0, generatedTokens: 0, firstTextSeconds: nil, totalSeconds: 0), phase: .done, acrossMeetings: true)
+            _ = await host(MainView(), "ask-answer-all-meetings", size: CGSize(width: 1200, height: 760))
+            answers.showForRender(question: "When will they ship?", passages: passages, response: nil,
+                                  phase: .waiting("Waiting for transcription to finish… The search matches are below."), acrossMeetings: false)
+            _ = await host(MainView(), "ask-answer-waiting", size: CGSize(width: 1200, height: 760))
+            answers.showForRender(question: "What did they say about the budget?", passages: passages, response: AnswerResponse(
+                text: AnswerResponse.refusalText, citations: [], confidence: .low, refused: true, promptTokens: 0, generatedTokens: 0,
+                firstTextSeconds: nil, totalSeconds: 0), phase: .done, acrossMeetings: false)
+            _ = await host(MainView(), "ask-answer-refused", size: CGSize(width: 1200, height: 760))
+            // A citation chip opens the cited line in the transcript.
+            if let first = answers.citedPassages.first ?? passages.first {
+                library.open(citation: first)
+                for _ in 0..<20 where library.focusRowID == nil { try? await Task.sleep(for: .milliseconds(50)) }
+                let pass = library.detailTab == .transcript && library.focusRowID != nil
+                SelfTest.log(["step": "ask-answer", "passages": "\(passages.count)", "citationJumpRow": library.focusRowID ?? "-", "ok": "\(pass)"])
+                if !pass { ok = false }
+            }
+            library.closeAskPanel(); library.query = ""; library.focusRowID = nil; library.answers = nil
+        }
+        #endif
         return ok
     }
 

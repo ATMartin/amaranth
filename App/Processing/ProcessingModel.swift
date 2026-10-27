@@ -42,6 +42,10 @@ final class ProcessingModel {
 
     var memoryPressure: Bool { flags.memoryPressure }
 
+    /// Transcript work (any stage but notes) is queued or running: the notes model must not load now (T54 answers wait,
+    /// as notes do).
+    var transcriptWorkActive: Bool { (try? store?.jobs().contains(where: JobScheduler.blocksNotes)) == true }
+
     init(store: MeetingStore?, worker: WorkerClient) {
         self.store = store
         guard let store else { return }

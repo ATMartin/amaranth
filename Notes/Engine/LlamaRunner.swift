@@ -34,6 +34,8 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
     public let loadSeconds: Double
     private let nonThinkingPrefix: String
     private let lock = NSLock()   // one batch at a time per context
+    /// The runner whose model this one shares (its own context and cache); nil when this runner owns the model.
+    private let modelOwner: LlamaRunner?
     private let model: OpaquePointer
     private let ctx: OpaquePointer
     private let vocab: OpaquePointer
@@ -59,6 +61,33 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
         mp.n_gpu_layers = -1
         mp.load_mode = LLAMA_LOAD_MODE_MMAP
         guard let m = llama_model_load_from_file(gguf.path, mp) else { throw Error.load("load failed") }
+        guard let c = Self.makeContext(m, configuration) else { llama_model_free(m); throw Error.load("context init failed") }
+        guard let v = llama_model_get_vocab(m) else { llama_free(c); llama_model_free(m); throw Error.load("no vocab") }
+        model = m; ctx = c; vocab = v; modelOwner = nil
+        nVocab = Int(llama_vocab_n_tokens(v))
+        cached = Array(repeating: [], count: configuration.parallel)
+        let d = ContinuousClock.now - t0
+        loadSeconds = Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18
+    }
+
+    /// A second context over `owner`'s already loaded model (T54: answers run beside notes without loading the weights
+    /// again or waiting for the notes batch). Only the KV cache is new memory.
+    public init(sharing owner: LlamaRunner, configuration: Configuration) throws {
+        precondition(configuration.parallel >= 1 && configuration.kvTokens >= configuration.contextTokens)
+        self.configuration = configuration
+        nonThinkingPrefix = owner.nonThinkingPrefix
+        let batching = configuration.parallel == 1 ? "" : ":batch\(configuration.parallel)x\(configuration.kvTokens)"
+        identity = ProducerInfo(component: owner.identity.component, modelManifestID: owner.identity.modelManifestID, modelVersion: owner.identity.modelVersion,
+                                configHash: "\(Self.templateIdentity):ctx\(configuration.contextTokens):greedy\(batching)")
+        let t0 = ContinuousClock.now
+        guard let c = Self.makeContext(owner.model, configuration) else { throw Error.load("context init failed") }
+        model = owner.model; ctx = c; vocab = owner.vocab; nVocab = owner.nVocab; modelOwner = owner
+        cached = Array(repeating: [], count: configuration.parallel)
+        let d = ContinuousClock.now - t0
+        loadSeconds = Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18
+    }
+
+    private static func makeContext(_ m: OpaquePointer, _ configuration: Configuration) -> OpaquePointer? {
         var cp = llama_context_default_params()
         cp.n_ctx = UInt32(configuration.kvTokens)
         cp.n_batch = 2048
@@ -70,18 +99,12 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
         let threads = Int32(max(1, min(8, ProcessInfo.processInfo.activeProcessorCount - 2)))
         cp.n_threads = threads
         cp.n_threads_batch = threads
-        guard let c = llama_init_from_model(m, cp) else { llama_model_free(m); throw Error.load("context init failed") }
-        guard let v = llama_model_get_vocab(m) else { llama_free(c); llama_model_free(m); throw Error.load("no vocab") }
-        model = m; ctx = c; vocab = v
-        nVocab = Int(llama_vocab_n_tokens(v))
-        cached = Array(repeating: [], count: configuration.parallel)
-        let d = ContinuousClock.now - t0
-        loadSeconds = Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18
+        return llama_init_from_model(m, cp)
     }
 
     deinit {
         llama_free(ctx)
-        llama_model_free(model)
+        if modelOwner == nil { llama_model_free(model) }
     }
 
     func tokenize(_ text: String) -> [llama_token] {
@@ -105,6 +128,18 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
     public func generate(prompt: String, grammar: String?, maxTokens: Int, cancellation: CancellationToken) throws -> GenerationResult {
         var result: GenerationResult?
         try generateBatch([GenerationRequest(prompt: prompt, grammar: grammar, maxTokens: maxTokens)], cancellation: cancellation) { result = $1 }
+        return result!
+    }
+
+    public func generate(prompt: String, grammar: String?, maxTokens: Int, cancellation: CancellationToken,
+                         onText: (String) -> Void) throws -> GenerationResult {
+        var result: GenerationResult?
+        try withoutActuallyEscaping(onText) { onText in
+            try lock.withLock {
+                try runBatch([GenerationRequest(prompt: prompt, grammar: grammar, maxTokens: maxTokens)], cancellation: cancellation,
+                             onText: { _, text in onText(text) }) { result = $1; return [] }
+            }
+        }
         return result!
     }
 
@@ -132,7 +167,7 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
         var generated = 0
     }
 
-    private func runBatch(_ initial: [GenerationRequest], cancellation: CancellationToken,
+    private func runBatch(_ initial: [GenerationRequest], cancellation: CancellationToken, onText: ((Int, String) -> Void)? = nil,
                           onResult: (Int, GenerationResult) throws -> [GenerationRequest]) throws {
         try cancellation.check()
         var requests: [GenerationRequest] = []
@@ -291,7 +326,10 @@ public final class LlamaRunner: TextGenerator, @unchecked Sendable {
                 sampleSeconds += Perf.seconds(since: sampleStart)
                 if llama_vocab_is_eog(vocab, tok) { try finish(s, hitLimit: false); continue }
                 let len = llama_token_to_piece(vocab, tok, &piece, Int32(piece.count), 0, false)
-                if len > 0 { a.text += String(decoding: piece.prefix(Int(len)).map { UInt8(bitPattern: $0) }, as: UTF8.self) }
+                if len > 0 {
+                    a.text += String(decoding: piece.prefix(Int(len)).map { UInt8(bitPattern: $0) }, as: UTF8.self)
+                    onText?(a.request, a.text)
+                }
                 a.generated += 1
                 a.pending = tok
                 slots[s] = a

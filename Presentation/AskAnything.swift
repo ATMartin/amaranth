@@ -54,3 +54,41 @@ public enum AskResults {
         }
     }
 }
+
+/// How retrieved passages are shown to the model and as citation chips (T54).
+public enum AskPassages {
+    /// The prompt's view of each passage: a label with the meeting and time, then its lines (“[12:34] Rochelle: …”).
+    /// Across meetings the label names the meeting and its date; within one meeting the time is enough.
+    public static func render(_ passages: [Passage], acrossMeetings: Bool) -> [AnswerPassage] {
+        passages.map { p in
+            AnswerPassage(label: label(p, acrossMeetings: acrossMeetings, withDate: true),
+                          text: p.lines.map { line in
+                              switch p.source {
+                              case .notes: "Meeting notes: \(line.text)"
+                              case .transcript:
+                                  (line.start.map { "[\(TranscriptRows.clock($0))] " } ?? "") + (line.speaker.map { "\($0): " } ?? "Unknown speaker: ")
+                                      + trimmed(line.text, to: line.matched ? 900 : 320)
+                              }
+                          }.joined(separator: "\n"))
+        }
+    }
+
+    /// Long transcript lines (a minute of one speaker) are cut: matched lines keep more than context lines.
+    static func trimmed(_ text: String, to limit: Int) -> String {
+        text.count <= limit ? text : String(text.prefix(limit)) + "…"
+    }
+
+    public static func label(_ p: Passage, acrossMeetings: Bool, withDate: Bool = false) -> String {
+        let place = p.source == .notes ? "notes" : (p.lines.first(where: \.matched) ?? p.lines.first)?.start.map { TranscriptRows.clock($0) } ?? "transcript"
+        guard acrossMeetings else { return place }
+        let date = withDate ? " (" + p.meetingDate.formatted(date: .abbreviated, time: .omitted) + ")" : ""
+        return "\(p.meetingTitle)\(date) · \(place)"
+    }
+
+    /// Where a citation jumps: the evidence of the passage's best line (transcript) or the note's first evidence.
+    public static func jumpEvidence(_ p: Passage) -> TranscriptEvidence? {
+        if p.source == .transcript, let seg = p.lines.first(where: \.matched)?.segmentID ?? p.lines.first?.segmentID,
+           let e = p.evidence.first(where: { $0.segmentID == seg }) { return e }
+        return p.evidence.first
+    }
+}

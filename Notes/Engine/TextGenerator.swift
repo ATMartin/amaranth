@@ -12,6 +12,9 @@ public protocol TextGenerator: AnyObject, Sendable {
     /// Greedy, optionally grammar-constrained generation. Stops at `maxTokens`, end of generation, or cancellation
     /// (checked per token, then reported by throwing `CancellationError`).
     func generate(prompt: String, grammar: String?, maxTokens: Int, cancellation: CancellationToken) throws -> GenerationResult
+    /// Like `generate`, reporting the text generated so far as it grows (T54: answers stream into the UI).
+    func generate(prompt: String, grammar: String?, maxTokens: Int, cancellation: CancellationToken,
+                  onText: (String) -> Void) throws -> GenerationResult
     /// Independent requests that may be decoded together (T18). `onResult` receives each result as soon as it is done, in
     /// any order, with its index in `requests`. A request is either completed or not reported at all: on cancellation or
     /// an engine error, the calls still in flight are dropped and the error is thrown.
@@ -33,6 +36,14 @@ public struct GenerationRequest: Sendable, Hashable {
 }
 
 extension TextGenerator {
+    /// Engines that can't stream report the whole text once, at the end.
+    public func generate(prompt: String, grammar: String?, maxTokens: Int, cancellation: CancellationToken,
+                         onText: (String) -> Void) throws -> GenerationResult {
+        let r = try generate(prompt: prompt, grammar: grammar, maxTokens: maxTokens, cancellation: cancellation)
+        onText(r.text)
+        return r
+    }
+
     /// One request at a time, in order (scripted generators and engines without batching).
     public func generateBatch(_ requests: [GenerationRequest], cancellation: CancellationToken,
                               onResult: (Int, GenerationResult) throws -> Void) throws {

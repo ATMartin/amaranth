@@ -970,6 +970,13 @@ case "notes-gate" where args.count >= 4:
     if let k = value("--kv").flatMap(Int.init) { gateEngine.kvTokens = k }
     try NotesGate.run(gguf: URL(filePath: args[2]), results: URL(filePath: args[3]), configuration: gateEngine,
                       nonThinking: args.contains("--non-thinking"), only: value("--only").map { Set($0.split(separator: ",").map(String.init)) })
+case "ask-eval" where args.count >= 5:
+    var ids = value("--only").map { Set($0.split(separator: ",").map(String.init)) }
+    if let r = value("--range")?.split(separator: "-"), r.count == 2, let a = Int(r[0].dropFirst()), let b = Int(r[1].dropFirst()) {
+        ids = Set((a...b).map { String(format: "q%02d", $0) })
+    }
+    try AskEval.run(gguf: URL(filePath: args[2]), questions: URL(filePath: args[3]), results: URL(filePath: args[4]), ids: ids,
+                    injection: !args.contains("--no-injection"))
 case "perf-suite":
     exit(try await PerfSuite.main(Array(args.dropFirst(2))))
 case "live-suite":

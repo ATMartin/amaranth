@@ -49,6 +49,7 @@ enum SelfTest {
                 let size = TextSize(stored: args.firstIndex(of: "--text-size").flatMap { $0 + 1 < args.count ? args[$0 + 1] : nil })
                 ok = await UIRenderSelfTest.run(outputDirectory: out, textSize: size)
             case "ui-density": ok = await UIDensitySelfTest.run(args: args)
+            case "ask-worker": ok = await AskWorkerSelfTest.run()
             case "capture-soak":
                 let minutes = args.firstIndex(of: "--minutes").flatMap { Double(args[$0 + 1]) } ?? 30
                 ok = await CaptureSelfTest.soak(minutes: minutes)

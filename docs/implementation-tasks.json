@@ -1755,7 +1755,7 @@
       "id": "T54",
       "title": "Grounded answers with the local notes model",
       "milestone": "N",
-      "status": "planned",
+      "status": "done (Notes/Answer/Answerer.swift answer-v1, WorkerRequest.answer with streaming, AnswerModel + answer section in the ask panel; amaranth-bench ask-eval offline: citations 20/20, 19/20 correct, first text max 2.63 s, full max 3.83 s, injection 15/15; decision docs/decisions/notes/0003; checklist items 48-49)",
       "optional": false,
       "depends_on": [
         "T53"
