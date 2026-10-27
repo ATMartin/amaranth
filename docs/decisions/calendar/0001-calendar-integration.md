@@ -69,3 +69,10 @@ implementation choices the spec left open, task by task.
   now keeps the stored title for the session's updates.
 - **Settings → Calendar** starts here with the access row and "Suggest calendar events when recording"; turning it on
   is a user action and may show the prompt (never while recording).
+
+## T60 — speaker-rename suggestions
+
+- The rename UI is a sheet (`SpeakerRenameSheet`, replacing the generic text sheet for renames), not a popover as the
+  spec says; the suggestions sit above its field. They are the meeting's people (typed and calendar-sourced) in
+  order, without the speaker's current name. A click fills the field and runs the same Save, so the stored
+  `UserEdit` is the one typing would make. Nothing is named automatically.

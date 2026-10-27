@@ -1932,7 +1932,7 @@
       "id": "T60",
       "title": "Speaker-rename suggestions from the meeting's people",
       "milestone": "O",
-      "status": "accepted, in progress (Milestone O)",
+      "status": "done (App/Transcript/SpeakerRenameSheet: the meeting's people as one-click names above the field (SpeakerMenu.renameSuggestions: in order, without the current name); a click saves the same EditComposer.rename edit as typing; tests; ui-render speaker-rename-people / -no-people; evidence docs/qualification/evidence/2026-10-27/speaker-rename; checklist item 56)",
       "optional": false,
       "depends_on": [
         "T58"

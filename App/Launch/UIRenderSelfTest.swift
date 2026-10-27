@@ -235,6 +235,13 @@ enum UIRenderSelfTest {
             for id in also.map(\.id) { library.unlink(id) }
             for _ in 0..<40 where library.detail?.meeting.linkedEvent != nil { try? await Task.sleep(for: .milliseconds(50)) }
         }
+        // Speaker rename (T60): with the meeting's people as suggestions, and without.
+        let renameSpeaker = Speaker(id: SpeakerID("render-s1"), label: "Speaker 1", displayName: "Dana Whitfield")
+        let renamePeople = ["Dana Whitfield", "Ravi Patel", "Mei Chen", "Tomás Ortega", "Alex Martin"].map { Person(name: $0) }
+        _ = await host(SpeakerRenameSheet(speaker: renameSpeaker, text: .constant("Dana Whitfield"),
+                                          suggestions: SpeakerMenu.renameSuggestions(renamePeople, for: renameSpeaker)) {}, "speaker-rename-people", size: CGSize(width: 420, height: 260))
+        _ = await host(SpeakerRenameSheet(speaker: Speaker(id: SpeakerID("render-s2"), label: "Speaker 2"), text: .constant(""), suggestions: []) {},
+                       "speaker-rename-no-people", size: CGSize(width: 420, height: 160))
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
         _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 360, height: 760))
         // Toolbar recorder (T31): idle control, this meeting's options, the strip in each state, the banner.

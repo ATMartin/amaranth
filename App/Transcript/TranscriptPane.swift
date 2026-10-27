@@ -90,7 +90,8 @@ struct TranscriptPane: View {
             }
         }
         .sheet(item: $renaming) { s in
-            EditTextSheet(title: "Rename \(s.label)", text: $newName, help: "Leave empty to go back to “\(s.label)”. Names are only what you type.") {
+            // T60: the meeting's people as one-click names; choosing one saves the same edit as typing it.
+            SpeakerRenameSheet(speaker: s, text: $newName, suggestions: SpeakerMenu.renameSuggestions(detail.meeting.people, for: s)) {
                 apply { $0.rename(s.id, to: newName) }
             }
         }

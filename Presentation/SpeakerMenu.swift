@@ -18,4 +18,12 @@ public enum SpeakerMenu {
     public static func assignTargets(for row: TranscriptRow, in speakers: [Speaker]) -> [Speaker] {
         if case .speaker(let id) = row.assignment { speakers.filter { $0.id != id } } else { speakers }
     }
+
+    /// One-click names in the rename sheet (T60): the meeting's people in their order, without the speaker's current
+    /// name. Only offered; choosing one makes the same rename edit as typing it.
+    public static func renameSuggestions(_ people: [Person], for speaker: Speaker) -> [String] {
+        let current = speaker.displayName?.lowercased()
+        var seen = Set<String>()
+        return people.map(\.name).filter { n in n.lowercased() != current && seen.insert(n.lowercased()).inserted }
+    }
 }
