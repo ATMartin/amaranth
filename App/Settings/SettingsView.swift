@@ -26,7 +26,7 @@ struct SettingsView: View {
             }
             .tabItem { Label("Notices", systemImage: "doc.text") }
         }
-        .frame(width: 560, height: 460)
+        .frame(width: 560, height: 640)   // Settings → Calendar fits without scrolling to its last button
     }
 }
 

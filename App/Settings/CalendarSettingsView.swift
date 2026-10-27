@@ -55,7 +55,7 @@ struct CalendarSettingsView: View {
                     Button("Remove Calendar Data from All Meetings…") { confirmingRemove = true }.disabled(library?.store == nil)
                     if let removedMessage { Text(removedMessage).font(.caption).foregroundStyle(.secondary) }
                 }
-                Text("Unlinks every meeting and removes the people that came from calendar events. Names you typed stay. Turning calendar access off in System Settings doesn't remove what is already saved; this does.")
+                Text("Unlinks every meeting and removes the people that came from calendar events. Names you typed stay, and so do speaker names you chose (rename speakers to change them). Turning calendar access off in System Settings doesn't remove what is already saved; this does.")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }

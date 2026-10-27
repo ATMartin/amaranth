@@ -19,11 +19,17 @@ public struct CalendarReminder: Hashable, Sendable {
     public var fireDate: Date
 
     public init(_ e: CalendarEvent) {
-        id = Self.idPrefix + e.id
+        // The title is part of the id, so renaming an event replaces its pending notification on the next sync.
+        id = Self.idPrefix + e.id + "#" + String(Self.fnv1a(e.title), radix: 16)
         eventIdentifier = e.identifier
         title = e.title.isEmpty ? "Untitled event" : e.title
         start = e.start
         fireDate = e.start.addingTimeInterval(-Self.lead)
+    }
+
+    /// Stable across launches (unlike `hashValue`).
+    static func fnv1a(_ s: String) -> UInt64 {
+        s.utf8.reduce(14_695_981_039_346_656_037 as UInt64) { ($0 ^ UInt64($1)) &* 1_099_511_628_211 }
     }
 
     /// "Roadmap sync starts in 1 min".

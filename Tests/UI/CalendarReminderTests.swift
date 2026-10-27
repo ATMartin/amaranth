@@ -57,4 +57,14 @@ struct CalendarReminderTests {
         let events = [Self.ev("running", start: -5), Self.ev("reminded", start: 1)]
         #expect(CalendarSuggestion.candidates(events, at: Self.now, preferred: "reminded").map(\.identifier) == ["reminded", "running"])
     }
+
+    @Test func retitledEventReplacesItsPendingReminder() async {
+        let source = FakeCalendarSource(status: .fullAccess, events: [Self.ev("sync", start: 5)])
+        let scheduler = FakeReminderScheduler()
+        await CalendarReminders.sync(enabled: true, calendars: ["work"], source: source, scheduler: scheduler, now: Self.now)
+        var renamed = Self.ev("sync", start: 5); renamed.title = "Sync (moved room)"
+        source.setEvents([renamed])
+        await CalendarReminders.sync(enabled: true, calendars: ["work"], source: source, scheduler: scheduler, now: Self.now)
+        #expect(scheduler.scheduled.map(\.headline) == ["Sync (moved room) starts in 1 min"])
+    }
 }

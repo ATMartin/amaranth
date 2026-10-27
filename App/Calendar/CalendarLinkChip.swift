@@ -42,7 +42,8 @@ struct CalendarLinkChip: View {
     @ViewBuilder var popover: some View {
         if let linked = meeting.linkedEvent, !choosing {
             LinkedEventDetails(event: linked, status: calendar.status.canRead ? live : .unknown, also: also.map(\.title),
-                               offersEventTitle: CalendarLinking.offersEventTitle(meeting), accessOff: !calendar.status.canRead,
+                               offersEventTitle: CalendarLinking.offersEventTitle(meeting), access: calendar.status,
+                               allow: { Task { await calendar.request(.userAction(recording: recorder.inSession)); refreshLive() } },
                                update: { if case .changed(let e) = live { library.link(meeting.id, to: e); showing = false } },
                                useTitle: { library.rename(meeting.id, to: linked.title); showing = false },
                                change: { loadEvents(); choosing = true },
@@ -149,7 +150,8 @@ struct LinkedEventDetails: View {
     let status: CalendarLinking.LiveStatus
     let also: [String]
     let offersEventTitle: Bool
-    var accessOff = false
+    var access: CalendarAuthorization = .fullAccess
+    var allow: () -> Void = {}
     let update: () -> Void
     let useTitle: () -> Void
     let change: () -> Void
@@ -168,14 +170,22 @@ struct LinkedEventDetails: View {
                 HStack(alignment: .firstTextBaseline) {
                     Label("Event changed since linking", systemImage: "arrow.triangle.2.circlepath").foregroundStyle(Color.statusAttention)
                     Spacer()
-                    Button("Update", action: update).help("Copy the event's current title and time: now “\(now.title)”, \(CalendarLinking.timeRange(start: now.start, end: now.end))")
+                    Button("Update", action: update).help("Copy the event's current title and time")
                 }
                 .appFont(.callout)
+                Text("Now: “\(now.title.isEmpty ? "Untitled event" : now.title)”, \(now.start.formatted(date: .abbreviated, time: .omitted)) \(CalendarLinking.timeRange(start: now.start, end: now.end))")
+                    .appFont(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             case .missing:
                 Label("No longer in your calendar. The copy linked here is kept.", systemImage: "calendar.badge.exclamationmark")
                     .appFont(.callout).foregroundStyle(Color.statusAttention).fixedSize(horizontal: false, vertical: true)
             case .current, .unknown:
-                if accessOff {
+                if access == .notDetermined {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Allow calendar access to check this event for changes or link another.").appFont(.caption).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Button("Allow Access…", action: allow)
+                    }
+                } else if !access.canRead {
                     Text("Calendar access is off, so Amaranth can't check this event for changes.").appFont(.caption).foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -186,7 +196,7 @@ struct LinkedEventDetails: View {
             }
             HStack {
                 Button("Unlink", action: unlink).help("Remove the link. People added from the event stay; remove any you don't want in the people editor.")
-                if !accessOff { Button("Change Event…", action: change) }
+                if access.canRead { Button("Change Event…", action: change) }
                 Spacer()
                 if offersEventTitle {
                     Button("Use Event Title", action: useTitle).help("Rename this meeting to “\(event.title)”")

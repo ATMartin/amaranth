@@ -198,7 +198,7 @@ enum UIRenderSelfTest {
                 _ = await host(LinkedEventDetails(event: name == "changed" ? changed.linkedEvent! : linked, status: status, also: also, offersEventTitle: true,
                                                   update: {}, useTitle: {}, change: {}, unlink: {}), "calendar-linked-\(name)", size: CGSize(width: 340, height: 190))
             }
-            _ = await host(LinkedEventDetails(event: linked, status: .unknown, also: [], offersEventTitle: false, accessOff: true,
+            _ = await host(LinkedEventDetails(event: linked, status: .unknown, also: [], offersEventTitle: false, access: .denied,
                                               update: {}, useTitle: {}, change: {}, unlink: {}), "calendar-linked-access-off", size: CGSize(width: 340, height: 170))
             for kind in [CalendarAccessMessage.Kind.off, .managed, .afterRecording] {
                 _ = await host(CalendarAccessMessage(kind: kind), "calendar-access-\(kind)", size: CGSize(width: 320, height: 190))

@@ -74,8 +74,12 @@ final class ReminderController: NSObject, UNUserNotificationCenterDelegate {
     /// every calendar chosen if none was, then plan.
     func enable() async {
         await calendar.request(.userAction(recording: recorder?.inSession ?? false))
-        let granted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])) ?? false
-        notificationsDenied = !granted
+        // Like calendar access, the notification prompt never appears while recording; the next toggle (or the
+        // already granted permission) covers it.
+        if recorder?.inSession != true {
+            let granted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])) ?? false
+            notificationsDenied = !granted
+        }
         if CalendarSettings.reminderCalendars().isEmpty {
             UserDefaults.standard.set(calendar.source.calendars().map(\.id), forKey: CalendarSettings.reminderCalendarsKey)
         }

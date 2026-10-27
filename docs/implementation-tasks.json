@@ -55,7 +55,7 @@
     "L": "Notes templates: T46-T48",
     "M": "Calendar and people placeholders: T49-T51",
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
-    "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N. Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert"
+    "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert"
   },
   "tasks": [
     {
