@@ -312,7 +312,7 @@ public final class RecordingSession: @unchecked Sendable {
     private func persistMeeting() {
         guard let store else { return }
         let m = lock.withLock { meeting }
-        try? store.upsertMeeting(m)
+        try? store.upsertMeeting(m, keepingStoredTitle: true)   // a rename while recording wins over our copy
     }
 
     private func record(_ e: CaptureEvent) {

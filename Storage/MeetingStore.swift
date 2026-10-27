@@ -62,14 +62,16 @@ public final class MeetingStore: @unchecked Sendable {
 
     /// Inserts or replaces a meeting. On an existing row its people and linked event are kept as stored: writers that
     /// hold an older copy (the recorder, recovery, rename) must not drop them. Change them with `setPeople` and
-    /// `setLinkedEvent`.
-    public func upsertMeeting(_ meeting: Meeting) throws {
+    /// `setLinkedEvent`. `keepingStoredTitle`: the recorder's state updates keep a title renamed while recording (by the
+    /// user, or an approved calendar suggestion, T59).
+    public func upsertMeeting(_ meeting: Meeting, keepingStoredTitle: Bool = false) throws {
         try sync {
             var m = meeting
             if let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(m.id.rawValue)]).first?["json"]?.blob {
                 let stored = try ContractCoding.decode(Meeting.self, from: row)
                 m.people = stored.people
                 m.linkedEvent = stored.linkedEvent
+                if keepingStoredTitle { m.title = stored.title }
             }
             try db.run("""
                 INSERT INTO meetings (id, title, created_at, capture_state, selected_sources, audio, duration_ns,

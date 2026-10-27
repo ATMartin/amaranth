@@ -1903,7 +1903,7 @@
       "id": "T59",
       "title": "Suggest the current event when recording starts",
       "milestone": "O",
-      "status": "accepted, in progress (Milestone O)",
+      "status": "done (Presentation/CalendarSuggestion: candidates (in progress or ≤10 min, all-day/cancelled/declined ignored, reminder's event first), Prompt, titleAfterApproval, approve via CalendarLinking.link; RecorderModel.eventPrompt/approve/dismiss, offered after capture starts with access already granted; strip shows a compact \"📅 <title>?\" / \"📅 Which event?\" button opening Link / Not this or the choices + None (inline buttons don't fit at 900 pt: see docs/decisions/calendar/0001 T59); MeetingStore.upsertMeeting(keepingStoredTitle:) so the recorder's state saves never undo a rename; Settings → Calendar tab with access row and the suggest toggle; table tests incl. 9 vs 10 vs 11 min, overlaps, all-day, declined, recurring; ui-render toolbar-recording with the prompt at 900 and 1100 pt (nothing hidden); evidence docs/qualification/evidence/2026-10-27/calendar-suggest; checklist item 55)",
       "optional": false,
       "depends_on": [
         "T57"

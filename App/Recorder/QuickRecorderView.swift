@@ -91,7 +91,8 @@ struct RecordingStrip: View {
     var body: some View {
         RecordingStripContent(state: model.state, elapsed: model.elapsed, health: model.health, savedUpTo: model.savedUpTo,
                               diskWarning: model.diskWarned ? model.diskSecondsLeft.map(RecorderPresentation.diskWarning) : nil,
-                              folder: model.directory?.path, pause: model.pause, resume: model.resume, stop: model.stop)
+                              folder: model.directory?.path, pause: model.pause, resume: model.resume, stop: model.stop,
+                              eventPrompt: model.eventPrompt, link: model.approve, dismissEvent: model.dismissEventPrompt)
     }
 }
 
@@ -106,6 +107,9 @@ struct RecordingStripContent: View {
     let pause: () -> Void
     let resume: () -> Void
     let stop: () -> Void
+    var eventPrompt: CalendarSuggestion.Prompt = .none
+    var link: (CalendarEvent) -> Void = { _ in }
+    var dismissEvent: () -> Void = {}
     @State private var showingHealth = false
 
     var body: some View {
@@ -138,6 +142,9 @@ struct RecordingStripContent: View {
             }
             Button(action: stop) { Label("Stop and Save", systemImage: "stop.fill") }.disabled(state == .stopping || state == .preparing)
                 .keyboardShortcut("s", modifiers: [.command, .shift]).help("Stop and save (⌘⇧S)")
+            if eventPrompt != .none {
+                EventPromptContent(prompt: eventPrompt, link: link, dismiss: dismissEvent)
+            }
         }
         .labelStyle(.titleAndIcon)
         .toolbarSized()
@@ -160,6 +167,75 @@ struct RecordingStripContent: View {
         case .stopping: Label("Saving…", systemImage: "arrow.down.circle").foregroundStyle(.secondary)
         default: Label("Starting…", systemImage: "hourglass").foregroundStyle(.secondary).help("Starting… waiting for audio")
         }
+    }
+}
+
+/// The calendar question after Record (T59): one compact button in the strip, never acting on its own. One match reads
+/// "<title>?", several "Which meeting?"; the click opens the choices (Link / Not this, or each event and None) with the
+/// full title and time. The strip has about 100 pt to spare at a 900 pt window, so the buttons can't sit inline.
+/// Ignoring it changes nothing.
+struct EventPromptContent: View {
+    let prompt: CalendarSuggestion.Prompt
+    let link: (CalendarEvent) -> Void
+    let dismiss: () -> Void
+    @State private var open = false
+
+    var label: String {
+        switch prompt {
+        case .one(let e): CalendarSuggestion.question(e)
+        case .several: "Which event?"
+        case .none: ""
+        }
+    }
+
+    var body: some View {
+        Button { open.toggle() } label: {
+            HStack(spacing: 3) {
+                Image(systemName: "calendar").foregroundStyle(Color.accentColor)
+                Text(label).lineLimit(1).truncationMode(.tail).frame(maxWidth: 74, alignment: .leading)
+            }
+        }
+        .help(prompt == .none ? "" : "Is this recording a calendar event? Click to link it, or dismiss. Nothing changes until you choose.")
+        .accessibilityLabel("Calendar suggestion: \(label)")
+        .popover(isPresented: $open, arrowEdge: .bottom) {
+            EventPromptChoices(prompt: prompt, link: { open = false; link($0) }, dismiss: { open = false; dismiss() })
+        }
+    }
+}
+
+/// The prompt's choices (T59), also rendered by ui-render.
+struct EventPromptChoices: View {
+    let prompt: CalendarSuggestion.Prompt
+    let link: (CalendarEvent) -> Void
+    let dismiss: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppStyle.grid) {
+            switch prompt {
+            case .one(let e):
+                Text("Is this “\(e.title.isEmpty ? "Untitled event" : e.title)”?").appFont(.headline).fixedSize(horizontal: false, vertical: true)
+                Text(detail(e)).appFont(.caption).foregroundStyle(.secondary)
+                HStack {
+                    Spacer()
+                    Button("Not this", action: dismiss)
+                    Button("Link") { link(e) }.buttonStyle(.borderedProminent)
+                }
+            case .several(let events):
+                Text("Which meeting?").appFont(.headline)
+                ForEach(events) { e in CalendarEventRow(event: e) { link(e) } }
+                HStack { Spacer(); Button("None", action: dismiss) }
+            case .none:
+                EmptyView()
+            }
+            Text("Linking adds the invited names; the event's title is used only if you didn't type one.")
+                .appFont(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(12)
+        .frame(width: 300, alignment: .leading)
+    }
+
+    func detail(_ e: CalendarEvent) -> String {
+        [CalendarLinking.timeRange(start: e.start, end: e.end), e.calendarName].compactMap { $0 }.joined(separator: " · ")
     }
 }
 

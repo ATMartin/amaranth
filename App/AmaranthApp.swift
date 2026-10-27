@@ -25,7 +25,7 @@ struct AmaranthApp: App {
     @State private var live: LiveTextModel
     @State private var incremental: IncrementalProcessor
     /// Calendar access (T56): created without asking; the first prompt comes from a user action.
-    @State private var calendar = CalendarModel()
+    @State private var calendar: CalendarModel
 
     init() {
         let worker = WorkerClient()
@@ -38,6 +38,7 @@ struct AmaranthApp: App {
         // An answer in progress stops at Record: the speech models need the Mac (T54 yields like notes).
         recorder.onStarted = { [weak library] id in library?.answers?.cancel(); library?.recordingStarted(id) }
         recorder.onFinished = { [weak library] id in library?.recordingStopped(id) }
+        recorder.onMeetingChanged = { [weak library] _ in library?.reload() }
         library.notesModelReady = ModelSetupModel.isReady
         // T54: answers from the notes model, only while it can't push the speech models out (notes 0002, processing 0003).
         let answers = AnswerModel(store: recorder.store, worker: worker)
@@ -74,6 +75,9 @@ struct AmaranthApp: App {
         // Core ML compiles each model for this Mac on its first load (about 16 s for ASR): do it now, not on the first job.
         models.onInstalled = { Task { _ = try? await worker.send(.warmUp, timeout: .seconds(600)) } }
         _models = State(initialValue: models)
+        let calendar = CalendarModel()
+        recorder.calendar = calendar   // T59: the suggestion at Record reads it; it never asks for access
+        _calendar = State(initialValue: calendar)
         _worker = State(initialValue: worker)
         _recorder = State(initialValue: recorder)
         _processing = State(initialValue: processing)
@@ -112,7 +116,7 @@ struct AmaranthApp: App {
         }
 
         Settings {
-            SettingsView(models: models, recorder: recorder)
+            SettingsView(models: models, recorder: recorder, calendar: calendar)
         }
     }
 }

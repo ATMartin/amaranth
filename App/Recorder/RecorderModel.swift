@@ -36,6 +36,16 @@ final class RecorderModel {
     /// Called with the new meeting once recording has started, and with the saved meeting after Stop.
     var onStarted: ((MeetingID) -> Void)?
     var onFinished: ((MeetingID) -> Void)?
+    /// Called after the recording's meeting changed outside the session (an approved calendar link, T59).
+    var onMeetingChanged: ((MeetingID) -> Void)?
+    /// Calendar access, for the event suggestion at Record (T59). Never used to ask for access.
+    weak var calendar: CalendarModel?
+    /// The strip's calendar question (T59): only ever a question; `approve(_:)` is the one place it links.
+    private(set) var eventPrompt: CalendarSuggestion.Prompt = .none
+    /// Offered first in the next recording's prompt: the event a "meeting starting" reminder was clicked for (T61).
+    var preferredEventID: String?
+    /// The title this recording got automatically (nothing typed); nil when the user typed one.
+    private var automaticTitle: String?
     private(set) var inputs: [AudioDeviceInfo] = []
     private(set) var state: CaptureState = .idle
     private(set) var elapsed: Double = 0
@@ -55,10 +65,11 @@ final class RecorderModel {
 
     #if DEBUG
     /// UI render self-test only: shows the recording strip without a capture session (state `nil` returns to idle).
-    func showStripForRender(_ state: CaptureState?, elapsed: Double = 3723, health: [SourceHealth] = []) {
+    func showStripForRender(_ state: CaptureState?, elapsed: Double = 3723, health: [SourceHealth] = [], prompt: CalendarSuggestion.Prompt = .none) {
         self.state = state ?? .idle
         self.elapsed = state == nil ? 0 : elapsed
         self.health = state == nil ? [] : health
+        eventPrompt = state == nil ? .none : prompt
     }
     #endif
 
@@ -157,6 +168,8 @@ final class RecorderModel {
         state = .preparing
         let options = RecordingOptions(selection: selection, microphoneUID: mic.uid)
         let title = RecorderPresentation.recordingTitle(typed: self.title, at: Date())
+        automaticTitle = self.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? title : nil
+        eventPrompt = .none
         scratchpad = ""; savedScratchpad = ""; savedUpTo = [:]; diskWarned = false; diskSecondsLeft = nil
         // Starting capture can block while a TCC prompt is open: never on the main thread.
         let store = self.store
@@ -191,7 +204,44 @@ final class RecorderModel {
         poll = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
         }
+        offerEvents()
     }
+
+    /// T59: once capture has started, ask about the calendar event happening now, if the setting is on and access was
+    /// already granted (never asks for access here).
+    private func offerEvents() {
+        let preferred = preferredEventID
+        preferredEventID = nil
+        guard CalendarSettings.suggest(), let calendar else { return }
+        calendar.refresh()
+        guard calendar.status.canRead else { return }
+        let source = calendar.source
+        let now = Date()
+        Task.detached(priority: .utility) {
+            let w = CalendarSuggestion.window(at: now)
+            let found = CalendarSuggestion.candidates(source.events(from: w.start, to: w.end, calendarIDs: nil), at: now, preferred: preferred)
+            await MainActor.run { if self.session != nil { self.eventPrompt = CalendarSuggestion.Prompt(found) } }
+        }
+    }
+
+    /// The user picked `event` in the strip (Link, or a choice under "Which meeting?"): link it, merge its attendees,
+    /// and use its title only if the meeting still has its automatic title.
+    func approve(_ event: CalendarEvent) {
+        eventPrompt = .none
+        guard let store, let id = meetingID else { return }
+        let automatic = automaticTitle
+        Task.detached(priority: .userInitiated) {
+            do {
+                try CalendarSuggestion.approve(event, for: id, in: store, automaticTitle: automatic)
+            } catch {
+                await MainActor.run { self.error = "Could not link the calendar event: \(error.localizedDescription)" }
+            }
+            await MainActor.run { self.onMeetingChanged?(id) }
+        }
+    }
+
+    /// "Not this" / "None" / closing the prompt: nothing changes; the header chip can still link later.
+    func dismissEventPrompt() { eventPrompt = .none }
 
     private func tick() {
         guard let s = session else { return }
@@ -256,6 +306,8 @@ final class RecorderModel {
         incremental?.stop()
         session = nil
         title = ""
+        eventPrompt = .none
+        automaticTitle = nil
         state = r.finalState
         loadDefaults()
         processing?.setRecording(false)

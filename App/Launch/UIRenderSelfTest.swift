@@ -246,6 +246,16 @@ enum UIRenderSelfTest {
                                       diskWarning: s.2, folder: nil, pause: {}, resume: {}, stop: {})
             }
         }.padding(), "recording-strip", size: CGSize(width: 520, height: 360))
+        // The calendar question in the strip (T59): one match, several.
+        let promptEvents = Self.calendarEvents(on: Date())
+        _ = await host(VStack(alignment: .leading, spacing: 14) {
+            ForEach(Array([CalendarSuggestion.Prompt.one(promptEvents[0]), .one(Self.longTitleEvent), .several(Array(promptEvents.prefix(2)))].enumerated()), id: \.offset) { _, p in
+                RecordingStripContent(state: .recording, elapsed: 75, health: stripSamples[0].1, savedUpTo: [:], diskWarning: nil, folder: nil,
+                                      pause: {}, resume: {}, stop: {}, eventPrompt: p)
+            }
+        }.padding(), "recording-strip-calendar", size: CGSize(width: 720, height: 170))
+        _ = await host(EventPromptChoices(prompt: .one(promptEvents[0]), link: { _ in }, dismiss: {}), "event-prompt-one", size: CGSize(width: 300, height: 170))
+        _ = await host(EventPromptChoices(prompt: .several(Array(promptEvents.prefix(2))), link: { _ in }, dismiss: {}), "event-prompt-several", size: CGSize(width: 300, height: 220))
         // Health popover content (T34).
         _ = await host(RecordingHealthDetails(health: [
             .init(source: .microphone, status: .healthy, peakLevelDBFS: -18, deviceName: "MacBook Pro Microphone"),
@@ -272,6 +282,10 @@ enum UIRenderSelfTest {
         ], dismiss: { _ in }), "recorder-banner", size: CGSize(width: 900, height: 200))
         // Settings → Recording defaults (T30).
         _ = await host(RecordingSettings(recorder: recorder), "settings-recording", size: CGSize(width: 560, height: 560))
+        // Settings → Calendar (T59, T61): access allowed, and not yet set up.
+        _ = await host(CalendarSettingsView(calendar: calendar, recorder: recorder).defaultAppStorage(collapsed), "settings-calendar", size: CGSize(width: 560, height: 460))
+        _ = await host(CalendarSettingsView(calendar: CalendarModel(source: FakeCalendarSource(status: .notDetermined)), recorder: recorder).defaultAppStorage(collapsed),
+                       "settings-calendar-not-set-up", size: CGSize(width: 560, height: 460))
         // Settings → Appearance: transcript style cards, each selected in turn (throwaway defaults, at the Settings size).
         _ = await host(AppearanceSettings().defaultAppStorage(collapsed), "settings-appearance-columns", size: CGSize(width: 560, height: 460))
         collapsed.set(TranscriptStyle.bubbles.rawValue, forKey: TranscriptStyle.key)
@@ -309,6 +323,13 @@ enum UIRenderSelfTest {
             recorder.showStripForRender(.recording, health: [
                 .init(source: .microphone, status: .healthy, peakLevelDBFS: -18, deviceName: "MacBook Pro Microphone"),
                 .init(source: .systemOutput, status: .healthy, peakLevelDBFS: -24, deviceName: "System audio")])
+            // T59: also with the calendar question showing (a long title, and "Which meeting?").
+            let prompts: [(String, CalendarSuggestion.Prompt)] = [("", .none), ("-calendar-one", .one(Self.longTitleEvent)),
+                                                                  ("-calendar-several", .several(Array(Self.calendarEvents(on: Date()).prefix(2))))]
+            for (suffix, prompt) in prompts {
+            recorder.showStripForRender(.recording, health: [
+                .init(source: .microphone, status: .healthy, peakLevelDBFS: -18, deviceName: "MacBook Pro Microphone"),
+                .init(source: .systemOutput, status: .healthy, peakLevelDBFS: -24, deviceName: "System audio")], prompt: prompt)
             for width in [1100.0, 900.0] {
                 let rec = NSHostingView(rootView: MainView().textSize(textSize).environment(worker).environment(models).environment(recorder)
                     .environment(library).environment(playback).environment(live).environment(calendar).frame(width: width, height: 600))
@@ -324,15 +345,17 @@ enum UIRenderSelfTest {
                 let hidden = items.filter { item in !visible.contains { $0 === item } }
                     .map { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label }
                 let pass = hidden.isEmpty
-                SelfTest.log(["step": "toolbar-recording", "width": "\(Int(width))", "items": "\(items.count)", "hidden": hidden.joined(separator: " | "), "ok": "\(pass)"])
+                SelfTest.log(["step": "toolbar-recording", "prompt": suffix.isEmpty ? "none" : String(suffix.dropFirst()), "width": "\(Int(width))",
+                              "items": "\(items.count)", "hidden": hidden.joined(separator: " | "), "ok": "\(pass)"])
                 if !pass { ok = false }
                 if let frameView = recWindow.contentView?.superview {
                     let rep = frameView.bitmapImageRepForCachingDisplay(in: frameView.bounds)!
                     frameView.cacheDisplay(in: frameView.bounds, to: rep)
-                    try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "main-recording-toolbar-\(Int(width)).png"))
+                    try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "main-recording-toolbar-\(Int(width))\(suffix).png"))
                 }
                 recWindow.orderOut(nil)
                 recWindow.contentView = nil
+            }
             }
             recorder.showStripForRender(nil)
             #endif
@@ -485,6 +508,10 @@ enum UIRenderSelfTest {
                           end: Calendar.current.startOfDay(for: date).addingTimeInterval(86_400), isAllDay: true, calendarName: "Work"),
         ]
     }
+
+    /// A long event title, to check the strip's question truncates instead of pushing Stop into the toolbar overflow.
+    static let longTitleEvent = CalendarEvent(identifier: "evt-long", title: "Quarterly roadmap sync with the platform and infrastructure teams",
+                                              start: Date(), end: Date().addingTimeInterval(3600), calendarName: "Work")
 
     /// Every SourceHealth status appears in at least one strip, plus the low-disk glyph.
     static let stripSamples: [(CaptureState, [SourceHealth], String?)] = [

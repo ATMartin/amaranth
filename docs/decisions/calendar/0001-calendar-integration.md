@@ -49,3 +49,23 @@ implementation choices the spec left open, task by task.
   (`CalendarSettings.keepEmailsKey`, off by default; the switch itself is in Settings → Calendar, T61). The people
   editor keeps a stored email when the name is kept. JSON exports drop emails, so exports carry only the T49 fields.
 - **"Changed" ignores attendees.** The live comparison looks at identifier, title, times and calendar only.
+
+## T59 — the suggestion at Record
+
+- **Matching** (`CalendarSuggestion.candidates`): events in progress, or starting within 10 minutes inclusive; all-day,
+  cancelled and declined ones ignored; in-progress first (latest start first), then upcoming (soonest first); a
+  reminder's event (T61) first. Read from the calendar only after capture has started, only with access already
+  granted and the setting on (default on), and never asks for access.
+- **Only a question.** `RecorderModel.approve(_:)` is the one place a suggestion links, and only a button in the
+  prompt calls it. Approval goes through `CalendarSuggestion.approve` → `CalendarLinking.link` (attendees merge as in
+  T58); the event title replaces the meeting title only if it is still the automatic title it got at Record.
+- **Deviation from the spec's layout.** The spec asked for "<title>?" with Link / Not this inline in the strip. At a
+  900 pt window with the sidebar open, the detail toolbar has about 75 pt to spare, so inline buttons pushed Export
+  and Delete into the overflow menu (measured by the ui-render toolbar check). The strip therefore shows one compact
+  button, "📅 <title>?" (one match) or "📅 Which event?" (several), truncated to 74 pt. Clicking it opens the full
+  question with the time and calendar, and Link / Not this (or each event and None). Ignoring it changes nothing.
+- **Rename races.** The recording session used to re-save its own copy of the meeting, title included, on every state
+  change, which would undo an approved rename (and any rename made while recording). `upsertMeeting(_:keepingStoredTitle:)`
+  now keeps the stored title for the session's updates.
+- **Settings → Calendar** starts here with the access row and "Suggest calendar events when recording"; turning it on
+  is a user action and may show the prompt (never while recording).
