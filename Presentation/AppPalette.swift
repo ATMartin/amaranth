@@ -31,7 +31,7 @@ public enum AppAppearance: String, CaseIterable, Identifiable, Sendable {
 }
 
 /// Colour tokens with light and dark variants (T43), now the Inner Circle / Forest identity (docs/design-handoff): cream
-/// surfaces and wine accents in light, forest surfaces with cream text and blush accents in dark. The app reads the same
+/// surfaces and wine accents in light, forest surfaces with cream text and a rose amaranth accent in dark. The app reads the same
 /// values as named colours from `App/Resources/Assets.xcassets` (`AmaranthCanvas` …); these copies feed the contrast
 /// checks in `Tests/UI/PaletteContrastTests.swift`, which also check the catalog matches them.
 public enum AppPalette {
@@ -58,16 +58,17 @@ public enum AppPalette {
     public static let text = Pair(light: 0x382A2F, dark: 0xF5F0E6)
     /// Metadata and secondary copy.
     public static let secondaryText = Pair(light: 0x716068, dark: 0xB9C3B5)
-    /// Selected tabs, time and source links, playback, focus and emphasised actions.
-    public static let accent = Pair(light: 0x752C44, dark: 0xE3A4B6)
+    /// Selected tabs, time and source links, playback, focus and emphasised actions. Dark is rose amaranth (T74, an
+    /// experiment the user chose): 3.1:1 on the surface, under AA for text; see `accentBelowAA`.
+    public static let accent = Pair(light: 0x752C44, dark: 0xC25A7C)
     /// Local status and botanical detail.
     public static let sage = Pair(light: 0x416552, dark: 0xA5C5A2)
     /// Control outlines and structural dividers.
     public static let controlBorder = Pair(light: 0x97828B, dark: 0x738375)
     /// The selected meeting row (with an accent edge).
     public static let selection = Pair(light: 0xE9DCD9, dark: 0x3C4138)
-    /// Labels on a filled accent control: cream in light, forest in dark (not white).
-    public static let onAccent = Pair(light: 0xFFFAF5, dark: 0x28342C)
+    /// Labels on a filled accent control: cream in both (not white). Dark: 3.7:1 on the rose accent (forest was 3.1:1).
+    public static let onAccent = Pair(light: 0xFFFAF5, dark: 0xF5F0E6)
     /// Audio-quality notices.
     public static let warning = Pair(light: 0x8D431A, dark: 0xEDB48B)
     /// Destructive actions, failures and the recording dot (always beside a word or shape).
@@ -79,6 +80,10 @@ public enum AppPalette {
         ("AmaranthAccent", accent), ("AmaranthSage", sage), ("AmaranthControlBorder", controlBorder), ("AmaranthSelection", selection),
         ("AmaranthOnAccent", onAccent), ("AmaranthWarning", warning), ("AmaranthDanger", danger),
     ]
+
+    /// T74: the dark accent is deliberately below AA for text (user decision 2026-10-28, an experiment; docs/decisions/ui/
+    /// 0004). These are its measured floors in dark mode, which the contrast tests hold it to instead of 4.5:1. Light keeps AA.
+    public static let accentBelowAA: (onSurfaces: Double, onSelection: Double) = (onSurfaces: 3, onSelection: 2.5)
 
     /// Status colours keep their meaning (green = OK, orange = needs attention, red = failed), always with an icon or word.
     public static let ok = sage

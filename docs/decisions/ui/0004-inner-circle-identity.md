@@ -29,11 +29,11 @@ for `Tests/UI/PaletteContrastTests.swift`. That test also checks that the catalo
 | AmaranthSurface | `Color.surface` | notes, transcript, fields, dialogs | `#FFFAF5` | `#28342C` |
 | AmaranthText | `Color.brandText` | primary copy | `#382A2F` | `#F5F0E6` |
 | AmaranthSecondaryText | `Color.brandSecondary` | metadata | `#716068` | `#B9C3B5` |
-| AmaranthAccent | `Color.brandAccent`, `Color.link`, global accent | tabs, links, playback, focus, primary actions | `#752C44` | `#E3A4B6` |
+| AmaranthAccent | `Color.brandAccent`, `Color.link`, global accent | tabs, links, playback, focus, primary actions | `#752C44` | `#C25A7C` (T74) |
 | AmaranthSage | `Color.sage`, `Color.statusOK` | local status, decisions edge | `#416552` | `#A5C5A2` |
 | AmaranthControlBorder | `Color.controlBorder` | outlines, hairlines | `#97828B` | `#738375` |
 | AmaranthSelection | `Color.selection` | selected meeting/match/jumped-to line, with a 3 pt accent edge | `#E9DCD9` | `#3C4138` |
-| AmaranthOnAccent | `Color.onAccent` | labels on a filled accent button | `#FFFAF5` | `#28342C` |
+| AmaranthOnAccent | `Color.onAccent` | labels on a filled accent button | `#FFFAF5` | `#F5F0E6` (T74) |
 | AmaranthWarning | `Color.statusAttention` | audio gaps, flags, details to confirm | `#8D431A` | `#EDB48B` |
 | AmaranthDanger | `Color.statusFailed` | destructive actions, failures, record dot | `#9A343E` | `#EDB0B9` |
 
@@ -45,6 +45,14 @@ Controls that macOS would fill with the accent and label in white (the segmented
 button-style toggle, the `List` key-window selection) are drawn with `BrandSegmented`, `.brandProminent`,
 `BrandChipToggleStyle`, and the custom library list, all in `App/Shared/BrandStyles.swift` and `LibraryView.swift`.
 White on the dark-mode blush is about 1.6:1.
+
+### Dark accent below AA (T74, 2026-10-28, experiment)
+The blush `#E3A4B6` read too light in dark mode (screencast 2026-10-28). The user chose rose amaranth `#C25A7C`, closer
+to the flower and to the light-mode wine, knowing it is **below WCAG AA for text**: 3.1:1 on the Forest surface,
+3.7:1 on the canvas, 2.5:1 on Selection (the selected row's edge, links on the jumped-to transcript line). Labels on a
+filled accent control are cream `#F5F0E6` (3.7:1; forest would be 3.1:1). The contrast test holds these to
+`AppPalette.accentBelowAA` (3:1 on surfaces, 2.5:1 on Selection) as a documented exception rather than dropping the
+pairs. Light mode is unchanged and keeps AA. Revisit before release: a lighter step, or bolder weights for accent text.
 
 ## Layout
 - Library: 160–320 pt (200 ideal), grouped by day (Today, Yesterday, weekday, date), each row "9:30 AM · 24 min".

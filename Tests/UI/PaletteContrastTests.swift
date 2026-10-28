@@ -20,7 +20,7 @@ struct PaletteContrastTests {
                 }
             }
             let link = P.contrast(P.link.resolved(dark: k), P.windowBackground.resolved(dark: k))
-            #expect(link >= 4.5, "link in \(mode): \(link)")
+            #expect(link >= (k ? P.accentBelowAA.onSurfaces : 4.5), "link in \(mode): \(link)")
         }
     }
 
@@ -46,28 +46,41 @@ struct PaletteContrastTests {
 
     /// The handoff's measured pairs (docs/design-handoff/Design/contrast-report.json) plus the pairs the app adds:
     /// text and metadata on the selected sidebar row, and status colours on their own tinted strips.
+    /// Exception (T74): the dark accent's text pairs are held to `AppPalette.accentBelowAA` instead of 4.5:1, on purpose.
     @Test func brandPairsMeetTheirMinimums() {
         for (mode, k) in Self.modes {
             func check(_ fg: P.Pair, _ bg: P.Pair, _ minimum: Double, _ what: String) {
                 let c = P.contrast(fg.resolved(dark: k), bg.resolved(dark: k))
                 #expect(c >= minimum, "\(what) in \(mode): \(c)")
             }
+            let accentText = k ? P.accentBelowAA.onSurfaces : 4.5
             for bg in [("surface", P.surface), ("canvas", P.canvas)] {
-                for fg in [("text", P.text), ("secondary", P.secondaryText), ("accent", P.accent), ("sage", P.sage),
-                           ("warning", P.warning), ("danger", P.danger)] {
+                for fg in [("text", P.text), ("secondary", P.secondaryText), ("sage", P.sage), ("warning", P.warning), ("danger", P.danger)] {
                     check(fg.1, bg.1, 4.5, "\(fg.0) on \(bg.0)")
                 }
+                check(P.accent, bg.1, accentText, "accent on \(bg.0)")
                 check(P.controlBorder, bg.1, 3, "control border on \(bg.0)")
             }
-            check(P.onAccent, P.accent, 4.5, "on-accent label on accent")
+            check(P.onAccent, P.accent, accentText, "on-accent label on accent")
             check(P.text, P.selection, 4.5, "text on selected row")
             // The selected row draws its metadata in the text colour: secondary text is 4.39:1 on Selection in light.
-            check(P.accent, P.selection, 3, "selected row's accent edge")
-            // The selected row's status glyph and the jumped-to transcript line's links and flags.
-            for fg in [("accent", P.accent), ("sage", P.sage), ("warning", P.warning), ("danger", P.danger)] {
+            // The accent edge and links on the jumped-to transcript line: 2.5:1 in dark (T74 exception).
+            check(P.accent, P.selection, k ? P.accentBelowAA.onSelection : 4.5, "accent on Selection")
+            // The selected row's status glyph and the jumped-to transcript line's flags.
+            for fg in [("sage", P.sage), ("warning", P.warning), ("danger", P.danger)] {
                 check(fg.1, P.selection, 4.5, "\(fg.0) on Selection")
             }
         }
+    }
+
+    /// T74: the exception stays narrow: the dark accent sits just above its floors (so a lighter step would be noticed)
+    /// and light mode keeps AA.
+    @Test func darkAccentExceptionIsDocumentedAndTight() {
+        let surface = P.contrast(P.accent.dark, P.surface.dark), onAccent = P.contrast(P.onAccent.dark, P.accent.dark)
+        #expect(surface < 4.5 && surface >= P.accentBelowAA.onSurfaces, "accent on Forest surface: \(surface)")
+        #expect(onAccent < 4.5 && onAccent >= P.accentBelowAA.onSurfaces, "cream on accent: \(onAccent)")
+        #expect(P.contrast(P.onAccent.dark, P.accent.dark) > P.contrast(P.surface.dark, P.accent.dark), "cream reads better than forest")
+        #expect(P.contrast(P.accent.light, P.surface.light) >= 4.5)
     }
 
     /// The asset catalog the app draws with holds exactly these values in both appearances.

@@ -2323,7 +2323,7 @@
       "id": "T74",
       "title": "Darker dark-mode accent (rose amaranth)",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): dark accent #C25A7C, cream on-accent, AppPalette.accentBelowAA exception",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",
