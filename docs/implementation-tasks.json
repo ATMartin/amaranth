@@ -2424,7 +2424,7 @@
       "id": "T78",
       "title": "Ask: clearing also empties and focuses the field",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): LibraryModel.clearAsk (\u00d7 and Esc) empties the question and results and refocuses the field",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",

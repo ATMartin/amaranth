@@ -164,6 +164,15 @@ final class LibraryModel {
         answers?.endSession()
     }
 
+    /// × and Esc (T78): clear the results and the question, then put the cursor back in the ask field for the next one.
+    func clearAsk() {
+        closeAskPanel()
+        query = ""
+        hits = []
+        askFocusPending = true
+        askFocusRequest += 1
+    }
+
     private func runSearch() {
         guard let store, !query.trimmingCharacters(in: .whitespaces).isEmpty else { hits = []; return }
         // Questions search by their content words (“when will they ship?” → “ship”), like the retriever (T54).

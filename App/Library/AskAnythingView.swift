@@ -5,7 +5,8 @@ import Storage
 
 /// The Ask pane (T52/T54; a right-hand inspector since the Inner Circle handoff): the scope switch at the top, the
 /// answer and the matches in the middle, the field at the bottom. Return searches and asks the local model; ↑/↓ pick a
-/// match, Return opens it (the results stay, so the next one is a click away), Esc clears them. ⌘K opens the pane and
+/// match, Return opens it (the results stay, so the next one is a click away), × or Esc clears the question and results
+/// and leaves the cursor in the field. ⌘K opens the pane and
 /// focuses the field with All meetings as the scope.
 struct AskPane: View {
     @Environment(LibraryModel.self) private var library
@@ -21,9 +22,9 @@ struct AskPane: View {
                     Spacer()
                     if library.askPanelOpen {
                         Text(countLabel(groups)).appFont(.caption2).foregroundStyle(Color.brandSecondary)
-                        Button { library.closeAskPanel() } label: { Image(systemName: "xmark.circle.fill") }
+                        Button { library.clearAsk() } label: { Image(systemName: "xmark.circle.fill") }
                             .buttonStyle(.borderless).foregroundStyle(Color.brandSecondary)
-                            .help("Clear the results (Esc)").accessibilityLabel("Clear results")
+                            .help("Clear the question and results (Esc)").accessibilityLabel("Clear")
                     }
                 }
                 BrandSegmented(options: AskScope.allCases, selection: $library.askScope) { $0.rawValue }
@@ -127,7 +128,7 @@ struct AskPane: View {
     }
 }
 
-/// The ask field at the bottom of the pane: Return asks, ↑/↓ move through the matches, Esc clears them.
+/// The ask field at the bottom of the pane: Return asks, ↑/↓ move through the matches, Esc clears the question and them.
 struct AskField: View {
     @Environment(LibraryModel.self) private var library
     @FocusState private var focused: Bool
@@ -144,8 +145,8 @@ struct AskField: View {
                 .onKeyPress(.downArrow) { move(1) }
                 .onKeyPress(.upArrow) { move(-1) }
                 .onKeyPress(.escape) {
-                    guard library.askPanelOpen else { return .ignored }
-                    library.closeAskPanel()
+                    guard library.askPanelOpen || !library.query.isEmpty else { return .ignored }
+                    library.clearAsk()
                     return .handled
                 }
                 .accessibilityLabel("Ask anything")

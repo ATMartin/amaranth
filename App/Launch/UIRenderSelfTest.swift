@@ -493,7 +493,13 @@ enum UIRenderSelfTest {
             SelfTest.log(["step": "ask", "thisMeetingHits": "\(thisHits.count)", "allHits": "\(library.hits.count)", "thisScopeOK": "\(thisOK)",
                           "allScopeOK": "\(allOK)", "arrowsOK": "\(selOK)", "jumpRow": library.focusRowID ?? "-", "ok": "\(thisOK && allOK && selOK && jumpOK)"])
             if !(thisOK && allOK && selOK && jumpOK) { ok = false }
-            library.query = ""
+            // T78: × / Esc clears the question too and asks for the field's focus.
+            let focusBefore = library.askFocusRequest
+            library.clearAsk()
+            let clearOK = library.query.isEmpty && !library.askPanelOpen && library.hits.isEmpty && library.askFocusRequest == focusBefore + 1
+            SelfTest.log(["step": "ask-clear", "query": library.query, "panelOpen": "\(library.askPanelOpen)",
+                          "focusRequested": "\(library.askFocusRequest > focusBefore)", "ok": "\(clearOK)"])
+            if !clearOK { ok = false }
             library.focusRowID = nil
         }
         // The sidebar has no search field any more (T52); ⌘K focuses the ask field instead.
