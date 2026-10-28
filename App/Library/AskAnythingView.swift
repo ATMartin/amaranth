@@ -63,7 +63,7 @@ struct AskPane: View {
         VStack(alignment: .leading, spacing: AppStyle.grid + 2) {
             Text("Ask about your meetings.").appFont(.display).foregroundStyle(Color.brandText).fixedSize(horizontal: false, vertical: true)
             Text("Find an answer, then follow it back to the line it came from. Answers come from the model on this Mac.")
-                .appFont(.callout).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
+                .appFont(.callout).italic().foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
         }
         .padding(AppStyle.double).padding(.top, AppStyle.double)
     }

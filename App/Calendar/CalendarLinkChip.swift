@@ -97,7 +97,7 @@ struct CalendarEventPicker: View {
             TextField("Search events", text: $query).textFieldStyle(.roundedBorder).focused($searchFocused)
             if shown.isEmpty {
                 Text(events.isEmpty ? "No events in your calendars that day." : "No events match “\(query)”.")
-                    .appFont(.callout).foregroundStyle(Color.brandSecondary).frame(maxWidth: .infinity, minHeight: 60)
+                    .appFont(.callout).italic().foregroundStyle(Color.brandSecondary).frame(maxWidth: .infinity, minHeight: 60)
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 2) {
@@ -107,8 +107,6 @@ struct CalendarEventPicker: View {
                 .frame(maxHeight: 280)
                 .fixedSize(horizontal: false, vertical: true)
             }
-            Text("Links a copy of the event's title, time and invited names. Nothing is written to your calendar.")
-                .appFont(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
         }
         .padding(12)
         .frame(width: 340)

@@ -2495,7 +2495,7 @@
       "id": "T81",
       "title": "Copy: calendar link popover and Ask intro",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): calendar popover footnote removed, empty states italic; Ask intro italic",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",
