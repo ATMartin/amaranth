@@ -2349,7 +2349,7 @@
       "id": "T75",
       "title": "Title bar: no app title, no grey bubbles, canvas colour, smaller icons",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): no title, no shared glass backgrounds, Canvas title bar, compact sun/moon, list-icon sidebar toggle",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",

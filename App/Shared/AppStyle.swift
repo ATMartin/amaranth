@@ -178,6 +178,8 @@ extension AppAppearance {
 /// T44: sun/moon toolbar button. Shows where a click goes (sun in dark mode, moon in light mode) and stores Light or
 /// Dark; ⌘⇧L lives on the View-menu item, which does the same.
 struct AppearanceToggle: View {
+    /// The toolbar's smaller sun/moon (T75): a quiet secondary control, not the size of the main actions.
+    var compact = false
     @AppStorage(AppAppearance.key) private var appearance = AppAppearance.system.rawValue
     @Environment(\.colorScheme) private var scheme
 
@@ -185,6 +187,7 @@ struct AppearanceToggle: View {
         let dark = scheme == .dark
         Button { appearance = AppAppearance.toggled(effectiveIsDark: dark).rawValue } label: {
             Label(AppAppearance.toggleMenuTitle(effectiveIsDark: dark), systemImage: dark ? "sun.max" : "moon")
+                .font(compact ? .system(size: AppStyle.iconLarge - 1) : nil)
         }
         .help(AppAppearance.toggleHelp(effectiveIsDark: dark))
     }

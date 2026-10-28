@@ -12,10 +12,12 @@ struct MainView: View {
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
     /// The Ask pane on the right (Inner Circle handoff); ⌘K opens it.
     @AppStorage("askPaneShown") private var askShown = true
+    @State private var columns = NavigationSplitViewVisibility.all
 
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columns) {
             LibrarySidebar()
+                .toolbar(removing: .sidebarToggle)
                 .navigationSplitViewColumnWidth(min: 160, ideal: 200, max: 320)
         } detail: {
             Group {
@@ -42,7 +44,7 @@ struct MainView: View {
             .background(Color.surface)
             // In the detail column's toolbar, not over the sidebar: with the sidebar open the sidebar's toolbar area is too
             // narrow for the recording strip, and AppKit moved Stop into the overflow menu.
-            .toolbar { ToolbarItem(placement: .navigation) { RecordToolbarControl(model: recorder).fixedSize() } }
+            .toolbar { ToolbarItem(placement: .navigation) { RecordToolbarControl(model: recorder).fixedSize() }.sharedBackgroundVisibility(.hidden) }
             .inspector(isPresented: $askShown) {
                 AskPane()
                     .inspectorColumnWidth(min: 230, ideal: 250, max: 380)
@@ -52,13 +54,30 @@ struct MainView: View {
                             Button { askShown.toggle() } label: { Label(askShown ? "Hide Ask" : "Show Ask", systemImage: "sidebar.trailing") }
                                 .help(askShown ? "Hide the Ask pane" : "Ask about your meetings (⌘K)")
                         }
+                        .sharedBackgroundVisibility(.hidden)
                     }
             }
         }
         .foregroundStyle(Color.brandText, Color.brandSecondary, Color.controlBorder)
         .environment(\.showDetails, showDetails)
         .onChange(of: library.askFocusRequest) { _, _ in askShown = true }
+        // T75: no window title (the menu bar names the app), no glass capsules behind the items, and the toolbar drawn in
+        // Canvas like the sidebar, in both appearances.
+        .toolbar(removing: .title)
+        .toolbarBackground(Color.canvas, for: .windowToolbar)
+        .toolbarBackgroundVisibility(.visible, for: .windowToolbar)
+        .canvasTitleBar()
         .toolbar {
+            // The system sidebar toggle, with a list icon (T75). View ▸ Show/Hide Sidebar keeps ⌃⌘S.
+            ToolbarItem(placement: .navigation) {
+                Button {
+                    withAnimation { columns = columns == .detailOnly ? .all : .detailOnly }
+                } label: {
+                    Label(columns == .detailOnly ? "Show Sidebar" : "Hide Sidebar", systemImage: "list.bullet")
+                }
+                .help(columns == .detailOnly ? "Show the meeting list (⌃⌘S)" : "Hide the meeting list (⌃⌘S)")
+            }
+            .sharedBackgroundVisibility(.hidden)
             ToolbarItem(placement: .navigation) {
                 Button { showingModels = true } label: {
                     if case .ready = models.status { Label("Models ready", systemImage: "checkmark.seal") }
@@ -67,7 +86,8 @@ struct MainView: View {
                 }
                 .help("Local speech and notes models")
             }
-            ToolbarItem(placement: .primaryAction) { AppearanceToggle() }
+            .sharedBackgroundVisibility(.hidden)
+            ToolbarItem(placement: .primaryAction) { AppearanceToggle(compact: true) }.sharedBackgroundVisibility(.hidden)
         }
         .sheet(isPresented: $showingModels) {
             ModelSetupView(model: models)

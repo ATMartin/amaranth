@@ -15,6 +15,24 @@ extension View {
     /// edge stay reachable for moving and resizing. Applies when the window appears (including a restored frame) and
     /// whenever it moves to another screen or the screen's layout changes.
     func windowFitsScreen() -> some View { background(WindowFitsScreen()) }
+
+    /// T75: the title bar and toolbar area in Canvas (the sidebar's colour) in both appearances, instead of the system's
+    /// grey: the hosting window's background shows through a transparent title bar.
+    func canvasTitleBar() -> some View { background(CanvasTitleBar()) }
+}
+
+private struct CanvasTitleBar: NSViewRepresentable {
+    func makeNSView(context: Context) -> TitleBarView { TitleBarView() }
+    func updateNSView(_ nsView: TitleBarView, context: Context) {}
+
+    final class TitleBarView: NSView {
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            guard let window else { return }
+            window.titlebarAppearsTransparent = true
+            window.backgroundColor = NSColor(named: "AmaranthCanvas")
+        }
+    }
 }
 
 private struct WindowFitsScreen: NSViewRepresentable {
