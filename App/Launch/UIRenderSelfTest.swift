@@ -305,6 +305,52 @@ enum UIRenderSelfTest {
                        "speaker-rename-no-people", size: CGSize(width: 420, height: 160))
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
         _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 180, height: 760))   // T80: the ideal width
+        // Lower Garden: each size drawn with the watermark and with Reduce Transparency on (no watermark), then compared.
+        // Nothing may differ in the faded-out top 20% or behind the opaque footer; the 58–76% band must show the garden.
+        // Increase Contrast alone must also leave the watermark blank.
+        func bitmap<V: View>(_ v: V, _ name: String, size: CGSize) async -> NSBitmapImageRep {
+            let view = makeView(v, size: size)
+            view.layoutSubtreeIfNeeded()
+            try? await Task.sleep(for: .milliseconds(600))
+            view.layoutSubtreeIfNeeded()
+            let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)!
+            view.cacheDisplay(in: view.bounds, to: rep)
+            try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "\(name).png"))
+            return rep
+        }
+        /// Pixels in rows `from..<to` (fractions of the height) whose colour differs between `a` and `b`.
+        func differing(_ a: NSBitmapImageRep, _ b: NSBitmapImageRep, from: Double, to: Double) -> Int {
+            let h = Double(a.pixelsHigh)
+            var n = 0
+            for y in Int(h * from)..<Int(h * to) {
+                for x in 0..<a.pixelsWide {
+                    guard let p = a.colorAt(x: x, y: y)?.usingColorSpace(.sRGB), let q = b.colorAt(x: x, y: y)?.usingColorSpace(.sRGB) else { continue }
+                    if max(abs(p.redComponent - q.redComponent), abs(p.greenComponent - q.greenComponent), abs(p.blueComponent - q.blueComponent)) > 1.5 / 255 { n += 1 }
+                }
+            }
+            return n
+        }
+        var gardenOK = true
+        for size in [CGSize(width: 160, height: 760), CGSize(width: 220, height: 760), CGSize(width: 320, height: 760),
+                     CGSize(width: 220, height: 420), CGSize(width: 220, height: 1000)] {
+            let name = "sidebar-garden-\(Int(size.width))x\(Int(size.height))"
+            let shown = await bitmap(LibrarySidebar(), name, size: size)
+            let plain = await bitmap(LibrarySidebar().environment(\._accessibilityReduceTransparency, true), name + "-reduce-transparency", size: size)
+            let footer = 30 / size.height   // the footer is taller than 30 pt at every text size
+            let top = differing(shown, plain, from: 0, to: 0.2)
+            let band = differing(shown, plain, from: 0.58, to: 0.76)
+            let bottom = differing(shown, plain, from: 1 - footer, to: 1)
+            let pass = top == 0 && bottom == 0 && band > shown.pixelsWide
+            SelfTest.log(["step": "lower-garden", "size": name, "top": "\(top)", "band": "\(band)", "footer": "\(bottom)", "ok": "\(pass)"])
+            if !pass { gardenOK = false }
+        }
+        let gardenSize = CGSize(width: 220, height: 760)
+        let canvasOnly = await bitmap(Color.canvas, "lower-garden-canvas", size: gardenSize)
+        let gardenAlone = await bitmap(Color.canvas.overlay { LowerGardenWatermark() }, "lower-garden-alone", size: gardenSize)
+        let highContrast = await bitmap(Color.canvas.overlay { LowerGardenWatermark() }.environment(\._colorSchemeContrast, .increased), "lower-garden-increase-contrast", size: gardenSize)
+        let aloneOK = differing(gardenAlone, canvasOnly, from: 0.58, to: 0.76) > 0 && differing(highContrast, canvasOnly, from: 0, to: 1) == 0
+        SelfTest.log(["step": "lower-garden-contrast", "ok": "\(aloneOK)"])
+        if !(gardenOK && aloneOK) { ok = false }
         // T40: the folder filter. All meetings above; here one folder's meetings, and the counts beside each row.
         let rows = library.folderRows
         let rowsOK = rows.map(\.name) == [LibraryFolders.allMeetingsTitle, LibraryFolders.unsortedTitle, "Acme", "Hiring"]

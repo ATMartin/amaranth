@@ -136,6 +136,10 @@ extension Color {
     static let selection = Color("AmaranthSelection")
     /// Labels on a filled accent control.
     static let onAccent = Color("AmaranthOnAccent")
+    /// The time and length line on the selected sidebar card (Lower Garden).
+    static let selectedMetadata = Color("AmaranthSelectedMetadata")
+    /// The sidebar's botanical watermark (Lower Garden), drawn at 12%.
+    static let watermarkTint = Color("AmaranthWatermarkTint")
 
     /// Status colours: they keep their meaning (green = OK, orange = needs attention, red = failed) and always sit beside
     /// an icon or a word.

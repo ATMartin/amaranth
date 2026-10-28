@@ -63,7 +63,8 @@ struct PaletteContrastTests {
             }
             check(P.onAccent, P.accent, accentText, "on-accent label on accent")
             check(P.text, P.selection, 4.5, "text on selected row")
-            // The selected row draws its metadata in the text colour: secondary text is 4.39:1 on Selection in light.
+            // The selected row draws its metadata in Selected Metadata (Lower Garden): secondary text is 4.39:1 on Selection in light.
+            check(P.selectedMetadata, P.selection, 4.5, "selected-row metadata on Selection")
             // The accent edge and links on the jumped-to transcript line: 2.5:1 in dark (T74 exception).
             check(P.accent, P.selection, k ? P.accentBelowAA.onSelection : 4.5, "accent on Selection")
             // The selected row's status glyph and the jumped-to transcript line's flags.

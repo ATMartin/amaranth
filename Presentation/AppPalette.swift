@@ -73,12 +73,17 @@ public enum AppPalette {
     public static let warning = Pair(light: 0x8D431A, dark: 0xEDB48B)
     /// Destructive actions, failures and the recording dot (always beside a word or shape).
     public static let danger = Pair(light: 0x9A343E, dark: 0xEDB0B9)
+    /// Lower Garden (docs/lower-garden-handoff): the tint of the sidebar's botanical watermark, drawn at 12% (decorative).
+    public static let watermarkTint = Pair(light: 0x416552, dark: 0xA5C5A2)
+    /// The time and length line on the selected sidebar card.
+    public static let selectedMetadata = Pair(light: 0x6D5C64, dark: 0xB9C3B5)
 
     /// Every brand token with its asset-catalog name.
     public static let named: [(name: String, pair: Pair)] = [
         ("AmaranthCanvas", canvas), ("AmaranthSurface", surface), ("AmaranthText", text), ("AmaranthSecondaryText", secondaryText),
         ("AmaranthAccent", accent), ("AmaranthSage", sage), ("AmaranthControlBorder", controlBorder), ("AmaranthSelection", selection),
         ("AmaranthOnAccent", onAccent), ("AmaranthWarning", warning), ("AmaranthDanger", danger),
+        ("AmaranthWatermarkTint", watermarkTint), ("AmaranthSelectedMetadata", selectedMetadata),
     ]
 
     /// T74: the dark accent is deliberately below AA for text (user decision 2026-10-28, an experiment; docs/decisions/ui/

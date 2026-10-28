@@ -165,7 +165,7 @@ struct LibrarySidebar: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     ForEach(LibrarySections.grouped(library.visibleItems, date: \.createdAt)) { section in
-                        Eyebrow(text: section.title)
+                        Eyebrow(text: section.title, color: .brandText)   // Text, not Secondary, over the Lower Garden
                             .padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.grid + 4).padding(.bottom, 2)
                         ForEach(section.items) { item in
                             Button { library.selection = item.id; focused = true } label: {
@@ -195,7 +195,10 @@ struct LibrarySidebar: View {
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Meetings")
         }
-        .safeAreaInset(edge: .bottom, spacing: 0) { LocalModelFooter(state: .init(models.status)) }
+        // Opaque, so the Lower Garden stops behind the footer.
+        .safeAreaInset(edge: .bottom, spacing: 0) { LocalModelFooter(state: .init(models.status)).background(Color.canvas) }
+        // Lower Garden: once, behind the whole body (heading to footer), fixed while the rows scroll over it.
+        .background { LowerGardenWatermark() }
         .background(Color.canvas)
     }
 
@@ -222,7 +225,7 @@ struct FolderFilterList: View {
         VStack(alignment: .leading, spacing: 1) {
             ForEach(rows.prefix(2)) { r in row(r, icon: r.filter == .all ? "tray.full" : "tray") }
             HStack(alignment: .firstTextBaseline) {
-                Eyebrow(text: "Folders")
+                Eyebrow(text: "Folders", color: .brandText)
                 Spacer()
                 Button { library.folderRequest = .create(moving: nil) } label: {
                     Image(systemName: "plus").font(.system(size: AppStyle.iconSmall, weight: .semibold))
@@ -339,7 +342,8 @@ struct LocalModelFooter: View {
 
 /// Meeting row: the title, and "9:30 AM · 24 min" beneath (the day is the section heading). A glyph only while the
 /// meeting is processing or when processing failed (T80); the header has the full status. Selected:
-/// the Selection colour with an accent edge, metadata in the text colour (secondary text is under 4.5:1 there).
+/// the Selection colour with an accent edge, metadata in Selected Metadata (secondary text is under 4.5:1 there).
+/// Unselected: Canvas at 92%, so the Lower Garden only just shows through behind the text.
 struct MeetingRow: View {
     let item: MeetingListItem
     var selected = false
@@ -355,8 +359,8 @@ struct MeetingRow: View {
                 if let glyph = MeetingStatusPresentation.cardGlyph(item.status) { MeetingStatusGlyph(glyph: glyph) }
             }
             Text(item.createdAt.formatted(date: .omitted, time: .shortened) + " · " + LibrarySections.duration(seconds: item.duration.seconds))
-                // T85: 2 pt under caption2 and at 80% of the line's colour, so it recedes behind the title.
-                .appFont(.cardMeta, monospacedDigit: true).foregroundStyle((selected ? Color.brandText : Color.brandSecondary).opacity(0.8))
+                // T85: 2 pt under caption2, quieter than the title: Secondary at 80%, or Selected Metadata on the selected card.
+                .appFont(.cardMeta, monospacedDigit: true).foregroundStyle(selected ? Color.selectedMetadata : Color.brandSecondary.opacity(0.8))
         }
         .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.half + 2).padding(.vertical, 5)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -364,6 +368,8 @@ struct MeetingRow: View {
             if selected {
                 RoundedRectangle(cornerRadius: 6).fill(Color.selection)
                     .overlay(alignment: .leading) { UnevenRoundedRectangle(topLeadingRadius: 6, bottomLeadingRadius: 6).fill(Color.brandAccent).frame(width: 3) }
+            } else {
+                RoundedRectangle(cornerRadius: 6).fill(Color.canvas.opacity(0.92))
             }
         }
         .overlay { if selected && focused { RoundedRectangle(cornerRadius: 6).strokeBorder(Color.brandAccent.opacity(0.7), lineWidth: 1) } }

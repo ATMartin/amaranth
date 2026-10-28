@@ -69,10 +69,12 @@ struct SourceLinkStyle: ButtonStyle {
 struct Eyebrow: View {
     let text: String
     var detail: String? = nil
+    /// The sidebar's headings use Text (Lower Garden).
+    var color: Color = .brandSecondary
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: AppStyle.grid) {
-            Text(text).appFont(.eyebrow).foregroundStyle(Color.brandSecondary).accessibilityAddTraits(.isHeader)
+            Text(text).appFont(.eyebrow).foregroundStyle(color).accessibilityAddTraits(.isHeader)
             if let detail { Text(detail).appFont(.caption2).foregroundStyle(Color.brandSecondary) }
         }
     }
