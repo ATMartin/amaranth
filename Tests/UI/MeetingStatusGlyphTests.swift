@@ -54,4 +54,27 @@ struct MeetingStatusGlyphTests {
         #expect(g(.saved, .notQueued).symbol == "circle.dashed" && g(.saved, .cancelled(.notes)).symbol == "stop.circle")
         #expect(g(.paused, .notQueued).symbol == "pause.circle" && g(.saving, .notQueued).symbol == "arrow.down.circle")
     }
+
+    /// T80: cards show a spinner while saving or processing and a mark when processing failed; nothing otherwise.
+    @Test func cardsShowOnlyProgressAndFailure() {
+        for a in Self.audio {
+            for p in Self.processing {
+                let c = MeetingStatusPresentation.cardGlyph(Self.status(a, p))
+                let expected: String
+                switch (a, p) {
+                case (.recording, _), (.paused, _): expected = "none"
+                case (.saving, _), (_, .running), (_, .waiting): expected = "spinner"
+                case (_, .failed): expected = "failed"
+                default: expected = "none"
+                }
+                let got = c == nil ? "none" : c!.spinner ? "spinner" : c!.symbol == "exclamationmark.triangle" && c!.tone == .red ? "failed" : "other"
+                #expect(got == expected, "\(a) / \(p): \(got)")
+                if let c { #expect(!c.tooltip.isEmpty) }
+            }
+        }
+        let failed = MeetingStatusPresentation.cardGlyph(Self.status(.saved, .failed(.notes, errorCode: nil)))
+        #expect(failed?.tooltip == "Writing notes failed — retry available")
+        #expect(MeetingStatusPresentation.cardGlyph(Self.status(.saved, .complete)) == nil)
+        #expect(MeetingStatusPresentation.cardGlyph(Self.status(.savedWithGaps(missingSeconds: 3), .complete)) == nil)
+    }
 }

@@ -2470,7 +2470,7 @@
       "id": "T80",
       "title": "Smaller meeting cards: no status icons except processing and failure",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): MeetingStatusPresentation.cardGlyph (spinner or failure only), tighter rows, sidebar 160\u2013320 (180 ideal)",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",

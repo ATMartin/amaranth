@@ -18,7 +18,7 @@ struct MainView: View {
         NavigationSplitView(columnVisibility: $columns) {
             LibrarySidebar()
                 .toolbar(removing: .sidebarToggle)
-                .navigationSplitViewColumnWidth(min: 160, ideal: 200, max: 320)
+                .navigationSplitViewColumnWidth(min: 160, ideal: 180, max: 320)   // T80: a little narrower
         } detail: {
             Group {
                 if recorder.inSession, library.selection == nil || library.selection == recorder.meetingID {
@@ -124,14 +124,14 @@ struct LibrarySidebar: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 2) {   // at most 500 rows (MeetingListItem.load); lazy stacks lay out nothing offscreen
                     Text("Your meetings").appFont(.headline).foregroundStyle(Color.brandText)
-                        .padding(.horizontal, AppStyle.grid + 4).padding(.top, AppStyle.half).padding(.bottom, AppStyle.grid)
+                        .padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.half).padding(.bottom, AppStyle.half)
                         .accessibilityAddTraits(.isHeader)
                     if library.items.isEmpty {
-                        Text("No recordings yet.").appFont(.callout).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.grid + 4)
+                        Text("No recordings yet.").appFont(.callout).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.grid + 2)
                     }
                     ForEach(LibrarySections.grouped(library.items, date: \.createdAt)) { section in
                         Eyebrow(text: section.title)
-                            .padding(.horizontal, AppStyle.grid + 4).padding(.top, AppStyle.double).padding(.bottom, AppStyle.half)
+                            .padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.grid + 4).padding(.bottom, 2)
                         ForEach(section.items) { item in
                             Button { library.selection = item.id; focused = true } label: {
                                 MeetingRow(item: item, selected: library.selection == item.id, focused: focused)
@@ -143,7 +143,7 @@ struct LibrarySidebar: View {
                         }
                     }
                 }
-                .padding(.horizontal, AppStyle.grid).padding(.vertical, AppStyle.grid)
+                .padding(.horizontal, AppStyle.half + 2).padding(.vertical, AppStyle.grid)
             }
             .focusable()
             .focused($focused)
@@ -213,7 +213,8 @@ struct LocalModelFooter: View {
     }
 }
 
-/// Meeting row: title with one status glyph, and "9:30 AM · 24 min" beneath (the day is the section heading). Selected:
+/// Meeting row: the title, and "9:30 AM · 24 min" beneath (the day is the section heading). A glyph only while the
+/// meeting is processing or when processing failed (T80); the header has the full status. Selected:
 /// the Selection colour with an accent edge, metadata in the text colour (secondary text is under 4.5:1 there).
 struct MeetingRow: View {
     let item: MeetingListItem
@@ -222,17 +223,17 @@ struct MeetingRow: View {
     var focused = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(item.title).appFont(.callout, weight: .medium).lineLimit(2).truncationMode(.tail)
+        VStack(alignment: .leading, spacing: 1) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(item.title).appFont(.caption, weight: .medium).lineLimit(2).truncationMode(.tail)
                     .foregroundStyle(Color.brandText)
-                Spacer(minLength: 4)
-                MeetingStatusGlyph(status: item.status)
+                Spacer(minLength: 2)
+                if let glyph = MeetingStatusPresentation.cardGlyph(item.status) { MeetingStatusGlyph(glyph: glyph) }
             }
             Text(item.createdAt.formatted(date: .omitted, time: .shortened) + " · " + LibrarySections.duration(seconds: item.duration.seconds))
-                .appFont(.caption, monospacedDigit: true).foregroundStyle(selected ? Color.brandText : Color.brandSecondary)
+                .appFont(.caption2, monospacedDigit: true).foregroundStyle(selected ? Color.brandText : Color.brandSecondary)
         }
-        .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.grid).padding(.vertical, 7)
+        .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.half + 2).padding(.vertical, 5)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
             if selected {
@@ -249,11 +250,14 @@ struct MeetingRow: View {
 
 /// The single status glyph of a meeting; the tooltip is also its VoiceOver label.
 struct MeetingStatusGlyph: View {
-    let status: MeetingStatus
+    let g: MeetingStatusPresentation.Glyph
     /// Increased on the selected sidebar row (accent fill): coloured glyphs would vanish there, so use the row's text colour.
     @Environment(\.backgroundProminence) private var prominence
+    /// The header's full glyph for `status`.
+    init(status: MeetingStatus) { g = MeetingStatusPresentation.glyph(status) }
+    init(glyph: MeetingStatusPresentation.Glyph) { g = glyph }
+
     var body: some View {
-        let g = MeetingStatusPresentation.glyph(status)
         Group {
             if g.spinner { ProgressView().controlSize(.small).scaleEffect(0.6) }
             else if let s = g.symbol {

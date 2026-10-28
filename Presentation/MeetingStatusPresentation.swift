@@ -48,6 +48,20 @@ public enum MeetingStatusPresentation {
         }
     }
 
+    /// The meeting card's glyph (T80): only work in progress (a spinner while saving or processing, queued or paused
+    /// included) and failed processing (Retry needed). Everything else shows nothing on the card; the header keeps the
+    /// full `glyph` and its tooltip.
+    public static func cardGlyph(_ s: MeetingStatus) -> Glyph? {
+        if s.audio == .recording || s.audio == .paused { return nil }   // the toolbar strip shows the recording
+        let full = glyph(s)
+        if s.audio == .saving { return Glyph(symbol: nil, spinner: true, tone: .secondary, tooltip: full.tooltip) }
+        switch s.processing {
+        case .running, .waiting: return Glyph(symbol: nil, spinner: true, tone: .secondary, tooltip: full.tooltip)
+        case .failed: return full
+        case .notQueued, .complete, .cancelled: return nil
+        }
+    }
+
     public static func waiting(_ r: SuspensionReason?) -> String {
         switch r {
         case .recordingActive: "Queued · paused while recording"

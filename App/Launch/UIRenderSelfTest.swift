@@ -295,7 +295,7 @@ enum UIRenderSelfTest {
         _ = await host(SpeakerRenameSheet(speaker: Speaker(id: SpeakerID("render-s2"), label: "Speaker 2"), text: .constant(""), suggestions: []) {},
                        "speaker-rename-no-people", size: CGSize(width: 420, height: 160))
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
-        _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 220, height: 760))
+        _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 180, height: 760))   // T80: the ideal width
         _ = await host(AskPane(), "ask-pane-empty", size: CGSize(width: 260, height: 760))
         // Toolbar recorder (T31): idle control, this meeting's options, the strip in each state, the banner.
         _ = await host(RecordToolbarControl(model: recorder).padding(), "record-control", size: CGSize(width: 260, height: 60))
