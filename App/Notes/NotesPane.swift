@@ -125,20 +125,20 @@ struct NotesPane: View {
         .padding(.vertical, AppStyle.half)
     }
 
-    /// The generated draft (handoff): an eyebrow that says it is a draft to check, the overview as a lede, decisions in
+    /// The generated draft (handoff): a Meeting notes eyebrow, the overview at body size (T84: no larger lede), decisions in
     /// sage-edged blocks, next steps with their owner and date (or that none was stated), open questions, and what the
     /// model could not establish (Limitations), each in its own section.
     @ViewBuilder func generated(_ s: SummaryRevision) -> some View {
         VStack(alignment: .leading, spacing: AppStyle.half) {
-            Eyebrow(text: "Meeting notes", detail: "Draft from this Mac · check it against the transcript")
+            Eyebrow(text: "Meeting notes")
             if s.influencedByPersonalNotes {
                 Label("These notes also used your private scratchpad.", systemImage: "lock.doc").appFont(.caption).foregroundStyle(Color.brandSecondary)
             }
         }
         if !s.content.overview.isEmpty {
             VStack(alignment: .leading, spacing: AppStyle.grid + 2) {
-                ForEach(Array(s.content.overview.enumerated()), id: \.element.id) { i, item in
-                    NoteItemRow(item: item, detail: detail, jump: jump, role: i == 0 ? .title : .body)
+                ForEach(s.content.overview) { item in
+                    NoteItemRow(item: item, detail: detail, jump: jump)
                 }
             }
         }
@@ -193,8 +193,6 @@ struct NoteItemRow: View {
     let item: SummaryItem
     let detail: MeetingDetail
     let jump: (TranscriptEvidence) -> Void
-    /// `.title` for the overview's lede.
-    var role: AppStyle.Role = .body
     @Environment(\.showDetails) private var showDetails
     @Environment(\.textScale) private var scale
 
@@ -206,7 +204,7 @@ struct NoteItemRow: View {
         VStack(alignment: .leading, spacing: AppStyle.half) {
             HStack(alignment: .firstTextBaseline) {
                 if let t = item.title { Text(t).appFont(.body, weight: .semibold) }
-                Text(item.text).appFont(role, weight: role == .title ? .regular : nil).lineSpacing(AppStyle.readingLineSpacing(scale) * 0.6)
+                Text(item.text).appFont(.body).lineSpacing(AppStyle.readingLineSpacing(scale) * 0.6)
                     .textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
                 if item.uncertain {
                     Image(systemName: "questionmark.circle").font(.system(size: AppStyle.icon * scale)).foregroundStyle(Color.statusAttention)

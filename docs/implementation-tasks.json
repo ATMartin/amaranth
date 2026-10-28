@@ -2578,7 +2578,7 @@
       "id": "T84",
       "title": "Notes: one text size, no draft caption",
       "milestone": "Polish 2",
-      "status": "to do",
+      "status": "done (2026-10-28): overview items at body size (NoteItemRow lede role removed); Meeting notes eyebrow without the draft caption; scratchpad line kept",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",
