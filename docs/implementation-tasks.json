@@ -2624,7 +2624,7 @@
       "id": "T86",
       "title": "Ask toggle and appearance toggle at the top right",
       "milestone": "Polish 2",
-      "status": "to do",
+      "status": "done (2026-10-28): sun/moon + Ask toggle (bubble.left) in one primaryAction group after a flexible toolbar spacer, at the window's top-right with Ask open or closed and while recording; StopLayoutProbe toolbar-corner steps measure it (24/24 in stop-layout.sh)",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",

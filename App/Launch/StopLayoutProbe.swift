@@ -68,6 +68,26 @@ enum StopLayoutProbe {
         }
     }
 
+    /// T86: the Ask toggle is the window's last toolbar item, at its top-right corner, with the sun/moon right before it,
+    /// and neither is in the overflow menu.
+    static func toolbarCorner(_ step: String, _ window: NSWindow) {
+        let items = window.toolbar?.items ?? [], visible = window.toolbar?.visibleItems ?? []
+        let label: (NSToolbarItem) -> String = { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label }
+        func frame(_ prefix: String) -> CGRect? {
+            guard let item = items.first(where: { label($0).hasPrefix(prefix) || label($0).hasSuffix(prefix) }) else { return nil }
+            return (item.view ?? item.value(forKey: "_itemViewer") as? NSView).map { $0.convert($0.bounds, to: nil) }
+        }
+        let ask = frame("Ask"), appearance = frame("Switch to")
+        let width = window.frame.width
+        let hidden = items.filter { item in !visible.contains { $0 === item } }.map(label)
+        let ok = hidden.isEmpty && ask.map { width - $0.maxX < 40 } == true
+            && appearance.flatMap { a in ask.map { a.maxX <= $0.minX + 1 && $0.minX - a.maxX < 24 } } == true
+        if !ok { failed = true }
+        log(["step": step, "ok": "\(ok)", "items": items.map(label).joined(separator: " | "), "hidden": hidden.joined(separator: " | "),
+             "ask": ask.map { "\(Int($0.minX))-\(Int($0.maxX))" } ?? "-", "appearance": appearance.map { "\(Int($0.minX))-\(Int($0.maxX))" } ?? "-",
+             "windowWidth": "\(Int(width))"])
+    }
+
     static func run(recorder: RecorderModel, library: LibraryModel) async {
         func wait(_ s: Double) async { try? await Task.sleep(for: .seconds(s)) }
         await wait(2)
@@ -93,6 +113,15 @@ enum StopLayoutProbe {
         let expected = args.contains("--sidebar-closed") ? "Show Sidebar" : "Hide Sidebar"
         log(["step": "sidebar-toggle", "button": button, "viewMenu": sidebarItems.joined(separator: " | "),
              "ok": "\(button == expected && sidebarItems.count == 1)"])
+        toolbarCorner("toolbar-corner", window)
+        // The same corner with the Ask pane closed (the preference is put back below; stop-layout.sh restores defaults too).
+        let askShown = UserDefaults.standard.object(forKey: "askPaneShown")
+        UserDefaults.standard.set(false, forKey: "askPaneShown")
+        await wait(1)
+        toolbarCorner("toolbar-corner-ask-closed", window)
+        snapshot("0a-ask-closed", window)
+        UserDefaults.standard.set(askShown ?? true, forKey: "askPaneShown")
+        await wait(1)
         guard let id = library.items.first(where: { $0.id != MeetingID("ui-long") })?.id ?? library.items.first?.id else {
             log(["step": "no-meetings"]); NSApp.terminate(nil); return
         }
@@ -108,6 +137,7 @@ enum StopLayoutProbe {
         library.recordingStarted(id)
         await wait(1.5)
         snapshot("1-recording", window)
+        toolbarCorner("toolbar-corner-recording", window)
         recorder.showStripForRender(.stopping, health: health)
         await wait(0.5)
         snapshot("2-stopping", window)

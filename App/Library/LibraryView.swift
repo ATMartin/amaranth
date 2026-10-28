@@ -50,9 +50,14 @@ struct MainView: View {
                 AskPane()
                     .inspectorColumnWidth(min: 230, ideal: 250, max: 380)
                     .fillsOfferedSpace()
+                    // T86: the window's top-right corner, open or closed: the sun/moon, then the Ask toggle (a speech bubble, so
+                    // it reads as a chat pane rather than a second sidebar). Declared on the inspector so AppKit keeps them at
+                    // the trailing edge, above the pane when it is open.
                     .toolbar {
-                        ToolbarItem(placement: .primaryAction) {
-                            Button { askShown.toggle() } label: { Label(askShown ? "Hide Ask" : "Show Ask", systemImage: "sidebar.trailing") }
+                        ToolbarSpacer(.flexible)
+                        ToolbarItemGroup(placement: .primaryAction) {
+                            AppearanceToggle(compact: true)
+                            Button { askShown.toggle() } label: { Label(askShown ? "Hide Ask" : "Show Ask", systemImage: "bubble.left") }
                                 .help(askShown ? "Hide the Ask pane" : "Ask about your meetings (⌘K)")
                         }
                         .sharedBackgroundVisibility(.hidden)
@@ -79,7 +84,6 @@ struct MainView: View {
                 .help(columns == .detailOnly ? "Show the meeting list (⌃⌘S)" : "Hide the meeting list (⌃⌘S)")
             }
             .sharedBackgroundVisibility(.hidden)
-            ToolbarItem(placement: .primaryAction) { AppearanceToggle(compact: true) }.sharedBackgroundVisibility(.hidden)
         }
         // The shared meeting menu's Rename… and delete confirmations (T79), for the open meeting or any card.
         .sheet(isPresented: Binding(get: { library.renameRequest != nil }, set: { if !$0 { library.actionRequest = nil } })) {

@@ -416,6 +416,9 @@ enum UIRenderSelfTest {
             // T77: no models button in the toolbar any more (Settings → Models and the sidebar footer).
             let pass = toggle != nil && labels[toggle!] == expected && !labels.contains("Export") && labels.contains { $0.hasSuffix("Ask") }
                 && !labels.contains { $0.localizedCaseInsensitiveContains("model") }
+                // T86: the sun/moon then the Ask toggle end the toolbar (their positions are checked on the real window by
+                // StopLayoutProbe's toolbar-corner steps).
+                && labels.suffix(2).first == expected && labels.last?.hasSuffix("Ask") == true
             SelfTest.log(["step": "toolbar", "items": labels.joined(separator: " | "), "ok": "\(pass)"])
             // The whole window including its title bar and toolbar (the window frame view, not just the content).
             if let frameView = window.contentView?.superview {
