@@ -122,6 +122,9 @@ struct RetrieverTests {
                 DROP TABLE search_index;
                 CREATE VIRTUAL TABLE search_index USING fts5(meeting_id UNINDEXED, kind UNINDEXED, ref UNINDEXED, start_ns UNINDEXED, text,
                     tokenize='unicode61 remove_diacritics 2');
+                DROP INDEX meetings_by_folder;
+                ALTER TABLE meetings DROP COLUMN folder_id;
+                DROP TABLE folders;
                 PRAGMA user_version = 3;
                 """)
         }
@@ -129,7 +132,7 @@ struct RetrieverTests {
         #expect(try reopened.searchRowCount(launch.meeting.id) > 7)
         let p = try #require(try Retriever(store: reopened).search("notarization").first { $0.source == .transcript })
         #expect(!p.evidence.isEmpty && p.lines.contains { $0.speaker != nil })
-        #expect(try reopened.withDB { try $0.run("PRAGMA user_version").first?["user_version"]?.int } == 4)
+        #expect(try reopened.withDB { try $0.run("PRAGMA user_version").first?["user_version"]?.int } == Int64(Schema.migrations.count))
     }
 }
 

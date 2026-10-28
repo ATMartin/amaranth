@@ -166,5 +166,138 @@ struct MeetingStoreTests {
         try store.setPeople([Person(name: "Ana")], for: m.id)
         #expect(try store.meeting(m.id)?.people == [Person(name: "Ana")])
     }
-}
 
+    // MARK: T39 folders
+
+    @Test func folderCRUDAndNameRules() throws {
+        let (store, root) = try tempStore()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let acme = try store.createFolder(name: "  Acme ")
+        let hiring = try store.createFolder(name: "Hiring")
+        #expect(try store.folders().map(\.name) == ["Acme", "Hiring"])
+        #expect(try store.folders().map(\.sortOrder) == [0, 1])
+        #expect(throws: MeetingStore.FolderError.emptyName) { try store.createFolder(name: "  \n") }
+        #expect(throws: MeetingStore.FolderError.duplicateName("Acme")) { try store.createFolder(name: "ACME") }
+        #expect(throws: MeetingStore.FolderError.duplicateName("Hiring")) { try store.renameFolder(acme.id, to: "hiring") }
+        // Unicode case folding, beyond SQLite's ASCII-only NOCASE.
+        let eclair = try store.createFolder(name: "Éclair")
+        #expect(throws: MeetingStore.FolderError.duplicateName("Éclair")) { try store.createFolder(name: "éCLAIR") }
+        try store.renameFolder(eclair.id, to: "ÉCLAIR")   // its own name in another case is fine
+        try store.renameFolder(acme.id, to: " Acme Corp ")
+        #expect(try store.folders().map(\.name) == ["Acme Corp", "Hiring", "ÉCLAIR"])
+        #expect(throws: MeetingStore.FolderError.missingFolder) { try store.renameFolder(FolderID("gone"), to: "X") }
+
+        let a = Meeting(title: "A", createdAt: Date(timeIntervalSince1970: 1))
+        let b = Meeting(title: "B", createdAt: Date(timeIntervalSince1970: 2))
+        try store.upsertMeeting(a)
+        try store.upsertMeeting(b)
+        try store.moveMeeting(a.id, to: hiring.id)
+        #expect(try store.meeting(a.id)?.folderID == hiring.id)
+        #expect(try store.meetings(in: hiring.id).map(\.id) == [a.id])
+        #expect(try store.meetings(in: nil).map(\.id) == [b.id])
+        #expect(throws: MeetingStore.FolderError.missingFolder) { try store.moveMeeting(b.id, to: FolderID("gone")) }
+        try store.moveMeeting(a.id, to: nil)
+        #expect(try store.meeting(a.id)?.folderID == nil)
+        #expect(try store.meetings(in: nil).map(\.id) == [b.id, a.id])
+        // Deleted meetings take no new folder and are not listed.
+        try store.moveMeeting(b.id, to: hiring.id)
+        try store.tombstone(b.id)
+        try store.moveMeeting(b.id, to: nil)
+        #expect(try store.meeting(b.id)?.folderID == hiring.id)
+        #expect(try store.meetings(in: hiring.id).isEmpty)
+        // Folders survive reopening.
+        #expect(try MeetingStore(root: root).folders().map(\.name) == ["Acme Corp", "Hiring", "ÉCLAIR"])
+    }
+
+    @Test func staleWritersKeepTheStoredFolder() throws {
+        let (store, root) = try tempStore()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let folder = try store.createFolder(name: "Acme")
+        var m = Meeting(title: "Recording", createdAt: Date(), captureState: .recording, folderID: folder.id)
+        try store.upsertMeeting(m)
+        #expect(try store.meeting(m.id)?.folderID == folder.id, "a new row takes its folder as given (T42's default folder)")
+        try store.moveMeeting(m.id, to: nil)
+        m.captureState = .captured
+        try store.upsertMeeting(m)   // the recorder's copy still says Acme
+        #expect(try store.meeting(m.id)?.folderID == nil)
+        // A new meeting naming a folder deleted meanwhile is saved unfiled rather than failing.
+        try store.deleteFolder(folder.id)
+        let late = Meeting(title: "Late", createdAt: Date(), folderID: folder.id)
+        try store.upsertMeeting(late)
+        #expect(try store.meeting(late.id)?.folderID == nil)
+    }
+
+    /// Deleting a folder unfiles its meetings and changes nothing else: every other table is byte-identical and each
+    /// meeting row differs only in its folder.
+    @Test func deletingAFolderKeepsItsMeetings() throws {
+        let (store, root) = try tempStore()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let folder = try store.createFolder(name: "Acme")
+        let other = try store.createFolder(name: "Other")
+        for f in Fixtures.all {
+            try store.upsertMeeting(f.meeting)
+            try store.insertEpochs(f.epochs)
+            try store.insertSegments(f.audioSegments)
+            try store.insertEvents(f.events)
+            if let t = f.transcript { _ = try store.publishTranscript(t) }
+            try store.moveMeeting(f.meeting.id, to: folder.id)
+        }
+        let kept = Fixtures.all[0].meeting.id
+        try store.moveMeeting(kept, to: other.id)
+        let tables = ["capture_epochs", "audio_segments", "capture_events", "processing_jobs", "transcript_revisions", "diarization_results",
+                      "user_edits", "summary_revisions", "scratchpad_revisions", "manual_notes_revisions", "search_index"]
+        func dump(_ table: String) throws -> [String] {
+            try store.withDB { try $0.run("SELECT * FROM \(table)").map { "\($0.sorted { $0.key < $1.key })" }.sorted() }
+        }
+        let before = try tables.map(dump)
+        let meetingsBefore = try store.meetings()
+        try store.deleteFolder(folder.id)
+        #expect(try tables.map(dump) == before)
+        #expect(try store.folders().map(\.name) == ["Other"])
+        let after = try store.meetings()
+        #expect(after.count == meetingsBefore.count)
+        for (old, new) in zip(meetingsBefore, after) {
+            var expected = old
+            if expected.folderID == folder.id { expected.folderID = nil }
+            #expect(new == expected)
+        }
+        #expect(try store.meeting(kept)?.folderID == other.id)
+        #expect(try store.withDB { try $0.run("SELECT COUNT(*) AS n FROM meetings WHERE folder_id IS NOT NULL").first?["n"]?.int } == 1)
+        try store.deleteFolder(FolderID("gone"))   // no-op
+    }
+
+    @Test func unfiledMeetingsEncodeAsBefore() throws {
+        let m = Meeting(id: MeetingID("m1"), title: "Plain", createdAt: Date(timeIntervalSince1970: 0))
+        #expect(!String(decoding: try ContractCoding.encode(m), as: UTF8.self).contains("folder"))
+        var filed = m
+        filed.folderID = FolderID("f1")
+        #expect(try ContractCoding.decode(Meeting.self, from: ContractCoding.encode(filed)) == filed)
+    }
+
+    /// A v4 library (before T39) opens, migrates to v5 with every meeting unfiled, then takes folders.
+    @Test func v4LibraryMigratesWithMeetingsUnfiled() throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "amr-v4-\(UUID())")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let f = Fixtures.twoSourceConversation
+        do {
+            let db = try SQLiteDB(path: root.appending(path: "amaranth.sqlite").path)
+            for sql in Schema.migrations.prefix(4) { try db.exec(sql) }
+            try db.exec("PRAGMA user_version = 4")
+            try db.run("""
+                INSERT INTO meetings (id, title, created_at, capture_state, selected_sources, audio, duration_ns, json)
+                VALUES (?,?,?,?,?,?,?,?)
+                """, [.text(f.meeting.id.rawValue), .text(f.meeting.title), .double(f.meeting.createdAt.timeIntervalSince1970),
+                      .text(f.meeting.captureState.rawValue), .text(f.meeting.selectedSources.rawValue), .text(f.meeting.audio.rawValue),
+                      .int(f.meeting.duration.nanoseconds), .blob(try ContractCoding.encode(f.meeting))])
+        }
+        let store = try MeetingStore(root: root)
+        #expect(try store.withDB { try $0.run("PRAGMA user_version").first?["user_version"]?.int } == 5)
+        #expect(try store.meeting(f.meeting.id) == f.meeting)
+        #expect(try store.folders().isEmpty)
+        #expect(try store.meetings(in: nil).map(\.id) == [f.meeting.id])
+        let folder = try store.createFolder(name: "Acme")
+        try store.moveMeeting(f.meeting.id, to: folder.id)
+        #expect(try store.meetings(in: folder.id).map(\.id) == [f.meeting.id])
+    }
+}

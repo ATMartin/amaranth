@@ -57,6 +57,21 @@ public struct LinkedEvent: Hashable, Sendable, Codable {
     }
 }
 
+/// A single-level folder for organising meetings (T39): “for a client”, “for a project”. Not a tag: a meeting is in at
+/// most one folder. Names are unique ignoring case; the store trims and checks them.
+public struct Folder: Hashable, Sendable, Codable, Identifiable {
+    public var id: FolderID
+    public var name: String
+    public var createdAt: Date
+    public var sortOrder: Int
+    public init(id: FolderID = FolderID(), name: String, createdAt: Date = Date(), sortOrder: Int = 0) {
+        self.id = id
+        self.name = name
+        self.createdAt = createdAt
+        self.sortOrder = sortOrder
+    }
+}
+
 public struct Meeting: Hashable, Sendable, Codable, Identifiable {
     public var id: MeetingID
     public var title: String
@@ -79,13 +94,16 @@ public struct Meeting: Hashable, Sendable, Codable, Identifiable {
     /// a meeting without them encodes exactly as before. The store changes these only through its setters.
     public var people: [Person] = []
     public var linkedEvent: LinkedEvent?
+    /// The folder the meeting is filed in (T39); nil = unfiled. Additive like `people`: absent from older rows and from
+    /// the JSON of unfiled meetings. The store changes it only through `moveMeeting(_:to:)`.
+    public var folderID: FolderID?
 
     public init(id: MeetingID = MeetingID(), title: String, createdAt: Date, clock: SessionClock? = nil,
                 captureState: CaptureState = .idle, selectedSources: SourceSelection = .both,
                 retention: RetentionPolicy = .untilUserDeletes, audio: AudioAvailability = .present,
                 duration: SessionDuration = .init(nanoseconds: 0), currentTranscriptRevisionID: RevisionID? = nil,
                 provisionalTranscriptRevisionID: RevisionID? = nil, currentSummaryRevisionID: RevisionID? = nil,
-                deletedAt: Date? = nil, people: [Person] = [], linkedEvent: LinkedEvent? = nil) {
+                deletedAt: Date? = nil, people: [Person] = [], linkedEvent: LinkedEvent? = nil, folderID: FolderID? = nil) {
         self.id = id
         self.title = title
         self.createdAt = createdAt
@@ -101,6 +119,7 @@ public struct Meeting: Hashable, Sendable, Codable, Identifiable {
         self.deletedAt = deletedAt
         self.people = people
         self.linkedEvent = linkedEvent
+        self.folderID = folderID
     }
 
     public var canPlayAudio: Bool { audio == .present && deletedAt == nil }
@@ -110,7 +129,7 @@ extension Meeting {
     private enum CodingKeys: String, CodingKey {
         case id, title, createdAt, clock, captureState, selectedSources, retention, audio, duration
         case currentTranscriptRevisionID, provisionalTranscriptRevisionID, currentSummaryRevisionID, deletedAt
-        case people, linkedEvent
+        case people, linkedEvent, folderID
     }
 
     public init(from decoder: any Decoder) throws {
@@ -130,6 +149,7 @@ extension Meeting {
         deletedAt = try c.decodeIfPresent(Date.self, forKey: .deletedAt)
         people = try c.decodeIfPresent([Person].self, forKey: .people) ?? []
         linkedEvent = try c.decodeIfPresent(LinkedEvent.self, forKey: .linkedEvent)
+        folderID = try c.decodeIfPresent(FolderID.self, forKey: .folderID)
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -149,5 +169,6 @@ extension Meeting {
         try c.encodeIfPresent(deletedAt, forKey: .deletedAt)
         if !people.isEmpty { try c.encode(people, forKey: .people) }
         try c.encodeIfPresent(linkedEvent, forKey: .linkedEvent)
+        try c.encodeIfPresent(folderID, forKey: .folderID)
     }
 }

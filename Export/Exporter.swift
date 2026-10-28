@@ -17,9 +17,12 @@ public struct ExportInput: Sendable {
     public var summary: SummaryRevision?
     public var userNotes: ManualNotesRevision?
     public var scratchpad: ScratchpadRevision?
+    /// The name of the meeting's folder (T39), for the JSON export only; nil when unfiled.
+    public var folderName: String?
     public init(meeting: Meeting, transcript: TranscriptRevision, summary: SummaryRevision? = nil,
-                userNotes: ManualNotesRevision? = nil, scratchpad: ScratchpadRevision? = nil) {
+                userNotes: ManualNotesRevision? = nil, scratchpad: ScratchpadRevision? = nil, folderName: String? = nil) {
         self.meeting = meeting; self.transcript = transcript; self.summary = summary; self.userNotes = userNotes; self.scratchpad = scratchpad
+        self.folderName = folderName
     }
 }
 
@@ -246,6 +249,9 @@ public enum Exporter {
         public var summary: SummaryRevision?
         public var userNotes: ManualNotesRevision?
         public var scratchpad: ScratchpadRevision?
+        /// Present only for a filed meeting (T39), so exports of unfiled meetings are unchanged.
+        public var folder: FolderRef?
+        public struct FolderRef: Codable, Sendable, Equatable { public var name: String }
     }
 
     public static func json(_ input: ExportInput, options: ExportOptions = ExportOptions(), exportedAt: Date = Date()) throws -> Data {
@@ -256,7 +262,8 @@ public enum Exporter {
                                speakers: Dictionary(input.transcript.speakers.map { ($0.id.rawValue, $0.displayName ?? $0.label) }, uniquingKeysWith: { a, _ in a }),
                                transcript: input.transcript, summary: options.includeNotes ? input.summary : nil,
                                userNotes: options.includeUserNotes ? input.userNotes : nil,
-                               scratchpad: options.includeScratchpad ? input.scratchpad : nil)
+                               scratchpad: options.includeScratchpad ? input.scratchpad : nil,
+                               folder: input.folderName.map { .init(name: $0) })
         let e = JSONEncoder()
         e.outputFormatting = [.prettyPrinted, .sortedKeys]
         e.dateEncodingStrategy = .custom { date, enc in

@@ -137,6 +137,22 @@ enum Schema {
             tokenize='unicode61 remove_diacritics 2'
         );
         """,
+        // v5 (T39): single-level folders. A meeting's folder is a column (for the sidebar's filter and counts) mirrored in
+        // its JSON like the linked event; deleting a folder unfiles its meetings and never touches anything else. Names
+        // are unique ignoring case (the store also compares with Unicode case folding; NOCASE only folds ASCII). No foreign
+        // key on folder_id: the store keeps it valid (deleteFolder unfiles, moves and new rows check the folder exists).
+        """
+        CREATE TABLE folders (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            created_at REAL NOT NULL,
+            sort_order INTEGER NOT NULL DEFAULT 0,
+            json BLOB NOT NULL
+        );
+        CREATE UNIQUE INDEX folders_by_name ON folders (name COLLATE NOCASE);
+        ALTER TABLE meetings ADD COLUMN folder_id TEXT;
+        CREATE INDEX meetings_by_folder ON meetings (folder_id);
+        """,
     ]
 
     /// Applies pending migrations; returns the version the database had before.

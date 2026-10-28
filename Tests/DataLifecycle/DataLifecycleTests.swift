@@ -158,6 +158,27 @@ struct ExportTests {
         #expect(try Exporter.json(cleared, exportedAt: at) == before.2)
     }
 
+    /// T39: the JSON export names the folder of a filed meeting; TXT/MD never mention it; unfiled exports are unchanged.
+    @Test func jsonExportNamesTheFolder() throws {
+        let f = try LifecycleFixture()
+        defer { try? FileManager.default.removeItem(at: f.root) }
+        let at = Date(timeIntervalSince1970: 1_800_000_000)
+        let plain = try f.input()
+        let before = try Exporter.json(plain, exportedAt: at)
+        #expect(!String(decoding: before, as: UTF8.self).contains("folder"))
+
+        let folder = try f.store.createFolder(name: "Acme")
+        try f.store.moveMeeting(f.meeting, to: folder.id)
+        var filed = try f.input()
+        filed.folderName = folder.name
+        let doc = try JSONDecoder.iso.decode(Exporter.JSONDocument.self, from: Exporter.json(filed, exportedAt: at))
+        #expect(doc.folder?.name == "Acme")
+        #expect(Exporter.text(filed) == Exporter.text(plain) && Exporter.markdown(filed) == Exporter.markdown(plain))
+
+        try f.store.moveMeeting(f.meeting, to: nil)
+        #expect(try Exporter.json(try f.input(), exportedAt: at) == before)
+    }
+
     @Test func audioIsExportedOnlyWhenAskedLosslessWithGapsListed() throws {
         let f = try LifecycleFixture()
         defer { try? FileManager.default.removeItem(at: f.root) }

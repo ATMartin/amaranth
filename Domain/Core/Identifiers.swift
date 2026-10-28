@@ -34,6 +34,7 @@ public enum SummaryItemTag {}
 public enum JobTag {}
 public enum ModelManifestTag {}
 public enum ScratchpadTag {}
+public enum FolderTag {}
 
 public typealias MeetingID = Identifier<MeetingTag>
 public typealias AudioSegmentID = Identifier<SegmentTag>
@@ -54,3 +55,5 @@ public typealias SummaryItemID = Identifier<SummaryItemTag>
 public typealias JobID = Identifier<JobTag>
 public typealias ModelManifestID = Identifier<ModelManifestTag>
 public typealias ScratchpadID = Identifier<ScratchpadTag>
+/// A sidebar folder (T39). Folders are one level deep; a meeting is in at most one.
+public typealias FolderID = Identifier<FolderTag>
