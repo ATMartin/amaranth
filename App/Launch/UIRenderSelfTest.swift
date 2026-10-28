@@ -319,6 +319,12 @@ enum UIRenderSelfTest {
         filteredOK = filteredOK && !library.visibleItems.isEmpty && library.visibleItems.allSatisfy { $0.folderID == nil }
             && AskScope.options(folderShown: library.filteredFolder != nil) == [.thisMeeting, .allMeetings]
         _ = await host(LibrarySidebar(), "sidebar-unsorted", size: CGSize(width: 180, height: 760))
+        // A Folder scope in Ask becomes All meetings when the sidebar switches from a folder to Unsorted.
+        library.folderFilter = library.folders.first.map { .folder($0.id) } ?? .all
+        library.askScope = .thisFolder
+        library.folderFilter = .unsorted
+        filteredOK = filteredOK && library.askScope == .allMeetings
+        library.askScope = .thisMeeting
         library.folderFilter = .all
         // T41: the drag payload survives the trip through its private type (the drop logic is LibraryFolders.dropMoves).
         let dragData = try? await DraggedMeeting(MeetingID("ui-long")).exported(as: .amaranthMeeting)

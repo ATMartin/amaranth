@@ -75,7 +75,10 @@ enum StopLayoutProbe {
         let label: (NSToolbarItem) -> String = { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label }
         func frame(_ prefix: String) -> CGRect? {
             guard let item = items.first(where: { label($0).hasPrefix(prefix) || label($0).hasSuffix(prefix) }) else { return nil }
-            return (item.view ?? item.value(forKey: "_itemViewer") as? NSView).map { $0.convert($0.bounds, to: nil) }
+            // SwiftUI items have no `view`; their AppKit viewer is private, so ask first: if macOS drops it the step fails
+            // instead of raising NSUnknownKeyException.
+            let viewer = item.responds(to: NSSelectorFromString("_itemViewer")) ? item.value(forKey: "_itemViewer") as? NSView : nil
+            return (item.view ?? viewer).map { $0.convert($0.bounds, to: nil) }
         }
         let ask = frame("Ask"), appearance = frame("Switch to")
         let width = window.frame.width

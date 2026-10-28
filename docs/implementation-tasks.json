@@ -2675,7 +2675,7 @@
       "id": "T88",
       "title": "Polish 2 validation",
       "milestone": "Polish 2",
-      "status": "to do",
+      "status": "done (2026-10-28): verdict v1 PASS WITH FIXES (no must-fix); should-fixes 1–2 applied, 3–4 kept (docs/qualification/polish-2-*); checklist 70–74",
       "optional": false,
       "depends_on": [
         "T83",
