@@ -343,7 +343,8 @@ struct LocalModelFooter: View {
 /// Meeting row: the title, and "9:30 AM · 24 min" beneath (the day is the section heading). A glyph only while the
 /// meeting is processing or when processing failed (T80); the header has the full status. Selected:
 /// the Selection colour with an accent edge, metadata in Selected Metadata (secondary text is under 4.5:1 there).
-/// Unselected: Canvas at 92%, so the Lower Garden only just shows through behind the text.
+/// Unselected: no backing; the Lower Garden shows behind the text (user choice 2026-10-28: the handoff's 92% Canvas
+/// backing drew obtrusive card shapes over the garden, worst at narrow widths).
 struct MeetingRow: View {
     let item: MeetingListItem
     var selected = false
@@ -368,8 +369,6 @@ struct MeetingRow: View {
             if selected {
                 RoundedRectangle(cornerRadius: 6).fill(Color.selection)
                     .overlay(alignment: .leading) { UnevenRoundedRectangle(topLeadingRadius: 6, bottomLeadingRadius: 6).fill(Color.brandAccent).frame(width: 3) }
-            } else {
-                RoundedRectangle(cornerRadius: 6).fill(Color.canvas.opacity(0.92))
             }
         }
         .overlay { if selected && focused { RoundedRectangle(cornerRadius: 6).strokeBorder(Color.brandAccent.opacity(0.7), lineWidth: 1) } }
