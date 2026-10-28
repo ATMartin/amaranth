@@ -58,7 +58,8 @@
     "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
     "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them",
     "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit",
-    "Q": "Local updates (“Check for Updates…” from a local drop folder): T70–T73. Planned 2026-10-27 at the user's request; placed after P (“for later”), can move earlier. User decisions 2026-10-27: Release and Debug builds are both published, Debug offered only with a Settings opt-in; check at launch and show a note when a newer build exists (never install on its own); no rollbacks (an older or equal build is never offered); the script part ships now as T69. Local only: a free personal team can't notarize, so a web feed / Sparkle stays out of scope (keep discovery behind an update-source interface so one can be added later)."
+    "Q": "Local updates (“Check for Updates…” from a local drop folder): T70–T73. Planned 2026-10-27 at the user's request; placed after P (“for later”), can move earlier. User decisions 2026-10-27: Release and Debug builds are both published, Debug offered only with a Settings opt-in; check at launch and show a note when a newer build exists (never install on its own); no rollbacks (an older or equal build is never offered); the script part ships now as T69. Local only: a free personal team can't notarize, so a web feed / Sparkle stays out of scope (keep discovery behind an update-source interface so one can be added later).",
+    "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit."
   },
   "tasks": [
     {
@@ -2311,6 +2312,232 @@
       "context": "Sonnet validator per coordination.milestone_validation.",
       "deliverables": [
         "End-to-end two-build run (Release, then Debug with the opt-in); refusal while recording; rejection of a half-written build, a build from another team and an older build; launch note; checklist item for the hands-on run."
+      ],
+      "acceptance": [
+        "Validator verdict with no must-fix items."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T74",
+      "title": "Darker dark-mode accent (rose amaranth)",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Resources/Assets.xcassets/",
+        "Presentation/AppPalette.swift",
+        "Tests/UI/PaletteContrastTests.swift",
+        "docs/decisions/ui/0004-inner-circle-identity.md"
+      ],
+      "context": "Screencast 2026-10-28 (clip-2026-10-28T04-24-25-304Z) 0:10–0:40: the dark-mode accent (focus, tabs, links, some text) is too light; try something closer to oxblood or the amaranth flower, following the light-mode wine. Contrast may drop below AA for now; the user chose #C25A7C.",
+      "deliverables": [
+        "AmaranthAccent dark → #C25A7C (light stays #752C44); AmaranthOnAccent dark → cream #F5F0E6 (3.7:1 on the new accent; forest would be 3.1:1).",
+        "AppPalette mirrors it; the contrast test lists the accent's text pairs as a documented, deliberate exception (≥ 3:1 instead of 4.5:1) rather than deleting them.",
+        "Decision ui/0004 notes the change and that it is an experiment below AA."
+      ],
+      "acceptance": [
+        "Catalog/palette match test passes; ui-render dark screens show the new accent on tabs, links, focus rings, the selected row edge and filled buttons."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T75",
+      "title": "Title bar: no app title, no grey bubbles, canvas colour, smaller icons",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/AmaranthApp.swift",
+        "App/Library/LibraryView.swift",
+        "App/Shared/AppStyle.swift"
+      ],
+      "context": "Screencast 2026-10-28 (clip-2026-10-28T04-24-25-304Z) 0:40–2:00: the toolbar still looks like stock macOS: the \"Amaranth\" window title, large grey glass capsules around the buttons, dark grey instead of forest. Keep the sun/moon toggle but smaller. Left drawer toggle gets a list-style icon; the right (Ask) toggle stays as is.",
+      "deliverables": [
+        "Hide the window title (it is already in the menu bar).",
+        "No shared glass background behind toolbar items (macOS 26 sharedBackgroundVisibility) and the toolbar area drawn in Canvas in both appearances.",
+        "Smaller appearance toggle (sun/moon kept).",
+        "Sidebar toggle uses a list icon (e.g. sidebar replaced by a custom toolbar button over the split view's column visibility, same shortcut and VoiceOver label)."
+      ],
+      "acceptance": [
+        "main-toolbar.png in light and dark: no title text, no capsules, toolbar matches the columns; stop-layout.sh 8/8; toolbar-recording checks still pass at 900 pt."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T76",
+      "title": "Record button as in the handoff",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [
+        "T75"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Recorder/QuickRecorderView.swift"
+      ],
+      "context": "Screencast 2026-10-28 (clip-2026-10-28T04-24-25-304Z) 2:00–2:20: the toolbar Record button doesn't match the handoff (Preview: a squarer outlined button with a red dot and \"Record\"). The options popover is fine as is.",
+      "deliverables": [
+        "Idle Record button: rounded rectangle (≈ 6 pt radius), Surface fill, control-border outline, Danger dot, \"Record\" label; the chevron for options kept beside it. ⌘⇧R, help and VoiceOver unchanged."
+      ],
+      "acceptance": [
+        "record-control.png and main-toolbar.png in both appearances match the handoff's Record button."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T77",
+      "title": "Models: Settings tab instead of the toolbar; sidebar footer warns when missing",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "App/Settings/SettingsView.swift",
+        "App/ModelSetup/"
+      ],
+      "context": "Screencast 2026-10-28 (clip-2026-10-28T04-24-25-304Z) 2:20–3:00: the local-models toolbar button and its sheet don't need primary UI space. Move everything (status, details, install) to a new Settings tab. User decision: when no local model is installed, the sidebar footer's leaf + \"Processing on this Mac\" becomes a warning icon in a contrasting colour with \"No local model found\"; clicking it opens Settings at the Models tab.",
+      "deliverables": [
+        "Remove the toolbar models button and the model sheet from MainView.",
+        "Settings → Models tab hosting the model setup view (all current information and Install/verify actions).",
+        "Sidebar footer: ready → leaf + \"Processing on this Mac\"; not ready → warning icon + \"No local model found\" (Warning colour), a button that opens Settings on the Models tab.",
+        "Onboarding's \"Settings → Models, or the toolbar\" copy updated."
+      ],
+      "acceptance": [
+        "ui-render: settings-models, sidebar footer in both states; Settings opens on the Models tab from the footer."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T78",
+      "title": "Ask: clearing also empties and focuses the field",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/AskAnythingView.swift",
+        "App/Library/LibraryModel.swift"
+      ],
+      "context": "Screencast 2026-10-28 (clip-2026-10-28T04-24-25-304Z) 3:05–3:40: after asking, the question stays in the field; the clear (×) button clears the results but not the question.",
+      "deliverables": [
+        "The × (and Esc) clear the results and the question, then put the cursor in the ask field."
+      ],
+      "acceptance": [
+        "ui-render ask step: after clear, query is empty, panel closed, field focused (askFocusRequest bumped)."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T79",
+      "title": "Meeting header: one ⋯ menu, shared with the sidebar's right-click menu",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/MeetingDetailView.swift",
+        "App/Library/LibraryView.swift",
+        "App/Shared/MeetingCommands.swift"
+      ],
+      "context": "Screencast 2026-10-28 (clip-2026-10-28T04-24-25-304Z) 3:40–5:00: too many controls on the right of the header (Export, ⋯, the details ⓘ). Keep only the small ⋯ menu; move all exports into it; add a checkable \"Show Details\" item doing what ⓘ does; make it the same menu as the right-click menu on the meeting cards (Rename… etc.) so there is one menu to maintain.",
+      "deliverables": [
+        "One MeetingActionsMenu used by the header ⋯ and the sidebar context menu: Rename…, Export ▸ (Markdown…, Plain Text…, JSON…, Original Audio…), Show Details (checkmark, ⌘D), Delete Audio Only…, Delete Meeting…. Items that need the open meeting (Export) are disabled or hidden on cards for meetings without a transcript.",
+        "Remove the header Export button and the ⓘ details button; ⌘D stays registered once (now on the View menu item / the menu item)."
+      ],
+      "acceptance": [
+        "Both menus list the same items in the same order; ⌘D, ⌘E and the delete confirmations still work; ui-render header at 900/1100 pt."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T80",
+      "title": "Smaller meeting cards: no status icons except processing and failure",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "Presentation/MeetingStatusPresentation.swift",
+        "Tests/UI/MeetingStatusGlyphTests.swift"
+      ],
+      "context": "Screencast 2026-10-28 (clip-2026-10-28T04-24-25-304Z) 5:00–5:45: the cards take a lot of width and padding per day, and show completed/informational/warning icons that aren't needed. Keep the day groups, time and duration. User decision: keep a spinner while processing and one small mark for failed processing (Retry needed); drop the checkmark and info/warning icons. Default drawer width a little narrower.",
+      "deliverables": [
+        "Card glyph: spinner while processing, failure mark when processing failed, nothing otherwise (full status stays in the header and its tooltip).",
+        "Tighter row and day-section padding; slightly smaller card text.",
+        "Sidebar ideal width a little narrower (e.g. 180 pt, min 160)."
+      ],
+      "acceptance": [
+        "sidebar.png in both appearances; MeetingStatusGlyph tests updated for the reduced set."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T81",
+      "title": "Copy: calendar link popover and Ask intro",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Calendar/CalendarLinkChip.swift",
+        "App/Library/AskAnythingView.swift"
+      ],
+      "context": "Screencast 2026-10-28 (clip-2026-10-28T04-24-25-304Z) 5:50–6:35.",
+      "deliverables": [
+        "Calendar link popover: remove \"Links a copy of the event's title, time and invited names. Nothing is written to your calendar.\"; italicise the null state \"No events in your calendars that day.\" (and \"No events match …\").",
+        "Ask pane intro: italicise \"Find an answer, then follow it back to the line it came from…\" (secondary, supporting text)."
+      ],
+      "acceptance": [
+        "calendar-picker*.png and ask-pane-empty.png show the changes."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T82",
+      "title": "Polish validation",
+      "milestone": "Polish",
+      "status": "planned (accepted 2026-10-28, not started)",
+      "optional": false,
+      "depends_on": [
+        "T74",
+        "T75",
+        "T76",
+        "T77",
+        "T78",
+        "T79",
+        "T80",
+        "T81"
+      ],
+      "owner_role": "QA",
+      "module_scope": [
+        "docs/qualification/",
+        "Tests/"
+      ],
+      "context": "Sonnet validator per coordination.milestone_validation.",
+      "deliverables": [
+        "scripts/check.sh, ui-render (light/dark), scripts/stop-layout.sh; validator verdict file in docs/qualification/."
       ],
       "acceptance": [
         "Validator verdict with no must-fix items."
