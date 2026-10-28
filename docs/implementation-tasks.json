@@ -34,7 +34,7 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "K → M → N → O → Fixes → J → L → T21 → F → P (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
+    "milestone_order": "K → M → N → O → Fixes → J → L → T21 → F → P → Q (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; Q (local updates) placed after P on 2026-10-27 as “for later”; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md"
@@ -57,7 +57,8 @@
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
     "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
     "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them",
-    "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert). Each in its own commit"
+    "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit",
+    "Q": "Local updates (“Check for Updates…” from a local drop folder): T70–T73. Planned 2026-10-27 at the user's request; placed after P (“for later”), can move earlier. User decisions 2026-10-27: Release and Debug builds are both published, Debug offered only with a Settings opt-in; check at launch and show a note when a newer build exists (never install on its own); no rollbacks (an older or equal build is never offered); the script part ships now as T69. Local only: a free personal team can't notarize, so a web feed / Sparkle stays out of scope (keep discovery behind an update-source interface so one can be added later)."
   },
   "tasks": [
     {
@@ -2184,6 +2185,137 @@
         "Table tests per the decision doc; trim and restore tests; ui-render strip at 900/1100 pt and Settings; hands-on checklist item with a real call."
       ],
       "fallback": "Ship the quiet signal alone if the microphone-use signal proves unreliable; document it.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T69",
+      "title": "Local install script (build, replace /Applications/Amaranth.app, relaunch)",
+      "milestone": "Fixes",
+      "status": "done (2026-10-27): scripts/install-local.sh",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "Build/Release",
+      "module_scope": [
+        "scripts/"
+      ],
+      "context": "Stopgap for reinstalling by hand after every change, until Milestone Q. Recording detection: the running app holds the meeting's journal.jsonl open from Record to Stop (SegmentWriter), paused included.",
+      "deliverables": [
+        "scripts/install-local.sh [--debug] [--no-build] [--no-launch] [--force-identity]: build (Release by default), codesign --verify --deep --strict, bundle ID check, refuse a team ID different from the installed app's (TCC grants), refuse while recording, quit through the normal quit path, stage on the same volume, swap with restore on failure, relaunch."
+      ],
+      "acceptance": [
+        "A run with the app open and idle quits it, installs and relaunches without permission prompts; a run while recording changes nothing and says why."
+      ],
+      "fallback": "None needed.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T70",
+      "title": "Build numbers and the local publish step",
+      "milestone": "Q",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T69"
+      ],
+      "owner_role": "Build/Release",
+      "module_scope": [
+        "project.yml",
+        "Config/",
+        "scripts/"
+      ],
+      "context": "Every build is 0.1.0 (1) today, so “newer” is undefined. The app must only ever see complete builds: xcodebuild writes into the bundle in place.",
+      "deliverables": [
+        "CFBundleVersion = git commit count (one number line shared by Release and Debug); Info.plist keys for the short commit, dirty flag, build date and channel (release/debug), for the app and the XPC worker.",
+        "scripts/publish-local.sh [--debug]: build, verify, then write Amaranth.app + manifest.json (version, build, commit, dirty, channel, date, sha256 of the zipped bundle or a bundle digest, database schema version, commit subjects since the previous published build) into a staging folder and rename it into the drop folder (default dist/updates/<channel>/<build>/), keeping the last few builds per channel.",
+        "install-local.sh reuses the same build stamping."
+      ],
+      "acceptance": [
+        "Two commits give increasing build numbers; a half-written folder is never visible under the drop folder; the manifest matches the bundle."
+      ],
+      "fallback": "Timestamp build numbers if commit count proves awkward (rebases).",
+      "review_timestamps": []
+    },
+    {
+      "id": "T71",
+      "title": "Check for Updates… (menu, launch check, Settings → Updates)",
+      "milestone": "Q",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T70"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "Presentation/",
+        "App/",
+        "App/Settings/",
+        "Tests/"
+      ],
+      "context": "User decisions 2026-10-27: check at launch and show a note when newer; Debug builds only with an opt-in; no rollbacks.",
+      "deliverables": [
+        "Pure UpdateCatalog in Presentation: given the running build and the drop folder's manifests, pick the newest build above the running one (Release only unless the Debug opt-in is on; same build number prefers Release; never lower or equal).",
+        "Amaranth menu → Check for Updates…: dialog with current vs available build, channel, commit and the commit subjects; Install and Relaunch / Later; “You're up to date” otherwise.",
+        "Launch check: a quiet note (banner or toolbar badge, not a modal) when a newer build exists; nothing while recording.",
+        "Verification before offering: manifest digest, codesign strict, same bundle ID and team ID, arm64, LSMinimumSystemVersion.",
+        "Settings → Updates: source Off / Local folder (folder picker, stored as a bookmark), Include Debug builds (off), Check at launch (on).",
+        "Update source behind a protocol so a web feed can be added later."
+      ],
+      "acceptance": [
+        "UpdateCatalog table tests (channels, ties, older builds, dirty builds, bad manifests); ui-render of the dialog, the launch note and Settings at 900/1100 pt."
+      ],
+      "fallback": "Manual check only if the launch note proves noisy.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T72",
+      "title": "Install and relaunch from inside the app",
+      "milestone": "Q",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T71"
+      ],
+      "owner_role": "App + Build/Release",
+      "module_scope": [
+        "App/",
+        "Presentation/",
+        "Tests/"
+      ],
+      "context": "A running app can't cleanly replace itself: hand off to a helper that waits for the app to exit. No rollbacks (user decision); the previous bundle is deleted after a successful swap.",
+      "deliverables": [
+        "Refuse while recording (with the reason); flush the scratchpad; confirm that background processing resumes after relaunch rather than restarting.",
+        "Copy to a staging bundle on the same volume as the installed app, verify again, start the helper (embedded tool or /bin/sh script), quit through applicationShouldTerminate.",
+        "Helper: wait for the PID to exit, swap, restore the old bundle on failure, relaunch with --updated-from <build>; the app shows “Updated to build N” once.",
+        "Refuse to update an app not running from /Applications (e.g. straight from DerivedData)."
+      ],
+      "acceptance": [
+        "Update from build N to N+1 keeps the library, the microphone/system-audio grants and in-progress processing; a failed swap leaves the old app working."
+      ],
+      "fallback": "Hand off to install-local.sh's install half if an embedded helper is awkward.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T73",
+      "title": "Milestone Q validation",
+      "milestone": "Q",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T72"
+      ],
+      "owner_role": "QA",
+      "module_scope": [
+        "docs/qualification/",
+        "Tests/"
+      ],
+      "context": "Sonnet validator per coordination.milestone_validation.",
+      "deliverables": [
+        "End-to-end two-build run (Release, then Debug with the opt-in); refusal while recording; rejection of a half-written build, a build from another team and an older build; launch note; checklist item for the hands-on run."
+      ],
+      "acceptance": [
+        "Validator verdict with no must-fix items."
+      ],
+      "fallback": "None.",
       "review_timestamps": []
     }
   ]
