@@ -49,4 +49,16 @@ public enum LibraryFolders {
         default: "Its \(count) meetings stay in All meetings. Only the folder is removed."
         }
     }
+
+    /// Meetings dropped on a folder row (T41; nil = “All meetings”, which unfiles): the ones to move. Meetings no longer in
+    /// the library, ones already where they were dropped, and drops on a folder deleted meanwhile are ignored, so an
+    /// invalid drop does nothing rather than raising an error.
+    public static func dropMoves(_ dropped: [MeetingID], onto folder: FolderID?, items: [MeetingListItem], folders: [Folder]) -> [MeetingID] {
+        if let folder, !folders.contains(where: { $0.id == folder }) { return [] }
+        var seen = Set<MeetingID>()
+        return dropped.filter { id in
+            guard seen.insert(id).inserted, let item = items.first(where: { $0.id == id }) else { return false }
+            return item.folderID != folder
+        }
+    }
 }

@@ -314,6 +314,12 @@ enum UIRenderSelfTest {
         library.folderFilter = library.folders.last?.id
         _ = await host(LibrarySidebar(), "sidebar-folder-hiring", size: CGSize(width: 180, height: 400))
         library.folderFilter = nil
+        // T41: the drag payload survives the trip through its private type (the drop logic is LibraryFolders.dropMoves).
+        let dragData = try? await DraggedMeeting(MeetingID("ui-long")).exported(as: .amaranthMeeting)
+        var dragOK = false
+        if let dragData, let back = try? await DraggedMeeting(importing: dragData, contentType: .amaranthMeeting) { dragOK = back.meetingID == MeetingID("ui-long") }
+        SelfTest.log(["step": "meeting-drag-payload", "ok": "\(dragOK)"])
+        if !dragOK { ok = false }
         SelfTest.log(["step": "folders", "rows": rows.map { "\($0.name) \($0.count)" }.joined(separator: " | "), "ok": "\(rowsOK && filteredOK)"])
         if !(rowsOK && filteredOK) { ok = false }
         _ = await host(AskPane(), "ask-pane-empty", size: CGSize(width: 260, height: 760))

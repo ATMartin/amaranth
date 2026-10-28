@@ -54,6 +54,11 @@ targets:
         NSAudioCaptureUsageDescription: Amaranth records system audio (other meeting participants) during meetings you start, and keeps the audio on this Mac.
         NSCalendarsFullAccessUsageDescription: Amaranth reads your calendar to name recordings and list who was invited. Nothing leaves this Mac.
         NSHumanReadableCopyright: "Local-only meeting recorder."
+        # T41: a meeting dragged from the sidebar onto a folder (App/Library/MeetingDrag.swift). Private to the app.
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: com.alexmartin.amaranth.meeting-id
+            UTTypeDescription: Amaranth meeting
+            UTTypeConformsTo: [public.data]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.alexmartin.amaranth

@@ -156,7 +156,7 @@ struct LibrarySidebar: View {
                     FolderFilterList()
                     Hairline().padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.half)
                     if library.visibleItems.isEmpty {
-                        Text(library.items.isEmpty ? "No recordings yet." : "No meetings in this folder. Use Move to Folder in a meeting's menu to file one here.")
+                        Text(library.items.isEmpty ? "No recordings yet." : "No meetings in this folder. Drag a meeting here, or use Move to Folder in its menu.")
                             .appFont(.callout).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.grid)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -171,6 +171,10 @@ struct LibrarySidebar: View {
                             .id(item.id)
                             .accessibilityAddTraits(library.selection == item.id ? [.isSelected] : [])
                             .contextMenu { MeetingActionsMenu(meeting: .init(item)) }   // the header's ⋯ menu too (T79)
+                            // T41: drag a card onto a folder row (or All meetings to unfile it).
+                            .draggable(DraggedMeeting(item.id)) {
+                                MeetingRow(item: item, selected: true).frame(width: 180).background(Color.canvas)
+                            }
                         }
                     }
                 }
@@ -206,6 +210,8 @@ struct LibrarySidebar: View {
 /// renames or deletes it (its meetings stay).
 struct FolderFilterList: View {
     @Environment(LibraryModel.self) private var library
+    /// The row a meeting is dragged over (T41).
+    @State private var dropTarget: String?
 
     var body: some View {
         let rows = library.folderRows
@@ -238,9 +244,18 @@ struct FolderFilterList: View {
     func row(_ r: LibraryFolders.Row, icon: String) -> some View {
         let selected = library.folderFilter == r.folderID
         return Button { library.folderFilter = r.folderID } label: {
-            FolderRowLabel(name: r.name, count: r.count, icon: icon, selected: selected)
+            FolderRowLabel(name: r.name, count: r.count, icon: icon, selected: selected, targeted: dropTarget == r.id)
         }
         .buttonStyle(.plain)
+        // T41: meetings dropped here move into this folder; on All meetings they leave their folder. Drops that change
+        // nothing (or name a folder deleted meanwhile) are refused quietly.
+        .dropDestination(for: DraggedMeeting.self) { dropped, _ in
+            let moves = LibraryFolders.dropMoves(dropped.map(\.meetingID), onto: r.folderID, items: library.items, folders: library.folders)
+            for id in moves { library.move(id, to: r.folderID) }
+            return !moves.isEmpty
+        } isTargeted: { over in
+            if over { dropTarget = r.id } else if dropTarget == r.id { dropTarget = nil }
+        }
         .accessibilityAddTraits(selected ? [.isSelected] : [])
         .accessibilityValue("\(r.count) meetings")
     }

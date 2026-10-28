@@ -32,5 +32,18 @@
 	<string>Local-only meeting recorder.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Amaranth records your microphone during meetings you start, and keeps the audio on this Mac.</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Amaranth meeting</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.alexmartin.amaranth.meeting-id</string>
+		</dict>
+	</array>
 </dict>
 </plist>

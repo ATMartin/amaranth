@@ -43,4 +43,21 @@ struct LibraryFoldersTests {
         #expect(LibraryFolders.deleteMessage(count: 1).hasPrefix("Its meeting stays"))
         #expect(LibraryFolders.deleteMessage(count: 3) == "Its 3 meetings stay in All meetings. Only the folder is removed.")
     }
+
+    /// T41: what a drop moves. Drops on the current folder, of unknown meetings, or on a deleted folder do nothing.
+    @Test func dropsMoveOnlyWhatChanges() throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "amr-drop-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = try MeetingStore(root: root)
+        let acme = try store.createFolder(name: "Acme")
+        let a = MeetingID("a"), b = MeetingID("b")
+        try store.upsertMeeting(Meeting(id: a, title: "A", createdAt: Date()))
+        try store.upsertMeeting(Meeting(id: b, title: "B", createdAt: Date()))
+        try store.moveMeeting(a, to: acme.id)
+        let items = try MeetingListItem.load(store), folders = try store.folders()
+        #expect(LibraryFolders.dropMoves([a, b, b], onto: acme.id, items: items, folders: folders) == [b])
+        #expect(LibraryFolders.dropMoves([a, b], onto: nil, items: items, folders: folders) == [a], "All meetings unfiles")
+        #expect(LibraryFolders.dropMoves([MeetingID("gone")], onto: acme.id, items: items, folders: folders).isEmpty)
+        #expect(LibraryFolders.dropMoves([b], onto: FolderID("deleted"), items: items, folders: folders).isEmpty)
+    }
 }

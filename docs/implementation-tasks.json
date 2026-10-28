@@ -1370,7 +1370,7 @@
       "id": "T41",
       "title": "Drag and drop meetings into folders",
       "milestone": "J",
-      "status": "planned",
+      "status": "done (2026-10-28): cards drag a DraggedMeeting (app-side Transferable, private UTType com.alexmartin.amaranth.meeting-id; not on Domain MeetingID to keep contracts SwiftUI-free); folder rows and All meetings accept drops with a hover highlight; LibraryFolders.dropMoves refuses no-op/invalid drops quietly; single selection only (sidebar is single-select); checklist item 68",
       "optional": false,
       "depends_on": [
         "T40"
