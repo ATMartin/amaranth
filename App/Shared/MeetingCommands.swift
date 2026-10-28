@@ -51,8 +51,9 @@ struct MeetingCommands: Commands {
         }
         CommandGroup(after: .sidebar) {
             Picker("Show Folder", selection: Binding(get: { library.folderFilter }, set: { library.folderFilter = $0 })) {
-                Text(LibraryFolders.allMeetingsTitle).tag(FolderID?.none)
-                ForEach(library.folders) { Text($0.name).tag(FolderID?.some($0.id)) }
+                Text(LibraryFolders.allMeetingsTitle).tag(LibraryFolders.Filter.all)
+                Text(LibraryFolders.unsortedTitle).tag(LibraryFolders.Filter.unsorted)
+                ForEach(library.folders) { Text($0.name).tag(LibraryFolders.Filter.folder($0.id)) }
             }
         }
         CommandGroup(after: .toolbar) {

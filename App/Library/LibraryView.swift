@@ -156,7 +156,7 @@ struct LibrarySidebar: View {
                     FolderFilterList()
                     Hairline().padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.half)
                     if library.visibleItems.isEmpty {
-                        Text(library.items.isEmpty ? "No recordings yet." : "No meetings in this folder. Drag a meeting here, or use Move to Folder in its menu.")
+                        Text(LibraryFolders.emptyMessage(library.folderFilter, libraryEmpty: library.items.isEmpty))
                             .appFont(.callout).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.grid)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -205,8 +205,8 @@ struct LibrarySidebar: View {
     }
 }
 
-/// The folder filter at the top of the sidebar (T40, Granola-style): “All meetings”, then a Folders heading with a `+`
-/// and one row per folder with its meeting count. Clicking a row filters the list below; a folder's right-click menu
+/// The folder filter at the top of the sidebar (T40, Granola-style): “All meetings” and “Unsorted” (T83), then a Folders
+/// heading with a `+` and one row per folder with its meeting count. Clicking a row filters the list below; a folder's right-click menu
 /// renames or deletes it (its meetings stay).
 struct FolderFilterList: View {
     @Environment(LibraryModel.self) private var library
@@ -216,7 +216,7 @@ struct FolderFilterList: View {
     var body: some View {
         let rows = library.folderRows
         VStack(alignment: .leading, spacing: 1) {
-            if let all = rows.first { row(all, icon: "tray.full") }
+            ForEach(rows.prefix(2)) { r in row(r, icon: r.filter == .all ? "tray.full" : "tray") }
             HStack(alignment: .firstTextBaseline) {
                 Eyebrow(text: "Folders")
                 Spacer()
@@ -229,7 +229,7 @@ struct FolderFilterList: View {
                 .accessibilityLabel("New Folder")
             }
             .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.grid).padding(.top, AppStyle.grid).padding(.bottom, 2)
-            ForEach(rows.dropFirst()) { r in
+            ForEach(rows.dropFirst(2)) { r in
                 row(r, icon: "folder")
                     .contextMenu {
                         if let f = library.folders.first(where: { $0.id == r.folderID }) {
@@ -242,12 +242,12 @@ struct FolderFilterList: View {
     }
 
     func row(_ r: LibraryFolders.Row, icon: String) -> some View {
-        let selected = library.folderFilter == r.folderID
-        return Button { library.folderFilter = r.folderID } label: {
+        let selected = library.folderFilter == r.filter
+        return Button { library.folderFilter = r.filter } label: {
             FolderRowLabel(name: r.name, count: r.count, icon: icon, selected: selected, targeted: dropTarget == r.id)
         }
         .buttonStyle(.plain)
-        // T41: meetings dropped here move into this folder; on All meetings they leave their folder. Drops that change
+        // T41: meetings dropped here move into this folder; on All meetings or Unsorted they leave their folder. Drops that change
         // nothing (or name a folder deleted meanwhile) are refused quietly.
         .dropDestination(for: DraggedMeeting.self) { dropped, _ in
             let moves = LibraryFolders.dropMoves(dropped.map(\.meetingID), onto: r.folderID, items: library.items, folders: library.folders)

@@ -12,13 +12,13 @@ final class LibraryModel {
     private(set) var items: [MeetingListItem] = []
     /// Single-level folders (T39/T40), in the store's order.
     private(set) var folders: [Folder] = []
-    /// The sidebar's folder filter (T40): nil shows all meetings. Kept across launches; a deleted folder falls back to all.
-    var folderFilter: FolderID? = UserDefaults.standard.string(forKey: LibraryModel.folderFilterKey).map(FolderID.init) {
+    /// The sidebar's folder filter (T40; Unsorted T83). Kept across launches; a deleted folder falls back to All meetings.
+    var folderFilter = LibraryFolders.Filter(stored: UserDefaults.standard.string(forKey: LibraryModel.folderFilterKey)) {
         didSet {
-            UserDefaults.standard.set(folderFilter?.rawValue, forKey: Self.folderFilterKey)
+            UserDefaults.standard.set(folderFilter.stored, forKey: Self.folderFilterKey)
             guard folderFilter != oldValue, askScope == .thisFolder else { return }
-            // “This folder” follows the folder shown; with none shown it becomes All meetings (T42).
-            if folderFilter == nil { askScope = .allMeetings } else if askPanelOpen { runSearch(); reaskIfAnswered() }
+            // “This folder” follows the folder shown; with none shown (All meetings, Unsorted) it becomes All meetings (T42).
+            if folderFilter.folderID == nil { askScope = .allMeetings } else if askPanelOpen { runSearch(); reaskIfAnswered() }
         }
     }
     static let folderFilterKey = "sidebarFolderFilter"
@@ -136,7 +136,8 @@ final class LibraryModel {
     /// new card switches to the recording's folder (or All meetings when it is unfiled, T42).
     func recordingStarted(_ id: MeetingID, folder: FolderID? = nil) {
         let folder = RecordingDefaults.resolveFolder(folder, folders: folders)
-        if folderFilter != nil, folderFilter != folder { folderFilter = folder }
+        let shown = LibraryFolders.filter(folderFilter, showingNewMeetingIn: folder)
+        if shown != folderFilter { folderFilter = shown }
         selection = id
         reload()
     }
@@ -172,7 +173,7 @@ final class LibraryModel {
     }
 
     /// The folder “This folder” searches (T42), or nil.
-    var askFolder: FolderID? { AskResults.effectiveFolder(askScope, folder: folderFilter) }
+    var askFolder: FolderID? { AskResults.effectiveFolder(askScope, folder: folderFilter.folderID) }
 
     /// The scope switched with an answer on screen: answer again over the new scope.
     private func reaskIfAnswered() {
@@ -309,7 +310,7 @@ final class LibraryModel {
     var folderNameRequest: FolderRequest? { if case .delete = folderRequest { nil } else { folderRequest } }
     var folderDeleteRequest: Folder? { if case .delete(let f) = folderRequest { f } else { nil } }
 
-    var filteredFolder: Folder? { folderFilter.flatMap { id in folders.first { $0.id == id } } }
+    var filteredFolder: Folder? { folderFilter.folderID.flatMap { id in folders.first { $0.id == id } } }
     func meetingCount(in folder: FolderID) -> Int { items.filter { $0.folderID == folder }.count }
 
     /// Creates a folder. From the sidebar it opens the new folder; from a meeting's menu it files that meeting there and
@@ -324,7 +325,7 @@ final class LibraryModel {
             }
             await MainActor.run {
                 switch r {
-                case .success(let f): if meeting == nil { self.folders.append(f); self.folderFilter = f.id }
+                case .success(let f): if meeting == nil { self.folders.append(f); self.folderFilter = .folder(f.id) }
                 case .failure(let e): self.error = e.localizedDescription
                 }
                 self.reload()
@@ -340,7 +341,7 @@ final class LibraryModel {
     /// Deletes only the folder: its meetings become unfiled (MeetingStore.deleteFolder never touches their content).
     func deleteFolder(_ id: FolderID) {
         guard let store else { return }
-        if folderFilter == id { folderFilter = nil }
+        if folderFilter == .folder(id) { folderFilter = .all }
         perform { try store.deleteFolder(id) }
     }
 

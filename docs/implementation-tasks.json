@@ -2550,7 +2550,7 @@
       "id": "T83",
       "title": "“Unsorted” folder filter",
       "milestone": "Polish 2",
-      "status": "to do",
+      "status": "done (2026-10-28): LibraryFolders.Filter (All meetings | Unsorted | folder), stored as before plus an Unsorted marker; Unsorted row under All meetings (tray icon, unfiled count); drops on it unfile; View ▸ Show Folder, empty message and new-recording switch handle it; Ask offers Meeting | All",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",

@@ -307,13 +307,19 @@ enum UIRenderSelfTest {
         _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 180, height: 760))   // T80: the ideal width
         // T40: the folder filter. All meetings above; here one folder's meetings, and the counts beside each row.
         let rows = library.folderRows
-        let rowsOK = rows.map(\.name) == [LibraryFolders.allMeetingsTitle, "Acme", "Hiring"] && rows.map(\.count) == [library.items.count, 2, 1]
-        library.folderFilter = library.folders.first?.id
-        let filteredOK = Set(library.visibleItems.map(\.id)) == [MeetingID("ui-long"), MeetingID("fx-two-source")]
+        let rowsOK = rows.map(\.name) == [LibraryFolders.allMeetingsTitle, LibraryFolders.unsortedTitle, "Acme", "Hiring"]
+            && rows.map(\.count) == [library.items.count, library.items.count - 3, 2, 1]
+        library.folderFilter = library.folders.first.map { .folder($0.id) } ?? .all
+        var filteredOK = Set(library.visibleItems.map(\.id)) == [MeetingID("ui-long"), MeetingID("fx-two-source")]
         _ = await host(LibrarySidebar(), "sidebar-folder", size: CGSize(width: 180, height: 760))
-        library.folderFilter = library.folders.last?.id
+        library.folderFilter = library.folders.last.map { .folder($0.id) } ?? .all
         _ = await host(LibrarySidebar(), "sidebar-folder-hiring", size: CGSize(width: 180, height: 400))
-        library.folderFilter = nil
+        // T83: Unsorted lists only the meetings in no folder.
+        library.folderFilter = .unsorted
+        filteredOK = filteredOK && !library.visibleItems.isEmpty && library.visibleItems.allSatisfy { $0.folderID == nil }
+            && AskScope.options(folderShown: library.filteredFolder != nil) == [.thisMeeting, .allMeetings]
+        _ = await host(LibrarySidebar(), "sidebar-unsorted", size: CGSize(width: 180, height: 760))
+        library.folderFilter = .all
         // T41: the drag payload survives the trip through its private type (the drop logic is LibraryFolders.dropMoves).
         let dragData = try? await DraggedMeeting(MeetingID("ui-long")).exported(as: .amaranthMeeting)
         var dragOK = false
@@ -544,14 +550,14 @@ enum UIRenderSelfTest {
             // T42: with Acme shown, “This folder” limits hits to its meetings (ui-long, fx-two-source); showing All
             // meetings turns the scope back to All meetings.
             let acmeIDs: Set<MeetingID> = [MeetingID("ui-long"), MeetingID("fx-two-source")]
-            library.folderFilter = library.folders.first { $0.name == "Acme" }?.id
+            library.folderFilter = library.folders.first { $0.name == "Acme" }.map { .folder($0.id) } ?? .all
             library.askScope = .thisFolder
             library.query = "launch release"
             library.submitAsk()
             let folderHits = library.hits
             let folderOK = !folderHits.isEmpty && folderHits.allSatisfy { acmeIDs.contains($0.meetingID) } && library.askFolder != nil
             _ = await host(AskPane(), "ask-pane-folder", size: CGSize(width: 260, height: 760))
-            library.folderFilter = nil
+            library.folderFilter = .all
             let resetOK = library.askScope == .allMeetings && library.askFolder == nil
             library.clearAsk()
             SelfTest.log(["step": "ask-folder", "folderHits": "\(folderHits.count)", "resetOK": "\(resetOK)", "ok": "\(folderOK && resetOK)"])
