@@ -42,3 +42,11 @@ its search field and "Local by nature." line are not app features to copy).
 Live toggling of the system Increase Contrast / Reduce Transparency settings, scrolling a long real list, VoiceOver,
 context menus and drag over the art, and 1× displays are not automated. Folder rows (not in the mockup) get no backing;
 the spec names only meeting rows.
+
+## Outcome
+
+Verdict v1 (Sonnet, `lower-garden-verdict-v1.md`): PASS, no must-fix. Both optional notes kept as they are:
+1. The faint edges of the 92% card backing over the garden are what the spec and mockup ask for.
+2. The fade spans the whole sidebar body. A content `.background { }` gets the size of the view it is attached to,
+   and that size already excludes the toolbar's safe area. The real-window captures show the fade starting below the
+   title bar.
