@@ -8,6 +8,7 @@ struct MainView: View {
     @Environment(RecorderModel.self) private var recorder
     @Environment(PlaybackModel.self) private var playback
     @State private var newTitle = ""
+    @State private var folderName = ""
     @AppStorage("onboarded") private var onboarded = false
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
     /// The Ask pane on the right (Inner Circle handoff); ⌘K opens it.
@@ -100,6 +101,32 @@ struct MainView: View {
         } message: { d in
             Text(d.action.explanation(library.store?.diskUsage(d.request.meetingID) ?? .init(originalAudioBytes: 0, derivedBytes: 0)))
         }
+        // Folders (T40): New Folder… and Rename… share one name sheet; Delete Folder… says the meetings stay.
+        .sheet(isPresented: Binding(get: { library.folderNameRequest != nil }, set: { if !$0 { library.folderRequest = nil } })) {
+            switch library.folderNameRequest {
+            case .create(let moving):
+                EditTextSheet(title: "New Folder", text: $folderName,
+                              help: moving == nil ? "Folders hold meetings for a client or a project. A meeting is in one folder at most."
+                                                  : "The meeting moves into the new folder.") {
+                    library.createFolder(named: folderName, moving: moving)
+                }
+                .onAppear { folderName = "" }
+            case .rename(let f):
+                EditTextSheet(title: "Rename Folder", text: $folderName, help: "Its meetings stay in it.") {
+                    library.renameFolder(f.id, to: folderName)
+                }
+                .onAppear { folderName = f.name }
+            default: EmptyView()
+            }
+        }
+        .confirmationDialog(library.folderDeleteRequest.map { "Delete the folder “\($0.name)”?" } ?? "",
+                            isPresented: Binding(get: { library.folderDeleteRequest != nil }, set: { if !$0 { library.folderRequest = nil } }),
+                            titleVisibility: .visible, presenting: library.folderDeleteRequest) { f in
+            Button("Delete Folder", role: .destructive) { library.deleteFolder(f.id) }
+            Button("Cancel", role: .cancel) {}
+        } message: { f in
+            Text(LibraryFolders.deleteMessage(count: library.meetingCount(in: f.id)))
+        }
         .sheet(isPresented: Binding(get: { !onboarded }, set: { if !$0 { onboarded = true } })) {
             OnboardingView { onboarded = true }
         }
@@ -126,10 +153,14 @@ struct LibrarySidebar: View {
                     Text("Your meetings").appFont(.headline).foregroundStyle(Color.brandText)
                         .padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.half).padding(.bottom, AppStyle.half)
                         .accessibilityAddTraits(.isHeader)
-                    if library.items.isEmpty {
-                        Text("No recordings yet.").appFont(.callout).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.grid + 2)
+                    FolderFilterList()
+                    Hairline().padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.half)
+                    if library.visibleItems.isEmpty {
+                        Text(library.items.isEmpty ? "No recordings yet." : "No meetings in this folder. Use Move to Folder in a meeting's menu to file one here.")
+                            .appFont(.callout).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.grid)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    ForEach(LibrarySections.grouped(library.items, date: \.createdAt)) { section in
+                    ForEach(LibrarySections.grouped(library.visibleItems, date: \.createdAt)) { section in
                         Eyebrow(text: section.title)
                             .padding(.horizontal, AppStyle.grid + 2).padding(.top, AppStyle.grid + 4).padding(.bottom, 2)
                         ForEach(section.items) { item in
@@ -150,8 +181,9 @@ struct LibrarySidebar: View {
             .focusEffectDisabled()
             .onKeyPress(.downArrow) { move(1, proxy) }
             .onKeyPress(.upArrow) { move(-1, proxy) }
-            .onKeyPress(.home) { move(-library.items.count, proxy) }
-            .onKeyPress(.end) { move(library.items.count, proxy) }
+            .onKeyPress(.home) { move(-library.visibleItems.count, proxy) }
+            .onKeyPress(.end) { move(library.visibleItems.count, proxy) }
+            .contextMenu { Button("New Folder…") { library.folderRequest = .create(moving: nil) } }   // the sidebar background
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Meetings")
         }
@@ -160,12 +192,85 @@ struct LibrarySidebar: View {
     }
 
     func move(_ delta: Int, _ proxy: ScrollViewProxy) -> KeyPress.Result {
-        let ids = library.items.map(\.id)
+        let ids = library.visibleItems.map(\.id)
         guard !ids.isEmpty else { return .ignored }
         let i = library.selection.flatMap { ids.firstIndex(of: $0) }.map { min(max($0 + delta, 0), ids.count - 1) } ?? 0
         library.selection = ids[i]
         proxy.scrollTo(ids[i])
         return .handled
+    }
+}
+
+/// The folder filter at the top of the sidebar (T40, Granola-style): “All meetings”, then a Folders heading with a `+`
+/// and one row per folder with its meeting count. Clicking a row filters the list below; a folder's right-click menu
+/// renames or deletes it (its meetings stay).
+struct FolderFilterList: View {
+    @Environment(LibraryModel.self) private var library
+
+    var body: some View {
+        let rows = library.folderRows
+        VStack(alignment: .leading, spacing: 1) {
+            if let all = rows.first { row(all, icon: "tray.full") }
+            HStack(alignment: .firstTextBaseline) {
+                Eyebrow(text: "Folders")
+                Spacer()
+                Button { library.folderRequest = .create(moving: nil) } label: {
+                    Image(systemName: "plus").font(.system(size: AppStyle.iconSmall, weight: .semibold))
+                }
+                .buttonStyle(.borderless)
+                .foregroundStyle(Color.brandSecondary)
+                .help("New Folder (⇧⌘N)")
+                .accessibilityLabel("New Folder")
+            }
+            .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.grid).padding(.top, AppStyle.grid).padding(.bottom, 2)
+            ForEach(rows.dropFirst()) { r in
+                row(r, icon: "folder")
+                    .contextMenu {
+                        if let f = library.folders.first(where: { $0.id == r.folderID }) {
+                            Button("Rename…") { library.folderRequest = .rename(f) }
+                            Button("Delete Folder…", role: .destructive) { library.folderRequest = .delete(f) }
+                        }
+                    }
+            }
+        }
+    }
+
+    func row(_ r: LibraryFolders.Row, icon: String) -> some View {
+        let selected = library.folderFilter == r.folderID
+        return Button { library.folderFilter = r.folderID } label: {
+            FolderRowLabel(name: r.name, count: r.count, icon: icon, selected: selected)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
+        .accessibilityValue("\(r.count) meetings")
+    }
+}
+
+/// One folder filter row: icon, name, count; the shown folder on the Selection colour like a selected card.
+struct FolderRowLabel: View {
+    let name: String
+    let count: Int
+    let icon: String
+    var selected = false
+    /// A meeting is dragged over the row (T41).
+    var targeted = false
+
+    var body: some View {
+        HStack(spacing: AppStyle.half + 2) {
+            Image(systemName: icon).font(.system(size: AppStyle.icon)).foregroundStyle(selected ? Color.brandAccent : Color.brandSecondary)
+                .frame(width: 16)
+            Text(name).appFont(.caption, weight: selected ? .semibold : .regular).lineLimit(1).truncationMode(.tail)
+                .foregroundStyle(Color.brandText)
+            Spacer(minLength: 2)
+            Text("\(count)").appFont(.caption2, monospacedDigit: true).foregroundStyle(selected ? Color.brandText : Color.brandSecondary)
+        }
+        .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.grid).padding(.vertical, 4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background { if selected || targeted { RoundedRectangle(cornerRadius: 6).fill(Color.selection) } }
+        .overlay { if targeted { RoundedRectangle(cornerRadius: 6).strokeBorder(Color.brandAccent, lineWidth: 1.5) } }
+        .contentShape(Rectangle())
+        .help(name)
+        .accessibilityElement(children: .combine)
     }
 }
 

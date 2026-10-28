@@ -1335,7 +1335,7 @@
       "id": "T40",
       "title": "Folders in the sidebar: create, rename, delete, move meetings",
       "milestone": "J",
-      "status": "planned",
+      "status": "done (2026-10-28): Granola-style folder filter (user decision, replaces collapsible sections): All meetings + folder rows with counts, + / File ▸ New Folder… ⇧⌘N / sidebar right-click, folder Rename…/Delete Folder…, Move to Folder ▸ and Remove from Folder in the shared meeting menu, header folder chip, View ▸ Show Folder, filter persisted; Ask results name the folder; checklist item 67",
       "optional": false,
       "depends_on": [
         "T39",

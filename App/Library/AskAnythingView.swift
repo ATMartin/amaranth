@@ -103,12 +103,20 @@ struct AskPane: View {
     }
 
     func groupHeader(_ group: AskResults.Group) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: AppStyle.grid) {
-            Text(group.title).appFont(.caption, weight: .bold).lineLimit(1)
-            if let date = library.items.first(where: { $0.id == group.meetingID })?.createdAt {
-                Text(date.formatted(date: .abbreviated, time: .shortened)).appFont(.caption2).foregroundStyle(Color.brandSecondary)
+        let item = library.items.first { $0.id == group.meetingID }
+        return VStack(alignment: .leading, spacing: 1) {
+            HStack(alignment: .firstTextBaseline, spacing: AppStyle.grid) {
+                Text(group.title).appFont(.caption, weight: .bold).lineLimit(1)
+                if let date = item?.createdAt {
+                    Text(date.formatted(date: .abbreviated, time: .shortened)).appFont(.caption2).foregroundStyle(Color.brandSecondary)
+                }
+                Spacer()
             }
-            Spacer()
+            // T40: the folder of a filed meeting, under its title.
+            if let folder = library.folderName(item?.folderID) {
+                Label(folder, systemImage: "folder").appFont(.caption2).foregroundStyle(Color.brandSecondary).lineLimit(1)
+                    .accessibilityLabel("In folder \(folder)")
+            }
         }
         .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 2).padding(.bottom, 2)
         .accessibilityAddTraits(.isHeader)

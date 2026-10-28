@@ -40,6 +40,21 @@ struct MeetingCommands: Commands {
             Button("Ask Anything…") { if !sheetOpen { library.askAllMeetings() } }   // T52: all meetings
                 .keyboardShortcut("k", modifiers: .command)
         }
+        // T40: folders from the keyboard. Rename and Delete act on the folder the sidebar is showing.
+        CommandGroup(after: .newItem) {
+            Button("New Folder…") { if !sheetOpen { library.folderRequest = .create(moving: nil) } }
+                .keyboardShortcut("n", modifiers: [.command, .shift])
+            Button("Rename Folder…") { if !sheetOpen, let f = library.filteredFolder { library.folderRequest = .rename(f) } }
+                .disabled(library.filteredFolder == nil)
+            Button("Delete Folder…") { if !sheetOpen, let f = library.filteredFolder { library.folderRequest = .delete(f) } }
+                .disabled(library.filteredFolder == nil)
+        }
+        CommandGroup(after: .sidebar) {
+            Picker("Show Folder", selection: Binding(get: { library.folderFilter }, set: { library.folderFilter = $0 })) {
+                Text(LibraryFolders.allMeetingsTitle).tag(FolderID?.none)
+                ForEach(library.folders) { Text($0.name).tag(FolderID?.some($0.id)) }
+            }
+        }
         CommandGroup(after: .toolbar) {
             Toggle("Show Details", isOn: $showDetails)   // the one place ⌘D is registered (T79)
                 .keyboardShortcut("d", modifiers: .command)
@@ -62,6 +77,8 @@ struct MeetingActionsMenu: View {
         var audioDeleted: Bool
         /// Recorded audio exists to copy (no segments, or deleted audio: Original Audio… is disabled).
         var hasAudio: Bool
+        /// The meeting's folder (T40); nil = unfiled.
+        var folderID: FolderID?
     }
     let meeting: Target
     @Environment(LibraryModel.self) private var library
@@ -83,20 +100,42 @@ struct MeetingActionsMenu: View {
         .disabled(!meeting.hasTranscript && !meeting.hasAudio)
         Toggle("Show Details", isOn: $showDetails)   // ⌘D: View ▸ Show Details
         Divider()
+        // T40: file the meeting. The current folder is checked; New Folder… creates one and files the meeting there.
+        Menu("Move to Folder") { MoveToFolderItems(meeting: meeting.id, folder: meeting.folderID) }
+        if meeting.folderID != nil {
+            Button("Remove from Folder") { library.move(meeting.id, to: nil) }
+        }
+        Divider()
         Button("Delete Audio Only…") { library.requestDelete(.deleteAudioOnly, meeting.id, title: meeting.title) }.disabled(meeting.audioDeleted)
         Button("Delete Meeting…", role: .destructive) { library.requestDelete(.deleteMeeting, meeting.id, title: meeting.title) }
+    }
+}
+
+/// Move to Folder ▸ (T40), in the meeting menu and the header's folder chip: every folder (the current one checked),
+/// then New Folder…, which files the meeting in the folder it creates.
+struct MoveToFolderItems: View {
+    let meeting: MeetingID
+    let folder: FolderID?
+    @Environment(LibraryModel.self) private var library
+
+    var body: some View {
+        ForEach(library.folders) { f in
+            Toggle(f.name, isOn: Binding(get: { folder == f.id }, set: { if $0 { library.move(meeting, to: f.id) } }))
+        }
+        if !library.folders.isEmpty { Divider() }
+        Button("New Folder…") { library.folderRequest = .create(moving: meeting) }
     }
 }
 
 extension MeetingActionsMenu.Target {
     init(_ d: MeetingDetail) {
         self.init(id: d.meeting.id, title: d.meeting.title, hasTranscript: d.transcript != nil,
-                  audioDeleted: d.meeting.audio == .deletedByUser, hasAudio: d.playbackUnavailableReason == nil)
+                  audioDeleted: d.meeting.audio == .deletedByUser, hasAudio: d.playbackUnavailableReason == nil, folderID: d.meeting.folderID)
     }
     init(_ item: MeetingListItem) {
         let audio = item.status.audio
         self.init(id: item.id, title: item.title, hasTranscript: item.hasTranscript, audioDeleted: audio == .audioDeleted,
-                  hasAudio: audio != .audioDeleted && audio != .notStarted)
+                  hasAudio: audio != .audioDeleted && audio != .notStarted, folderID: item.folderID)
     }
 }
 
@@ -104,9 +143,11 @@ extension MeetingActionsMenu.Target {
 enum MeetingExport {
     enum Format { case markdown, text, json }
 
-    @MainActor static func run(_ f: Format, _ detail: MeetingDetail) {
+    /// `folderName`: the meeting's folder, named in the JSON export (T39).
+    @MainActor static func run(_ f: Format, _ detail: MeetingDetail, folderName: String?) {
         guard let t = detail.displayTranscript else { return }
-        let input = ExportInput(meeting: detail.meeting, transcript: t, summary: detail.summary, userNotes: detail.userNotes, scratchpad: detail.scratchpad)
+        let input = ExportInput(meeting: detail.meeting, transcript: t, summary: detail.summary, userNotes: detail.userNotes,
+                                scratchpad: detail.scratchpad, folderName: folderName)
         let panel = NSSavePanel()
         let base = detail.meeting.title.replacingOccurrences(of: "/", with: "-")
         switch f {

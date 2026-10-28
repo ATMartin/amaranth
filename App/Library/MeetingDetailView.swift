@@ -91,6 +91,7 @@ struct MeetingDetailView: View {
         HStack(spacing: AppStyle.double) {
             PeopleChip(meeting: detail.meeting).id(detail.meeting.id)
             CalendarLinkChip(meeting: detail.meeting, compact: compact, iconOnly: !eventTitle).id(detail.meeting.id)
+            FolderChip(meeting: detail.meeting, iconOnly: !eventTitle)
         }
         .fixedSize()
     }
@@ -132,6 +133,30 @@ struct HeaderChip: View {
 
     private struct Line: Shape {
         func path(in r: CGRect) -> Path { Path { p in p.move(to: CGPoint(x: r.minX, y: r.midY)); p.addLine(to: CGPoint(x: r.maxX, y: r.midY)) } }
+    }
+}
+
+/// The meeting's folder (T40, like the folder button in Granola's note header): its name, or just the folder icon when
+/// unfiled; a click lists the folders to move it to.
+struct FolderChip: View {
+    let meeting: Meeting
+    var iconOnly = false
+    @Environment(LibraryModel.self) private var library
+    @State private var hovering = false
+
+    var body: some View {
+        let name = library.folderName(meeting.folderID)
+        Menu {
+            MoveToFolderItems(meeting: meeting.id, folder: meeting.folderID)
+            if name != nil { Button("Remove from Folder") { library.move(meeting.id, to: nil) } }
+        } label: {
+            HeaderChip(symbol: "folder", text: iconOnly ? "" : name ?? "", style: .action, hovering: hovering)
+        }
+        .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).fixedSize()
+        .onHover { hovering = $0 }
+        .help(name.map { "In the folder “\($0)” (click to move)" } ?? "Move to a folder")
+        .accessibilityLabel(name.map { "Folder \($0)" } ?? "Not in a folder")
+        .accessibilityHint("Move this meeting to a folder")
     }
 }
 

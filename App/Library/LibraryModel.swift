@@ -10,6 +10,17 @@ import Presentation
 @MainActor @Observable
 final class LibraryModel {
     private(set) var items: [MeetingListItem] = []
+    /// Single-level folders (T39/T40), in the store's order.
+    private(set) var folders: [Folder] = []
+    /// The sidebar's folder filter (T40): nil shows all meetings. Kept across launches; a deleted folder falls back to all.
+    var folderFilter: FolderID? = UserDefaults.standard.string(forKey: LibraryModel.folderFilterKey).map(FolderID.init) {
+        didSet { UserDefaults.standard.set(folderFilter?.rawValue, forKey: Self.folderFilterKey) }
+    }
+    static let folderFilterKey = "sidebarFolderFilter"
+    /// The meetings the sidebar lists under the current filter.
+    var visibleItems: [MeetingListItem] { LibraryFolders.visible(items, filter: folderFilter) }
+    var folderRows: [LibraryFolders.Row] { LibraryFolders.rows(folders, items: items) }
+    func folderName(_ id: FolderID?) -> String? { LibraryFolders.name(id, in: folders) }
     var selection: MeetingID? { didSet { if oldValue != selection { reloadDetail(); if askPanelOpen, askScope == .thisMeeting { runSearch() } } } }
     private(set) var detail: MeetingDetail?
     /// The “Ask anything” field's text (T52). Searched on submit, then live while the results panel is open.
@@ -64,10 +75,16 @@ final class LibraryModel {
         let gen = generation, id = selection
         Task.detached(priority: .userInitiated) {
             let items = Result { try MeetingListItem.load(store) }
+            let folders = Result { try store.folders() }
             let detail = Result { try id.flatMap { try MeetingDetail.load(store, $0) } }
             await MainActor.run {
                 guard gen == self.generation else { return }
                 switch items { case .success(let v): self.items = v; case .failure(let e): self.error = "Could not read the library: \(e.localizedDescription)" }
+                if case .success(let f) = folders {
+                    self.folders = f
+                    let valid = LibraryFolders.validFilter(self.folderFilter, folders: f)
+                    if valid != self.folderFilter { self.folderFilter = valid }
+                }
                 switch detail { case .success(let v): if self.selection == id { self.show(v) }; case .failure(let e): self.error = "Could not open the meeting: \(e.localizedDescription)" }
                 if self.askPanelOpen { self.runSearch() }
             }
@@ -187,7 +204,7 @@ final class LibraryModel {
     /// Exports any meeting, open or not: the open one's loaded detail, or a fresh load from the store.
     func export(_ format: MeetingExport.Format, _ id: MeetingID) {
         guard let d = loadedDetail(id) else { return }
-        MeetingExport.run(format, d)
+        MeetingExport.run(format, d, folderName: folderName(d.meeting.folderID))
     }
 
     /// Copies any meeting's original audio segments (no transcript needed).
@@ -261,6 +278,66 @@ final class LibraryModel {
     }
 
     func dismissError() { error = nil }
+
+    // MARK: Folders (T40): New Folder…, Rename… and Delete Folder… are asked for here and presented once by MainView.
+
+    enum FolderRequest: Identifiable {
+        /// `moving`: the meeting whose Move to Folder ▸ New Folder… asked for it, filed in the new folder once created.
+        case create(moving: MeetingID?)
+        case rename(Folder)
+        case delete(Folder)
+        var id: String {
+            switch self {
+            case .create(let m): "create-\(m?.rawValue ?? "")"
+            case .rename(let f): "rename-\(f.id)"
+            case .delete(let f): "delete-\(f.id)"
+            }
+        }
+    }
+    var folderRequest: FolderRequest?
+    var folderNameRequest: FolderRequest? { if case .delete = folderRequest { nil } else { folderRequest } }
+    var folderDeleteRequest: Folder? { if case .delete(let f) = folderRequest { f } else { nil } }
+
+    var filteredFolder: Folder? { folderFilter.flatMap { id in folders.first { $0.id == id } } }
+    func meetingCount(in folder: FolderID) -> Int { items.filter { $0.folderID == folder }.count }
+
+    /// Creates a folder. From the sidebar it opens the new folder; from a meeting's menu it files that meeting there and
+    /// keeps the current filter.
+    func createFolder(named name: String, moving meeting: MeetingID? = nil) {
+        guard let store else { return }
+        Task.detached(priority: .userInitiated) {
+            let r = Result { () throws -> Folder in
+                let f = try store.createFolder(name: name)
+                if let meeting { try store.moveMeeting(meeting, to: f.id) }
+                return f
+            }
+            await MainActor.run {
+                switch r {
+                case .success(let f): if meeting == nil { self.folders.append(f); self.folderFilter = f.id }
+                case .failure(let e): self.error = e.localizedDescription
+                }
+                self.reload()
+            }
+        }
+    }
+
+    func renameFolder(_ id: FolderID, to name: String) {
+        guard let store else { return }
+        perform { try store.renameFolder(id, to: name) }
+    }
+
+    /// Deletes only the folder: its meetings become unfiled (MeetingStore.deleteFolder never touches their content).
+    func deleteFolder(_ id: FolderID) {
+        guard let store else { return }
+        if folderFilter == id { folderFilter = nil }
+        perform { try store.deleteFolder(id) }
+    }
+
+    /// Files a meeting in a folder, or unfiles it with nil.
+    func move(_ meeting: MeetingID, to folder: FolderID?) {
+        guard let store else { return }
+        perform { try store.moveMeeting(meeting, to: folder) }
+    }
 
     // MARK: Actions
 

@@ -23,6 +23,11 @@ enum UIRenderSelfTest {
             try persistLongMeeting(store)
             // T50: one meeting with people so the header shows names; the others show "Add people…".
             try store.setPeople(["Dana Whitfield", "Ravi Patel", "Mei Chen", "Tomás Ortega"].map { Person(name: $0) }, for: MeetingID("ui-long"))
+            // T40: two folders and unfiled meetings: Acme holds two meetings, Hiring one, the rest are unfiled.
+            let acme = try store.createFolder(name: "Acme"), hiring = try store.createFolder(name: "Hiring")
+            try store.moveMeeting(MeetingID("ui-long"), to: acme.id)
+            try store.moveMeeting(MeetingID("fx-two-source"), to: acme.id)
+            try store.moveMeeting(MeetingID("fx-paused"), to: hiring.id)
         } catch { SelfTest.log(["step": "fixtures", "error": "\(error)"]); return false }
         var ok = true
         for (name, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
@@ -77,6 +82,10 @@ enum UIRenderSelfTest {
         let worker = WorkerClient()
         let models = ModelSetupModel()
         let recorder = RecorderModel(store: store, recover: false)
+        // The sidebar's folder filter is a user preference: start from All meetings and put the user's back afterwards.
+        let savedFilter = UserDefaults.standard.object(forKey: LibraryModel.folderFilterKey)
+        UserDefaults.standard.removeObject(forKey: LibraryModel.folderFilterKey)
+        defer { UserDefaults.standard.set(savedFilter, forKey: LibraryModel.folderFilterKey) }
         let library = LibraryModel(store: store)
         let playback = PlaybackModel()
         let live = LiveTextModel(client: worker)
@@ -296,6 +305,17 @@ enum UIRenderSelfTest {
                        "speaker-rename-no-people", size: CGSize(width: 420, height: 160))
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
         _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 180, height: 760))   // T80: the ideal width
+        // T40: the folder filter. All meetings above; here one folder's meetings, and the counts beside each row.
+        let rows = library.folderRows
+        let rowsOK = rows.map(\.name) == [LibraryFolders.allMeetingsTitle, "Acme", "Hiring"] && rows.map(\.count) == [library.items.count, 2, 1]
+        library.folderFilter = library.folders.first?.id
+        let filteredOK = Set(library.visibleItems.map(\.id)) == [MeetingID("ui-long"), MeetingID("fx-two-source")]
+        _ = await host(LibrarySidebar(), "sidebar-folder", size: CGSize(width: 180, height: 760))
+        library.folderFilter = library.folders.last?.id
+        _ = await host(LibrarySidebar(), "sidebar-folder-hiring", size: CGSize(width: 180, height: 400))
+        library.folderFilter = nil
+        SelfTest.log(["step": "folders", "rows": rows.map { "\($0.name) \($0.count)" }.joined(separator: " | "), "ok": "\(rowsOK && filteredOK)"])
+        if !(rowsOK && filteredOK) { ok = false }
         _ = await host(AskPane(), "ask-pane-empty", size: CGSize(width: 260, height: 760))
         // Toolbar recorder (T31): idle control, this meeting's options, the strip in each state, the banner.
         _ = await host(RecordToolbarControl(model: recorder).padding(), "record-control", size: CGSize(width: 260, height: 60))

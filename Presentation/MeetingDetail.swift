@@ -94,6 +94,8 @@ public struct MeetingListItem: Identifiable, Hashable, Sendable {
     public var hasNotes: Bool
     /// A final or live transcript exists, so the meeting can be exported (what `MeetingDetail.transcript != nil` says).
     public var hasTranscript: Bool = false
+    /// The folder the meeting is filed in (T40); nil = unfiled.
+    public var folderID: FolderID?
 
     public static func load(_ store: MeetingStore, limit: Int = 500) throws -> [MeetingListItem] {
         try store.meetings().prefix(limit).map { m in
@@ -101,7 +103,8 @@ public struct MeetingListItem: Identifiable, Hashable, Sendable {
             return MeetingListItem(id: m.id, title: m.title, createdAt: m.createdAt, duration: m.duration,
                                    status: MeetingStatus(meeting: m, jobs: jobs, events: try store.events(m.id)),
                                    hasNotes: m.currentSummaryRevisionID != nil,
-                                   hasTranscript: (m.currentTranscriptRevisionID ?? m.provisionalTranscriptRevisionID) != nil)
+                                   hasTranscript: (m.currentTranscriptRevisionID ?? m.provisionalTranscriptRevisionID) != nil,
+                                   folderID: m.folderID)
         }
     }
 }
