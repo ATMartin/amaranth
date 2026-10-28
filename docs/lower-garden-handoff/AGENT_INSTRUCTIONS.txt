@@ -1,0 +1,148 @@
+AMARANTH LOWER GARDEN — DEVELOPER HANDOFF
+Version 1.0.0 · Selected design approved by the app owner
+
+1. SCOPE AND SOURCE OF TRUTH
+
+Implement a quiet, single-tone botanical watermark behind the meeting-library
+sidebar in the existing Inner Circle / Forest app. Preserve the established
+app icon, menu-bar template icon, fonts, colors, recording/transcription behavior,
+navigation, shortcuts, accessibility labels and persistence. No redesign or new
+settings are requested. Do not replace the sidebar with the reference mockup.
+
+Use the delivered approved mask; do not regenerate or trace it. The PNGs are
+local app resources and require no network service. The existing app may use
+SwiftUI, AppKit or a mixture; adapt the composition in that framework.
+
+Authority: Design/lower-garden.json is the machine-readable design recipe;
+the light/dark images in Preview/Screenshots show the approved appearance.
+The optional SwiftUI helper implements the decoration, but row/footer backing
+and view hierarchy must be integrated into the actual app separately.
+
+2. ADD THE NATIVE RESOURCES
+
+Add Assets/AmaranthLowerGarden.xcassets to the app target, or merge its three
+named sets into the existing catalog after checking for name collisions:
+  AmaranthLowerGardenMask — macOS template image, 390x585 @1x and 780x1170 @2x.
+  AmaranthWatermarkTint — light #416552, dark #A5C5A2.
+  AmaranthSelectedMetadata — light #6D5C64, dark #B9C3B5.
+
+Preserve Contents.json template intent and appearance variants. Confirm target
+membership and correct resource bundle; for package resources pass Bundle.module
+or the app's resource bundle instead of assuming Bundle.main.
+
+The master is 1024x1536, with black RGB and the approved source alpha exactly
+preserved. Its alpha is not binary; retain the soft edges. Rendering uses alpha,
+never luminance. Apply one runtime tint. No fade or 12% opacity is baked into the
+assets. Do not multiply opacity twice or use the full-color reference as a mask.
+Do not ship Source/, Prompts/ or the browser preview as runtime dependencies.
+
+3. COMPOSITION AND GEOMETRY
+
+Layer from back to front:
+  A. Existing opaque Canvas fill.
+  B. Lower Garden decoration, clipped to the entire sidebar body.
+  C. Existing sidebar controls, meeting rows and opaque footer.
+
+The sidebar body is the region below the window title bar, including its library
+heading/search area, list region and footer. Size the fade to this whole region,
+not each row, the scroll view's content, or the whole app window. The artwork
+stays fixed relative to this body while meeting rows scroll above it.
+
+Reference sidebar width: 220 logical points. Artwork: 390 wide x 585 high points.
+Anchor bottom-trailing and offset x:+105, y:+24 points, then clip to sidebar bounds.
+Equivalent CSS: width:390px; height:585px; right:-105px; bottom:-24px.
+Do not fit or stretch the art to the sidebar width. Keep its fixed point size
+and anchor as the user resizes the drawer. The crop adjusts naturally.
+
+After tinting and placement, apply this vertical alpha fade across the sidebar:
+  relative Y     mask alpha
+  0.00           0
+  0.20           0
+  0.58           1
+  0.76           1
+  0.91           0
+  1.00           0
+Interpolate linearly between stops. Finally apply 0.12 opacity once.
+
+Result alpha = source alpha x vertical fade alpha x 0.12.
+Light tint: #416552 on existing Canvas #F3ECE5.
+Dark tint: #A5C5A2 on existing Canvas #1D2621.
+Do not introduce a separate rectangular surface behind the artwork.
+
+4. CONTENT PROTECTION
+
+Maintain these subtle backing treatments from the approved preview:
+  - Unselected meeting rows: existing Canvas fill at 92% opacity over decoration.
+  - Selected row: opaque existing Selection (#E9DCD9 light / #3C4138 dark).
+  - Selected row metadata: AmaranthSelectedMetadata named color.
+  - Section labels: existing primary Text (#382A2F light / #F5F0E6 dark).
+  - Footer: opaque existing Canvas, hiding decoration behind footer controls.
+
+Keep existing hover/focus/pressed states, row hit regions and selection behavior.
+Apply 92% to the row backing only, never the row text or controls. A full opaque
+list background would hide the artwork; make the list container transparent only
+where needed while preserving the specified row and footer backing. Avoid adding
+global transparency to the app or changing the window's material system.
+
+5. NATIVE IMPLEMENTATION REFERENCE
+
+For SwiftUI, add Implementation/LowerGardenWatermark.swift and attach the helper
+as the background of the complete sidebar body, above its Canvas fill:
+
+  sidebarBody
+      .background { LowerGardenWatermark(bundle: .main) }
+      .background(Color("AmaranthCanvas"))
+
+AmaranthCanvas above is the existing brand token; use the actual app's token/API.
+Apply the artwork to the complete body once; not to individual rows or only the
+list. A background receives the parent's proposed size and does not enlarge it.
+The helper handles its own clipping, fade, one opacity, hit testing and environment
+preferences. It does not add row backing or change the list's opaque defaults.
+
+For AppKit, use a decorative view/layer behind sidebar content, set the image's
+template tint from the appearance-aware named color, preserve source alpha,
+and implement exactly the same placement and alpha-gradient mask. Recalculate
+the gradient bounds on layout; keep the image at the fixed logical size. A hosted
+SwiftUI decoration is also possible if appropriate for the existing architecture;
+its host must return nil for hit testing. No framework migration is required.
+
+If the app supports macOS earlier than 13, adapt the helper or use the existing
+AppKit APIs without raising the deployment target just for this decoration.
+
+6. ACCESSIBILITY AND BEHAVIOR
+
+The watermark conveys no information. Exclude it from the accessibility tree,
+disable all hit testing, and give it no focus, hover, selection or drag behavior.
+Hide it when Increase Contrast or Reduce Transparency is enabled, including
+when those preferences change while the app is running. Preserve Canvas and all
+content backing. No animation, parallax, shimmer or recording-state color changes.
+No watermark configuration UI is requested.
+
+Relevant Apple API references:
+https://developer.apple.com/documentation/swiftui/image/renderingmode(_:)
+https://developer.apple.com/documentation/swiftui/environmentvalues/colorschemecontrast
+https://developer.apple.com/documentation/swiftui/environmentvalues/accessibilityreducetransparency
+
+7. IMPLEMENTATION ORDER AND ACCEPTANCE
+
+Read the actual repository's agent instructions, inspect its sidebar hierarchy and
+brand resource naming, and make the smallest additive implementation. Then:
+
+  1. Verify the resources are bundled and resolve in both appearances.
+  2. Compare the sidebar with Preview/Screenshots in light and Forest dark modes.
+  3. Check widths around 160, 220 and 320pt within the app's supported size range,
+     and short/tall windows. Keep all controls usable at the existing minimum.
+  4. Check empty, short and long meeting lists; scroll the long list and confirm
+     the garden stays fixed while rows move. No clipping beyond sidebar bounds.
+  5. Verify search, row selection, context menus, keyboard navigation, focus rings,
+     footer and recording controls still work. Decoration intercepts no input.
+  6. Test Increase Contrast and Reduce Transparency, both at launch and live;
+     watermark disappears without changing layout or hiding content.
+  7. Check 1x and 2x rendering, readable labels and selected/unselected metadata.
+  8. Run the repository's appropriate build and existing relevant checks. Capture
+     actual app screenshots of both appearances and report any real limitations.
+
+The browser mockup is a visual reference, not evidence of native integration.
+Do not copy its placeholder meetings, simulated controls, HTML or JavaScript into
+the product. This package validates assets/reference code; only the implementation
+team can verify the final app's resource lookup, compositing and accessibility.

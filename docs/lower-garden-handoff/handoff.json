@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "package": "Amaranth Lower Garden watermark",
+  "version": "1.0.0",
+  "status": "approved add-on to existing Inner Circle / Forest implementation",
+  "startHere": "START_HERE.txt",
+  "agentInstructions": "AGENT_INSTRUCTIONS.txt",
+  "implementationPrompt": "Prompts/IMPLEMENTATION_PROMPT.txt",
+  "imagePrompt": "Prompts/IMAGE_GENERATION_PROMPT.txt",
+  "settings": "Design/lower-garden.json",
+  "assetCatalog": "Assets/AmaranthLowerGarden.xcassets",
+  "maskName": "AmaranthLowerGardenMask",
+  "tintName": "AmaranthWatermarkTint",
+  "selectedMetadataName": "AmaranthSelectedMetadata",
+  "swiftUIReference": "Implementation/LowerGardenWatermark.swift",
+  "preview": "Preview/index.html",
+  "sourcePromptReference": "Source/reference-amaranth.png",
+  "sourceGeneration": "Source/generated-soft-botanical.png",
+  "checksumFile": "SHA256SUMS.txt",
+  "baseBranding": "Use the app's already implemented Inner Circle / Forest assets and colors",
+  "actualAppModified": false
+}

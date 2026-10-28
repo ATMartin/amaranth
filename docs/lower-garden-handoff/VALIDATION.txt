@@ -1,0 +1,31 @@
+LOWER GARDEN HANDOFF — PACKAGE VALIDATION
+Checked 2026-10-28
+
+PASSED
+- Full-resolution master: 1024x1536 RGBA. Every RGB pixel is black; every alpha
+  value exactly matches the approved generated source. No fade/opacity baked in.
+- Native image exports: 390x585 @1x and 780x1170 @2x, with alpha transparency.
+- Asset catalog JSON file references exist and template rendering intent is set.
+- Xcode actool compiled the catalog for macOS, minimum target 13.0, exit status 0.
+  assetutil inspection confirmed both image scales, template intent and light/dark
+  variants of both named colors. Simulator-service warnings were environmental;
+  the macOS Assets.car was produced and inspected. Compiled output is not shipped.
+- SwiftUI helper type-checked against macOS 13.0 using the local Apple compiler,
+  exit status 0, without diagnostics in the final compiler run.
+- Standalone browser preview contains one selected treatment, Lower Garden.
+- Offline browser verification: no HTTP(S) requests and no JavaScript errors.
+- Both appearances match the recipe: 390x585 art, right -105, bottom -24,
+  opacity 0.12, correct light/Forest tints, and the approved vertical alpha fade.
+- Navigation click passes through decoration; Increase Contrast hides watermark.
+- Desktop and narrow preview overflow checks passed. Narrow browser adaptation
+  is for review convenience; the native implementation uses the desktop recipe.
+- Final light/dark full-window and drawer screenshots captured and reviewed.
+- Manifest entrypoint paths resolve. SHA256SUMS.txt covers all other files.
+
+LIMITS
+The application repository was not part of this handoff. No app source was changed
+or app build run. The helper was type-checked, not rendered inside the actual app.
+The developer team must verify resource-bundle lookup, real view hierarchy,
+scrolling, supported window sizes, native input/accessibility behavior and live
+Increase Contrast / Reduce Transparency changes after integration. The package
+guide includes those acceptance checks. Browser interactions use sample content.

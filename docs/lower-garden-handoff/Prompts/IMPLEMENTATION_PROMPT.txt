@@ -1,0 +1,31 @@
+Implement the approved Lower Garden botanical watermark in Amaranth's existing
+Inner Circle / Forest sidebar using the attached handoff folder.
+
+Read the repository's applicable agent instructions, then START_HERE.txt,
+AGENT_INSTRUCTIONS.txt, Design/lower-garden.json and handoff.json in this package.
+Inspect Preview/Screenshots in both appearances. Proceed with implementation
+using the app's current UI framework and existing brand tokens.
+
+Add Assets/AmaranthLowerGarden.xcassets to the correct app resource target/bundle.
+Use the supplied alpha template mask, tinted #416552 light / #A5C5A2 Forest dark.
+Render at 390x585 logical points, bottom-trailing offset (+105,+24), clipped to
+the entire sidebar body below the title bar. Apply the exact full-sidebar alpha
+fade from the JSON, then 12% opacity once. Keep it behind content and stationary
+when meeting rows scroll. Preserve the specified 92% Canvas row backings,
+opaque selected row/footer and selected metadata color. Hide it for Increase
+Contrast and Reduce Transparency, disable hit testing and exclude it from
+accessibility. The optional SwiftUI helper is in Implementation/.
+
+This is a focused decoration add-on. Preserve the implemented app/menu-bar icons,
+palette, typography, layout, recording/transcription behavior, navigation and data.
+Do not regenerate imagery, introduce online dependencies, copy prototype sample
+content, add settings, or migrate UI frameworks. Use existing conventions and
+the correct resource bundle. If existing names differ, map the supplied names
+to the app's tokens without changing the intended appearance.
+
+Complete the integration and run the appropriate app build and existing relevant
+checks. Verify light/dark modes, supported sidebar/window sizes, long-list scroll,
+search/selection/context menus/keyboard input, 1x/2x rendering and live accessibility
+preference changes. Capture actual app screenshots in both appearances. Report
+the files changed, checks completed and any remaining limitations. Do not claim
+the app is verified based solely on the browser reference preview.

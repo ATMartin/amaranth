@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "name": "Lower Garden",
+  "status": "approved",
+  "role": "decorative meeting-library background",
+  "baseDesign": "Amaranth Inner Circle / Forest",
+  "referenceSidebarWidthPoints": 220,
+  "placement": {
+    "artWidthPoints": 390,
+    "artHeightPoints": 585,
+    "alignment": "bottomTrailing",
+    "offsetXPoints": 105,
+    "offsetYPoints": 24,
+    "cssEquivalent": {
+      "right": -105,
+      "bottom": -24
+    },
+    "resizing": "fixed point size anchored to bottom-trailing; clip to current sidebar bounds",
+    "mask": "alpha",
+    "opacity": 0.12,
+    "fadeCoordinateSpace": "complete sidebar height, top=0, bottom=1",
+    "verticalFadeStops": [
+      {
+        "location": 0,
+        "alpha": 0
+      },
+      {
+        "location": 0.2,
+        "alpha": 0
+      },
+      {
+        "location": 0.58,
+        "alpha": 1
+      },
+      {
+        "location": 0.76,
+        "alpha": 1
+      },
+      {
+        "location": 0.91,
+        "alpha": 0
+      },
+      {
+        "location": 1,
+        "alpha": 0
+      }
+    ]
+  },
+  "appearance": {
+    "lightTint": "#416552",
+    "darkTint": "#A5C5A2",
+    "lightCanvas": "#F3ECE5",
+    "darkCanvas": "#1D2621",
+    "selectedMetadata": {
+      "light": "#6D5C64",
+      "dark": "#B9C3B5"
+    }
+  },
+  "contentProtection": {
+    "unselectedMeetingRowCanvasOpacity": 0.92,
+    "selectedRow": "opaque existing AmaranthSelection",
+    "sectionLabels": "existing AmaranthText",
+    "footer": "opaque existing AmaranthCanvas"
+  },
+  "behavior": {
+    "clipsToSidebar": true,
+    "affectsLayout": false,
+    "hitTesting": false,
+    "accessibilityHidden": true,
+    "animates": false,
+    "scrollsWithMeetingRows": false,
+    "hideForIncreasedContrast": true,
+    "hideForReduceTransparency": true
+  },
+  "asset": {
+    "name": "AmaranthLowerGardenMask",
+    "catalog": "Assets/AmaranthLowerGarden.xcassets",
+    "master": "Assets/LowerGardenMask-master.png",
+    "masterPixels": {
+      "width": 1024,
+      "height": 1536
+    },
+    "deliveryLogicalPoints": {
+      "width": 390,
+      "height": 585
+    },
+    "deliveryScales": [
+      1,
+      2
+    ],
+    "rgb": "black; color is applied at render time",
+    "alpha": "exactly preserved in master from approved generated source",
+    "fadeBakedIntoAsset": false,
+    "opacityBakedIntoAsset": false
+  }
+}

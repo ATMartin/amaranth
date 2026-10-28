@@ -1,0 +1,34 @@
+AMARANTH — LOWER GARDEN
+Approved sidebar watermark · Inner Circle / Forest · version 1.0.0
+
+This is an additive handoff for the app's existing branding implementation.
+It contains the selected Lower Garden artwork only. The actual app is not modified.
+
+IMPLEMENT TODAY
+1. Give the developer agent this entire extracted folder.
+2. Paste Prompts/IMPLEMENTATION_PROMPT.txt into its conversation.
+3. The agent should read AGENT_INSTRUCTIONS.txt and Design/lower-garden.json,
+   add Assets/AmaranthLowerGarden.xcassets to the app target, and implement
+   the supplied composition using the app's existing UI framework.
+
+REVIEW
+Open Preview/index.html in a browser, including offline. Use the sun/moon
+control to switch appearance. This is a reference mockup with sample content;
+its controls and meeting data are not application code to copy into the app.
+Preview/Screenshots contains the approved full-window and drawer views in
+both appearances. Preview/reference-fragment.html is the editable source.
+
+WHAT TO USE
+Assets/AmaranthLowerGarden.xcassets — ready native template image and colors.
+Implementation/LowerGardenWatermark.swift — optional SwiftUI reference helper.
+Design/lower-garden.json — exact geometry, alpha, fade and tint settings.
+AGENT_INSTRUCTIONS.txt — integration, layering and acceptance criteria.
+Prompts/ — implementation prompt and source artwork generation provenance.
+Assets/LowerGardenMask-master.png — full-resolution alpha master for future use.
+Source/ — original generated source and full-color illustration reference.
+VALIDATION.txt — package checks and their limits.
+SHA256SUMS.txt — integrity hashes for every other packaged file.
+
+The existing app icon, menu-bar icon, typography, Forest palette and functional
+layout remain the established baseline. No image generation, online runtime
+dependency, new setting, animation or feature redesign is required.
