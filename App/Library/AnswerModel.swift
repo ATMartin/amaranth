@@ -31,6 +31,7 @@ final class AnswerModel {
     private(set) var passages: [Passage] = []
     private(set) var acrossMeetings = false
     private var scopeAsked: MeetingID?
+    private var folderAsked: FolderID?
     /// Earlier questions and answers of this ask session (T55), newest last, at most `AskFollowUp.maxTurns`. A follow-up
     /// like “and when is it due?” is answered with them as context. Cleared when the scope or meeting changes or the
     /// panel closes.
@@ -54,23 +55,24 @@ final class AnswerModel {
 
     /// Asks `question` over one meeting (`meeting`) or all meetings (nil). Asking the same question again over the same
     /// scope keeps the answer already shown or in progress.
-    func ask(_ q: String, in meeting: MeetingID?) {
+    /// `folder` (T42): only that folder's meetings (with `meeting` nil).
+    func ask(_ q: String, in meeting: MeetingID?, folder: FolderID? = nil) {
         let q = q.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty, let store else { return }
-        if q == question, meeting == scopeAsked, phase != .idle, !{ if case .failed = phase { true } else { false } }() { return }
+        if q == question, meeting == scopeAsked, folder == folderAsked, phase != .idle, !{ if case .failed = phase { true } else { false } }() { return }
         cancel()
-        if meeting != scopeAsked { history = [] }
+        if meeting != scopeAsked || folder != folderAsked { history = [] }
         // Asked again (scope switch): the earlier turn of this same question isn't context for itself.
         if history.last?.question == q { history.removeLast() }
         let context = history
-        question = q; scopeAsked = meeting; acrossMeetings = meeting == nil
+        question = q; scopeAsked = meeting; folderAsked = folder; acrossMeetings = meeting == nil
         text = ""; response = nil; passages = []
         phase = .thinking
         let id = UUID().uuidString
         requestID = id
         task = Task { [weak self] in
             let query = AskFollowUp.retrievalQuery(q, history: context)
-            let found = await Task.detached(priority: .userInitiated) { (try? Retriever(store: store).search(query, in: meeting)) ?? [] }.value
+            let found = await Task.detached(priority: .userInitiated) { (try? Retriever(store: store).search(query, in: meeting, folder: folder)) ?? [] }.value
             guard let self, !Task.isCancelled, self.requestID == id else { return }
             self.passages = found
             guard !found.isEmpty else {

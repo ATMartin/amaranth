@@ -116,6 +116,21 @@ struct SessionHardeningTests {
     static let fmt = AudioFormat(sampleRate: 16_000, channelCount: 1, sampleFormat: .float32)
     func tempRoot() -> URL { FileManager.default.temporaryDirectory.appending(path: "amr-life-\(UUID())") }
 
+    /// T42: a recording starts in the chosen folder; a folder deleted meanwhile leaves it unfiled instead of failing.
+    @Test func recordingStartsInTheChosenFolder() throws {
+        let root = tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = try MeetingStore(root: root)
+        let acme = try store.createFolder(name: "Acme")
+        let plan = SyntheticSource.Plan.sine(440, format: Self.fmt, speed: 1)
+        let filed = try RecordingSession(meetingID: MeetingID(), rootDirectory: root, options: RecordingOptions(selection: .microphoneOnly),
+                                         store: store, folderID: acme.id) { SyntheticSource(kind: $0, plan: plan) }
+        #expect(try store.meeting(filed.meetingID)?.folderID == acme.id)
+        let orphan = try RecordingSession(meetingID: MeetingID(), rootDirectory: root, options: RecordingOptions(selection: .microphoneOnly),
+                                          store: store, folderID: FolderID("deleted")) { SyntheticSource(kind: $0, plan: plan) }
+        #expect(try store.meeting(orphan.meetingID)?.folderID == nil)
+    }
+
     @Test func lowDiskWarnsThenStopsAndSavesWithoutDeletingAudio() async throws {
         let root = tempRoot()
         defer { try? FileManager.default.removeItem(at: root) }

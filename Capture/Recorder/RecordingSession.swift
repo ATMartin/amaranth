@@ -89,7 +89,7 @@ public final class RecordingSession: @unchecked Sendable {
     /// With a `store`, the session writes a meeting row (state tracks capture) and indexes epochs, segments and events
     /// as they happen; `rootDirectory` should then be `store.root` so files live where the index expects them.
     public init(meetingID: MeetingID, rootDirectory: URL, options: RecordingOptions, store: MeetingStore? = nil,
-                title: String = "Untitled meeting",
+                title: String = "Untitled meeting", folderID: FolderID? = nil,
                 sourceFactory: (SourceKind) -> RingAudioSource = RecordingSession.defaultSource) throws {
         self.meetingID = meetingID
         self.options = options
@@ -102,8 +102,9 @@ public final class RecordingSession: @unchecked Sendable {
         writer = try SegmentWriter(meetingID: meetingID, meetingDirectory: directory, sessionOriginHostNanos: origin,
                                    configuration: options.writer)
         (liveEvents, eventContinuation) = AsyncStream.makeStream(of: CaptureEvent.self, bufferingPolicy: .bufferingNewest(512))
+        // A folder (T42) is set only on the first write; the store leaves the meeting unfiled if the folder is gone.
         meeting = Meeting(id: meetingID, title: title, createdAt: clock.utcOrigin, clock: clock, captureState: .preparing,
-                          selectedSources: options.selection)
+                          selectedSources: options.selection, folderID: folderID)
         try store?.upsertMeeting(meeting)
         for kind in options.selection.sources.sorted(by: { $0.rawValue < $1.rawValue }) {
             let s = sourceFactory(kind)

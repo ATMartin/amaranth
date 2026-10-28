@@ -27,10 +27,12 @@ struct AskPane: View {
                             .help("Clear the question and results (Esc)").accessibilityLabel("Clear")
                     }
                 }
-                BrandSegmented(options: AskScope.allCases, selection: $library.askScope) { $0.rawValue }
+                // T42: “This folder” appears while the sidebar shows a folder.
+                BrandSegmented(options: AskScope.options(folderShown: library.filteredFolder != nil), selection: $library.askScope) { $0.label(short: library.filteredFolder != nil) }
                     .accessibilityLabel("Scope")
-                .disabled(!thisMeetingAvailable)
-                .help(thisMeetingAvailable ? "Ask about this meeting or all meetings" : "Open a meeting to ask about just that meeting")
+                .disabled(!thisMeetingAvailable && library.filteredFolder == nil)
+                .help(library.filteredFolder.map { "Ask about this meeting, the folder “\($0.name)” or all meetings" }
+                      ?? (thisMeetingAvailable ? "Ask about this meeting or all meetings" : "Open a meeting to ask about just that meeting"))
             }
             .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 4).padding(.bottom, AppStyle.grid + 2)
             Hairline(opacity: 0.4)
@@ -71,9 +73,10 @@ struct AskPane: View {
     @ViewBuilder func results(_ groups: [AskResults.Group]) -> some View {
         if groups.isEmpty {
             HStack {
-                Text(library.askScope == .thisMeeting && library.selection != nil ? "No matches in this meeting." : "No matches.")
+                Text(library.askScope == .thisMeeting && library.selection != nil ? "No matches in this meeting."
+                     : library.askFolder != nil ? "No matches in this folder." : "No matches.")
                     .foregroundStyle(Color.brandSecondary)
-                if library.askScope == .thisMeeting, library.selection != nil {
+                if library.askScope == .thisMeeting && library.selection != nil || library.askFolder != nil {
                     Button("Search All Meetings") { library.askScope = .allMeetings }.buttonStyle(.brandLink)
                 }
                 Spacer()
@@ -181,11 +184,13 @@ struct AskField: View {
     }
 
     var prompt: String {
-        AskResults.effectiveScope(library.askScope, meeting: library.selection) == nil ? "Ask across all meetings…" : "Ask about this meeting…"
+        if let f = library.askFolder.flatMap({ library.folderName($0) }) { return "Ask about \(f)…" }
+        return AskResults.effectiveScope(library.askScope, meeting: library.selection) == nil ? "Ask across all meetings…" : "Ask about this meeting…"
     }
 
     var scopeDescription: String {
-        AskResults.effectiveScope(library.askScope, meeting: library.selection) == nil ? "all meetings" : "this meeting"
+        if let f = library.askFolder.flatMap({ library.folderName($0) }) { return "the folder \(f)" }
+        return AskResults.effectiveScope(library.askScope, meeting: library.selection) == nil ? "all meetings" : "this meeting"
     }
 
     func move(_ delta: Int) -> KeyPress.Result {

@@ -53,21 +53,23 @@ public struct Retriever: Sendable {
         self.k = k
     }
 
-    /// `meeting`: search only that meeting (“This meeting”); nil searches all meetings.
-    public func search(_ question: String, in meeting: MeetingID? = nil) throws -> [Passage] {
+    /// `meeting`: search only that meeting (“This meeting”); nil searches all meetings. `folder` (T42): only meetings
+    /// filed there (“This folder”), spread across them like all meetings.
+    public func search(_ question: String, in meeting: MeetingID? = nil, folder: FolderID? = nil) throws -> [Passage] {
         let terms = Self.terms(question)
         guard !terms.isEmpty else { return [] }
         // Every user term is a quoted prefix phrase, so user input can never inject FTS syntax.
         let match = "{text speaker} : (" + terms.map { "\"\($0)\"*" }.joined(separator: " OR ") + ")"
         var bindings: [SQLiteDB.Value] = [.text(match)]
         if let meeting { bindings.append(.text(meeting.rawValue)) }
+        if let folder { bindings.append(.text(folder.rawValue)) }
         bindings.append(.int(Int64(candidates)))
         return try store.withDB { db in
             let rows = try db.run("""
                 SELECT s.rowid AS rid, s.meeting_id, s.kind, s.ref, s.start_ns, s.text, s.speaker, s.evidence,
                        bm25(search_index, 0, 0, 0, 0, 1.0, 0.6, 0) AS score, m.title, m.created_at
                 FROM search_index s JOIN meetings m ON m.id = s.meeting_id
-                WHERE search_index MATCH ? AND m.deleted_at IS NULL\(meeting == nil ? "" : " AND s.meeting_id = ?")
+                WHERE search_index MATCH ? AND m.deleted_at IS NULL\(meeting == nil ? "" : " AND s.meeting_id = ?")\(folder == nil ? "" : " AND m.folder_id = ?")
                 ORDER BY score LIMIT ?
                 """, bindings)
             // Meetings whose title or people match get a small boost (“the Leesa 1:1”, “with Andrew”).

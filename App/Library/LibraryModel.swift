@@ -14,7 +14,12 @@ final class LibraryModel {
     private(set) var folders: [Folder] = []
     /// The sidebar's folder filter (T40): nil shows all meetings. Kept across launches; a deleted folder falls back to all.
     var folderFilter: FolderID? = UserDefaults.standard.string(forKey: LibraryModel.folderFilterKey).map(FolderID.init) {
-        didSet { UserDefaults.standard.set(folderFilter?.rawValue, forKey: Self.folderFilterKey) }
+        didSet {
+            UserDefaults.standard.set(folderFilter?.rawValue, forKey: Self.folderFilterKey)
+            guard folderFilter != oldValue, askScope == .thisFolder else { return }
+            // “This folder” follows the folder shown; with none shown it becomes All meetings (T42).
+            if folderFilter == nil { askScope = .allMeetings } else if askPanelOpen { runSearch(); reaskIfAnswered() }
+        }
     }
     static let folderFilterKey = "sidebarFolderFilter"
     /// The meetings the sidebar lists under the current filter.
@@ -127,8 +132,11 @@ final class LibraryModel {
         applyingTabRule = false
     }
 
-    /// Record pressed: open the new meeting so the detail pane is its live transcript.
-    func recordingStarted(_ id: MeetingID) {
+    /// Record pressed: open the new meeting so the detail pane is its live transcript. A folder filter that would hide the
+    /// new card switches to the recording's folder (or All meetings when it is unfiled, T42).
+    func recordingStarted(_ id: MeetingID, folder: FolderID? = nil) {
+        let folder = RecordingDefaults.resolveFolder(folder, folders: folders)
+        if folderFilter != nil, folderFilter != folder { folderFilter = folder }
         selection = id
         reload()
     }
@@ -160,13 +168,16 @@ final class LibraryModel {
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         askPanelOpen = true
         runSearch()
-        answers?.ask(query, in: AskResults.effectiveScope(askScope, meeting: selection))
+        answers?.ask(query, in: AskResults.effectiveScope(askScope, meeting: selection), folder: askFolder)
     }
+
+    /// The folder “This folder” searches (T42), or nil.
+    var askFolder: FolderID? { AskResults.effectiveFolder(askScope, folder: folderFilter) }
 
     /// The scope switched with an answer on screen: answer again over the new scope.
     private func reaskIfAnswered() {
         guard let answers, answers.phase != .idle, !answers.question.isEmpty else { return }
-        answers.ask(answers.question, in: AskResults.effectiveScope(askScope, meeting: selection))
+        answers.ask(answers.question, in: AskResults.effectiveScope(askScope, meeting: selection), folder: askFolder)
     }
 
     func moveAskSelection(by delta: Int) {
@@ -231,9 +242,9 @@ final class LibraryModel {
         guard let store, !query.trimmingCharacters(in: .whitespaces).isEmpty else { hits = []; return }
         // Questions search by their content words (“when will they ship?” → “ship”), like the retriever (T54).
         let terms = Retriever.terms(query).joined(separator: " "), scope = AskResults.effectiveScope(askScope, meeting: selection)
-        hits = (try? store.search(terms, in: scope)) ?? []
+        hits = (try? store.search(terms, in: scope, folder: askFolder)) ?? []
         // A question rarely has every word on one line: then list lines with any of them, best first.
-        if hits.isEmpty { hits = (try? store.search(terms, in: scope, anyTerm: true)) ?? [] }
+        if hits.isEmpty { hits = (try? store.search(terms, in: scope, folder: askFolder, anyTerm: true)) ?? [] }
         if let i = askSelection, i >= hits.count { askSelection = nil }
     }
 

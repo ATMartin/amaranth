@@ -10,6 +10,19 @@ struct RecordingDefaultsTests {
         #expect(RecordingDefaults.sourcesKey == "defaultSources")
         #expect(RecordingDefaults.microphoneKey == "microphoneUID")
         #expect(RecordingDefaults.sourcesDefault == .both)
+        #expect(RecordingDefaults.folderKey == "defaultFolderID")
+    }
+
+    /// T42: the default folder is read by ID and dropped once that folder is deleted.
+    @Test func defaultFolder() throws {
+        let d = try #require(UserDefaults(suiteName: "RecordingDefaultsTests-\(UUID())"))
+        #expect(RecordingDefaults.folder(d) == nil)
+        d.set("f1", forKey: RecordingDefaults.folderKey)
+        #expect(RecordingDefaults.folder(d) == FolderID("f1"))
+        let folders = [Folder(id: FolderID("f1"), name: "Acme")]
+        #expect(RecordingDefaults.resolveFolder(FolderID("f1"), folders: folders) == FolderID("f1"))
+        #expect(RecordingDefaults.resolveFolder(FolderID("gone"), folders: folders) == nil)
+        #expect(RecordingDefaults.resolveFolder(nil, folders: folders) == nil)
     }
 
     @Test func readsSavedDefaults() throws {

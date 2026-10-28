@@ -34,6 +34,32 @@ struct AskAnythingTests {
         #expect(AskResults.effectiveScope(.allMeetings, meeting: MeetingID("m")) == nil)
     }
 
+    /// T42: “This folder” is offered only while the sidebar shows a folder, and searches that folder only.
+    @Test func thisFolderNeedsAShownFolder() {
+        #expect(AskScope.options(folderShown: false) == [.thisMeeting, .allMeetings])
+        #expect(AskScope.options(folderShown: true) == [.thisMeeting, .thisFolder, .allMeetings])
+        #expect(AskResults.effectiveFolder(.thisFolder, folder: FolderID("f")) == FolderID("f"))
+        #expect(AskResults.effectiveFolder(.thisFolder, folder: nil) == nil)
+        #expect(AskResults.effectiveFolder(.allMeetings, folder: FolderID("f")) == nil)
+        #expect(AskResults.effectiveScope(.thisFolder, meeting: MeetingID("m")) == nil, "a folder search is across meetings")
+        #expect(AskScope.allCases.map { $0.label(short: true) } == ["Meeting", "Folder", "All"])
+        #expect(AskScope.thisMeeting.label(short: false) == "This meeting")
+    }
+
+    @Test func searchScopedToOneFolder() throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "amr-ask-folder-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = try MeetingStore(root: root)
+        let acme = try store.createFolder(name: "Acme")
+        let a = Meeting(title: "Budget review", createdAt: Date()), b = Meeting(title: "Budget planning", createdAt: Date())
+        try store.upsertMeeting(a); try store.upsertMeeting(b)
+        try store.moveMeeting(a.id, to: acme.id)
+        #expect(try store.search("budget", folder: acme.id).map(\.meetingID) == [a.id])
+        #expect(try store.search("budget unicorn", folder: acme.id, anyTerm: true).map(\.meetingID) == [a.id])
+        #expect(try store.search("budget", folder: FolderID("empty")).isEmpty)
+        #expect(Set(try store.search("budget").map(\.meetingID)) == [a.id, b.id])
+    }
+
     /// The engine behind the field: the scope limits hits to one meeting.
     @Test func searchScopedToOneMeeting() throws {
         let root = FileManager.default.temporaryDirectory.appending(path: "amr-ask-\(UUID())")

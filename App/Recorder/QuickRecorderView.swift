@@ -54,6 +54,7 @@ struct RecordOptionsForm: View {
     @Bindable var model: RecorderModel
     let record: () -> Void
     @Environment(\.openSettings) private var openSettings
+    @Environment(LibraryModel.self) private var library
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppStyle.double) {
@@ -81,6 +82,17 @@ struct RecordOptionsForm: View {
                 }
                 .labelsHidden()
                 .disabled(model.selection == .systemOnly)
+            }
+            // T42: the folder this meeting is saved to (Settings → Recording sets the default). A deleted folder reads None.
+            field("Save to folder") {
+                Picker("Save to folder", selection: Binding(get: { RecordingDefaults.resolveFolder(model.folderID, folders: library.folders) },
+                                                           set: { model.folderID = $0 })) {
+                    Text("None").tag(FolderID?.none)
+                    ForEach(library.folders) { Text($0.name).tag(FolderID?.some($0.id)) }
+                }
+                .labelsHidden()
+                .disabled(library.folders.isEmpty)
+                .help(library.folders.isEmpty ? "Create a folder in the sidebar first" : "File this meeting in a folder")
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text("Audio and transcription stay on this Mac.").foregroundStyle(Color.statusOK)

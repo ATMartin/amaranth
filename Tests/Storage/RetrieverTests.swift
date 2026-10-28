@@ -100,6 +100,13 @@ struct RetrieverTests {
         let all = try Retriever(store: store).search("notarization")
         #expect(Set(all.map(\.meetingID)).count > 1, "the fixtures have two copies of the launch meeting")
         #expect(try Retriever(store: store).search("notarization", in: launch.meeting.id).allSatisfy { $0.meetingID == launch.meeting.id })
+        // T42: “This folder” keeps passages to the folder's meetings.
+        let folder = try store.createFolder(name: "Launches")
+        try store.moveMeeting(launch.meeting.id, to: folder.id)
+        let inFolder = try Retriever(store: store).search("notarization", folder: folder.id)
+        #expect(!inFolder.isEmpty && inFolder.allSatisfy { $0.meetingID == launch.meeting.id })
+        try store.moveMeeting(launch.meeting.id, to: nil)
+        #expect(try Retriever(store: store).search("notarization", folder: folder.id).isEmpty)
         try store.setPeople([Person(name: "Ana Ruiz")], for: launch.meeting.id)
         #expect(try store.search("ruiz").contains { $0.kind == .person && $0.meetingID == launch.meeting.id })
         // A person named in the question boosts that meeting's passages.

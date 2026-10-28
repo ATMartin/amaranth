@@ -30,7 +30,8 @@ public struct SearchHit: Hashable, Sendable {
 extension MeetingStore {
     /// `meeting`: only that meeting's rows (the ask field's "This meeting" scope); nil searches every meeting.
     /// `anyTerm`: match lines with any of the words (ranked by bm25) instead of all of them.
-    public func search(_ query: String, in meeting: MeetingID? = nil, anyTerm: Bool = false, limit: Int = 50) throws -> [SearchHit] {
+    /// `folder` (T42): only meetings filed in that folder (“This folder”).
+    public func search(_ query: String, in meeting: MeetingID? = nil, folder: FolderID? = nil, anyTerm: Bool = false, limit: Int = 50) throws -> [SearchHit] {
         let tokens = query.lowercased().split { !$0.isLetter && !$0.isNumber && $0 != "'" }.map(String.init).filter { !$0.isEmpty }
         guard !tokens.isEmpty else { return [] }
         // Each token is a quoted prefix term, so user input can never inject FTS syntax.
@@ -38,12 +39,13 @@ extension MeetingStore {
         let match = "text : (" + tokens.map { "\"\($0.replacingOccurrences(of: "\"", with: ""))\"*" }.joined(separator: anyTerm ? " OR " : " ") + ")"
         var bindings: [SQLiteDB.Value] = [.text(match)]
         if let meeting { bindings.append(.text(meeting.rawValue)) }
+        if let folder { bindings.append(.text(folder.rawValue)) }
         bindings.append(.int(Int64(limit)))
         return try withDB { db in
             try db.run("""
                 SELECT s.meeting_id, s.kind, s.ref, s.start_ns, snippet(search_index, 4, '[', ']', '…', 12) AS snip, m.title
                 FROM search_index s JOIN meetings m ON m.id = s.meeting_id
-                WHERE search_index MATCH ? AND m.deleted_at IS NULL\(meeting == nil ? "" : " AND s.meeting_id = ?")
+                WHERE search_index MATCH ? AND m.deleted_at IS NULL\(meeting == nil ? "" : " AND s.meeting_id = ?")\(folder == nil ? "" : " AND m.folder_id = ?")
                 ORDER BY rank LIMIT ?
                 """, bindings).compactMap { row -> SearchHit? in
                 guard let id = row["meeting_id"]?.text, let k = row["kind"]?.text.flatMap(SearchHit.Kind.init(rawValue:)) else { return nil }

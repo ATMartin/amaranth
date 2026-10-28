@@ -14,6 +14,8 @@ final class RecorderModel {
     /// (`customized`), and return to the defaults after each recording.
     var selection: SourceSelection = RecordingDefaults.sources() { didSet { if !loadingDefaults { customized = true } } }
     var microphoneUID: String? = RecordingDefaults.microphone() { didSet { if !loadingDefaults { customized = true } } }
+    /// The folder this recording is saved to (T42): Settings' default unless changed in the Record popover.
+    var folderID: FolderID? = RecordingDefaults.folder() { didSet { if !loadingDefaults { customized = true } } }
     private(set) var customized = false
     private var loadingDefaults = false
     var title = ""
@@ -165,6 +167,7 @@ final class RecorderModel {
         loadingDefaults = true
         selection = RecordingDefaults.sources()
         microphoneUID = RecordingDefaults.microphone()
+        folderID = RecordingDefaults.folder()
         loadingDefaults = false
         customized = false
     }
@@ -185,6 +188,7 @@ final class RecorderModel {
         state = .preparing
         let options = RecordingOptions(selection: selection, microphoneUID: mic.uid)
         let title = RecorderPresentation.recordingTitle(typed: self.title, at: Date())
+        let folderID = self.folderID
         automaticTitle = self.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? title : nil
         eventPrompt = .none
         scratchpad = ""; savedScratchpad = ""; savedUpTo = [:]; diskWarned = false; diskSecondsLeft = nil
@@ -193,7 +197,7 @@ final class RecorderModel {
         Task.detached(priority: .userInitiated) {
             do {
                 let root = store?.root ?? MeetingStore.defaultRoot()
-                let s = try RecordingSession(meetingID: MeetingID(), rootDirectory: root, options: options, store: store, title: title)
+                let s = try RecordingSession(meetingID: MeetingID(), rootDirectory: root, options: options, store: store, title: title, folderID: folderID)
                 s.onAutoStop = { r in
                     Task { @MainActor in self.finish(r, note: "Stopped automatically to protect free disk space.") }
                 }

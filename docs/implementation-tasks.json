@@ -1398,7 +1398,7 @@
       "id": "T42",
       "title": "Default folder for new recordings and folder filter in search",
       "milestone": "J",
-      "status": "planned",
+      "status": "done (2026-10-28): Save to folder in the Record popover (per recording) and Settings → Recording (default, by folder ID; a deleted folder reads None and never blocks Record); a folder filter that would hide the new card switches to its folder; Ask “This folder” scope while a folder is shown (store.search and Retriever take folder:), short segment labels Meeting | Folder | All; checklist item 69",
       "optional": true,
       "depends_on": [
         "T40",

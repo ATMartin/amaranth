@@ -541,6 +541,21 @@ enum UIRenderSelfTest {
                           "focusRequested": "\(library.askFocusRequest > focusBefore)", "ok": "\(clearOK)"])
             if !clearOK { ok = false }
             library.focusRowID = nil
+            // T42: with Acme shown, “This folder” limits hits to its meetings (ui-long, fx-two-source); showing All
+            // meetings turns the scope back to All meetings.
+            let acmeIDs: Set<MeetingID> = [MeetingID("ui-long"), MeetingID("fx-two-source")]
+            library.folderFilter = library.folders.first { $0.name == "Acme" }?.id
+            library.askScope = .thisFolder
+            library.query = "launch release"
+            library.submitAsk()
+            let folderHits = library.hits
+            let folderOK = !folderHits.isEmpty && folderHits.allSatisfy { acmeIDs.contains($0.meetingID) } && library.askFolder != nil
+            _ = await host(AskPane(), "ask-pane-folder", size: CGSize(width: 260, height: 760))
+            library.folderFilter = nil
+            let resetOK = library.askScope == .allMeetings && library.askFolder == nil
+            library.clearAsk()
+            SelfTest.log(["step": "ask-folder", "folderHits": "\(folderHits.count)", "resetOK": "\(resetOK)", "ok": "\(folderOK && resetOK)"])
+            if !(folderOK && resetOK) { ok = false }
         }
         // The sidebar has no search field any more (T52); ⌘K focuses the ask field instead.
         // Answers (T54): a finished answer with citation chips above the matches, waiting, and a refusal.

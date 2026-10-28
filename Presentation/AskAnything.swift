@@ -4,7 +4,18 @@ public import Storage
 /// The “Ask anything” field (T52): what it searches and how its results panel is laid out and moved through with keys.
 public enum AskScope: String, CaseIterable, Sendable {
     case thisMeeting = "This meeting"
+    /// The folder the sidebar shows (T42); offered only while a folder is shown.
+    case thisFolder = "This folder"
     case allMeetings = "All meetings"
+
+    /// The scope switch's options: “This folder” only while the sidebar shows a folder.
+    public static func options(folderShown: Bool) -> [AskScope] { folderShown ? allCases : [.thisMeeting, .allMeetings] }
+
+    /// Segment labels: three full labels don't fit the 250 pt Ask pane, so with “This folder” shown they shorten.
+    public func label(short: Bool) -> String {
+        guard short else { return rawValue }
+        return switch self { case .thisMeeting: "Meeting"; case .thisFolder: "Folder"; case .allMeetings: "All" }
+    }
 }
 
 public enum AskResults {
@@ -40,6 +51,11 @@ public enum AskResults {
     /// The scope actually searched: “This meeting” needs a meeting on screen.
     public static func effectiveScope(_ scope: AskScope, meeting: MeetingID?) -> MeetingID? {
         scope == .thisMeeting ? meeting : nil
+    }
+
+    /// The folder actually searched (T42): “This folder” needs a folder shown in the sidebar; otherwise all meetings.
+    public static func effectiveFolder(_ scope: AskScope, folder: FolderID?) -> FolderID? {
+        scope == .thisFolder ? folder : nil
     }
 
     /// Caption for a hit's kind: a transcript time, or which kind of text matched.

@@ -16,6 +16,16 @@ public enum RecordingDefaults {
     /// nil = System default.
     public static func microphone(_ d: UserDefaults = .standard) -> String? { d.string(forKey: microphoneKey) }
 
+    /// The folder new recordings are filed in (T42); unset = none. Stored as the folder's ID, so a rename keeps it.
+    public static let folderKey = "defaultFolderID"
+    public static func folder(_ d: UserDefaults = .standard) -> FolderID? { d.string(forKey: folderKey).map(FolderID.init) }
+
+    /// The folder a recording starts in: the chosen one while it exists, else none (a deleted folder never blocks Record).
+    public static func resolveFolder(_ id: FolderID?, folders: [Folder]) -> FolderID? {
+        guard let id, folders.contains(where: { $0.id == id }) else { return nil }
+        return id
+    }
+
     public static let missingMicrophoneNotice = "Your chosen microphone isn't connected, so this meeting records from the system default microphone."
 
     /// The microphone to record with: the chosen one if connected, otherwise System default plus a notice.

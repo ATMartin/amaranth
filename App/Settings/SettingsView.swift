@@ -32,7 +32,7 @@ struct SettingsView: View {
             ModelSetupView(model: models)
                 .frame(maxHeight: .infinity, alignment: .top)
                 .tabItem { Label("Models", systemImage: "cpu") }.tag(SettingsTab.models.rawValue)
-            RecordingSettings(recorder: recorder)
+            RecordingSettings(recorder: recorder, folders: library?.folders ?? [])
                 .tabItem { Label("Recording", systemImage: "mic") }.tag(SettingsTab.recording.rawValue)
             AppearanceSettings()
                 .tabItem { Label("Appearance", systemImage: "textformat.size") }.tag(SettingsTab.appearance.rawValue)
@@ -79,6 +79,9 @@ struct AppearanceSettings: View {
 /// Settings → Recording: defaults for new recordings (T30), speaker and processing options, privacy.
 struct RecordingSettings: View {
     var recorder: RecorderModel
+    /// The sidebar's folders, for "Save to folder" (T42).
+    var folders: [Folder] = []
+    @AppStorage(RecordingDefaults.folderKey) private var defaultFolder: String?
     @AppStorage(RecordingDefaults.sourcesKey) private var defaultSources = RecordingDefaults.sourcesDefault.rawValue
     @AppStorage(RecordingDefaults.microphoneKey) private var defaultMicrophone: String?
     @AppStorage("microphoneMode") private var microphoneMode = MicrophoneMode.personal.rawValue
@@ -103,6 +106,13 @@ struct RecordingSettings: View {
                     }
                 }
                 .disabled(defaultSources == SourceSelection.systemOnly.rawValue)
+                // T42: a deleted folder reads None and new recordings are unfiled.
+                Picker("Save to folder", selection: Binding(get: { RecordingDefaults.resolveFolder(defaultFolder.map(FolderID.init), folders: folders)?.rawValue },
+                                                           set: { defaultFolder = $0 })) {
+                    Text("None").tag(String?.none)
+                    ForEach(folders) { Text($0.name).tag(String?.some($0.id.rawValue)) }
+                }
+                .disabled(folders.isEmpty)
                 Text("Record uses these every time. You can change them for a single meeting with the ▾ button next to Record.")
                     .font(.caption).foregroundStyle(Color.brandSecondary)
             }
