@@ -2650,7 +2650,7 @@
       "id": "T87",
       "title": "Meeting header: ⋯ at the top right, Audio details tab on the right",
       "milestone": "Polish 2",
-      "status": "to do",
+      "status": "done (2026-10-28): ⋯ menu on the date line at the header's top-right; UnderlineTabs trailing: Audio details at the tab row's right edge (badge, ⌘1–⌘3 unchanged)",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",

@@ -91,33 +91,41 @@ struct UnderlineTabs<Tab: Hashable>: View {
     @Binding var selection: Tab
     let title: (Tab) -> String
     var badge: (Tab) -> String? = { _ in nil }
+    /// Tabs set at the row's right edge instead of after the others (T87: Audio details, used less often).
+    var trailing: (Tab) -> Bool = { _ in false }
     @Environment(\.textScale) private var scale
 
     var body: some View {
         HStack(spacing: AppStyle.double + 4) {
-            ForEach(tabs, id: \.self) { tab in
-                let selected = tab == selection
-                Button { selection = tab } label: {
-                    HStack(spacing: 4) {
-                        Text(title(tab))
-                        if let b = badge(tab) {
-                            Image(systemName: "exclamationmark.circle").font(.system(size: AppStyle.iconSmall * scale))
-                                .foregroundStyle(Color.statusAttention).help(b).accessibilityLabel(b)
-                        }
-                    }
-                    .appFont(.callout, weight: selected ? .medium : .regular)
-                    .foregroundStyle(selected ? Color.brandAccent : Color.brandText)
-                    .padding(.vertical, 6)
-                    .overlay(alignment: .bottom) {
-                        Rectangle().fill(selected ? Color.brandAccent : .clear).frame(height: 2).offset(y: 1)
-                    }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityElement(children: .combine)
-                .accessibilityAddTraits(selected ? [.isSelected] : [])
+            ForEach(tabs.filter { !trailing($0) }, id: \.self, content: tabButton)
+            if tabs.contains(where: trailing) {
+                Spacer(minLength: 0)
+                ForEach(tabs.filter(trailing), id: \.self, content: tabButton)
             }
         }
+    }
+
+    func tabButton(_ tab: Tab) -> some View {
+        let selected = tab == selection
+        return Button { selection = tab } label: {
+            HStack(spacing: 4) {
+                Text(title(tab))
+                if let b = badge(tab) {
+                    Image(systemName: "exclamationmark.circle").font(.system(size: AppStyle.iconSmall * scale))
+                        .foregroundStyle(Color.statusAttention).help(b).accessibilityLabel(b)
+                }
+            }
+            .appFont(.callout, weight: selected ? .medium : .regular)
+            .foregroundStyle(selected ? Color.brandAccent : Color.brandText)
+            .padding(.vertical, 6)
+            .overlay(alignment: .bottom) {
+                Rectangle().fill(selected ? Color.brandAccent : .clear).frame(height: 2).offset(y: 1)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 }
 

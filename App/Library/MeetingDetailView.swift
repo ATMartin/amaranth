@@ -17,7 +17,8 @@ struct MeetingDetailView: View {
         VStack(spacing: 0) {
             header
             UnderlineTabs(tabs: LibraryModel.DetailTab.allCases, selection: $library.detailTab, title: \.rawValue,
-                          badge: { $0 == .recording && audioIssues > 0 ? "\(audioIssues == 1 ? "A moment" : "\(audioIssues) moments") in the audio need a closer look" : nil })
+                          badge: { $0 == .recording && audioIssues > 0 ? "\(audioIssues == 1 ? "A moment" : "\(audioIssues) moments") in the audio need a closer look" : nil },
+                          trailing: { $0 == .recording })
                 .help("Notes (⌘1) · Transcript (⌘2) · Audio details (⌘3)")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, AppStyle.double + 8)
@@ -45,9 +46,14 @@ struct MeetingDetailView: View {
     /// line (T50 chips, now understated: text with an underline for the editable ones).
     var header: some View {
         VStack(alignment: .leading, spacing: AppStyle.half + 2) {
-            Text(detail.meeting.createdAt.formatted(.dateTime.month(.wide).day().year().hour().minute()).replacingOccurrences(of: " at ", with: " · "))
-                .appFont(.eyebrow).foregroundStyle(Color.brandSecondary)
-                .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
+            // T87: the ⋯ menu at the top-right corner, centred on the date line.
+            HStack(alignment: .center) {
+                Text(detail.meeting.createdAt.formatted(.dateTime.month(.wide).day().year().hour().minute()).replacingOccurrences(of: " at ", with: " · "))
+                    .appFont(.eyebrow).foregroundStyle(Color.brandSecondary)
+                    .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
+                Spacer(minLength: AppStyle.grid)
+                actionsMenu
+            }
             // Static: Rename… is in the ⋯ menu and the card's right-click menu (T26, T79).
             Text(detail.meeting.title).appFont(.display).lineLimit(2).foregroundStyle(Color.brandText).accessibilityAddTraits(.isHeader)
             HStack(spacing: AppStyle.double) {
@@ -69,7 +75,6 @@ struct MeetingDetailView: View {
                 Spacer()
                 if case .failed = detail.status.processing { Button("Retry Processing") { library.retry(detail.meeting.id) }.buttonStyle(.brandOutline).help("Run the failed processing steps again") }
                 if case .notQueued = detail.status.processing, detail.meeting.canPlayAudio { Button("Process") { library.process(detail.meeting.id) }.buttonStyle(.brandOutline).help("Transcribe, find speakers and write notes on this Mac") }
-                actionsMenu
             }
             .appFont(.caption)
             .padding(.top, 2)
