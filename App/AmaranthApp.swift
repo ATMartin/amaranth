@@ -125,7 +125,12 @@ struct AmaranthApp: App {
             .windowFitsScreen()
         }
         .defaultSize(width: 1100, height: 720)
-        .commands { MeetingCommands(library: library) }
+        .commands {
+            MeetingCommands(library: library)
+            // View ▸ Show/Hide Sidebar (⌃⌘S): with the toolbar's own toggle removed (T75), declared so the shortcut never
+            // depends on the system adding it. It toggles the split view, which updates MainView's column visibility.
+            SidebarCommands()
+        }
 
         MenuBarExtra {
             MenuBarContent(recorder: recorder)

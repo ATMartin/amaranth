@@ -69,14 +69,18 @@ struct MeetingActionsMenu: View {
 
     var body: some View {
         Button("Rename…") { library.requestRename(meeting.id, title: meeting.title) }
+        // Transcript formats need a transcript; Original Audio… only audio, so an unprocessed meeting can still export it.
         Menu("Export") {
-            Button("Markdown…") { library.export(.markdown, meeting.id) }
-            Button("Plain Text…") { library.export(.text, meeting.id) }
-            Button("JSON…") { library.export(.json, meeting.id) }
+            Group {
+                Button("Markdown…") { library.export(.markdown, meeting.id) }
+                Button("Plain Text…") { library.export(.text, meeting.id) }
+                Button("JSON…") { library.export(.json, meeting.id) }
+            }
+            .disabled(!meeting.hasTranscript)
             Divider()
-            Button("Original Audio…") { library.export(.audio, meeting.id) }.disabled(!meeting.hasAudio)
+            Button("Original Audio…") { library.exportAudio(meeting.id) }.disabled(!meeting.hasAudio)
         }
-        .disabled(!meeting.hasTranscript)
+        .disabled(!meeting.hasTranscript && !meeting.hasAudio)
         Toggle("Show Details", isOn: $showDetails)   // ⌘D: View ▸ Show Details
         Divider()
         Button("Delete Audio Only…") { library.requestDelete(.deleteAudioOnly, meeting.id, title: meeting.title) }.disabled(meeting.audioDeleted)
@@ -98,10 +102,9 @@ extension MeetingActionsMenu.Target {
 
 /// Save panels for the meeting exports (moved from the header in T79 so the shared menu can export any meeting).
 enum MeetingExport {
-    enum Format { case markdown, text, json, audio }
+    enum Format { case markdown, text, json }
 
-    @MainActor static func run(_ f: Format, _ detail: MeetingDetail, store: MeetingStore) {
-        if f == .audio { return exportAudio(detail, store: store) }
+    @MainActor static func run(_ f: Format, _ detail: MeetingDetail) {
         guard let t = detail.displayTranscript else { return }
         let input = ExportInput(meeting: detail.meeting, transcript: t, summary: detail.summary, userNotes: detail.userNotes, scratchpad: detail.scratchpad)
         let panel = NSSavePanel()
@@ -109,7 +112,7 @@ enum MeetingExport {
         switch f {
         case .markdown: panel.allowedContentTypes = [UTType(filenameExtension: "md") ?? .plainText]; panel.nameFieldStringValue = base + ".md"
         case .text: panel.allowedContentTypes = [.plainText]; panel.nameFieldStringValue = base + ".txt"
-        case .json, .audio: panel.allowedContentTypes = [.json]; panel.nameFieldStringValue = base + ".json"
+        case .json: panel.allowedContentTypes = [.json]; panel.nameFieldStringValue = base + ".json"
         }
         panel.message = "Exports the transcript and notes shown. The private scratchpad is not included."
         guard panel.runModal() == .OK, let url = panel.url else { return }
@@ -117,7 +120,7 @@ enum MeetingExport {
             let data: Data = switch f {
             case .markdown: Data(Exporter.markdown(input).utf8)
             case .text: Data(Exporter.text(input).utf8)
-            case .json, .audio: try Exporter.json(input)
+            case .json: try Exporter.json(input)
             }
             try data.write(to: url, options: .atomic)
         } catch {

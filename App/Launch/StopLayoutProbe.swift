@@ -85,6 +85,14 @@ enum StopLayoutProbe {
             NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar(_:)), to: nil, from: nil)
             await wait(1)
         }
+        // T75/T82: the list-icon toolbar button follows the split view (its label flips after toggleSidebar:), and the View
+        // menu has exactly one sidebar item.
+        let sidebarItems = NSApp.mainMenu?.items.first { $0.title == "View" }?.submenu?.items
+            .filter { $0.title.localizedCaseInsensitiveContains("sidebar") }.map { "\($0.title) [\($0.keyEquivalentModifierMask.rawValue >> 16):\($0.keyEquivalent)]" } ?? []
+        let button = window.toolbar?.items.first { $0.label.hasSuffix("Sidebar") }?.label ?? "-"
+        let expected = args.contains("--sidebar-closed") ? "Show Sidebar" : "Hide Sidebar"
+        log(["step": "sidebar-toggle", "button": button, "viewMenu": sidebarItems.joined(separator: " | "),
+             "ok": "\(button == expected && sidebarItems.count == 1)"])
         guard let id = library.items.first(where: { $0.id != MeetingID("ui-long") })?.id ?? library.items.first?.id else {
             log(["step": "no-meetings"]); NSApp.terminate(nil); return
         }

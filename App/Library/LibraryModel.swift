@@ -186,8 +186,19 @@ final class LibraryModel {
 
     /// Exports any meeting, open or not: the open one's loaded detail, or a fresh load from the store.
     func export(_ format: MeetingExport.Format, _ id: MeetingID) {
-        guard let store, let d = detail?.meeting.id == id ? detail : (try? MeetingDetail.load(store, id)) ?? nil else { return }
-        MeetingExport.run(format, d, store: store)
+        guard let d = loadedDetail(id) else { return }
+        MeetingExport.run(format, d)
+    }
+
+    /// Copies any meeting's original audio segments (no transcript needed).
+    func exportAudio(_ id: MeetingID) {
+        guard let store, let d = loadedDetail(id) else { return }
+        MeetingExport.exportAudio(d, store: store)
+    }
+
+    private func loadedDetail(_ id: MeetingID) -> MeetingDetail? {
+        guard let store else { return nil }
+        return detail?.meeting.id == id ? detail : (try? MeetingDetail.load(store, id)) ?? nil
     }
 
     /// × and Esc (T78): clear the results and the question, then put the cursor back in the ask field for the next one.

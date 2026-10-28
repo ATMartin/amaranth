@@ -55,7 +55,7 @@ filled accent control are cream `#F5F0E6` (3.7:1; forest would be 3.1:1). The co
 pairs. Light mode is unchanged and keeps AA. Revisit before release: a lighter step, or bolder weights for accent text.
 
 ## Layout
-- Library: 160–320 pt (200 ideal), grouped by day (Today, Yesterday, weekday, date), each row "9:30 AM · 24 min".
+- Library: 160–320 pt (180 ideal since T80), grouped by day (Today, Yesterday, weekday, date), each row "9:30 AM · 24 min".
   Rows are buttons in a focusable list (↑/↓ move, selected trait for VoiceOver). A quiet "Processing on this Mac"
   sits at the bottom.
 - Meeting header: eyebrow date and time, rounded title, then people, calendar, length and status. Export and the

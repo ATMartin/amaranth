@@ -2518,7 +2518,7 @@
       "id": "T82",
       "title": "Polish validation",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): verdict v1 PASS WITH FIXES (no must-fix); should-fixes applied (docs/qualification/polish-*)",
       "optional": false,
       "depends_on": [
         "T74",
