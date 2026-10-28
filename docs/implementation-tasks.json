@@ -59,7 +59,8 @@
     "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them",
     "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit",
     "Q": "Local updates (“Check for Updates…” from a local drop folder): T70–T73. Planned 2026-10-27 at the user's request; placed after P (“for later”), can move earlier. User decisions 2026-10-27: Release and Debug builds are both published, Debug offered only with a Settings opt-in; check at launch and show a note when a newer build exists (never install on its own); no rollbacks (an older or equal build is never offered); the script part ships now as T69. Local only: a free personal team can't notarize, so a web feed / Sparkle stays out of scope (keep discovery behind an update-source interface so one can be added later).",
-    "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit."
+    "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
+    "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit."
   },
   "tasks": [
     {
@@ -2538,6 +2539,159 @@
       "context": "Sonnet validator per coordination.milestone_validation.",
       "deliverables": [
         "scripts/check.sh, ui-render (light/dark), scripts/stop-layout.sh; validator verdict file in docs/qualification/."
+      ],
+      "acceptance": [
+        "Validator verdict with no must-fix items."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T83",
+      "title": "“Unsorted” folder filter",
+      "milestone": "Polish 2",
+      "status": "to do",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "Presentation/LibraryFolders.swift",
+        "App/Library/",
+        "App/Launch/UIRenderSelfTest.swift",
+        "Tests/"
+      ],
+      "context": "User feedback 2026-10-28, after a few meetings on the restyled build (ce77a79). User: “Under ‘Your meetings’, we need an ‘Unsorted’ filter for meetings that have not been organized into any folders. This can live directly under ‘All meetings’ at the same hierarchical level.” Today the filter is a FolderID? (nil = All meetings, LibraryModel.folderFilter, kept in UserDefaults), so it needs a third case.",
+      "deliverables": [
+        "LibraryFolders: a filter with All meetings, Unsorted and a folder; rows() puts “Unsorted” (count of unfiled meetings) directly under “All meetings”, above the FOLDERS heading, with the same row style; visible() returns only unfiled meetings for Unsorted.",
+        "The saved preference keeps working: an existing stored folder ID or All meetings reads as before, and Unsorted is stored too.",
+        "Dropping a card on Unsorted unfiles it, like All meetings (T41 rules: already-unfiled meetings are refused without a dialog).",
+        "Anything that follows the filter handles Unsorted: View ▸ Show Folder, the empty-list message, a new recording switching the sidebar so its card shows (T42), and moving the open meeting into a folder while Unsorted is shown. Ask: with Unsorted shown, the scope switch offers Meeting | All (as with All meetings); no Unsorted scope unless the user asks for one."
+      ],
+      "acceptance": [
+        "PresentationTests cover rows, counts and visible() for Unsorted, and drop rules.",
+        "ui-render adds sidebar-unsorted.png in light and dark; scripts/stop-layout.sh passes."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T84",
+      "title": "Notes: one text size, no draft caption",
+      "milestone": "Polish 2",
+      "status": "to do",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Notes/NotesPane.swift",
+        "App/Launch/UIRenderSelfTest.swift"
+      ],
+      "context": "User feedback 2026-10-28, after a few meetings on the restyled build (ce77a79). User: “the first line or two is a much larger font than the rest of the notes. Take that down to the normal font size for the rest of the notes, and remove the subtitle to the right of the ‘Meeting Notes’ header (‘Draft from this Mac...’).” The first overview item uses NoteItemRow role .title (the lede); the rest use .body.",
+      "deliverables": [
+        "Every overview item uses the body size of the other notes (drop the .title lede role if nothing else uses it).",
+        "The Meeting notes eyebrow has no detail text. The scratchpad line under it stays."
+      ],
+      "acceptance": [
+        "notes-*.png in light and dark show the overview at body size and the eyebrow alone; ui-render passes."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T85",
+      "title": "Quieter time and length line on sidebar cards",
+      "milestone": "Polish 2",
+      "status": "to do",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift (MeetingRow)",
+        "App/Shared/AppStyle.swift"
+      ],
+      "context": "User feedback 2026-10-28, after a few meetings on the restyled build (ce77a79). User: “bring the font size of each meeting's subline (time + duration) down by a couple points and adjust the color of those lines relative to the default font color so they fade a little more: in an rgba scenario I'd take them to ~0.8 alpha or so.” Today the line is .caption2 (11 pt) in Secondary Text, and Text on the selected card. Secondary Text is already lighter than Text at 80%, so “fade a little more” is read as about 80% of the current colour, lighter than today.",
+      "deliverables": [
+        "Time · length line about 2 pt smaller than today (≈ 9 pt; monospaced digits kept), title size unchanged.",
+        "Its colour is the current one at about 0.8 opacity, on unselected and selected cards, in both appearances."
+      ],
+      "acceptance": [
+        "sidebar*.png in light and dark show the smaller, lighter line with no clipping at the 180 pt sidebar width; scripts/stop-layout.sh passes."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T86",
+      "title": "Ask toggle and appearance toggle at the top right",
+      "milestone": "Polish 2",
+      "status": "to do",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/LibraryView.swift",
+        "App/Shared/",
+        "App/Resources/Assets.xcassets",
+        "App/Launch/UIRenderSelfTest.swift"
+      ],
+      "context": "User feedback 2026-10-28, after a few meetings on the restyled build (ce77a79). User: “Move the right drawer toggle to the top right of the top bar & replace its icon with an SVG question mark or speech bubble: something to indicate that this will open a chat/query pane rather than the default sidebar icon currently used. Slide the dark/light mode toggle over beside it as well.” Today the Ask toggle (sidebar.trailing) is a toolbar item of the Ask inspector, and AppearanceToggle is a primaryAction item of the main toolbar.",
+      "deliverables": [
+        "The Ask toggle sits at the far top-right of the window toolbar whether the Ask pane is open or closed, with a speech-bubble or question-mark icon (an SF Symbol such as bubble.left / questionmark.bubble, or a template SVG in the asset catalog if no symbol fits); help, ⌘K and VoiceOver labels unchanged.",
+        "The light/dark toggle sits immediately to its left, in the same group.",
+        "Neither moves into the overflow menu at a 900 pt window with sidebar and Ask open, or while recording (the recording strip stays where it is)."
+      ],
+      "acceptance": [
+        "main-toolbar.png and main-recording-toolbar-900/1100*.png in light and dark show both buttons at the top right; scripts/stop-layout.sh passes 8/8."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T87",
+      "title": "Meeting header: ⋯ at the top right, Audio details tab on the right",
+      "milestone": "Polish 2",
+      "status": "to do",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Library/MeetingDetailView.swift",
+        "App/Shared/ (UnderlineTabs)",
+        "App/Launch/UIRenderSelfTest.swift"
+      ],
+      "context": "User feedback 2026-10-28, after a few meetings on the restyled build (ce77a79). User: “In the meeting details section at the top of the central/main column, move the three-dot menu icon to the upper right corner. It should be vertically aligned with the date/time line for the meeting. In the same pane, move the ‘Audio details’ tab to the right side of the frame: we don't expect that to be used as much and still want it accessible but not in the way.”",
+      "deliverables": [
+        "The ⋯ meeting menu sits at the header's top-right, centred on the date/time eyebrow line; the chips line keeps Process / Retry Processing on its right.",
+        "Notes and Transcript stay on the left of the tab row; Audio details sits at the right edge of the same row, same underline style, its issue badge kept. ⌘1/⌘2/⌘3 unchanged.",
+        "Nothing overlaps or clips at the narrowest detail width (900 pt window, both panes open)."
+      ],
+      "acceptance": [
+        "header-*.png and main-*.png in light and dark show the new positions; ui-render and scripts/stop-layout.sh pass."
+      ],
+      "fallback": "None.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T88",
+      "title": "Polish 2 validation",
+      "milestone": "Polish 2",
+      "status": "to do",
+      "optional": false,
+      "depends_on": [
+        "T83",
+        "T84",
+        "T85",
+        "T86",
+        "T87"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "docs/qualification/",
+        "Tests/"
+      ],
+      "context": "User feedback 2026-10-28, after a few meetings on the restyled build (ce77a79). Sonnet validator per coordination.milestone_validation.",
+      "deliverables": [
+        "scripts/check.sh, ui-render (light/dark), scripts/stop-layout.sh; validator verdict file in docs/qualification/; manual checklist items for hands-on checks."
       ],
       "acceptance": [
         "Validator verdict with no must-fix items."
