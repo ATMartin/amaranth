@@ -351,7 +351,8 @@ struct MeetingRow: View {
                 if let glyph = MeetingStatusPresentation.cardGlyph(item.status) { MeetingStatusGlyph(glyph: glyph) }
             }
             Text(item.createdAt.formatted(date: .omitted, time: .shortened) + " · " + LibrarySections.duration(seconds: item.duration.seconds))
-                .appFont(.caption2, monospacedDigit: true).foregroundStyle(selected ? Color.brandText : Color.brandSecondary)
+                // T85: 2 pt under caption2 and at 80% of the line's colour, so it recedes behind the title.
+                .appFont(.cardMeta, monospacedDigit: true).foregroundStyle((selected ? Color.brandText : Color.brandSecondary).opacity(0.8))
         }
         .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.half + 2).padding(.vertical, 5)
         .frame(maxWidth: .infinity, alignment: .leading)

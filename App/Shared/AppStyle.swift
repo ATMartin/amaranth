@@ -4,13 +4,16 @@ import Domain
 import Presentation
 
 /// Typography and spacing tokens (T36; sizes from the Inner Circle handoff: 14 pt body, 12 pt metadata, 25 pt meeting
-/// title, nothing essential below 11 pt). Sizes are points at the Default text size and are multiplied by the
+/// title, nothing essential below 11 pt; the one exception is `.cardMeta`, T85). Sizes are points at the Default text size and are multiplied by the
 /// Settings → Appearance text size through `\.textScale`. Use `.appFont(_:)` instead of system text styles in the
 /// meeting views (sidebar, header, transcript, notes) so the setting reaches them. The working UI stays in the system
 /// font; only `.display` (meeting titles and a few headings) uses the rounded brand face.
 enum AppStyle {
     enum Role {
         case display, title, sectionTitle, headline, body, callout, caption, caption2, eyebrow
+        /// The time · length line on sidebar cards (T85, user request): quieter than `.caption2`; the card's title and
+        /// the open meeting's header carry the same facts at readable sizes.
+        case cardMeta
 
         var size: CGFloat {
             switch self {
@@ -21,6 +24,7 @@ enum AppStyle {
             case .callout: 13
             case .caption: 12
             case .caption2, .eyebrow: 11
+            case .cardMeta: 9
             }
         }
         var weight: Font.Weight {

@@ -2601,7 +2601,7 @@
       "id": "T85",
       "title": "Quieter time and length line on sidebar cards",
       "milestone": "Polish 2",
-      "status": "to do",
+      "status": "done (2026-10-28): card time · length line in a new 9 pt AppStyle.cardMeta role (was caption2, 11 pt), its colour at 0.8 opacity on unselected and selected cards",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",
