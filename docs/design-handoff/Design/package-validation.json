@@ -1,0 +1,20 @@
+{
+  "checksPassed": 72,
+  "contrastPairs": 28,
+  "dynamicColorVariants": 22,
+  "menuBarScales": [
+    1,
+    2
+  ],
+  "singleDirection": true,
+  "externalNetworkRequests": [],
+  "browserErrors": [],
+  "appearanceRoundTripToggles": 6,
+  "previewWidths": [
+    1280,
+    1024,
+    358
+  ],
+  "nativeAssetCatalogCompilation": "Verified separately with Xcode actool for macOS 13.0",
+  "actualApplicationIntegration": "Pending target repository implementation"
+}

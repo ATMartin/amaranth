@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "package": "Amaranth Inner Circle / Forest",
+  "version": "1.0.0",
+  "status": "approved design reference and asset handoff",
+  "startHere": "START_HERE.txt",
+  "agentInstructions": "AGENT_INSTRUCTIONS.txt",
+  "preview": "Preview/index.html",
+  "previewCodePurpose": "local design demonstration only; do not port sample behaviors into production",
+  "tokens": "Design/tokens.json",
+  "componentMap": "Design/component-map.json",
+  "nativeAssetCatalog": "Assets/AmaranthBrand.xcassets",
+  "legacyAppIconAsset": "AmaranthAppIcon",
+  "menuBarAsset": "AmaranthMenuBar",
+  "menuBarSizePoints": {
+    "width": 20,
+    "height": 18
+  },
+  "nativeIconSource": "Icons/Composer",
+  "legacyIcns": "Icons/Amaranth.icns",
+  "contrastReport": "Design/contrast-report.json",
+  "checksumFile": "SHA256SUMS.txt",
+  "implementationStatus": "Actual application has not been modified",
+  "approvedDefaults": {
+    "previewAppearance": "dark",
+    "appAppearance": "respect the existing app/system preference",
+    "legacyFixedIcon": "Forest",
+    "lightAppearance": "Inner Circle cream companion"
+  },
+  "nativeFollowup": "Integrate into target app and test native title bar, menu bar, icon appearances, accessibility and existing functionality."
+}

@@ -1,0 +1,71 @@
+{
+  "sourceOfTruth": "tokens.json",
+  "roles": {
+    "AmaranthCanvas": {
+      "token": "bg",
+      "usage": "Sidebar, title-bar content background, playback background"
+    },
+    "AmaranthSurface": {
+      "token": "surface",
+      "usage": "Document, transcript, input and dialog surfaces"
+    },
+    "AmaranthText": {
+      "token": "text",
+      "usage": "Primary copy"
+    },
+    "AmaranthSecondaryText": {
+      "token": "muted",
+      "usage": "Secondary copy and metadata"
+    },
+    "AmaranthAccent": {
+      "token": "accent",
+      "usage": "Selected tabs, source links, playback, focus and emphasized actions"
+    },
+    "AmaranthSage": {
+      "token": "green",
+      "usage": "Local-processing status and botanical detail"
+    },
+    "AmaranthControlBorder": {
+      "token": "line",
+      "usage": "Controls and structural dividers"
+    },
+    "AmaranthSelection": {
+      "token": "soft",
+      "usage": "Selected meeting row; retain an accent edge and selected state"
+    },
+    "AmaranthOnAccent": {
+      "token": "onAccent",
+      "usage": "Text/icons on a filled accent control"
+    },
+    "AmaranthWarning": {
+      "token": "warning",
+      "usage": "Audio quality notices requiring review"
+    },
+    "AmaranthDanger": {
+      "token": "danger",
+      "usage": "Destructive actions and recording dot with a text/shape state"
+    }
+  },
+  "layout": {
+    "library": {
+      "preferredWidthPoints": 200,
+      "minWidthPoints": 160,
+      "resizable": true
+    },
+    "questionPane": {
+      "preferredWidthPoints": 250,
+      "minWidthPoints": 230,
+      "collapsible": true
+    },
+    "transcript": {
+      "speakerAlignment": "single reading edge",
+      "timestampPlacement": "leading column",
+      "sourceSelection": "highlight passage and seek existing audio"
+    },
+    "recording": {
+      "setup": "focused dialog or native popover",
+      "state": "explicit record/stop label, timer, accessible value"
+    },
+    "nativeWindow": "Use the actual window title bar and standard window controls; preview traffic lights are illustrative."
+  }
+}

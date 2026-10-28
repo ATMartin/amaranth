@@ -1,0 +1,282 @@
+[
+  {
+    "appearance": "light",
+    "foregroundToken": "text",
+    "backgroundToken": "surface",
+    "foreground": "#382A2F",
+    "background": "#FFFAF5",
+    "ratio": 13.14,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "muted",
+    "backgroundToken": "surface",
+    "foreground": "#716068",
+    "background": "#FFFAF5",
+    "ratio": 5.66,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "accent",
+    "backgroundToken": "surface",
+    "foreground": "#752C44",
+    "background": "#FFFAF5",
+    "ratio": 9.2,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "green",
+    "backgroundToken": "surface",
+    "foreground": "#416552",
+    "background": "#FFFAF5",
+    "ratio": 6.31,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "warning",
+    "backgroundToken": "surface",
+    "foreground": "#8D431A",
+    "background": "#FFFAF5",
+    "ratio": 6.86,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "danger",
+    "backgroundToken": "surface",
+    "foreground": "#9A343E",
+    "background": "#FFFAF5",
+    "ratio": 6.9,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "text",
+    "backgroundToken": "bg",
+    "foreground": "#382A2F",
+    "background": "#F3ECE5",
+    "ratio": 11.65,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "muted",
+    "backgroundToken": "bg",
+    "foreground": "#716068",
+    "background": "#F3ECE5",
+    "ratio": 5.02,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "accent",
+    "backgroundToken": "bg",
+    "foreground": "#752C44",
+    "background": "#F3ECE5",
+    "ratio": 8.15,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "green",
+    "backgroundToken": "bg",
+    "foreground": "#416552",
+    "background": "#F3ECE5",
+    "ratio": 5.59,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "warning",
+    "backgroundToken": "bg",
+    "foreground": "#8D431A",
+    "background": "#F3ECE5",
+    "ratio": 6.08,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "danger",
+    "backgroundToken": "bg",
+    "foreground": "#9A343E",
+    "background": "#F3ECE5",
+    "ratio": 6.11,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "onAccent",
+    "backgroundToken": "accent",
+    "foreground": "#FFFAF5",
+    "background": "#752C44",
+    "ratio": 9.2,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "light",
+    "foregroundToken": "line",
+    "backgroundToken": "surface",
+    "foreground": "#97828B",
+    "background": "#FFFAF5",
+    "ratio": 3.44,
+    "minimum": 3,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "text",
+    "backgroundToken": "surface",
+    "foreground": "#F5F0E6",
+    "background": "#28342C",
+    "ratio": 11.43,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "muted",
+    "backgroundToken": "surface",
+    "foreground": "#B9C3B5",
+    "background": "#28342C",
+    "ratio": 7.13,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "accent",
+    "backgroundToken": "surface",
+    "foreground": "#E3A4B6",
+    "background": "#28342C",
+    "ratio": 6.34,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "green",
+    "backgroundToken": "surface",
+    "foreground": "#A5C5A2",
+    "background": "#28342C",
+    "ratio": 6.87,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "warning",
+    "backgroundToken": "surface",
+    "foreground": "#EDB48B",
+    "background": "#28342C",
+    "ratio": 7.11,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "danger",
+    "backgroundToken": "surface",
+    "foreground": "#EDB0B9",
+    "background": "#28342C",
+    "ratio": 7.12,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "text",
+    "backgroundToken": "bg",
+    "foreground": "#F5F0E6",
+    "background": "#1D2621",
+    "ratio": 13.68,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "muted",
+    "backgroundToken": "bg",
+    "foreground": "#B9C3B5",
+    "background": "#1D2621",
+    "ratio": 8.54,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "accent",
+    "backgroundToken": "bg",
+    "foreground": "#E3A4B6",
+    "background": "#1D2621",
+    "ratio": 7.59,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "green",
+    "backgroundToken": "bg",
+    "foreground": "#A5C5A2",
+    "background": "#1D2621",
+    "ratio": 8.22,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "warning",
+    "backgroundToken": "bg",
+    "foreground": "#EDB48B",
+    "background": "#1D2621",
+    "ratio": 8.51,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "danger",
+    "backgroundToken": "bg",
+    "foreground": "#EDB0B9",
+    "background": "#1D2621",
+    "ratio": 8.52,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "onAccent",
+    "backgroundToken": "accent",
+    "foreground": "#28342C",
+    "background": "#E3A4B6",
+    "ratio": 6.34,
+    "minimum": 4.5,
+    "pass": true
+  },
+  {
+    "appearance": "dark",
+    "foregroundToken": "line",
+    "backgroundToken": "surface",
+    "foreground": "#738375",
+    "background": "#28342C",
+    "ratio": 3.23,
+    "minimum": 3,
+    "pass": true
+  }
+]

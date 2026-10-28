@@ -1,0 +1,25 @@
+AMARANTH — INNER CIRCLE / FOREST
+Implementation handoff · version 1.0.0
+
+For the developer agent: read AGENT_INSTRUCTIONS.txt first, then handoff.json and Design/tokens.json.
+
+For visual review: open Preview/index.html directly in a browser. It works offline and contains one approved direction. Use the Light/Dark button in the preview title bar, and the Notes, Transcript, and Audio details tabs. The sample meeting and all behavior are demonstrations.
+
+The approved identity uses Inner Circle's speech ring and seed. Dark mode uses forest surfaces, cream text, blush accents, and sage details. The companion light mode retains cream surfaces and wine accents.
+
+PACKAGE MAP
+AGENT_INSTRUCTIONS.txt — implementation brief, exact asset choices, behavior guidance, and acceptance criteria.
+handoff.json — machine-readable entry points and defaults.
+Assets/AmaranthBrand.xcassets/ — named light/dark colors, template menu bar image, and a fixed Forest legacy app icon set.
+Icons/Composer/ — square unmasked source layers for light and dark native icon appearances.
+Icons/Sources/ — editable SVG and 1024 px PNG composites.
+Icons/Amaranth.icns — Forest icon for a traditional macOS integration.
+MenuBar/ — editable monochrome SVG source.
+Marks/ — standalone color and monochrome brand marks.
+Wordmarks/ — outlined SVG and transparent PNG lettering; no font installation required.
+Design/ — canonical tokens, component mapping, and measured contrast pairs.
+Preview/ — one offline interactive reference plus light/dark screenshots.
+VALIDATION.txt — package checks and remaining native integration work.
+SHA256SUMS.txt — checksums for the handoff files.
+
+This package supplies the selected design and assets. It does not contain a modified application or a compiled Icon Composer .icon document. The developer agent should integrate these sources into the actual repository and verify the native result.

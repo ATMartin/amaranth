@@ -1,0 +1,34 @@
+AMARANTH INNER CIRCLE / FOREST — HANDOFF VALIDATION
+October 27, 2026 · package 1.0.0
+
+RESULT
+72 package and preview checks passed. The final preview contains one design direction, with its light and Forest dark appearances. Eight screen images are included: Notes, Transcript, Audio details, and recording setup in both appearances.
+
+ASSETS
+- 28 specified contrast pairs passed their recorded minima: 4.5:1 for text/button pairs and 3:1 for control boundaries.
+- 22 native named-color appearance values match the canonical hex tokens exactly when converted back to 8-bit sRGB.
+- The menu bar images are black/transparent and have the expected 20 × 18 and 40 × 36 pixel dimensions for 1x/2x.
+- Both source composite app icons are 1024 × 1024 pixels.
+- SVG wordmarks use outlined paths, with no text/font dependency.
+
+NATIVE ASSET CATALOG
+The included AmaranthBrand.xcassets compiled successfully using Xcode actool for platform macosx with minimum deployment target 13.0, target device mac, and app icon name AmaranthAppIcon. The compiler produced Assets.car, AmaranthAppIcon.icns, and the partial icon information plist. assetutil inspection confirmed the named colors, menu bar image, and app icon in the compiled catalog. Icons/Amaranth.icns is the compiler-produced fixed Forest icon.
+
+The compiled Assets.car is intentionally not shipped: the developer should compile source assets in the target application's own build. The local tool emitted Simulator-service environment messages, while the macOS asset compilation completed with exit code 0 and produced its expected outputs.
+
+PREVIEW
+- Light and dark colors checked against expected backgrounds.
+- Appearance switched back and forth six times successfully.
+- Content tabs, source-to-transcript navigation, sample question display, and recording setup/state demonstration checked.
+- No browser runtime errors.
+- No external network requests during preview verification. The three version-pinned viewer libraries are embedded, and their license notices are included in Preview/THIRD_PARTY_NOTICES.txt.
+- No horizontal document overflow at approximately 1280, 1024, and 358 px preview widths.
+
+INTEGRATION STILL REQUIRED
+These checks validate assets and a browser reference. The actual application was not modified or built. Verify native resource target membership, real application behavior, menu bar appearance over different wallpapers, app/Dock icon presentation, accessibility settings, and target-specific builds in the actual repository. Native Icon Composer clear/tinted appearances have not been authored or tested here. The native catalog compilation does not certify those icon appearances or the complete app's accessibility.
+
+INTEGRITY
+SHA256SUMS.txt records the package files, excluding that checksum file itself. Check it from the extracted package root with:
+shasum -a 256 -c SHA256SUMS.txt
+
+The ZIP archive's entry checksums were also verified before delivery.

@@ -1,0 +1,106 @@
+IMPLEMENT AMARANTH — INNER CIRCLE / FOREST
+Version 1.0.0
+
+TASK
+Apply this approved identity, color system, assets, and visual hierarchy to the actual Amaranth macOS application. Inspect the target repository, its applicable instructions, framework, minimum OS, current appearance settings, and asset-loading conventions before editing. The package does not assume a particular app architecture.
+
+The approved reference is Preview/index.html. The exact values in Design/tokens.json and the supplied vector artwork take precedence over colors sampled from screenshots. Design/component-map.json maps tokens to their intended UI roles. Implement the chosen Inner Circle design; this package contains no alternative brand direction to select.
+
+SCOPE AND SOURCE OF TRUTH
+1. Integrate the color tokens and final artwork first.
+2. Bring the existing screens toward the approved reference's typography, spacing, hierarchy, and aligned transcript. Use the three-pane reference where the real app supports it: meeting library, main content, and meeting questions.
+3. Preserve the application's existing recording/transcription pipeline, local storage, note editing, playback, exports, meeting questions, speaker identification, people, calendar associations, audio retention, and private scratchpad. Connect the visual changes to real state and existing actions.
+4. Every meeting name, timestamp, task, quotation, generated answer, recording event, and timer in Preview/ is fictional sample data. The preview's JavaScript simulates interaction. Do not port its prewritten answers, fake recording state, meeting-selection shortcuts, or sample data into production. Implement actual state transitions using the existing app.
+5. Keep local processing and offline operation intact. The design requires no remote fonts, image hosts, analytics, or external AI services.
+
+COLOR IMPLEMENTATION
+Import Assets/AmaranthBrand.xcassets into the app target, or merge its entries into the existing catalog while preserving asset names and appearance variants. Resolve naming collisions deliberately instead of leaving duplicate resources. Use the app's existing resource bundle if it differs from the main bundle.
+
+Asset name                Token       Light       Dark
+AmaranthCanvas            bg          #F3ECE5     #1D2621
+AmaranthSurface           surface     #FFFAF5     #28342C
+AmaranthText              text        #382A2F     #F5F0E6
+AmaranthSecondaryText     muted       #716068     #B9C3B5
+AmaranthAccent            accent      #752C44     #E3A4B6
+AmaranthSage              green       #416552     #A5C5A2
+AmaranthControlBorder     line        #97828B     #738375
+AmaranthSelection         soft        #E9DCD9     #3C4138
+AmaranthOnAccent          onAccent    #FFFAF5     #28342C
+AmaranthWarning           warning     #8D431A     #EDB48B
+AmaranthDanger            danger      #9A343E     #EDB0B9
+
+The catalog's Any appearance is the light value; its Dark appearance is the dark value. Use named dynamic colors rather than resolving once into fixed component values. If the framework cannot load native named colors, implement the same light/dark values through a central theme abstraction using Design/tokens.json or tokens.css.
+
+Apply Canvas to sidebar/chrome content and playback surfaces. Apply Surface to notes, transcript, fields, and dialogs. Use Text for primary copy and SecondaryText for metadata. Use Accent for selected tabs, source links, playback, focus, and emphasized controls. Use OnAccent for labels over a filled Accent button: white is not the dark-mode button-label color. Selection supplies a subtle selected row; pair it with an Accent edge and the framework's actual selection state. Sage supports local status and botanical detail. Warning is for an audio-quality issue; Danger is for destructive actions and a recording dot alongside explicit state labels.
+
+Preserve the user's existing System/Light/Dark preference behavior. The reference opens dark to show the approved palette; this is not an instruction to force the entire application into dark mode. Re-resolve custom drawing and cached colors when the effective appearance changes. Respect native accessibility preferences, including Increase Contrast and Reduce Transparency.
+
+MENU BAR — PRIMARY IMPLEMENTATION PRIORITY
+Use the AmaranthMenuBar imageset. It contains black artwork on a transparent canvas at 20 × 18 logical points, with 20 × 18 and 40 × 36 PNGs for 1x/2x Mac displays. Contents.json declares template rendering. The editable source is MenuBar/AmaranthMenuBar.svg.
+
+In AppKit, load the resource named AmaranthMenuBar, set its logical NSImage size to 20 × 18 points, and keep isTemplate = true. If the app uses another framework, use its equivalent template/tintable status image path. Let macOS render the actual menu bar color. Do not place the full-color Dock icon or its rounded tile in the menu bar, and do not manually choose black versus white from the app's theme alone: menu bar appearance can differ.
+
+Keep the speech ring and seed geometry intact. It is the selected small-size identity. Do not substitute the earlier botanical waveform. Show recording state through a stop/record shape, readable status/timer in the status menu, and an accessible state label; do not make it depend on color or flashing animation. Example accessibility labels: "Amaranth, idle" and "Amaranth, recording". Keep the actual menu-item functionality wired to the real app.
+
+APP ICON — CHOOSE THE EXISTING PROJECT'S SUPPORTED WORKFLOW
+A. Current layered workflow: use Icons/Composer/light/ and Icons/Composer/dark/. Each includes a square, full-bleed background SVG and a transparent foreground SVG; a foreground PNG is included as a fallback. Bring these into Icon Composer, configure matching appearance annotations, and integrate the resulting native icon using the project's supported Xcode path. The system should apply its own mask and materials. Do not feed the rounded preview PNGs into the layered source workflow. Default/light artwork uses the existing wine tile, cream ring, and sage seed; dark artwork uses the approved Forest tile, blush ring, and sage seed. Preserve identical mark geometry across appearances.
+
+B. Traditional fixed-icon workflow: the catalog's AmaranthAppIcon.appiconset and Icons/Amaranth.icns both use the approved Forest artwork for a consistent fixed Dock identity in either app UI theme. Point the existing app-icon build setting at AmaranthAppIcon (or merge/rename it to the project's current app icon name). Use only one active app icon source. These raster images already include a rounded tile and transparent outer margin; do not mask them again. The source PNG representations cover 16/32/128/256/512 points at 1x and 2x.
+
+The package supplies source layers, not a compiled .icon document. The UI's Light/Dark preference does not imply that a traditional .icns automatically switches. Keep native clear/tinted appearances recognizable; review them in Icon Composer and on a Mac before considering the integration complete. Avoid baking extra glows, shadows, highlights, or letterforms into the mark.
+
+WORDMARKS AND TYPOGRAPHY
+Wordmarks/ contains outlined SVGs and transparent PNGs for both appearances. Use these files when exact brand lettering is required; they contain no external font dependency. No font files are included. Marks/ supplies standalone color and monochrome speech-ring/seed artwork.
+
+The display face is Arial Rounded MT Bold, with a rounded system fallback if unavailable. Do not use it for paragraphs or all controls. Keep the working UI in the macOS system font. Start with 14 pt body copy, 12 pt metadata, 25 pt meeting headings, and a comfortable body line height around 1.5. Avoid essential text below 11 pt. Use system/native text metrics and respond to supported accessibility settings. The reference is rendered in browser CSS pixels; do not treat each screenshot pixel as an exact native point measurement.
+
+Use regular or medium system weight for body, speaker names, and controls. Use short, sentence-case labels. Maintain a clear difference between the meeting title, a section heading, and explanatory metadata.
+
+LAYOUT AND INTERACTION INTENT
+- Use the actual native title bar, window controls, toolbars, focus rings, and menu behavior. The reference's colored window dots are only an illustration; do not recreate them as app content.
+- The meeting library should stay compact and resizable. Around 200 pt is a useful starting width, with a minimum around 160 pt. Keep titles legible through sensible truncation and accessible full labels.
+- Use a roughly 250 pt question pane when space permits, with collapse available in narrower windows. Preserve the main reading area. The browser reference's stacked narrow layout is a review accommodation, not a requirement to turn the Mac app into a phone layout.
+- Retain Notes, Transcript, and Audio details. Keep people, duration, calendar association, and share access in the meeting header.
+- The aligned transcript is important: all speakers share one reading edge, with a leading timestamp column. Do not alternate left/right chat bubbles. Distinguish speakers with names and optional supporting markers, not color alone. Keep Unknown speaker explicit and preserve identification/editing support.
+- Place playback close to transcript content. Timestamps should seek the real recording. Source links in notes or meeting answers should reveal and highlight the corresponding transcript passage; preserve actual source provenance.
+- Make the generated summary's draft/review status clear. Separate suggested directions, next steps, unanswered questions, and user-entered notes. Show a missing owner/date explicitly when the data is missing; do not manufacture it to match the sample.
+- Keep Your notes and Private scratchpad distinct and editable. A collapsed visual section is not a reason to change their storage or privacy semantics.
+- Use a focused record setup surface with meeting name, source selection, microphone selection, and one primary action. Preserve the existing defaults and real permission flow. Recording state must expose a stop action and actual timer/status.
+- Summarize recording-quality issues in plain language. Offer a path to the relevant audio moment. Keep low-level recording events available under an expandable section in Audio details; do not discard diagnostics or invent a diagnosis when the data cannot support it.
+- Make deleting audio deliberate and preserve the actual app's choices about retaining notes/transcripts.
+- Treat "On this Mac" / local processing as quiet supporting copy. Show it only when it accurately describes the corresponding behavior.
+
+IMPLEMENTATION ORDER
+1. Inspect repository instructions and identify the app's theme, window, asset, status-item, recording, and transcript components.
+2. Import/merge the native resources or map the tokens into the existing framework's theme layer.
+3. Integrate and verify the menu bar icon at native size, then integrate the app icon using the supported workflow.
+4. Apply typography and surface roles to the existing screens; implement the approved transcript alignment and source navigation without breaking current behavior.
+5. Refine the meeting header, question pane, notes sections, recording setup, and diagnostics presentation. Keep real view models and data sources in control.
+6. Run the repository's required checks and appropriate build/tests. Capture actual native light/dark screenshots of Notes, Transcript, and recording setup, plus menu bar/Dock proofs.
+7. Report the files changed, resource/build-setting changes, checks run, and any remaining native appearance issues. Do not report native integration complete based only on this package's browser preview.
+
+ACCEPTANCE CRITERIA
+- A fresh app launch loads the correct resources without duplicate-name or missing-image errors.
+- Light and Forest dark match the canonical tokens; changing appearance updates custom views and dialogs as well as the main screen.
+- The menu bar glyph remains legible on light, dark, and translucent wallpaper backgrounds at native size and 1x/2x rendering. Its state label is accessible.
+- The actual Dock/app icon has correct geometry and margins; the supported appearance variants remain recognizable.
+- Keyboard navigation, visible focus, text contrast, Increase Contrast, and Reduce Transparency work in the native app. Use semantic native controls and accessible labels.
+- Transcript timestamp seeking, source navigation, playback speed/state, question answers, record/stop, source selection, notes editing, speaker identification, and existing meeting actions use real data and continue to work.
+- Missing audio, unknown speakers, and absent source evidence remain understandable and truthful.
+- No demo meeting content, prewritten answer, fake timer, browser window chrome, or remote asset dependency has entered production.
+- The relevant app build and existing tests pass, or a concrete pre-existing blocker is documented.
+
+PACKAGE VALIDATION BOUNDARY
+VALIDATION.txt records checks performed on these assets and the offline reference. The actual app repository was not available here. Native clear/tinted icon behavior, real menu bar translucency, accessibility settings, target membership, application behavior, and target-specific builds must be verified during integration.
+
+APPLE REFERENCES
+Named appearance-aware colors:
+https://developer.apple.com/documentation/uikit/supporting-dark-mode-in-your-interface
+Black/transparent template images:
+https://developer.apple.com/documentation/appkit/nsimage/istemplate
+Layered icon sources and appearances:
+https://developer.apple.com/design/human-interface-guidelines/app-icons
+Icon Composer:
+https://developer.apple.com/icon-composer/
+Contrast guidance:
+https://developer.apple.com/help/app-store-connect/manage-app-accessibility/sufficient-contrast-evaluation-criteria

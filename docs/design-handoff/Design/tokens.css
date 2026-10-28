@@ -1,0 +1,27 @@
+[data-appearance="light"] {
+  --amaranth-bg: #F3ECE5;
+  --amaranth-surface: #FFFAF5;
+  --amaranth-text: #382A2F;
+  --amaranth-muted: #716068;
+  --amaranth-accent: #752C44;
+  --amaranth-green: #416552;
+  --amaranth-line: #97828B;
+  --amaranth-soft: #E9DCD9;
+  --amaranth-onAccent: #FFFAF5;
+  --amaranth-warning: #8D431A;
+  --amaranth-danger: #9A343E;
+}
+
+[data-appearance="dark"] {
+  --amaranth-bg: #1D2621;
+  --amaranth-surface: #28342C;
+  --amaranth-text: #F5F0E6;
+  --amaranth-muted: #B9C3B5;
+  --amaranth-accent: #E3A4B6;
+  --amaranth-green: #A5C5A2;
+  --amaranth-line: #738375;
+  --amaranth-soft: #3C4138;
+  --amaranth-onAccent: #28342C;
+  --amaranth-warning: #EDB48B;
+  --amaranth-danger: #EDB0B9;
+}
