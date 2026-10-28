@@ -2375,7 +2375,7 @@
       "id": "T76",
       "title": "Record button as in the handoff",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): outlined Surface Record button with a Danger dot; chevron kept",
       "optional": false,
       "depends_on": [
         "T75"

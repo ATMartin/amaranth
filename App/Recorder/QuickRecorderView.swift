@@ -22,13 +22,23 @@ struct RecordToolbarControl: View {
     /// Two plain buttons in one toolbar item: a ControlGroup here was moved to the trailing edge and truncated.
     var idle: some View {
         HStack(spacing: 2) {
+                // The handoff's Record button (T76): a squarer outlined button on Surface, a Danger dot, "Record".
                 Button { model.start() } label: {
-                    HStack(spacing: 4) { Image(systemName: "record.circle").foregroundStyle(Color.statusFailed); Text("Record") }
+                    HStack(spacing: 5) {
+                        Circle().fill(Color.statusFailed).frame(width: 7, height: 7).accessibilityHidden(true)
+                        Text("Record").foregroundStyle(Color.brandText)
+                    }
+                    .padding(.horizontal, 10).padding(.vertical, 4)
+                    .background(Color.surface, in: RoundedRectangle(cornerRadius: 6))
+                    .overlay { RoundedRectangle(cornerRadius: 6).strokeBorder(Color.controlBorder, lineWidth: 1) }
+                    .contentShape(RoundedRectangle(cornerRadius: 6))
                 }
+                .buttonStyle(.plain)
                 .accessibilityLabel("Record")
                 .keyboardShortcut("r", modifiers: [.command, .shift])
                     .help("Record a new meeting (⌘⇧R). \(RecorderPresentation.consent)")
-                Button { showingOptions.toggle() } label: { Image(systemName: "chevron.down") }
+                Button { showingOptions.toggle() } label: { Image(systemName: "chevron.down").padding(.horizontal, 4).contentShape(Rectangle()) }
+                    .buttonStyle(.plain).foregroundStyle(Color.brandSecondary)
                     .accessibilityLabel("Recording options")
                     .help("Title, sources and microphone for this meeting")
                     .popover(isPresented: $showingOptions, arrowEdge: .bottom) {
