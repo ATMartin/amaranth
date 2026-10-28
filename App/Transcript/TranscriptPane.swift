@@ -320,7 +320,7 @@ struct SpeakerBar: View {
     }
 }
 
-/// Playback close to the content (Inner Circle handoff), on the canvas colour: play/pause, the position, a scrubber over
+/// Playback at the bottom of the meeting column, on the canvas colour: play/pause, the position, a scrubber over
 /// the meeting's length, and the length. Space plays and pauses on the Transcript tab.
 struct PlaybackBar: View {
     let detail: MeetingDetail

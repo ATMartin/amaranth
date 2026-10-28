@@ -22,14 +22,17 @@ struct MeetingDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, AppStyle.double + 8)
             Hairline()
-            // Close to the content on every tab (handoff): play, the position, a scrubber and the length.
-            PlaybackBar(detail: detail, spaceShortcut: library.detailTab == .transcript)
-            Hairline()
-            switch library.detailTab {
-            case .notes: NotesPane(detail: detail, notesModelInstalled: notesModelInstalled) { library.detailTab = .transcript }
-            case .transcript: TranscriptPane(detail: detail)
-            case .recording: RecordingDetailsPane(detail: detail) { library.requestDelete(.deleteAudioOnly, detail.meeting.id, title: detail.meeting.title) }
+            Group {
+                switch library.detailTab {
+                case .notes: NotesPane(detail: detail, notesModelInstalled: notesModelInstalled) { library.detailTab = .transcript }
+                case .transcript: TranscriptPane(detail: detail)
+                case .recording: RecordingDetailsPane(detail: detail) { library.requestDelete(.deleteAudioOnly, detail.meeting.id, title: detail.meeting.title) }
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            Hairline()
+            // At the bottom of the column on every tab: play, the position, a scrubber and the length.
+            PlaybackBar(detail: detail, spaceShortcut: library.detailTab == .transcript)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear { loadPlayback() }
