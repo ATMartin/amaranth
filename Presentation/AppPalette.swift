@@ -30,9 +30,10 @@ public enum AppAppearance: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
-/// Colour tokens with light and dark variants (T43). Status colours keep their meaning (green = OK, orange = needs
-/// attention, red = failed) at ≥ 4.5:1 on the window background in both appearances; the stock system green and orange
-/// are too pale on white for text. `Tests/UI/PaletteContrastTests.swift` checks every pair.
+/// Colour tokens with light and dark variants (T43), now the Inner Circle / Forest identity (docs/design-handoff): cream
+/// surfaces and wine accents in light, forest surfaces with cream text and blush accents in dark. The app reads the same
+/// values as named colours from `App/Resources/Assets.xcassets` (`AmaranthCanvas` …); these copies feed the contrast
+/// checks in `Tests/UI/PaletteContrastTests.swift`, which also check the catalog matches them.
 public enum AppPalette {
     public struct RGB: Hashable, Sendable {
         public var r, g, b: UInt8
@@ -49,21 +50,58 @@ public enum AppPalette {
         public func resolved(dark isDark: Bool) -> RGB { isDark ? dark : light }
     }
 
-    public static let ok = Pair(light: 0x1E7B34, dark: 0x30D158)
-    public static let attention = Pair(light: 0xA84F00, dark: 0xFF9230)
-    public static let failed = Pair(light: 0xC81E1E, dark: 0xFF6961)
+    /// Brand tokens, keyed by their asset-catalog names.
+    /// Sidebar, toolbar area and the playback strip.
+    public static let canvas = Pair(light: 0xF3ECE5, dark: 0x1D2621)
+    /// Notes, transcript, fields and dialogs.
+    public static let surface = Pair(light: 0xFFFAF5, dark: 0x28342C)
+    public static let text = Pair(light: 0x382A2F, dark: 0xF5F0E6)
+    /// Metadata and secondary copy.
+    public static let secondaryText = Pair(light: 0x716068, dark: 0xB9C3B5)
+    /// Selected tabs, time and source links, playback, focus and emphasised actions.
+    public static let accent = Pair(light: 0x752C44, dark: 0xE3A4B6)
+    /// Local status and botanical detail.
+    public static let sage = Pair(light: 0x416552, dark: 0xA5C5A2)
+    /// Control outlines and structural dividers.
+    public static let controlBorder = Pair(light: 0x97828B, dark: 0x738375)
+    /// The selected meeting row (with an accent edge).
+    public static let selection = Pair(light: 0xE9DCD9, dark: 0x3C4138)
+    /// Labels on a filled accent control: cream in light, forest in dark (not white).
+    public static let onAccent = Pair(light: 0xFFFAF5, dark: 0x28342C)
+    /// Audio-quality notices.
+    public static let warning = Pair(light: 0x8D431A, dark: 0xEDB48B)
+    /// Destructive actions, failures and the recording dot (always beside a word or shape).
+    public static let danger = Pair(light: 0x9A343E, dark: 0xEDB0B9)
 
-    /// Speaker discs (T35): one set for both appearances, every hue tuned to the same luminance so white initials
-    /// read at ≥ 4.5:1 and the disc stands out at ≥ 3:1 from both window backgrounds. No blue: that is the accent.
-    public static let speakers: [Pair] = [0x007A90, 0x944DCD, 0xCD297B, 0xB55300, 0x2A7F39, 0x007E71, 0x5F5DE6, 0x926647].map(Pair.init(both:))
-    public static let unknownSpeaker = Pair(both: 0x6F6F74)
+    /// Every brand token with its asset-catalog name.
+    public static let named: [(name: String, pair: Pair)] = [
+        ("AmaranthCanvas", canvas), ("AmaranthSurface", surface), ("AmaranthText", text), ("AmaranthSecondaryText", secondaryText),
+        ("AmaranthAccent", accent), ("AmaranthSage", sage), ("AmaranthControlBorder", controlBorder), ("AmaranthSelection", selection),
+        ("AmaranthOnAccent", onAccent), ("AmaranthWarning", warning), ("AmaranthDanger", danger),
+    ]
 
-    /// macOS 26/27 `windowBackgroundColor` / `controlBackgroundColor` and `underPageBackgroundColor` resolved in each
-    /// appearance (reference values for the contrast checks; views use the system colours themselves).
-    public static let windowBackground = Pair(light: 0xFFFFFF, dark: 0x1E1E1E)
-    public static let underPageBackground = Pair(light: 0xF6F6F6, dark: 0x282828)
-    /// `linkColor`: time links and other clickable text.
-    public static let link = Pair(light: 0x0068DA, dark: 0x419CFF)
+    /// Status colours keep their meaning (green = OK, orange = needs attention, red = failed), always with an icon or word.
+    public static let ok = sage
+    public static let attention = warning
+    public static let failed = danger
+
+    /// Speaker discs (T35): every hue tuned to the same luminance so the initials read at ≥ 4.5:1 and the disc stands
+    /// out at ≥ 3:1 from both surfaces. Dark mode uses the same hues mixed toward cream, with forest initials (the Forest
+    /// surface is too light for the deep discs). Names always carry the speaker; the disc is a supporting marker.
+    public static let speakers: [Pair] = [
+        Pair(light: 0x007A90, dark: 0x459BA8), Pair(light: 0x944DCD, dark: 0xAE79D4), Pair(light: 0xCD297B, dark: 0xDA699D),
+        Pair(light: 0xB55300, dark: 0xC77F40), Pair(light: 0x2A7F39, dark: 0x619E68), Pair(light: 0x007E71, dark: 0x459E92),
+        Pair(light: 0x5F5DE6, dark: 0x8885E6), Pair(light: 0x926647, dark: 0xAB886F),
+    ]
+    public static let unknownSpeaker = Pair(light: 0x6F6F74, dark: 0x908F90)
+    /// Initials and glyphs on a speaker disc.
+    public static let speakerInitials = Pair(light: 0xFFFFFF, dark: 0x1D2621)
+
+    /// Backgrounds text is drawn on (reference values for the contrast checks).
+    public static let windowBackground = surface
+    public static let underPageBackground = canvas
+    /// Clickable text (time links, sources): the accent.
+    public static let link = accent
 
     /// Opacity of the tinted strips behind status text (attention banners, the failed-region row).
     public static let tintOpacity = 0.12

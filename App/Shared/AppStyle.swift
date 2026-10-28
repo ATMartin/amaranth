@@ -3,31 +3,41 @@ import AppKit
 import Domain
 import Presentation
 
-/// Compact typography and spacing tokens (T36). Sizes are points at the Default text size and are multiplied by the
+/// Typography and spacing tokens (T36; sizes from the Inner Circle handoff: 14 pt body, 12 pt metadata, 25 pt meeting
+/// title, nothing essential below 11 pt). Sizes are points at the Default text size and are multiplied by the
 /// Settings → Appearance text size through `\.textScale`. Use `.appFont(_:)` instead of system text styles in the
-/// meeting views (sidebar, header, transcript, notes) so the setting reaches them.
+/// meeting views (sidebar, header, transcript, notes) so the setting reaches them. The working UI stays in the system
+/// font; only `.display` (meeting titles and a few headings) uses the rounded brand face.
 enum AppStyle {
     enum Role {
-        case title, sectionTitle, headline, body, callout, caption, caption2
+        case display, title, sectionTitle, headline, body, callout, caption, caption2, eyebrow
 
         var size: CGFloat {
             switch self {
-            case .title: 17
-            case .sectionTitle: 14
-            case .headline, .body: 12
-            case .callout: 11.5
-            case .caption: 11
-            case .caption2: 10
+            case .display: 25
+            case .title: 19
+            case .sectionTitle: 15
+            case .headline, .body: 14
+            case .callout: 13
+            case .caption: 12
+            case .caption2, .eyebrow: 11
             }
         }
         var weight: Font.Weight {
             switch self {
-            case .title: .bold
+            case .display, .title: .bold
             case .sectionTitle, .headline: .semibold
+            case .eyebrow: .medium
             default: .regular
             }
         }
     }
+
+    /// The brand display face, with the rounded system font where it is missing.
+    static let displayFamily = "Arial Rounded MT Bold"
+    static let hasDisplayFace = NSFont(name: displayFamily, size: 12) != nil
+    /// Body line spacing: about 1.5 × the font size in long reading text (notes, transcript).
+    static func readingLineSpacing(_ scale: CGFloat) -> CGFloat { 0.4 * Role.body.size * scale }
 
     /// Inline status and source icons (T45): 11–13 pt, so they sit on the text line instead of competing with it.
     static let iconSmall: CGFloat = 11
@@ -57,8 +67,18 @@ private struct AppFont: ViewModifier {
     @Environment(\.textScale) private var scale
 
     func body(content: Content) -> some View {
-        let font = Font.system(size: role.size * scale, weight: weight ?? role.weight)
-        content.font(monospacedDigit ? font.monospacedDigit() : font)
+        let size = role.size * scale
+        let font: Font = switch role {
+        case .display where AppStyle.hasDisplayFace: .custom(AppStyle.displayFamily, fixedSize: size)
+        case .display: .system(size: size, weight: .bold, design: .rounded)
+        default: .system(size: size, weight: weight ?? role.weight)
+        }
+        // Eyebrows ("TRANSCRIPT", the header date): small tracked capitals, as in the reference.
+        if role == .eyebrow {
+            content.font(monospacedDigit ? font.monospacedDigit() : font).textCase(.uppercase).tracking(1.1 * scale)
+        } else {
+            content.font(monospacedDigit ? font.monospacedDigit() : font)
+        }
     }
 }
 
@@ -89,26 +109,43 @@ struct SourceIcon: View {
     var body: some View {
         let name = source == .microphone ? "Your microphone" : "System audio"
         Image(systemName: RecorderPresentation.symbol(source))
-            .font(.system(size: AppStyle.iconSmall * scale)).foregroundStyle(.secondary)
+            .font(.system(size: AppStyle.iconSmall * scale)).foregroundStyle(Color.brandSecondary)
             .frame(width: 14 * scale)
             .help(name).accessibilityLabel(name)
     }
 }
 
-/// Semantic colours (T43): light and dark variants from `AppPalette`, resolved by the view's effective appearance.
-/// Use these instead of `.green` / `.orange` / `.red`, which are too pale on a light background for text.
+/// Brand colours (Inner Circle / Forest): the named light/dark colours in `App/Resources/Assets.xcassets`, resolved by
+/// each view's effective appearance. `AppPalette` holds the same values for the contrast tests.
 extension Color {
-    static let statusOK = Color(nsColor: .palette(AppPalette.ok))
-    static let statusAttention = Color(nsColor: .palette(AppPalette.attention))
-    static let statusFailed = Color(nsColor: .palette(AppPalette.failed))
-    /// Clickable text (time links): the system link colour.
-    static let link = Color(nsColor: .linkColor)
+    /// Sidebar, toolbar area, playback strip.
+    static let canvas = Color("AmaranthCanvas")
+    /// Notes, transcript, fields, dialogs.
+    static let surface = Color("AmaranthSurface")
+    static let brandText = Color("AmaranthText")
+    static let brandSecondary = Color("AmaranthSecondaryText")
+    /// Selected tabs, links, playback, focus, emphasised actions (also the app's global accent).
+    static let brandAccent = Color("AmaranthAccent")
+    static let sage = Color("AmaranthSage")
+    static let controlBorder = Color("AmaranthControlBorder")
+    /// The selected meeting row, paired with an accent edge.
+    static let selection = Color("AmaranthSelection")
+    /// Labels on a filled accent control.
+    static let onAccent = Color("AmaranthOnAccent")
+
+    /// Status colours: they keep their meaning (green = OK, orange = needs attention, red = failed) and always sit beside
+    /// an icon or a word.
+    static let statusOK = sage
+    static let statusAttention = Color("AmaranthWarning")
+    static let statusFailed = Color("AmaranthDanger")
+    /// Clickable text (time links, sources).
+    static let link = brandAccent
 
     static func status(_ t: RecorderPresentation.Tone) -> Color {
-        switch t { case .green: .statusOK; case .grey: .secondary; case .orange: .statusAttention; case .red: .statusFailed }
+        switch t { case .green: .statusOK; case .grey: .brandSecondary; case .orange: .statusAttention; case .red: .statusFailed }
     }
     static func status(_ t: MeetingStatusPresentation.Tone) -> Color {
-        switch t { case .secondary: .secondary; case .red: .statusFailed; case .orange: .statusAttention }
+        switch t { case .secondary: .brandSecondary; case .red: .statusFailed; case .orange: .statusAttention }
     }
 }
 

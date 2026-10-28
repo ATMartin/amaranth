@@ -42,9 +42,11 @@ final class LibraryModel {
     private var tabAppliedFor: MeetingID?
     /// Set by the app: whether the notes model is installed (no model → never auto-switch to Notes).
     var notesModelReady: () -> Bool = { false }
-    enum DetailTab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Recording" }
+    enum DetailTab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Audio details" }
     /// Bumped by ⌘K; the ask field takes focus.
     var askFocusRequest = 0
+    /// Set with each request until the field takes it: the Ask pane may be hidden, so the field appears after the bump.
+    var askFocusPending = false
     let store: MeetingStore?
     weak var processing: ProcessingModel?
 
@@ -127,6 +129,7 @@ final class LibraryModel {
     /// ⌘K: focus the field with All meetings as the scope.
     func askAllMeetings() {
         askScope = .allMeetings
+        askFocusPending = true
         askFocusRequest += 1
     }
 
@@ -171,9 +174,9 @@ final class LibraryModel {
         if let i = askSelection, i >= hits.count { askSelection = nil }
     }
 
-    /// Opens the hit's meeting at the match: the transcript row for transcript hits, the Notes tab for notes.
+    /// Opens the hit's meeting at the match: the transcript row for transcript hits, the Notes tab for notes. The results
+    /// stay in the Ask pane, so the next match is a click away.
     func open(_ hit: SearchHit) {
-        closeAskPanel()
         if selection == hit.meetingID, let d = detail, d.meeting.id == hit.meetingID {
             jump(to: hit, in: d)
         } else {

@@ -13,6 +13,7 @@ struct SpeakerDisc: View {
 
     static let palette: [Color] = AppPalette.speakers.map { Color(nsColor: .palette($0)) }
     static let unknown = Color(nsColor: .palette(AppPalette.unknownSpeaker))
+    static let initials = Color(nsColor: .palette(AppPalette.speakerInitials))
 
     /// `indices` comes from `TranscriptRows.paletteIndices` for the meeting (distinct colours); unknown ids fall back
     /// to the plain hash.
@@ -24,9 +25,9 @@ struct SpeakerDisc: View {
         ZStack {
             Circle().fill(Self.color(assignment, colors))
             switch assignment {
-            case .speaker: Text(TranscriptRows.initials(name)).font(.system(size: size * 0.45, weight: .semibold)).foregroundStyle(.white)
-            case .multiple: Image(systemName: "person.2.fill").font(.system(size: size * 0.4)).foregroundStyle(.white)
-            case .unknown: Text("?").font(.system(size: size * 0.5, weight: .semibold)).foregroundStyle(.white)
+            case .speaker: Text(TranscriptRows.initials(name)).font(.system(size: size * 0.45, weight: .semibold)).foregroundStyle(Self.initials)
+            case .multiple: Image(systemName: "person.2.fill").font(.system(size: size * 0.4)).foregroundStyle(Self.initials)
+            case .unknown: Text("?").font(.system(size: size * 0.5, weight: .semibold)).foregroundStyle(Self.initials)
             }
         }
         .frame(width: size, height: size)

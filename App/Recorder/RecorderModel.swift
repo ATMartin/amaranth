@@ -45,7 +45,7 @@ final class RecorderModel {
     /// Offered first in the next recording's prompt: the event a "meeting starting" reminder was clicked for (T61).
     var preferredEventID: String?
     /// The title this recording got automatically (nothing typed); nil when the user typed one.
-    private var automaticTitle: String?
+    private(set) var automaticTitle: String?
     private(set) var inputs: [AudioDeviceInfo] = []
     private(set) var state: CaptureState = .idle
     private(set) var elapsed: Double = 0

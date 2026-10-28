@@ -23,7 +23,7 @@ struct CalendarSettingsView: View {
                 Toggle("Suggest calendar events when recording", isOn: $suggest)
                     .onChange(of: suggest) { _, on in if on { Task { await calendar.request(.userAction(recording: recorder.inSession)) } } }
                 Text("When you press Record during (or up to 10 minutes before) an event, the recording bar asks whether this is that meeting. Nothing is linked or renamed unless you choose Link, and the event's title is used only if you didn't type one.")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.caption).foregroundStyle(Color.brandSecondary)
             }
             Section("Reminder") {
                 Toggle("Remind me a minute before meetings", isOn: $reminder)
@@ -31,7 +31,7 @@ struct CalendarSettingsView: View {
                         if on { Task { await reminders?.enable(); chosen = CalendarSettings.reminderCalendars() } } else { reminders?.sync() }
                     }
                 Text("A notification about a minute before each event in the calendars below. Clicking it opens Amaranth and offers that event when you press Record. Amaranth never starts recording on its own.")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.caption).foregroundStyle(Color.brandSecondary)
                 if reminders?.notificationsDenied == true {
                     Text("Notifications for Amaranth are off in System Settings → Notifications.").font(.caption).foregroundStyle(Color.statusAttention)
                 }
@@ -50,13 +50,13 @@ struct CalendarSettingsView: View {
                 Toggle("Keep attendee email addresses", isOn: $keepEmails)
                     .onChange(of: keepEmails) { _, on in if !on, let store = library?.store { _ = try? CalendarLinking.forgetEmails(in: store) } }
                 Text("Off: only invitees' names are saved with a meeting. On: their email addresses are kept too (never exported). Turning it off forgets the addresses already kept.")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.caption).foregroundStyle(Color.brandSecondary)
                 HStack {
                     Button("Remove Calendar Data from All Meetings…") { confirmingRemove = true }.disabled(library?.store == nil)
-                    if let removedMessage { Text(removedMessage).font(.caption).foregroundStyle(.secondary) }
+                    if let removedMessage { Text(removedMessage).font(.caption).foregroundStyle(Color.brandSecondary) }
                 }
                 Text("Unlinks every meeting and removes the people that came from calendar events. Names you typed stay, and so do speaker names you chose (rename speakers to change them). Turning calendar access off in System Settings doesn't remove what is already saved; this does.")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.caption).foregroundStyle(Color.brandSecondary)
             }
         }
         .formStyle(.grouped)
@@ -83,7 +83,7 @@ struct CalendarAccessRow: View {
     var body: some View {
         LabeledContent("Calendar access") {
             HStack {
-                Text(text).foregroundStyle(.secondary)
+                Text(text).foregroundStyle(Color.brandSecondary)
                 switch calendar.status.presentation {
                 case .askOnClick:
                     Button("Allow Access…") { Task { await calendar.request(.userAction(recording: recorder.inSession)) } }

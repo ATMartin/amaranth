@@ -130,10 +130,9 @@ struct AmaranthApp: App {
         MenuBarExtra {
             MenuBarContent(recorder: recorder)
         } label: {
-            // Visible whenever the app runs; red while recording so it is never silent.
-            // T68: an exclamation mark while the "Still recording?" alert is up.
-            Image(systemName: recorder.quiet != nil ? "exclamationmark.circle.fill" : recorder.inSession ? "record.circle.fill" : "waveform")
-                .symbolRenderingMode(recorder.inSession && recorder.quiet == nil ? .multicolor : .monochrome)
+            // Visible whenever the app runs: the brand mark, with a record dot, pause bars or (T68, "Still recording?") an
+            // exclamation mark beside it during a session, so it is never silent and never relies on colour.
+            MenuBarLabel(recorder: recorder)
         }
 
         Settings {

@@ -18,7 +18,7 @@ struct TranscriptStylePicker: View {
                             .background(Color(nsColor: .textBackgroundColor), in: .rect(cornerRadius: 8))
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .strokeBorder(selected ? Color.accentColor : Color.secondary.opacity(0.3), lineWidth: selected ? 2.5 : 1)
+                                    .strokeBorder(selected ? Color.brandAccent : Color.controlBorder.opacity(0.6), lineWidth: selected ? 2.5 : 1)
                             }
                         Text(style.title).appFont(.callout, weight: selected ? .semibold : .regular)
                     }
@@ -36,42 +36,41 @@ struct TranscriptStylePicker: View {
 /// A few grey bars standing in for transcript lines; speaker colours from the transcript palette.
 struct TranscriptStyleSkeleton: View {
     let style: TranscriptStyle
-    private let bar = Color.secondary.opacity(0.35)
+    private let bar = Color.brandSecondary.opacity(0.35)
     private let them = SpeakerDisc.palette[1], other = SpeakerDisc.palette[3]
 
     var body: some View {
         switch style {
         case .columns:
-            VStack(alignment: .leading, spacing: 5) {
-                row(time: true, disc: them, text: 0.95)
-                row(time: true, disc: nil, text: 0.7)
-                row(time: true, disc: other, text: 0.85)
-                row(time: true, disc: SpeakerDisc.palette[0], text: 0.6)
-                row(time: true, disc: nil, text: 0.9)
+            // The aligned transcript: a time column, then the name above the words, one reading edge.
+            VStack(alignment: .leading, spacing: 4) {
+                run(disc: them, lines: [0.95, 0.6])
+                run(disc: other, lines: [0.8])
+                run(disc: SpeakerDisc.palette[0], lines: [0.9])
             }
         case .bubbles:
             VStack(spacing: 5) {
                 bubble(them, width: 0.7, mine: false)
-                bubble(Color.accentColor, width: 0.55, mine: true)
+                bubble(Color.brandAccent, width: 0.55, mine: true)
                 bubble(other, width: 0.75, mine: false)
-                bubble(Color.accentColor, width: 0.45, mine: true)
+                bubble(Color.brandAccent, width: 0.45, mine: true)
             }
         }
     }
 
-    func row(time: Bool, disc: Color?, text: CGFloat) -> some View {
-        HStack(spacing: 6) {
-            Capsule().fill(bar.opacity(0.6)).frame(width: 18, height: 5)
-            HStack(spacing: 3) {
-                if let disc {
+    func run(disc: Color, lines: [CGFloat]) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Capsule().fill(bar.opacity(0.6)).frame(width: 18, height: 5).padding(.top, 2)
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 3) {
                     Circle().fill(disc).frame(width: 8, height: 8)
-                    Capsule().fill(bar).frame(width: 20, height: 5)
+                    Capsule().fill(bar).frame(width: 22, height: 5)
+                }
+                ForEach(Array(lines.enumerated()), id: \.offset) { _, w in
+                    GeometryReader { g in Capsule().fill(bar).frame(width: g.size.width * w, height: 5) }.frame(height: 5)
                 }
             }
-            .frame(width: 32, alignment: .leading)
-            GeometryReader { g in Capsule().fill(bar).frame(width: g.size.width * text, height: 5) }.frame(height: 5)
         }
-        .frame(height: 9)
     }
 
     func bubble(_ color: Color, width: CGFloat, mine: Bool) -> some View {

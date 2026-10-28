@@ -31,8 +31,46 @@ enum UIRenderSelfTest {
             try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
             if await !render(store: store, out: dir, textSize: textSize, appearance: NSAppearance(named: appearance)!) { ok = false }
         }
+        menuBarIconProofs(out: out)
         SelfTest.log(["step": "output", "directory": out.path])
         return ok
+    }
+
+    /// Menu bar glyph proofs at true 1x and 2x pixels (`menu-bar-icon-1x.png`, `-2x.png`): one column per state, one row
+    /// per bar: light, dark, and the template colour over a light and a dark wallpaper tint (how macOS draws it on a
+    /// translucent bar). The glyph is tinted the way the menu bar tints a template image.
+    @MainActor static func menuBarIconProofs(out: URL) {
+        let bars: [(NSColor, NSColor)] = [
+            (NSColor(white: 0.96, alpha: 1), .black), (NSColor(white: 0.12, alpha: 1), .white),
+            (NSColor(srgbRed: 0.80, green: 0.86, blue: 0.93, alpha: 1), NSColor(white: 0, alpha: 0.85)),
+            (NSColor(srgbRed: 0.22, green: 0.18, blue: 0.30, alpha: 1), NSColor(white: 1, alpha: 0.9)),
+        ]
+        let states = MenuBarIcon.State.allCases
+        let cell = NSSize(width: 40, height: 24)
+        for scale in [1, 2] {
+            let size = NSSize(width: cell.width * CGFloat(states.count), height: cell.height * CGFloat(bars.count))
+            guard let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(size.width) * scale, pixelsHigh: Int(size.height) * scale,
+                                             bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
+                                             colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0) else { continue }
+            rep.size = size
+            NSGraphicsContext.saveGraphicsState()
+            NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
+            for (row, bar) in bars.enumerated() {
+                let y = size.height - cell.height * CGFloat(row + 1)
+                bar.0.setFill(); NSRect(x: 0, y: y, width: size.width, height: cell.height).fill()
+                for (col, state) in states.enumerated() {
+                    let icon = MenuBarIcon.image(state)
+                    let tinted = NSImage(size: icon.size, flipped: false) { r in
+                        icon.draw(in: r); bar.1.set(); r.fill(using: .sourceAtop); return true
+                    }
+                    tinted.draw(in: NSRect(x: cell.width * CGFloat(col) + 4, y: y + (cell.height - icon.size.height) / 2,
+                                           width: icon.size.width, height: icon.size.height))
+                }
+            }
+            NSGraphicsContext.restoreGraphicsState()
+            try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "menu-bar-icon-\(scale)x.png"))
+        }
+        SelfTest.log(["step": "menu-bar-icon", "states": states.map(\.accessibilityLabel).joined(separator: " | ")])
     }
 
     @MainActor static func render(store: MeetingStore, out: URL, textSize: TextSize, appearance: NSAppearance) async -> Bool {
@@ -65,7 +103,7 @@ enum UIRenderSelfTest {
         func makeView<V: View>(_ v: V, size: CGSize) -> NSView {
             let view = NSHostingView(rootView: v.textSize(textSize).environment(worker).environment(models).environment(recorder)
                 .environment(library).environment(playback).environment(live).environment(calendar).frame(width: size.width, height: size.height)
-                .background(Color(nsColor: .windowBackgroundColor)))
+                .background(Color.surface))
             // Offscreen windows don't draw vibrancy; force an opaque, fixed appearance so captures are readable.
             view.appearance = appearance
             let window = NSWindow(contentRect: CGRect(origin: .zero, size: size), styleMask: [.titled], backing: .buffered, defer: false)
@@ -243,10 +281,11 @@ enum UIRenderSelfTest {
         _ = await host(SpeakerRenameSheet(speaker: Speaker(id: SpeakerID("render-s2"), label: "Speaker 2"), text: .constant(""), suggestions: []) {},
                        "speaker-rename-no-people", size: CGSize(width: 420, height: 160))
         // Sidebar alone (split-view sidebars use vibrancy that offscreen capture may not draw).
-        _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 360, height: 760))
+        _ = await host(LibrarySidebar(), "sidebar", size: CGSize(width: 220, height: 760))
+        _ = await host(AskPane(), "ask-pane-empty", size: CGSize(width: 260, height: 760))
         // Toolbar recorder (T31): idle control, this meeting's options, the strip in each state, the banner.
         _ = await host(RecordToolbarControl(model: recorder).padding(), "record-control", size: CGSize(width: 260, height: 60))
-        _ = await host(RecordOptionsForm(model: recorder) {}, "record-options", size: CGSize(width: 340, height: 230))
+        _ = await host(RecordOptionsForm(model: recorder) {}, "record-options", size: CGSize(width: 360, height: 420))
         _ = await host(VStack(alignment: .leading, spacing: 14) {
             ForEach(Array(stripSamples.enumerated()), id: \.offset) { _, s in
                 RecordingStripContent(state: s.0, elapsed: 3723, health: s.1, savedUpTo: [.microphone: 3720, .systemOutput: 3700],
@@ -312,7 +351,8 @@ enum UIRenderSelfTest {
         _ = await host(AppearanceSettings().defaultAppStorage(collapsed), "settings-appearance-bubbles", size: CGSize(width: 560, height: 460))
         collapsed.removeObject(forKey: TranscriptStyle.key)
         // Sun/moon toggle (T44): the sun in dark mode, the moon in light mode. Then the main window's real toolbar
-        // (bridged into an NSWindow) to check the toggle sits on the trailing side before Export.
+        // (bridged into an NSWindow) to check the toggle and the Ask pane toggle are there. Export moved to the meeting header
+        // (Inner Circle handoff), so it must not be in the toolbar any more.
         _ = await host(AppearanceToggle().labelStyle(.iconOnly).padding(), "appearance-toggle", size: CGSize(width: 60, height: 44))
         if let first = library.items.first {
             library.selection = first.id
@@ -325,9 +365,9 @@ enum UIRenderSelfTest {
             window.contentView = view
             try? await Task.sleep(for: .milliseconds(600))
             let labels = window.toolbar?.items.map { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label } ?? []
-            let toggle = labels.firstIndex { $0.hasPrefix("Switch to") }, export = labels.firstIndex(of: "Export")
+            let toggle = labels.firstIndex { $0.hasPrefix("Switch to") }
             let expected = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua ? "Switch to Light Mode" : "Switch to Dark Mode"
-            let pass = toggle != nil && export != nil && toggle! < export! && labels[toggle!] == expected
+            let pass = toggle != nil && labels[toggle!] == expected && !labels.contains("Export") && labels.contains { $0.hasSuffix("Ask") }
             SelfTest.log(["step": "toolbar", "items": labels.joined(separator: " | "), "ok": "\(pass)"])
             // The whole window including its title bar and toolbar (the window frame view, not just the content).
             if let frameView = window.contentView?.superview {
@@ -420,6 +460,7 @@ enum UIRenderSelfTest {
             library.query = library.query
             let selOK = library.askSelection == 0
             _ = await host(MainView(), "ask-this-meeting", size: CGSize(width: 1200, height: 760))
+            _ = await host(AskPane(), "ask-pane-results", size: CGSize(width: 260, height: 760))
             library.askAllMeetings()
             let allOK = library.askScope == .allMeetings && library.hits.count >= thisHits.count
             _ = await host(MainView(), "ask-all-meetings", size: CGSize(width: 1200, height: 760))
@@ -441,7 +482,7 @@ enum UIRenderSelfTest {
             }
             for _ in 0..<40 where library.focusRowID == nil { try? await Task.sleep(for: .milliseconds(50)) }
             let row = library.detail?.rows.first { $0.id == library.focusRowID }
-            let jumpOK = target != nil && library.selection == long.id && library.detailTab == .transcript && !library.askPanelOpen
+            let jumpOK = target != nil && library.selection == long.id && library.detailTab == .transcript && library.askPanelOpen
                 && row?.segmentID?.rawValue == target?.ref
             SelfTest.log(["step": "ask", "thisMeetingHits": "\(thisHits.count)", "allHits": "\(library.hits.count)", "thisScopeOK": "\(thisOK)",
                           "allScopeOK": "\(allOK)", "arrowsOK": "\(selOK)", "jumpRow": library.focusRowID ?? "-", "ok": "\(thisOK && allOK && selOK && jumpOK)"])
@@ -466,6 +507,7 @@ enum UIRenderSelfTest {
                 text: "They decided to ship on Thursday, not Wednesday, once Dana finishes notarization.", citations: cites, confidence: .high,
                 refused: false, promptTokens: 0, generatedTokens: 0, firstTextSeconds: nil, totalSeconds: 0), phase: .done, acrossMeetings: false)
             _ = await host(MainView(), "ask-answer", size: CGSize(width: 1200, height: 760))
+            _ = await host(AskPane(), "ask-pane-answer", size: CGSize(width: 260, height: 760))
             answers.showForRender(question: "When will they ship?", passages: passages, response: AnswerResponse(
                 text: "They decided to ship on Thursday, not Wednesday.", citations: cites, confidence: .high, refused: false,
                 promptTokens: 0, generatedTokens: 0, firstTextSeconds: nil, totalSeconds: 0), phase: .done, acrossMeetings: true)

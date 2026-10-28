@@ -21,9 +21,11 @@ struct NotesPane: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: AppStyle.double) {
+            VStack(alignment: .leading, spacing: AppStyle.double + 4) {
                 stateBanner
                 if let s = detail.summary { generated(s) }
+                // The user's own text, apart from the generated draft (handoff): same storage and privacy as before.
+                Hairline().padding(.top, AppStyle.grid)
                 CollapsibleEditor(title: "Your notes", systemImage: "square.and.pencil", hint: CollapsedEditorHint.text(for: userNotes),
                                   help: "Yours alone: regenerating notes never changes this text.", isExpanded: expansion($userNotesExpanded)) {
                     TextEditor(text: $userNotes).appFont(.body).frame(minHeight: 120)
@@ -34,7 +36,7 @@ struct NotesPane: View {
                         }
                 }
                 CollapsibleEditor(title: "Private scratchpad", systemImage: "lock",
-                                  hint: CollapsedEditorHint.text(for: scratchpad).map { includeScratchpad ? $0 + " · used for notes" : $0 },
+                                  hint: CollapsedEditorHint.text(for: scratchpad).map { includeScratchpad ? $0 + " · used for notes" : $0 } ?? "Only for you",
                                   help: "Private: not exported or searched unless you choose to.", isExpanded: expansion($scratchpadExpanded)) {
                     VStack(alignment: .leading) {
                         TextEditor(text: $scratchpad).appFont(.body).frame(minHeight: 80)
@@ -51,14 +53,15 @@ struct NotesPane: View {
                                 library.saveScratchpad(detail.meeting.id, text: scratchpad, include: v)
                             }
                         Text("Private: not exported or searched unless you choose to. Notes that used them are labelled.")
-                            .appFont(.caption).foregroundStyle(.secondary)
+                            .appFont(.caption).foregroundStyle(Color.brandSecondary)
                     }
                 }
             }
             .appFont(.body)
-            .padding(AppStyle.double)
-            .frame(maxWidth: 820, alignment: .leading)
-            .frame(maxWidth: .infinity)
+            .foregroundStyle(Color.brandText)
+            .padding(.horizontal, AppStyle.double + 8).padding(.vertical, AppStyle.double + 4)
+            .frame(maxWidth: 760, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear(perform: loadEditors)
         .onChange(of: detail.meeting.id) { _, _ in flushPendingSave(); loadEditors() }
@@ -86,17 +89,17 @@ struct NotesPane: View {
     @ViewBuilder var stateBanner: some View {
         switch detail.notesState(notesModelInstalled: notesModelInstalled) {
         case .none:
-            banner("No notes yet.", "doc.text", .secondary) { Button("Generate Notes") { library.regenerateNotes(detail.meeting.id) } }
+            banner("No notes yet.", "doc.text", .brandSecondary) { Button("Generate Notes") { library.regenerateNotes(detail.meeting.id) } }
         case .waiting(let why):
-            banner(why, "hourglass", .secondary) { EmptyView() }
+            banner(why, "hourglass", .brandSecondary) { EmptyView() }
         case .generating(let p):
-            banner("Generating notes on this Mac… \(Int(p * 100))%", "gearshape.2", .secondary) { ProgressView(value: p).frame(width: 120) }
+            banner("Generating notes on this Mac… \(Int(p * 100))%", "gearshape.2", .brandSecondary) { ProgressView(value: p).frame(width: 120) }
         case .failed(let code):
             banner("Notes could not be generated (\(code)). The transcript is unaffected.", "xmark.octagon", .statusFailed) {
                 Button("Try Again") { library.regenerateNotes(detail.meeting.id) }
             }
         case .unavailable(let why):
-            banner(why, "info.circle", .secondary) { EmptyView() }
+            banner(why, "info.circle", .brandSecondary) { EmptyView() }
         case .ready(let stale, let failure):
             if stale {
                 banner("The transcript or speakers changed after these notes were made.", "exclamationmark.arrow.circlepath", .statusAttention) {
@@ -122,30 +125,60 @@ struct NotesPane: View {
         .padding(.vertical, AppStyle.half)
     }
 
+    /// The generated draft (handoff): an eyebrow that says it is a draft to check, the overview as a lede, decisions in
+    /// sage-edged blocks, next steps with their owner and date (or that none was stated), open questions, and what the
+    /// model could not establish (Limitations), each in its own section.
     @ViewBuilder func generated(_ s: SummaryRevision) -> some View {
-        if s.influencedByPersonalNotes {
-            Label("These notes also used your private scratchpad.", systemImage: "lock.doc").appFont(.caption).foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: AppStyle.half) {
+            Eyebrow(text: "Meeting notes", detail: "Draft from this Mac · check it against the transcript")
+            if s.influencedByPersonalNotes {
+                Label("These notes also used your private scratchpad.", systemImage: "lock.doc").appFont(.caption).foregroundStyle(Color.brandSecondary)
+            }
         }
-        section("Overview", s.content.overview)
-        section("Decisions", s.content.decisions)
-        section("Action items", s.content.actionItems)
-        section("Open questions", s.content.openQuestions)
+        if !s.content.overview.isEmpty {
+            VStack(alignment: .leading, spacing: AppStyle.grid + 2) {
+                ForEach(Array(s.content.overview.enumerated()), id: \.element.id) { i, item in
+                    NoteItemRow(item: item, detail: detail, jump: jump, role: i == 0 ? .title : .body)
+                }
+            }
+        }
+        if !s.content.decisions.isEmpty {
+            section("Decisions", s.content.decisions.count) {
+                ForEach(s.content.decisions) { item in
+                    NoteItemRow(item: item, detail: detail, jump: jump)
+                        .padding(.vertical, AppStyle.grid).padding(.leading, AppStyle.double)
+                        .overlay(alignment: .leading) { Rectangle().fill(Color.sage).frame(width: 3) }
+                }
+            }
+        }
+        if !s.content.actionItems.isEmpty {
+            section("Next steps", s.content.actionItems.count) {
+                ForEach(s.content.actionItems) { NoteItemRow(item: $0, detail: detail, jump: jump) }
+            }
+        }
+        if !s.content.openQuestions.isEmpty {
+            section("Still open", s.content.openQuestions.count) {
+                ForEach(s.content.openQuestions) { NoteItemRow(item: $0, detail: detail, jump: jump) }
+            }
+        }
         if !s.content.limitations.isEmpty {
-            DisclosureGroup("Limitations (\(s.content.limitations.count))") {
+            DisclosureGroup {
                 VStack(alignment: .leading, spacing: 4) {
-                    ForEach(s.content.limitations) { Text("• " + $0.text).appFont(.callout).foregroundStyle(.secondary) }
+                    ForEach(s.content.limitations) { Text("• " + $0.text).appFont(.callout).foregroundStyle(Color.brandSecondary) }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+            } label: {
+                Label("Limitations (\(s.content.limitations.count))", systemImage: "info.circle").appFont(.callout, weight: .medium)
+                    .foregroundStyle(Color.brandSecondary)
             }
+            .help("What the notes model could not confirm from the transcript")
         }
     }
 
-    @ViewBuilder func section(_ title: String, _ items: [SummaryItem]) -> some View {
-        if !items.isEmpty {
-            VStack(alignment: .leading, spacing: AppStyle.grid) {
-                Text(title).appFont(.sectionTitle)
-                ForEach(items) { NoteItemRow(item: $0, detail: detail, jump: jump) }
-            }
+    func section<C: View>(_ title: String, _ count: Int, @ViewBuilder _ content: () -> C) -> some View {
+        VStack(alignment: .leading, spacing: AppStyle.grid + 4) {
+            Eyebrow(text: title, detail: count == 1 ? "1 item" : "\(count) items")
+            content()
         }
     }
 
@@ -160,6 +193,8 @@ struct NoteItemRow: View {
     let item: SummaryItem
     let detail: MeetingDetail
     let jump: (TranscriptEvidence) -> Void
+    /// `.title` for the overview's lede.
+    var role: AppStyle.Role = .body
     @Environment(\.showDetails) private var showDetails
     @Environment(\.textScale) private var scale
 
@@ -168,28 +203,31 @@ struct NoteItemRow: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: AppStyle.half) {
             HStack(alignment: .firstTextBaseline) {
                 if let t = item.title { Text(t).appFont(.body, weight: .semibold) }
-                Text(item.text).textSelection(.enabled)
+                Text(item.text).appFont(role, weight: role == .title ? .regular : nil).lineSpacing(AppStyle.readingLineSpacing(scale) * 0.6)
+                    .textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
                 if item.uncertain {
                     Image(systemName: "questionmark.circle").font(.system(size: AppStyle.icon * scale)).foregroundStyle(Color.statusAttention)
                         .help("Not fully confirmed by the transcript — check the cited passage").accessibilityLabel("Not fully confirmed by the transcript")
                 }
             }
             if item.kind == .actionItem || item.owner != nil || item.due != nil {
-                Text("Owner: \(item.owner ?? "not stated")  ·  Due: \(item.due?.originalText ?? "not stated")")
-                    .appFont(.caption).foregroundStyle(.secondary)
+                // Missing data is said, never filled in.
+                Text("\(item.owner ?? "No owner stated")  ·  \(item.due?.originalText ?? "no date stated")")
+                    .appFont(.caption).foregroundStyle(Color.brandSecondary)
             }
             // Evidence is attribution, shown only with Details on; the uncertain marker above is a warning and always shows.
             if showDetails {
-                HStack(spacing: 6) {
+                HStack(spacing: AppStyle.grid + 2) {
                     ForEach(Array(item.evidence.enumerated()), id: \.offset) { _, ref in
                         switch ref {
                         case .transcript(let e):
-                            Button(time(e)) { jump(e) }.buttonStyle(.link).appFont(.caption, monospacedDigit: true).help("Show in transcript")
+                            Button(time(e)) { jump(e) }.buttonStyle(SourceLinkStyle()).help("Show in transcript")
+                                .accessibilityLabel("Source at \(time(e))")
                         case .personalNote:
-                            Label("your private note", systemImage: "lock").appFont(.caption).foregroundStyle(.secondary)
+                            Label("your private note", systemImage: "lock").appFont(.caption).foregroundStyle(Color.brandSecondary)
                         }
                     }
                 }
@@ -224,10 +262,10 @@ struct CollapsibleEditor<Content: View>: View {
         VStack(alignment: .leading, spacing: 6) {
             Button { isExpanded.toggle() } label: {
                 HStack(spacing: 6) {
-                    Image(systemName: "chevron.right").appFont(.caption, weight: .bold).foregroundStyle(.secondary)
+                    Image(systemName: "chevron.right").appFont(.caption, weight: .bold).foregroundStyle(Color.brandSecondary)
                         .rotationEffect(.degrees(isExpanded ? 90 : 0))
-                    Label(title, systemImage: systemImage)
-                    if !isExpanded, let hint { Text("· " + hint).foregroundStyle(.secondary) }
+                    Label(title, systemImage: systemImage).appFont(.callout, weight: .medium)
+                    if !isExpanded, let hint { Text(hint).appFont(.caption).foregroundStyle(Color.brandSecondary) }
                 }
                 .contentShape(Rectangle())
             }

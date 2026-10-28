@@ -39,42 +39,66 @@ struct RecordToolbarControl: View {
 }
 
 /// This meeting's title, sources and microphone. Changes apply to the next recording only; Settings keeps the defaults.
+/// The handoff's focused setup surface: a heading, labelled fields, where the audio goes, and one primary action.
 struct RecordOptionsForm: View {
     @Bindable var model: RecorderModel
     let record: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            TextField("Title", text: $model.title, prompt: Text(RecorderPresentation.automaticTitle(Date())))
-                .textFieldStyle(.roundedBorder)
-                .onSubmit(record)
-            Picker("Record", selection: $model.selection) {
-                Text("Microphone + system audio").tag(SourceSelection.both)
-                Text("Microphone only").tag(SourceSelection.microphoneOnly)
-                Text("System audio only").tag(SourceSelection.systemOnly)
+        VStack(alignment: .leading, spacing: AppStyle.double) {
+            Text("New recording").appFont(.title).foregroundStyle(Color.brandText).accessibilityAddTraits(.isHeader)
+            field("Meeting name") {
+                TextField("Meeting name", text: $model.title, prompt: Text(RecorderPresentation.automaticTitle(Date())))
+                    .textFieldStyle(.roundedBorder).labelsHidden()
+                    .onSubmit(record)
             }
-            Picker("Microphone", selection: $model.microphoneUID) {
-                Text("System default").tag(String?.none)
-                ForEach(model.inputs) { d in Text("\(d.name) (\(d.transportName))").tag(Optional(d.uid)) }
-                if let uid = model.microphoneUID, !model.inputs.contains(where: { $0.uid == uid }) {
-                    Text("Not connected (uses System default)").tag(Optional(uid))
+            field("Record") {
+                Picker("Record", selection: $model.selection) {
+                    Text("Microphone + system audio").tag(SourceSelection.both)
+                    Text("Microphone only").tag(SourceSelection.microphoneOnly)
+                    Text("System audio only").tag(SourceSelection.systemOnly)
                 }
+                .labelsHidden()
             }
-            .disabled(model.selection == .systemOnly)
-            Text("For this meeting only. A blank title is filled in with the date and time.")
-                .font(.caption).foregroundStyle(.secondary)
+            field("Microphone") {
+                Picker("Microphone", selection: $model.microphoneUID) {
+                    Text("System default").tag(String?.none)
+                    ForEach(model.inputs) { d in Text("\(d.name) (\(d.transportName))").tag(Optional(d.uid)) }
+                    if let uid = model.microphoneUID, !model.inputs.contains(where: { $0.uid == uid }) {
+                        Text("Not connected (uses System default)").tag(Optional(uid))
+                    }
+                }
+                .labelsHidden()
+                .disabled(model.selection == .systemOnly)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Audio and transcription stay on this Mac.").foregroundStyle(Color.statusOK)
+                Text("For this meeting only. A blank name is filled in with the date and time.").foregroundStyle(Color.brandSecondary)
+            }
+            .appFont(.caption).fixedSize(horizontal: false, vertical: true)
             HStack {
-                SettingsLink { Text("Recording Settings…") }
-                if model.customized { Button("Use Defaults") { model.loadDefaults() } }
+                SettingsLink { Text("Recording Settings…") }.buttonStyle(.brandLink).appFont(.caption)
+                if model.customized { Button("Use Defaults") { model.loadDefaults() }.buttonStyle(.brandLink).appFont(.caption) }
                 Spacer()
-                Button(action: record) { Label("Record", systemImage: "record.circle") }
-                    .keyboardShortcut(.defaultAction)
-                    .help(RecorderPresentation.consent)
+                Button(action: record) {
+                    HStack(spacing: 6) { Circle().frame(width: 8, height: 8).accessibilityHidden(true); Text("Start recording") }
+                }
+                .buttonStyle(.brandProminent)
+                .keyboardShortcut(.defaultAction)
+                .help(RecorderPresentation.consent)
             }
         }
-        .padding(14)
-        .frame(width: 340)
+        .padding(AppStyle.double + 4)
+        .frame(width: 360)
+        .background(Color.surface)
         .onAppear { model.refreshDevices() }
+    }
+
+    func field<C: View>(_ label: String, @ViewBuilder _ control: () -> C) -> some View {
+        VStack(alignment: .leading, spacing: AppStyle.half + 2) {
+            Text(label).appFont(.caption, weight: .medium).foregroundStyle(Color.brandText).accessibilityHidden(true)
+            control().accessibilityLabel(label)
+        }
     }
 }
 
@@ -184,11 +208,11 @@ struct RecordingStripContent: View {
                 .help("Recording").accessibilityLabel("Recording, \(clock)")
         case .paused:
             Label { Text(clock).monospacedDigit() } icon: { Image(systemName: "pause.circle.fill") }
-                .foregroundStyle(.secondary).help("Paused — nothing is being recorded").accessibilityLabel("Paused at \(clock)")
+                .foregroundStyle(Color.brandSecondary).help("Paused — nothing is being recorded").accessibilityLabel("Paused at \(clock)")
         case .interrupted:
             Label("Interrupted", systemImage: "moon.zzz").foregroundStyle(Color.statusAttention).help("Interrupted by sleep · audio so far is saved")
-        case .stopping: Label("Saving…", systemImage: "arrow.down.circle").foregroundStyle(.secondary)
-        default: Label("Starting…", systemImage: "hourglass").foregroundStyle(.secondary).help("Starting… waiting for audio")
+        case .stopping: Label("Saving…", systemImage: "arrow.down.circle").foregroundStyle(Color.brandSecondary)
+        default: Label("Starting…", systemImage: "hourglass").foregroundStyle(Color.brandSecondary).help("Starting… waiting for audio")
         }
     }
 }
@@ -206,7 +230,7 @@ struct QuietAlertDetails: View {
             Text(text.title).font(.headline)
             Text(text.body)
             Text("Stopping now ends the meeting 5 seconds after the last words and deletes the quiet audio after that. Amaranth never stops on its own.")
-                .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                .font(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
             HStack {
                 Spacer()
                 Button("Keep Recording", action: keep)
@@ -241,7 +265,7 @@ struct EventPromptContent: View {
     var body: some View {
         Button { open.toggle() } label: {
             HStack(spacing: 3) {
-                Image(systemName: "calendar").foregroundStyle(Color.accentColor)
+                Image(systemName: "calendar").foregroundStyle(Color.brandAccent)
                 if !compact { Text(label).lineLimit(1).truncationMode(.tail).frame(maxWidth: 74, alignment: .leading) }
             }
         }
@@ -264,11 +288,11 @@ struct EventPromptChoices: View {
             switch prompt {
             case .one(let e):
                 Text("Is this “\(e.title.isEmpty ? "Untitled event" : e.title)”?").appFont(.headline).fixedSize(horizontal: false, vertical: true)
-                Text(detail(e)).appFont(.caption).foregroundStyle(.secondary)
+                Text(detail(e)).appFont(.caption).foregroundStyle(Color.brandSecondary)
                 HStack {
                     Spacer()
                     Button("Not this", action: dismiss)
-                    Button("Link") { link(e) }.buttonStyle(.borderedProminent)
+                    Button("Link") { link(e) }.buttonStyle(.brandProminent)
                 }
             case .several(let events):
                 Text("Which meeting?").appFont(.headline)
@@ -278,7 +302,7 @@ struct EventPromptChoices: View {
                 EmptyView()
             }
             Text("Linking adds the invited names; the event's title is used only if you didn't type one.")
-                .appFont(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                .appFont(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
         }
         .padding(12)
         .frame(width: 300, alignment: .leading)
@@ -306,7 +330,7 @@ struct RecordingHealthDetails: View {
                     SourceHealthRow(health: h, savedUpTo: savedUpTo[h.source], now: now)
                     Text([RecorderPresentation.sourceName(h.source) + ": " + (h.deviceName ?? "device unknown"),
                           savedUpTo[h.source].map { "saved up to \(RecorderPresentation.clock($0))" }].compactMap { $0 }.joined(separator: " · "))
-                        .font(.caption).foregroundStyle(.secondary).padding(.leading, 36)
+                        .font(.caption).foregroundStyle(Color.brandSecondary).padding(.leading, 36)
                 }
             }
             if let diskWarning {
@@ -315,8 +339,8 @@ struct RecordingHealthDetails: View {
             }
             if let folder {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Saving to").font(.caption).foregroundStyle(.secondary)
-                    Text(folder).font(.caption.monospaced()).foregroundStyle(.secondary).textSelection(.enabled)
+                    Text("Saving to").font(.caption).foregroundStyle(Color.brandSecondary)
+                    Text(folder).font(.caption.monospaced()).foregroundStyle(Color.brandSecondary).textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -365,8 +389,8 @@ struct RecorderBannerContent: View {
             VStack(alignment: .leading, spacing: 6) {
                 ForEach(items, id: \.kind) { item in
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Image(systemName: item.symbol).foregroundStyle(item.isError ? Color.statusFailed : .secondary)
-                        Text(item.text).foregroundStyle(item.isError ? Color.statusFailed : .secondary).textSelection(.enabled)
+                        Image(systemName: item.symbol).foregroundStyle(item.isError ? Color.statusFailed : Color.brandSecondary)
+                        Text(item.text).foregroundStyle(item.isError ? Color.statusFailed : Color.brandSecondary).textSelection(.enabled)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 8)
                         if item.kind == .permission {
@@ -409,7 +433,7 @@ struct SourceHealthRow: View {
     var statusColor: Color {
         switch RecorderPresentation.tone(health.status) {
         case .orange, .red: Color.status(RecorderPresentation.tone(health.status))
-        default: .secondary
+        default: Color.brandSecondary
         }
     }
 }

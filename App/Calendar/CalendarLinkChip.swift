@@ -97,7 +97,7 @@ struct CalendarEventPicker: View {
             TextField("Search events", text: $query).textFieldStyle(.roundedBorder).focused($searchFocused)
             if shown.isEmpty {
                 Text(events.isEmpty ? "No events in your calendars that day." : "No events match “\(query)”.")
-                    .appFont(.callout).foregroundStyle(.secondary).frame(maxWidth: .infinity, minHeight: 60)
+                    .appFont(.callout).foregroundStyle(Color.brandSecondary).frame(maxWidth: .infinity, minHeight: 60)
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 2) {
@@ -108,7 +108,7 @@ struct CalendarEventPicker: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
             Text("Links a copy of the event's title, time and invited names. Nothing is written to your calendar.")
-                .appFont(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                .appFont(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
         }
         .padding(12)
         .frame(width: 340)
@@ -126,11 +126,11 @@ struct CalendarEventRow: View {
             VStack(alignment: .leading, spacing: 1) {
                 HStack(spacing: AppStyle.half) {
                     Text(event.title.isEmpty ? "Untitled event" : event.title).appFont(.body).lineLimit(1)
-                    if event.declinedByMe { Text("Declined").appFont(.caption).foregroundStyle(.secondary) }
+                    if event.declinedByMe { Text("Declined").appFont(.caption).foregroundStyle(Color.brandSecondary) }
                 }
                 Text([CalendarLinking.timeRange(start: event.start, end: event.end, allDay: event.isAllDay), event.calendarName]
                         .compactMap { $0 }.joined(separator: " · "))
-                    .appFont(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    .appFont(.caption).foregroundStyle(Color.brandSecondary).lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, AppStyle.half + 2).padding(.vertical, 3)
@@ -163,7 +163,7 @@ struct LinkedEventDetails: View {
                 Text(event.title.isEmpty ? "Untitled event" : event.title).appFont(.headline)
                 Text([event.start.formatted(date: .abbreviated, time: .omitted) + " " + CalendarLinking.timeRange(start: event.start, end: event.end),
                       event.calendarName].compactMap { $0 }.joined(separator: " · "))
-                    .appFont(.caption).foregroundStyle(.secondary)
+                    .appFont(.caption).foregroundStyle(Color.brandSecondary)
             }
             switch status {
             case .changed(let now):
@@ -174,24 +174,24 @@ struct LinkedEventDetails: View {
                 }
                 .appFont(.callout)
                 Text("Now: “\(now.title.isEmpty ? "Untitled event" : now.title)”, \(now.start.formatted(date: .abbreviated, time: .omitted)) \(CalendarLinking.timeRange(start: now.start, end: now.end))")
-                    .appFont(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                    .appFont(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
             case .missing:
                 Label("No longer in your calendar. The copy linked here is kept.", systemImage: "calendar.badge.exclamationmark")
                     .appFont(.callout).foregroundStyle(Color.statusAttention).fixedSize(horizontal: false, vertical: true)
             case .current, .unknown:
                 if access == .notDetermined {
                     HStack(alignment: .firstTextBaseline) {
-                        Text("Allow calendar access to check this event for changes or link another.").appFont(.caption).foregroundStyle(.secondary)
+                        Text("Allow calendar access to check this event for changes or link another.").appFont(.caption).foregroundStyle(Color.brandSecondary)
                             .fixedSize(horizontal: false, vertical: true)
                         Button("Allow Access…", action: allow)
                     }
                 } else if !access.canRead {
-                    Text("Calendar access is off, so Amaranth can't check this event for changes.").appFont(.caption).foregroundStyle(.secondary)
+                    Text("Calendar access is off, so Amaranth can't check this event for changes.").appFont(.caption).foregroundStyle(Color.brandSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
             if !also.isEmpty {
-                Label("Also linked to: " + also.joined(separator: ", "), systemImage: "link").appFont(.caption).foregroundStyle(.secondary)
+                Label("Also linked to: " + also.joined(separator: ", "), systemImage: "link").appFont(.caption).foregroundStyle(Color.brandSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             HStack {
@@ -216,7 +216,7 @@ struct CalendarAccessMessage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppStyle.grid) {
             Text(kind == .afterRecording ? "Link after the recording" : "Calendar access is off").appFont(.headline)
-            Text(text).appFont(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+            Text(text).appFont(.callout).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
             if kind == .off {
                 HStack {
                     Spacer()

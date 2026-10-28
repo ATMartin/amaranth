@@ -52,6 +52,11 @@ final class PlaybackModel {
 
     func toggle() { isPlaying ? pause() : play(from: position) }
 
+    /// The scrubber: moves the play position; keeps playing from there if it was playing.
+    func seek(to t: Double) {
+        if isPlaying { play(from: t) } else { position = max(0, t) }
+    }
+
     func pause() { stop() }
 
     func stop() {

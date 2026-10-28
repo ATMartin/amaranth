@@ -8,7 +8,10 @@ struct OnboardingView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Welcome to Amaranth").font(.largeTitle.bold())
+            HStack(spacing: 12) {
+                BrandMark(size: 44)
+                Text("Welcome to Amaranth").appFont(.display).foregroundStyle(Color.brandText)
+            }
             point("lock.shield", "Everything stays on this Mac",
                   "Recordings, transcripts and notes are made and stored locally. Nothing is uploaded.")
             point("mic", "Permissions when you first record",
@@ -19,11 +22,12 @@ struct OnboardingView: View {
                   modelText)
             HStack {
                 Spacer()
-                Button("Get Started") { done() }.keyboardShortcut(.defaultAction).controlSize(.large)
+                Button("Get Started") { done() }.keyboardShortcut(.defaultAction).buttonStyle(.brandProminent)
             }
         }
         .padding(28)
         .frame(width: 560)
+        .background(Color.surface)
     }
 
     var modelText: String {
@@ -34,10 +38,10 @@ struct OnboardingView: View {
 
     func point(_ icon: String, _ title: String, _ text: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: icon).font(.title2).frame(width: 30).foregroundStyle(Color.accentColor)
+            Image(systemName: icon).font(.title2).frame(width: 30).foregroundStyle(Color.brandAccent)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.headline)
-                Text(text).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                Text(title).font(.headline).foregroundStyle(Color.brandText)
+                Text(text).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
             }
         }
     }

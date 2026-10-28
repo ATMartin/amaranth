@@ -14,22 +14,28 @@ struct MeetingDetailView: View {
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
 
     var notesModelInstalled: Bool { if case .ready = models.status { true } else { false } }
+    var audioIssues: Int { AudioDetails.issues(detail.events, recordedSources: Set(detail.segments.map(\.source))).count }
 
     var body: some View {
         @Bindable var library = library
         VStack(spacing: 0) {
             header
-            Picker("View", selection: $library.detailTab) { ForEach(LibraryModel.DetailTab.allCases, id: \.self) { Text($0.rawValue) } }
-                .pickerStyle(.segmented).labelsHidden().help("Notes (⌘1) · Transcript (⌘2) · Recording (⌘3)").padding(.horizontal)
-                .frame(maxWidth: 420)
-                .frame(maxWidth: .infinity)
-                .overlay(alignment: .trailing) { detailsToggle.padding(.trailing) }
-                .padding(.bottom, AppStyle.grid)
-            Divider()
+            HStack(alignment: .bottom) {
+                UnderlineTabs(tabs: LibraryModel.DetailTab.allCases, selection: $library.detailTab, title: \.rawValue,
+                              badge: { $0 == .recording && audioIssues > 0 ? "\(audioIssues == 1 ? "A moment" : "\(audioIssues) moments") in the audio need a closer look" : nil })
+                    .help("Notes (⌘1) · Transcript (⌘2) · Audio details (⌘3)")
+                Spacer()
+                detailsToggle.padding(.bottom, 6)
+            }
+            .padding(.horizontal, AppStyle.double + 8)
+            Hairline()
+            // Close to the content on every tab (handoff): play, the position, a scrubber and the length.
+            PlaybackBar(detail: detail, spaceShortcut: library.detailTab == .transcript)
+            Hairline()
             switch library.detailTab {
             case .notes: NotesPane(detail: detail, notesModelInstalled: notesModelInstalled) { library.detailTab = .transcript }
             case .transcript: TranscriptPane(detail: detail)
-            case .recording: RecordingDetailsPane(detail: detail)
+            case .recording: RecordingDetailsPane(detail: detail) { confirming = .deleteAudioOnly }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -37,24 +43,6 @@ struct MeetingDetailView: View {
         .onChange(of: detail.meeting.id) { _, _ in loadPlayback() }
         .onChange(of: library.focusRowID) { _, id in if id != nil { library.detailTab = .transcript } }
         .focusedSceneValue(\.exportMarkdown, detail.transcript == nil ? nil : ExportAction { export(.markdown) })
-        .toolbar {
-            ToolbarItemGroup {
-                Menu {
-                    Button("Markdown…") { export(.markdown) }
-                    Button("Plain Text…") { export(.text) }
-                    Button("JSON…") { export(.json) }
-                    Divider()
-                    Button("Original Audio…") { exportAudio() }.disabled(detail.playbackUnavailableReason != nil)
-                } label: { Label("Export", systemImage: "square.and.arrow.up") }
-                .disabled(detail.transcript == nil)
-                .help("Export the transcript and notes (Markdown: ⌘E). Your private scratchpad is not included.")
-                Menu {
-                    Button("Delete Audio Only…") { confirming = .deleteAudioOnly }.disabled(detail.meeting.audio == .deletedByUser)
-                    Button("Delete Meeting…", role: .destructive) { confirming = .deleteMeeting }
-                } label: { Label("Delete", systemImage: "trash") }
-                .help("Delete this meeting's audio, or the whole meeting")
-            }
-        }
         .confirmationDialog(confirming?.confirmationTitle(detail.meeting.title) ?? "", isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } }),
                             titleVisibility: .visible, presenting: confirming) { action in
             Button(action.buttonTitle, role: .destructive) { playback.stop(); library.delete(action, detail.meeting.id) }
@@ -73,19 +61,24 @@ struct MeetingDetailView: View {
         .accessibilityLabel(showDetails ? "Hide details" : "Show details")
     }
 
+    /// Eyebrow date and time, the meeting title in the display face, then people, length, calendar and status on one
+    /// line (T50 chips, now understated: text with an underline for the editable ones).
     var header: some View {
-        VStack(alignment: .leading, spacing: AppStyle.half) {
-            // Static: renaming lives in the sidebar card's context menu (T26).
-            Text(detail.meeting.title).appFont(.title).lineLimit(1)
-            HStack(spacing: AppStyle.grid) {
-                // T50: small chips like Granola's header; the date is not editable. Narrow windows drop the time and the
-                // calendar chip's words, then a linked event's title, before anything truncates.
+        VStack(alignment: .leading, spacing: AppStyle.half + 2) {
+            Text(detail.meeting.createdAt.formatted(.dateTime.month(.wide).day().year().hour().minute()).replacingOccurrences(of: " at ", with: " · "))
+                .appFont(.eyebrow).foregroundStyle(Color.brandSecondary)
+                .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
+            // Static: renaming lives in the sidebar row's context menu (T26).
+            Text(detail.meeting.title).appFont(.display).lineLimit(2).foregroundStyle(Color.brandText).accessibilityAddTraits(.isHeader)
+            HStack(spacing: AppStyle.double) {
+                // Narrow windows drop the calendar chip's words, then a linked event's title, before anything truncates.
                 ViewThatFits(in: .horizontal) {
                     headerChips(compact: false)
                     headerChips(compact: true)
                     headerChips(compact: true, eventTitle: false)
                 }
-                Text(TranscriptRows.clock(SessionTime(nanoseconds: detail.meeting.duration.nanoseconds))).monospacedDigit().foregroundStyle(.secondary)
+                Text(TranscriptRows.clock(SessionTime(nanoseconds: detail.meeting.duration.nanoseconds))).monospacedDigit().foregroundStyle(Color.brandSecondary)
+                    .accessibilityLabel("Length \(LibrarySections.duration(seconds: detail.meeting.duration.seconds))")
                 // Quick review: one glyph (hover for its meaning); Details on: both full badges.
                 if showDetails {
                     AudioBadge(headline: detail.status.audio)
@@ -94,19 +87,52 @@ struct MeetingDetailView: View {
                     MeetingStatusGlyph(status: detail.status)
                 }
                 Spacer()
-                if case .failed = detail.status.processing { Button("Retry Processing") { library.retry(detail.meeting.id) }.help("Run the failed processing steps again") }
-                if case .notQueued = detail.status.processing, detail.meeting.canPlayAudio { Button("Process") { library.process(detail.meeting.id) }.help("Transcribe, find speakers and write notes on this Mac") }
+                if case .failed = detail.status.processing { Button("Retry Processing") { library.retry(detail.meeting.id) }.buttonStyle(.brandOutline).help("Run the failed processing steps again") }
+                if case .notQueued = detail.status.processing, detail.meeting.canPlayAudio { Button("Process") { library.process(detail.meeting.id) }.buttonStyle(.brandOutline).help("Transcribe, find speakers and write notes on this Mac") }
+                shareMenu
+                moreMenu
             }
-            .appFont(.callout)
+            .appFont(.caption)
+            .padding(.top, 2)
         }
-        .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 4).padding(.bottom, AppStyle.grid)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, AppStyle.double + 8).padding(.top, AppStyle.double + 4).padding(.bottom, AppStyle.grid + 2)
+    }
+
+    /// Share access in the header (handoff): the exports, as before in the toolbar.
+    var shareMenu: some View {
+        Menu {
+            Button("Markdown…") { export(.markdown) }
+            Button("Plain Text…") { export(.text) }
+            Button("JSON…") { export(.json) }
+            Divider()
+            Button("Original Audio…") { exportAudio() }.disabled(detail.playbackUnavailableReason != nil)
+        } label: {
+            Label("Export", systemImage: "square.and.arrow.up").appFont(.caption)
+        }
+        .menuStyle(.button).buttonStyle(.borderless).fixedSize()
+        .foregroundStyle(Color.brandText)
+        .disabled(detail.transcript == nil)
+        .help("Export the transcript and notes (Markdown: ⌘E). Your private scratchpad is not included.")
+    }
+
+    /// Delete, behind a menu and a confirmation that says what stays.
+    var moreMenu: some View {
+        Menu {
+            Button("Delete Audio Only…") { confirming = .deleteAudioOnly }.disabled(detail.meeting.audio == .deletedByUser)
+            Button("Delete Meeting…", role: .destructive) { confirming = .deleteMeeting }
+        } label: {
+            Image(systemName: "ellipsis.circle").font(.system(size: AppStyle.iconLarge))
+        }
+        .menuStyle(.button).buttonStyle(.borderless).menuIndicator(.hidden).fixedSize()
+        .foregroundStyle(Color.brandSecondary)
+        .help("Delete this meeting's audio, or the whole meeting")
+        .accessibilityLabel("More actions")
     }
 
     /// `eventTitle: false` is the narrowest variant: a linked event shows as its icon only (the tooltip names it).
     func headerChips(compact: Bool, eventTitle: Bool = true) -> some View {
-        HStack(spacing: AppStyle.grid) {
-            HeaderChip(symbol: "calendar", text: detail.meeting.createdAt.formatted(date: .abbreviated, time: compact ? .omitted : .shortened))
-                .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
+        HStack(spacing: AppStyle.double) {
             PeopleChip(meeting: detail.meeting).id(detail.meeting.id)
             CalendarLinkChip(meeting: detail.meeting, compact: compact, iconOnly: !eventTitle).id(detail.meeting.id)
         }
@@ -161,8 +187,9 @@ struct MeetingDetailView: View {
     }
 }
 
-/// One header chip (T50): icon + short text in a capsule. `.inert` is for placeholders: no fill, dashed outline,
-/// tertiary text, so it never reads as a control.
+/// One header chip (T50), in the handoff's quiet style: icon and text, no capsule. `.action` chips (people, calendar)
+/// are underlined so they read as editable without relying on colour; `.inert` is for placeholders: dashed underline,
+/// secondary text, so it never reads as a control.
 struct HeaderChip: View {
     enum Style { case info, action, inert }
     let symbol: String
@@ -175,18 +202,23 @@ struct HeaderChip: View {
     var body: some View {
         HStack(spacing: AppStyle.half) {
             Image(systemName: symbol).font(.system(size: AppStyle.iconSmall))
-            if !text.isEmpty { Text(text).lineLimit(1) }
+            if !text.isEmpty {
+                Text(text).lineLimit(1)
+                    .underline(style == .action, color: hovering ? Color.brandAccent : Color.controlBorder)
+            }
         }
-        .appFont(.callout)
-        .foregroundStyle(attention ? AnyShapeStyle(Color.statusAttention) : style == .inert ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.secondary))
-        .padding(.horizontal, AppStyle.grid).padding(.vertical, 3)
-        .background {
-            if style != .inert { Capsule().fill(hovering ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.quaternary)) }
+        .appFont(.caption)
+        .foregroundStyle(attention ? AnyShapeStyle(Color.statusAttention) : style == .action ? AnyShapeStyle(hovering ? Color.brandAccent : Color.brandText)
+                         : AnyShapeStyle(Color.brandSecondary))
+        .overlay(alignment: .bottom) {
+            if style == .inert, !text.isEmpty { Line().stroke(Color.controlBorder, style: StrokeStyle(lineWidth: 1, dash: [2, 2])).frame(height: 1).offset(y: 1) }
         }
-        .overlay {
-            if style == .inert { Capsule().strokeBorder(.tertiary, style: StrokeStyle(lineWidth: 0.5, dash: [3, 2])) }
-        }
-        .contentShape(Capsule())
+        .padding(.vertical, 2)
+        .contentShape(Rectangle())
+    }
+
+    private struct Line: Shape {
+        func path(in r: CGRect) -> Path { Path { p in p.move(to: CGPoint(x: r.minX, y: r.midY)); p.addLine(to: CGPoint(x: r.maxX, y: r.midY)) } }
     }
 }
 
@@ -241,16 +273,16 @@ struct PeopleEditor: View {
                 .editableField(focused: $focused, as: .names, isEmpty: text.isEmpty, placeholder: "One name per line, or separated by commas")
             if !MeetingPeople.calendarNames(people).isEmpty {
                 Label("From the calendar: " + MeetingPeople.calendarNames(people).joined(separator: ", "), systemImage: "calendar")
-                    .appFont(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                    .appFont(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
                     .help("Added from the linked event. Unlinking keeps them; delete any you don't want here.")
             }
-            Text("Saved with this meeting and included in exports.").appFont(.caption).foregroundStyle(.secondary)
+            Text("Saved with this meeting and included in exports.").appFont(.caption).foregroundStyle(Color.brandSecondary)
             HStack {
                 Spacer()
                 Button("Cancel", action: cancel).keyboardShortcut(.cancelAction)
                 Button("Save") { save(MeetingPeople.parse(text, keeping: people)) }
                     .keyboardShortcut(.return, modifiers: .command)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.brandProminent)
                     .help("Save (⌘↩)")
             }
         }
@@ -259,31 +291,87 @@ struct PeopleEditor: View {
     }
 }
 
-/// Recording details: sources, gaps, interruptions and disk use — so silence is never mistaken for certainty.
+/// Audio details (the "Recording" tab; Inner Circle handoff): a plain-language summary, one notice per stretch of
+/// missing audio with a link to listen there, then sources, storage and retention, the raw recording events under a
+/// disclosure (diagnostics are kept, never replaced by a guess), and a deliberate Delete audio… button.
 struct RecordingDetailsPane: View {
     let detail: MeetingDetail
+    var deleteAudio: () -> Void = {}
+    @Environment(PlaybackModel.self) private var playback
+    @AppStorage("audioEventsExpanded") private var eventsExpanded = false
+
+    var sources: Set<SourceKind> { Set(detail.segments.map(\.source)) }
 
     var body: some View {
-        Form {
-            Section("Audio") {
-                LabeledContent("Audio", value: detail.meeting.audio == .present ? "Kept on this Mac until you delete it" : "Deleted")
-                LabeledContent("Disk use", value: ByteCountFormatter.string(fromByteCount: detail.diskUsage.totalBytes, countStyle: .file))
-                LabeledContent("Sources", value: Set(detail.segments.map(\.source)).map { $0 == .microphone ? "Microphone" : "System audio" }.sorted().joined(separator: ", "))
-            }
-            Section("Events (\(detail.events.count))") {
-                if detail.events.isEmpty { Text("No interruptions, gaps or device changes.").foregroundStyle(.secondary) }
-                ForEach(detail.events) { e in
-                    HStack {
-                        Text(TranscriptRows.clock(e.interval.start)).monospacedDigit().frame(width: 70, alignment: .leading)
-                        Text(Self.describe(e))
-                        Spacer()
-                        Text(e.source.map { $0 == .microphone ? "mic" : "system" } ?? "all").foregroundStyle(Color(nsColor: .secondaryLabelColor))   // grey even on attention rows
+        let issues = AudioDetails.issues(detail.events, recordedSources: sources)
+        let deleted = detail.meeting.audio != .present
+        ScrollView {
+            VStack(alignment: .leading, spacing: AppStyle.double) {
+                Eyebrow(text: "Recording")
+                Text(AudioDetails.headline(issues: issues.count, audioDeleted: deleted)).appFont(.title, weight: .regular)
+                    .foregroundStyle(Color.brandText).accessibilityAddTraits(.isHeader)
+                ForEach(Array(issues.enumerated()), id: \.offset) { _, issue in IssueNotice(issue: issue, playable: detail.playbackUnavailableReason == nil) {
+                    playback.play(from: max(0, issue.start.seconds - 3))
+                } }
+                VStack(spacing: 0) {
+                    row("Audio sources", AudioDetails.sourcesLabel(sources))
+                    row("Storage", ByteCountFormatter.string(fromByteCount: detail.diskUsage.totalBytes, countStyle: .file) + " · on this Mac")
+                    row("Retention", deleted ? "Audio deleted; the transcript and notes are kept" : "Kept until you delete it")
+                }
+                VStack(alignment: .leading, spacing: AppStyle.grid) {
+                    Button { eventsExpanded.toggle() } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "chevron.right").appFont(.caption, weight: .bold).foregroundStyle(Color.brandSecondary)
+                                .rotationEffect(.degrees(eventsExpanded ? 90 : 0))
+                            Text("Recording events").appFont(.callout)
+                            Text(detail.events.count == 1 ? "1 event" : "\(detail.events.count) events").appFont(.caption).foregroundStyle(Color.brandSecondary)
+                        }
+                        .contentShape(Rectangle())
                     }
-                    .foregroundStyle(e.isMissingAudio ? Color.statusAttention : .primary)
+                    .buttonStyle(.plain)
+                    .accessibilityValue(eventsExpanded ? "Expanded" : "Collapsed")
+                    if eventsExpanded { events.padding(.leading, AppStyle.double) }
+                    Hairline()
+                }
+                if !deleted {
+                    Button("Delete audio…", action: deleteAudio).buttonStyle(.brandDestructive)
+                        .help("Delete the recorded audio. You choose in the next step; the transcript and notes are kept.")
                 }
             }
+            .padding(.horizontal, AppStyle.double + 8).padding(.vertical, AppStyle.double + 4)
+            .frame(maxWidth: 640, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .formStyle(.grouped)
+    }
+
+    func row(_ label: String, _ value: String) -> some View {
+        VStack(spacing: 0) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(label).foregroundStyle(Color.brandSecondary)
+                Spacer(minLength: AppStyle.double)
+                Text(value).foregroundStyle(Color.brandText).multilineTextAlignment(.trailing)
+            }
+            .appFont(.callout)
+            .padding(.vertical, AppStyle.grid + 4)
+            Hairline()
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder var events: some View {
+        VStack(alignment: .leading, spacing: AppStyle.half + 2) {
+            if detail.events.isEmpty { Text("No interruptions, gaps or device changes.").foregroundStyle(Color.brandSecondary) }
+            ForEach(detail.events) { e in
+                HStack(alignment: .firstTextBaseline) {
+                    Text(TranscriptRows.clock(e.interval.start)).monospacedDigit().frame(width: 64, alignment: .leading)
+                    Text(Self.describe(e))
+                    Spacer()
+                    Text(e.source.map { $0 == .microphone ? "mic" : "system" } ?? "all").foregroundStyle(Color.brandSecondary)   // muted even on attention rows
+                }
+                .foregroundStyle(e.isMissingAudio ? Color.statusAttention : Color.brandText)
+            }
+        }
+        .appFont(.caption)
     }
 
     static func describe(_ e: CaptureEvent) -> String {
@@ -300,5 +388,29 @@ struct RecordingDetailsPane: View {
         case .sourceFault: "Source stopped delivering audio\(len)"
         default: "\(e.kind.rawValue)\(len) — \(e.reasonCode)"
         }
+    }
+}
+
+/// One stretch of missing audio: a warning edge, what is missing in plain words, and where to listen.
+struct IssueNotice: View {
+    let issue: AudioDetails.Issue
+    let playable: Bool
+    let listen: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppStyle.grid) {
+            Label { Text(issue.title) } icon: { Image(systemName: "waveform.slash") }
+                .appFont(.headline, weight: .medium).foregroundStyle(Color.statusAttention)
+            Text(issue.body).appFont(.callout).foregroundStyle(Color.brandText).fixedSize(horizontal: false, vertical: true)
+            if playable {
+                Button("Listen around \(TranscriptRows.clock(issue.start))", action: listen).buttonStyle(SourceLinkStyle())
+                    .help("Play from a few seconds before the gap")
+            }
+        }
+        .padding(AppStyle.double)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.canvas)
+        .overlay(alignment: .leading) { Rectangle().fill(Color.statusAttention).frame(width: 3) }
+        .accessibilityElement(children: .contain)
     }
 }

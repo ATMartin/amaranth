@@ -10,11 +10,13 @@ struct MainView: View {
     @State private var showingModels = false
     @AppStorage("onboarded") private var onboarded = false
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
+    /// The Ask pane on the right (Inner Circle handoff); ⌘K opens it.
+    @AppStorage("askPaneShown") private var askShown = true
 
     var body: some View {
         NavigationSplitView {
             LibrarySidebar()
-                .navigationSplitViewColumnWidth(min: 300, ideal: 340)
+                .navigationSplitViewColumnWidth(min: 160, ideal: 200, max: 320)
         } detail: {
             Group {
                 if recorder.inSession, library.selection == nil || library.selection == recorder.meetingID {
@@ -25,9 +27,9 @@ struct MainView: View {
                     Color.clear   // the selected meeting is loading (a few ms): blank, not "No meeting selected"
                 } else {
                     ContentUnavailableView {
-                        Label("No meeting selected", systemImage: "waveform")
+                        Label { Text("No meeting selected").appFont(.title) } icon: { BrandMark(size: 44) }
                     } description: {
-                        Text("Press Record to capture a meeting. Audio stays on this Mac.")
+                        Text("Press Record to capture a meeting. Audio stays on this Mac.").foregroundStyle(Color.brandSecondary)
                     }
                 }
             }
@@ -37,21 +39,25 @@ struct MainView: View {
             // Content starts at the top and grows down; it never floats in the middle or bottom of the column. It never
             // sets the window's height either: the panes scroll inside whatever height the window has.
             .fillsOfferedSpace()
-            // T52: the results panel floats over the bottom of the content, just above the ask field.
-            .overlay(alignment: .bottom) {
-                if library.askPanelOpen {
-                    GeometryReader { g in
-                        AskResultsPanel(maxHeight: max(g.size.height * 0.7 - 50, 120))
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                    }
-                }
-            }
-            .safeAreaInset(edge: .bottom, spacing: 0) { AskAnythingBar() }
+            .background(Color.surface)
             // In the detail column's toolbar, not over the sidebar: with the sidebar open the sidebar's toolbar area is too
             // narrow for the recording strip, and AppKit moved Stop into the overflow menu.
             .toolbar { ToolbarItem(placement: .navigation) { RecordToolbarControl(model: recorder).fixedSize() } }
+            .inspector(isPresented: $askShown) {
+                AskPane()
+                    .inspectorColumnWidth(min: 230, ideal: 250, max: 380)
+                    .fillsOfferedSpace()
+                    .toolbar {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button { askShown.toggle() } label: { Label(askShown ? "Hide Ask" : "Show Ask", systemImage: "sidebar.trailing") }
+                                .help(askShown ? "Hide the Ask pane" : "Ask about your meetings (⌘K)")
+                        }
+                    }
+            }
         }
+        .foregroundStyle(Color.brandText, Color.brandSecondary, Color.controlBorder)
         .environment(\.showDetails, showDetails)
+        .onChange(of: library.askFocusRequest) { _, _ in askShown = true }
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button { showingModels = true } label: {
@@ -76,28 +82,67 @@ struct MainView: View {
     }
 }
 
+/// The meeting library (Inner Circle handoff): canvas background, meetings grouped by day, the selected row on the
+/// Selection colour with an accent edge. Rows are buttons in a focusable list rather than a `List`, whose key-window
+/// highlight is a full accent fill (white on blush in dark mode); ↑/↓ move the selection while the list has focus, and
+/// each row reports the selected trait. ↑/↓ move the selection, Home/End jump to the ends.
 struct LibrarySidebar: View {
     @Environment(LibraryModel.self) private var library
     @State private var confirming: (DestructiveAction, MeetingListItem)?
     @State private var renaming: MeetingListItem?
     @State private var newTitle = ""
+    @FocusState private var focused: Bool
 
     var body: some View {
         @Bindable var library = library
-        List(selection: $library.selection) {
-            Section("Meetings") {
-                if library.items.isEmpty { Text("No recordings yet.").foregroundStyle(.secondary) }
-                ForEach(library.items) { item in
-                    MeetingRow(item: item).tag(item.id)
-                        .contextMenu {
-                            Button("Rename…") { newTitle = item.title; renaming = item }
-                            Divider()
-                            Button("Delete Audio Only…") { confirming = (.deleteAudioOnly, item) }.disabled(item.status.audio == .audioDeleted)
-                            Button("Delete Meeting…", role: .destructive) { confirming = (.deleteMeeting, item) }
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 2) {   // at most 500 rows (MeetingListItem.load); lazy stacks lay out nothing offscreen
+                    Text("Your meetings").appFont(.headline).foregroundStyle(Color.brandText)
+                        .padding(.horizontal, AppStyle.grid + 4).padding(.top, AppStyle.half).padding(.bottom, AppStyle.grid)
+                        .accessibilityAddTraits(.isHeader)
+                    if library.items.isEmpty {
+                        Text("No recordings yet.").appFont(.callout).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.grid + 4)
+                    }
+                    ForEach(LibrarySections.grouped(library.items, date: \.createdAt)) { section in
+                        Eyebrow(text: section.title)
+                            .padding(.horizontal, AppStyle.grid + 4).padding(.top, AppStyle.double).padding(.bottom, AppStyle.half)
+                        ForEach(section.items) { item in
+                            Button { library.selection = item.id; focused = true } label: {
+                                MeetingRow(item: item, selected: library.selection == item.id, focused: focused)
+                            }
+                            .buttonStyle(.plain)
+                            .id(item.id)
+                            .accessibilityAddTraits(library.selection == item.id ? [.isSelected] : [])
+                            .contextMenu {
+                                Button("Rename…") { newTitle = item.title; renaming = item }
+                                Divider()
+                                Button("Delete Audio Only…") { confirming = (.deleteAudioOnly, item) }.disabled(item.status.audio == .audioDeleted)
+                                Button("Delete Meeting…", role: .destructive) { confirming = (.deleteMeeting, item) }
+                            }
                         }
+                    }
                 }
+                .padding(.horizontal, AppStyle.grid).padding(.vertical, AppStyle.grid)
             }
+            .focusable()
+            .focused($focused)
+            .focusEffectDisabled()
+            .onKeyPress(.downArrow) { move(1, proxy) }
+            .onKeyPress(.upArrow) { move(-1, proxy) }
+            .onKeyPress(.home) { move(-library.items.count, proxy) }
+            .onKeyPress(.end) { move(library.items.count, proxy) }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Meetings")
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            // True of every meeting: capture, transcription, notes and answers all run on this Mac.
+            Label("Processing on this Mac", systemImage: "leaf").appFont(.caption2).foregroundStyle(Color.statusOK)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, AppStyle.double).padding(.vertical, AppStyle.grid + 2)
+                .help("Recording, transcription, notes and answers run on this Mac. Nothing is uploaded.")
+        }
+        .background(Color.canvas)
         .sheet(item: $renaming) { item in
             EditTextSheet(title: "Rename Meeting", text: $newTitle, help: "Shown in the meeting list, the meeting header, search and exports.") {
                 library.rename(item.id, to: newTitle)
@@ -111,22 +156,48 @@ struct LibrarySidebar: View {
             Text(c.0.explanation(library.store?.diskUsage(c.1.id) ?? .init(originalAudioBytes: 0, derivedBytes: 0)))
         }
     }
+
+    func move(_ delta: Int, _ proxy: ScrollViewProxy) -> KeyPress.Result {
+        let ids = library.items.map(\.id)
+        guard !ids.isEmpty else { return .ignored }
+        let i = library.selection.flatMap { ids.firstIndex(of: $0) }.map { min(max($0 + delta, 0), ids.count - 1) } ?? 0
+        library.selection = ids[i]
+        proxy.scrollTo(ids[i])
+        return .handled
+    }
 }
 
-/// Meeting card (T27): title with one status glyph, and one caption line "Oct 23, 2026 at 10:01 AM · 49:36".
+/// Meeting row: title with one status glyph, and "9:30 AM · 24 min" beneath (the day is the section heading). Selected:
+/// the Selection colour with an accent edge, metadata in the text colour (secondary text is under 4.5:1 there).
 struct MeetingRow: View {
     let item: MeetingListItem
+    var selected = false
+    /// The list has keyboard focus: the selected row also gets an accent outline, the visible focus.
+    var focused = false
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(item.title).appFont(.headline).lineLimit(1)
+                Text(item.title).appFont(.callout, weight: .medium).lineLimit(2).truncationMode(.tail)
+                    .foregroundStyle(Color.brandText)
                 Spacer(minLength: 4)
                 MeetingStatusGlyph(status: item.status)
             }
-            Text(item.createdAt.formatted(date: .abbreviated, time: .shortened) + " · "
-                 + TranscriptRows.clock(SessionTime(nanoseconds: item.duration.nanoseconds)))
-                .appFont(.caption, monospacedDigit: true).foregroundStyle(.secondary)
+            Text(item.createdAt.formatted(date: .omitted, time: .shortened) + " · " + LibrarySections.duration(seconds: item.duration.seconds))
+                .appFont(.caption, monospacedDigit: true).foregroundStyle(selected ? Color.brandText : Color.brandSecondary)
         }
+        .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.grid).padding(.vertical, 7)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            if selected {
+                RoundedRectangle(cornerRadius: 6).fill(Color.selection)
+                    .overlay(alignment: .leading) { UnevenRoundedRectangle(topLeadingRadius: 6, bottomLeadingRadius: 6).fill(Color.brandAccent).frame(width: 3) }
+            }
+        }
+        .overlay { if selected && focused { RoundedRectangle(cornerRadius: 6).strokeBorder(Color.brandAccent.opacity(0.7), lineWidth: 1) } }
+        .contentShape(Rectangle())
+        .help(item.title)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -140,7 +211,7 @@ struct MeetingStatusGlyph: View {
         Group {
             if g.spinner { ProgressView().controlSize(.small).scaleEffect(0.6) }
             else if let s = g.symbol {
-                Image(systemName: s).foregroundStyle(prominence == .increased ? AnyShapeStyle(.primary) : AnyShapeStyle(color(g.tone)))
+                Image(systemName: s).foregroundStyle(prominence == .increased ? Color.brandText : color(g.tone))
             }
         }
         .frame(width: 16, height: 16)
@@ -165,7 +236,7 @@ struct AudioBadge: View {
         case .saving: Label("Saving…", systemImage: "arrow.down.circle")
         case .interrupted: Label("Interrupted — audio up to the interruption is saved", systemImage: "bolt.horizontal.circle").foregroundStyle(Color.statusAttention)
         case .notStarted: Label("No audio", systemImage: "circle")
-        case .audioDeleted: Label("Audio deleted", systemImage: "trash.circle").foregroundStyle(.secondary)
+        case .audioDeleted: Label("Audio deleted", systemImage: "trash.circle").foregroundStyle(Color.brandSecondary)
         }
     }
 }

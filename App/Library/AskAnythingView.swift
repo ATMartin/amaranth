@@ -3,125 +3,86 @@ import Domain
 import Presentation
 import Storage
 
-/// “Ask anything” (T52): a field pinned to the bottom of the detail column. Return searches (local FTS for now; the model
-/// answers in T54) and shows the results panel above the field; ↑/↓ pick a hit, Return opens it, Esc closes the panel.
-/// ⌘K focuses the field with All meetings as the scope. Replaces the sidebar search field.
-struct AskAnythingBar: View {
+/// The Ask pane (T52/T54; a right-hand inspector since the Inner Circle handoff): the scope switch at the top, the
+/// answer and the matches in the middle, the field at the bottom. Return searches and asks the local model; ↑/↓ pick a
+/// match, Return opens it (the results stay, so the next one is a click away), Esc clears them. ⌘K opens the pane and
+/// focuses the field with All meetings as the scope.
+struct AskPane: View {
     @Environment(LibraryModel.self) private var library
-    @FocusState private var focused: Bool
-
-    var body: some View {
-        @Bindable var library = library
-        HStack(spacing: AppStyle.grid) {
-            Image(systemName: "sparkle.magnifyingglass").foregroundStyle(.secondary)
-            TextField("Ask anything", text: $library.query, prompt: Text(prompt))
-                .textFieldStyle(.plain)
-                .appFont(.body)
-                .focused($focused)
-                .onSubmit { library.submitAsk() }
-                .onKeyPress(.downArrow) { move(1) }
-                .onKeyPress(.upArrow) { move(-1) }
-                .onKeyPress(.escape) {
-                    guard library.askPanelOpen else { return .ignored }
-                    library.closeAskPanel()
-                    return .handled
-                }
-                .accessibilityLabel("Ask anything")
-                .accessibilityHint("Searches \(scopeDescription). Press Return to search.")
-            if !focused && library.query.isEmpty {
-                Text("⌘K").appFont(.caption).foregroundStyle(.tertiary).accessibilityHidden(true)
-            }
-        }
-        .padding(.horizontal, AppStyle.grid + 4).padding(.vertical, 7)
-        .background(RoundedRectangle(cornerRadius: 9).fill(.quaternary.opacity(0.6)))
-        .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(focused ? Color.accentColor.opacity(0.7) : Color.secondary.opacity(0.25), lineWidth: focused ? 1.5 : 0.5))
-        .padding(.horizontal, AppStyle.double).padding(.vertical, AppStyle.grid)
-        .background(.bar)
-        .overlay(alignment: .top) { Divider() }
-        .onChange(of: library.askFocusRequest) { _, _ in focused = true }
-    }
-
-    var prompt: String {
-        AskResults.effectiveScope(library.askScope, meeting: library.selection) == nil ? "Ask anything across all meetings" : "Ask anything about this meeting"
-    }
-
-    var scopeDescription: String {
-        AskResults.effectiveScope(library.askScope, meeting: library.selection) == nil ? "all meetings" : "this meeting"
-    }
-
-    func move(_ delta: Int) -> KeyPress.Result {
-        guard library.askPanelOpen, !library.hits.isEmpty else { return .ignored }
-        library.moveAskSelection(by: delta)
-        return .handled
-    }
-}
-
-/// The results panel above the field: a scope switch, then hits grouped by meeting with highlighted snippets.
-struct AskResultsPanel: View {
-    @Environment(LibraryModel.self) private var library
-    let maxHeight: CGFloat
-    @State private var contentHeight: CGFloat = 0
 
     var body: some View {
         @Bindable var library = library
         let groups = AskResults.grouped(library.hits)
         let thisMeetingAvailable = library.selection != nil
         VStack(spacing: 0) {
-            HStack(spacing: AppStyle.grid) {
-                Picker("Scope", selection: $library.askScope) {
-                    ForEach(AskScope.allCases, id: \.self) { Text($0.rawValue) }
+            VStack(alignment: .leading, spacing: AppStyle.grid) {
+                HStack(alignment: .firstTextBaseline) {
+                    Eyebrow(text: "Ask")
+                    Spacer()
+                    if library.askPanelOpen {
+                        Text(countLabel(groups)).appFont(.caption2).foregroundStyle(Color.brandSecondary)
+                        Button { library.closeAskPanel() } label: { Image(systemName: "xmark.circle.fill") }
+                            .buttonStyle(.borderless).foregroundStyle(Color.brandSecondary)
+                            .help("Clear the results (Esc)").accessibilityLabel("Clear results")
+                    }
                 }
-                .pickerStyle(.segmented).labelsHidden().fixedSize()
+                BrandSegmented(options: AskScope.allCases, selection: $library.askScope) { $0.rawValue }
+                    .accessibilityLabel("Scope")
                 .disabled(!thisMeetingAvailable)
-                .help(thisMeetingAvailable ? "Search this meeting or all meetings" : "Open a meeting to search just that meeting")
-                Spacer()
-                Text(countLabel(groups)).appFont(.caption).foregroundStyle(.secondary)
-                Button { library.closeAskPanel() } label: { Image(systemName: "xmark.circle.fill") }
-                    .buttonStyle(.borderless).foregroundStyle(.secondary)
-                    .help("Close (Esc)").accessibilityLabel("Close results")
+                .help(thisMeetingAvailable ? "Ask about this meeting or all meetings" : "Open a meeting to ask about just that meeting")
             }
-            .padding(.horizontal, AppStyle.grid + 4).padding(.vertical, AppStyle.grid)
-            Divider()
-            if let answers = library.answers, answers.phase != .idle {
-                AnswerSection(answers: answers)
-                Divider()
-            }
+            .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 4).padding(.bottom, AppStyle.grid + 2)
+            Hairline(opacity: 0.4)
             ScrollViewReader { proxy in
                 ScrollView {
-                    results(groups)
-                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
+                    VStack(alignment: .leading, spacing: 0) {
+                        if library.askPanelOpen {
+                            if let answers = library.answers, answers.phase != .idle {
+                                AnswerSection(answers: answers)
+                                Hairline(opacity: 0.35).padding(.horizontal, AppStyle.double)
+                            }
+                            results(groups)
+                        } else {
+                            intro
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(height: min(max(contentHeight, 44), maxHeight))
                 .onChange(of: library.askSelection) { _, i in if let i { withAnimation(.easeOut(duration: 0.12)) { proxy.scrollTo(i) } } }
             }
+            Hairline(opacity: 0.4)
+            AskField()
         }
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .windowBackgroundColor)))
-        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color.secondary.opacity(0.25), lineWidth: 0.5))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .shadow(color: .black.opacity(0.18), radius: 12, y: 4)
-        .padding(.horizontal, AppStyle.double).padding(.bottom, AppStyle.half)
+        .background(Color.canvas)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Search results")
+        .accessibilityLabel("Ask")
+    }
+
+    var intro: some View {
+        VStack(alignment: .leading, spacing: AppStyle.grid + 2) {
+            Text("Ask about your meetings.").appFont(.display).foregroundStyle(Color.brandText).fixedSize(horizontal: false, vertical: true)
+            Text("Find an answer, then follow it back to the line it came from. Answers come from the model on this Mac.")
+                .appFont(.callout).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(AppStyle.double).padding(.top, AppStyle.double)
     }
 
     @ViewBuilder func results(_ groups: [AskResults.Group]) -> some View {
         if groups.isEmpty {
             HStack {
                 Text(library.askScope == .thisMeeting && library.selection != nil ? "No matches in this meeting." : "No matches.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.brandSecondary)
                 if library.askScope == .thisMeeting, library.selection != nil {
-                    Button("Search All Meetings") { library.askScope = .allMeetings }.buttonStyle(.link)
+                    Button("Search All Meetings") { library.askScope = .allMeetings }.buttonStyle(.brandLink)
                 }
                 Spacer()
             }
             .appFont(.callout)
-            .padding(AppStyle.grid + 4)
+            .padding(AppStyle.double)
         } else {
             VStack(alignment: .leading, spacing: 0) {   // at most 50 hits: no need for lazy rows
                 if library.answers.map({ $0.phase != .idle }) ?? false {
-                    Text("Matches").appFont(.caption, weight: .semibold).foregroundStyle(.secondary)
-                        .padding(.horizontal, AppStyle.grid + 4).padding(.top, AppStyle.half)
-                        .accessibilityAddTraits(.isHeader)
+                    Eyebrow(text: "Matches").padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid)
                 }
                 let offsets = groupOffsets(groups)
                 ForEach(Array(groups.enumerated()), id: \.offset) { gi, group in
@@ -144,11 +105,11 @@ struct AskResultsPanel: View {
         HStack(alignment: .firstTextBaseline, spacing: AppStyle.grid) {
             Text(group.title).appFont(.caption, weight: .bold).lineLimit(1)
             if let date = library.items.first(where: { $0.id == group.meetingID })?.createdAt {
-                Text(date.formatted(date: .abbreviated, time: .shortened)).appFont(.caption2).foregroundStyle(.secondary)
+                Text(date.formatted(date: .abbreviated, time: .shortened)).appFont(.caption2).foregroundStyle(Color.brandSecondary)
             }
             Spacer()
         }
-        .padding(.horizontal, AppStyle.grid + 4).padding(.top, AppStyle.grid).padding(.bottom, 2)
+        .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 2).padding(.bottom, 2)
         .accessibilityAddTraits(.isHeader)
     }
 
@@ -166,20 +127,79 @@ struct AskResultsPanel: View {
     }
 }
 
+/// The ask field at the bottom of the pane: Return asks, ↑/↓ move through the matches, Esc clears them.
+struct AskField: View {
+    @Environment(LibraryModel.self) private var library
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        @Bindable var library = library
+        HStack(spacing: AppStyle.grid) {
+            TextField("Ask anything", text: $library.query, prompt: Text(prompt).foregroundStyle(Color.brandSecondary), axis: .vertical)
+                .lineLimit(1...4)
+                .textFieldStyle(.plain)
+                .appFont(.callout)
+                .focused($focused)
+                .onSubmit { library.submitAsk() }
+                .onKeyPress(.downArrow) { move(1) }
+                .onKeyPress(.upArrow) { move(-1) }
+                .onKeyPress(.escape) {
+                    guard library.askPanelOpen else { return .ignored }
+                    library.closeAskPanel()
+                    return .handled
+                }
+                .accessibilityLabel("Ask anything")
+                .accessibilityHint("Searches \(scopeDescription). Press Return to ask.")
+            if !focused && library.query.isEmpty {
+                Text("⌘K").appFont(.caption2).foregroundStyle(Color.brandSecondary).accessibilityHidden(true)
+            } else {
+                Button("Ask") { library.submitAsk() }.buttonStyle(.plain).appFont(.callout, weight: .medium).foregroundStyle(Color.brandAccent)
+                    .disabled(library.query.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+        }
+        .padding(.horizontal, AppStyle.grid + 4).padding(.vertical, AppStyle.grid + 1)
+        .background(RoundedRectangle(cornerRadius: 8).fill(Color.surface))
+        .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(focused ? Color.brandAccent : Color.controlBorder, lineWidth: focused ? 1.5 : 1))
+        .padding(AppStyle.grid + 4)
+        .onChange(of: library.askFocusRequest) { _, _ in takeFocus() }
+        // ⌘K with the pane hidden: the field only exists once the pane opens.
+        .onAppear { if library.askFocusPending { Task { @MainActor in takeFocus() } } }
+    }
+
+    func takeFocus() {
+        focused = true
+        library.askFocusPending = false
+    }
+
+    var prompt: String {
+        AskResults.effectiveScope(library.askScope, meeting: library.selection) == nil ? "Ask across all meetings…" : "Ask about this meeting…"
+    }
+
+    var scopeDescription: String {
+        AskResults.effectiveScope(library.askScope, meeting: library.selection) == nil ? "all meetings" : "this meeting"
+    }
+
+    func move(_ delta: Int) -> KeyPress.Result {
+        guard library.askPanelOpen, !library.hits.isEmpty else { return .ignored }
+        library.moveAskSelection(by: delta)
+        return .handled
+    }
+}
+
 /// One hit: where it matched (a transcript time, notes, your notes or the title) and the snippet with the match in bold.
 struct AskHitRow: View {
     let hit: SearchHit
     var selected = false
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: AppStyle.grid) {
-            Text(AskResults.kindLabel(hit)).appFont(.caption, monospacedDigit: true).foregroundStyle(selected ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary))
-                .frame(width: 64, alignment: .leading)
-            Text(SearchSnippet.highlighted(hit.snippet)).appFont(.callout).lineLimit(2)
-            Spacer(minLength: 0)
+        VStack(alignment: .leading, spacing: 2) {
+            Text(AskResults.kindLabel(hit)).appFont(.caption2, monospacedDigit: true).foregroundStyle(selected ? Color.brandText : Color.link)
+            Text(SearchSnippet.highlighted(hit.snippet)).appFont(.caption).foregroundStyle(Color.brandText).lineLimit(3)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.horizontal, AppStyle.grid + 4).padding(.vertical, 5)
-        .background(selected ? Color.accentColor.opacity(0.18) : .clear)
+        .padding(.horizontal, AppStyle.double).padding(.vertical, 6)
+        .background(selected ? Color.selection : .clear)
+        .overlay(alignment: .leading) { if selected { Color.brandAccent.frame(width: 3) } }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
@@ -219,37 +239,37 @@ struct AnswerSection: View {
                             Text(turn.question).appFont(.caption, weight: .semibold)
                             Text(turn.answer).appFont(.caption).lineLimit(2)
                         }
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.brandSecondary)
                     }
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("Earlier in this conversation")
             }
             HStack(alignment: .firstTextBaseline, spacing: AppStyle.half) {
-                Image(systemName: "sparkles").foregroundStyle(Color.accentColor).accessibilityHidden(true)
+                Image(systemName: "sparkles").foregroundStyle(Color.brandAccent).accessibilityHidden(true)
                 Text(answers.question).appFont(.callout, weight: .semibold).lineLimit(2)
                 Spacer(minLength: 0)
             }
             switch answers.phase {
             case .thinking:
-                HStack(spacing: AppStyle.grid) { ProgressView().controlSize(.small); Text("Reading the meetings…").foregroundStyle(.secondary) }
+                HStack(spacing: AppStyle.grid) { ProgressView().controlSize(.small); Text("Reading the meetings…").foregroundStyle(Color.brandSecondary) }
                     .appFont(.callout)
             case .waiting(let reason), .unavailable(let reason), .failed(let reason):
                 Label(reason, systemImage: answers.phase == .unavailable(reason) ? "info.circle" : "hourglass")
-                    .appFont(.callout).foregroundStyle(.secondary)
+                    .appFont(.callout).foregroundStyle(Color.brandSecondary)
             case .streaming, .done:
-                Text(answers.text).appFont(.body).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
-                    .foregroundStyle(answers.response?.refused == true ? AnyShapeStyle(.secondary) : AnyShapeStyle(.primary))
+                Text(answers.text).appFont(.callout).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(answers.response?.refused == true ? Color.brandSecondary : Color.brandText)
                 if !answers.citedPassages.isEmpty {
                     FlowChips(passages: answers.citedPassages, acrossMeetings: answers.acrossMeetings) { library.open(citation: $0) }
                 }
                 if answers.phase == .done, answers.response?.refused == false {
-                    Text(caption).appFont(.caption).foregroundStyle(.secondary)
+                    Text(caption).appFont(.caption2).foregroundStyle(Color.brandSecondary)
                 }
             case .idle: EmptyView()
             }
         }
-        .padding(.horizontal, AppStyle.grid + 4).padding(.vertical, AppStyle.grid)
+        .padding(.horizontal, AppStyle.double).padding(.vertical, AppStyle.grid + 4)
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Answer")
@@ -282,19 +302,16 @@ struct FlowChips: View {
     }
 }
 
+/// A source link under an answer ("12:34 ↗", "Leesa 1:1 · 12:34 ↗"): accent, underlined.
 struct CitationChip: View {
     let label: String
     let notes: Bool
     let action: () -> Void
-    @State private var hovering = false
 
     var body: some View {
-        Button(action: action) {
-            HeaderChip(symbol: notes ? "list.bullet" : "text.quote", text: label, style: .action, hovering: hovering)
-        }
-        .buttonStyle(.plain)
-        .onHover { hovering = $0 }
-        .help(notes ? "Open the note this came from" : "Show this line in the transcript")
-        .accessibilityLabel("Source: \(label)")
+        Button(label, action: action)
+            .buttonStyle(SourceLinkStyle())
+            .help(notes ? "Open the note this came from" : "Show this line in the transcript")
+            .accessibilityLabel("Source: \(label)")
     }
 }

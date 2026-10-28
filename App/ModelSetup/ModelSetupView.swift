@@ -12,22 +12,22 @@ struct ModelSetupView: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Local models").font(.title2.bold())
             Text("Transcription, speaker separation and notes run entirely on this Mac. The model pack is downloaded once, only when you choose to install it; afterwards everything works offline.")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.brandSecondary)
                 .fixedSize(horizontal: false, vertical: true)
 
             if let pack = model.pack {
                 Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 4) {
-                    GridRow { Text("Pack").foregroundStyle(.secondary); Text("\(pack.id) \(pack.version)") }
-                    GridRow { Text("Download").foregroundStyle(.secondary); Text(ModelSetupModel.gb(model.downloadBytes)) }
-                    GridRow { Text("Free space needed").foregroundStyle(.secondary); Text(ModelSetupModel.gb(model.requiredFreeBytes)) }
-                    GridRow { Text("Free space available").foregroundStyle(.secondary); Text(model.availableBytes.map(ModelSetupModel.gb) ?? "unknown") }
+                    GridRow { Text("Pack").foregroundStyle(Color.brandSecondary); Text("\(pack.id) \(pack.version)") }
+                    GridRow { Text("Download").foregroundStyle(Color.brandSecondary); Text(ModelSetupModel.gb(model.downloadBytes)) }
+                    GridRow { Text("Free space needed").foregroundStyle(Color.brandSecondary); Text(ModelSetupModel.gb(model.requiredFreeBytes)) }
+                    GridRow { Text("Free space available").foregroundStyle(Color.brandSecondary); Text(model.availableBytes.map(ModelSetupModel.gb) ?? "unknown") }
                 }
                 DisclosureGroup("Models and licenses") {
                     ForEach(pack.manifests) { m in
                         VStack(alignment: .leading, spacing: 2) {
                             Text("\(m.family) · \(m.license.identifier)").font(.callout.bold())
-                            Text(m.license.attribution).font(.caption).foregroundStyle(.secondary)
-                            Text("\(m.sourceRepository) @ \(m.sourceRevision.prefix(12))").font(.caption.monospaced()).foregroundStyle(.tertiary)
+                            Text(m.license.attribution).font(.caption).foregroundStyle(Color.brandSecondary)
+                            Text("\(m.sourceRepository) @ \(m.sourceRevision.prefix(12))").font(.caption.monospaced()).foregroundStyle(Color.brandSecondary)
                         }
                         .padding(.vertical, 2)
                     }
