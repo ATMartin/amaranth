@@ -78,10 +78,18 @@ extension MeetingStore {
     /// Files a meeting in `folder`, or unfiles it with nil. Throws `missingFolder` for a folder that doesn't exist;
     /// no-op for a missing or deleted meeting.
     public func moveMeeting(_ id: MeetingID, to folder: FolderID?) throws {
-        if let folder, try withDB({ try $0.run("SELECT 1 FROM folders WHERE id=?", [.text(folder.rawValue)]).isEmpty }) {
-            throw FolderError.missingFolder
+        // One transaction: a deleteFolder can't land between the check and the write and leave a dangling folder_id.
+        try withDB { db in
+            try db.transaction {
+                if let folder, try db.run("SELECT 1 FROM folders WHERE id=?", [.text(folder.rawValue)]).isEmpty { throw FolderError.missingFolder }
+                guard let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(id.rawValue)]).first?["json"]?.blob else { return }
+                var m = try ContractCoding.decode(Meeting.self, from: row)
+                guard m.deletedAt == nil else { return }
+                m.folderID = folder
+                try db.run("UPDATE meetings SET folder_id=?, json=? WHERE id=?",
+                           [folder.map { .text($0.rawValue) } ?? .null, .blob(try ContractCoding.encode(m)), .text(id.rawValue)])
+            }
         }
-        try updateMetadata(id) { $0.folderID = folder }
     }
 
     /// Live meetings in `folder`, newest first; nil = unfiled meetings.

@@ -28,7 +28,7 @@ struct AskPane: View {
                     }
                 }
                 // T42: “This folder” appears while the sidebar shows a folder.
-                BrandSegmented(options: AskScope.options(folderShown: library.filteredFolder != nil), selection: $library.askScope) { $0.label(short: library.filteredFolder != nil) }
+                BrandSegmented(options: AskScope.options(folderShown: library.filteredFolder != nil, meetingOpen: thisMeetingAvailable), selection: $library.askScope) { $0.label(short: library.filteredFolder != nil) }
                     .accessibilityLabel("Scope")
                 .disabled(!thisMeetingAvailable && library.filteredFolder == nil)
                 .help(library.filteredFolder.map { "Ask about this meeting, the folder “\($0.name)” or all meetings" }

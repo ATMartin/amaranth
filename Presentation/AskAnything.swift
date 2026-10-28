@@ -9,7 +9,11 @@ public enum AskScope: String, CaseIterable, Sendable {
     case allMeetings = "All meetings"
 
     /// The scope switch's options: “This folder” only while the sidebar shows a folder.
-    public static func options(folderShown: Bool) -> [AskScope] { folderShown ? allCases : [.thisMeeting, .allMeetings] }
+    /// Without an open meeting, a shown folder offers Folder | All only (“Meeting” would silently search everything).
+    public static func options(folderShown: Bool, meetingOpen: Bool = true) -> [AskScope] {
+        guard folderShown else { return [.thisMeeting, .allMeetings] }
+        return meetingOpen ? allCases : [.thisFolder, .allMeetings]
+    }
 
     /// Segment labels: three full labels don't fit the 250 pt Ask pane, so with “This folder” shown they shorten.
     public func label(short: Bool) -> String {

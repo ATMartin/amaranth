@@ -38,6 +38,7 @@ struct AskAnythingTests {
     @Test func thisFolderNeedsAShownFolder() {
         #expect(AskScope.options(folderShown: false) == [.thisMeeting, .allMeetings])
         #expect(AskScope.options(folderShown: true) == [.thisMeeting, .thisFolder, .allMeetings])
+        #expect(AskScope.options(folderShown: true, meetingOpen: false) == [.thisFolder, .allMeetings], "no silent Meeting = All")
         #expect(AskResults.effectiveFolder(.thisFolder, folder: FolderID("f")) == FolderID("f"))
         #expect(AskResults.effectiveFolder(.thisFolder, folder: nil) == nil)
         #expect(AskResults.effectiveFolder(.allMeetings, folder: FolderID("f")) == nil)
