@@ -6,6 +6,8 @@ import Storage
 struct MainView: View {
     @Environment(LibraryModel.self) private var library
     @Environment(RecorderModel.self) private var recorder
+    @Environment(PlaybackModel.self) private var playback
+    @State private var newTitle = ""
     @AppStorage("onboarded") private var onboarded = false
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
     /// The Ask pane on the right (Inner Circle handoff); ⌘K opens it.
@@ -78,6 +80,26 @@ struct MainView: View {
             .sharedBackgroundVisibility(.hidden)
             ToolbarItem(placement: .primaryAction) { AppearanceToggle(compact: true) }.sharedBackgroundVisibility(.hidden)
         }
+        // The shared meeting menu's Rename… and delete confirmations (T79), for the open meeting or any card.
+        .sheet(isPresented: Binding(get: { library.renameRequest != nil }, set: { if !$0 { library.actionRequest = nil } })) {
+            if let r = library.renameRequest {
+                EditTextSheet(title: "Rename Meeting", text: $newTitle, help: "Shown in the meeting list, the meeting header, search and exports.") {
+                    library.rename(r.meetingID, to: newTitle)
+                }
+                .onAppear { newTitle = r.title }
+            }
+        }
+        .confirmationDialog(library.deleteRequest.map { $0.action.confirmationTitle($0.request.title) } ?? "",
+                            isPresented: Binding(get: { library.deleteRequest != nil }, set: { if !$0 { library.actionRequest = nil } }),
+                            titleVisibility: .visible, presenting: library.deleteRequest) { d in
+            Button(d.action.buttonTitle, role: .destructive) {
+                if d.request.meetingID == library.selection { playback.stop() }
+                library.delete(d.action, d.request.meetingID)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: { d in
+            Text(d.action.explanation(library.store?.diskUsage(d.request.meetingID) ?? .init(originalAudioBytes: 0, derivedBytes: 0)))
+        }
         .sheet(isPresented: Binding(get: { !onboarded }, set: { if !$0 { onboarded = true } })) {
             OnboardingView { onboarded = true }
         }
@@ -94,9 +116,6 @@ struct MainView: View {
 struct LibrarySidebar: View {
     @Environment(LibraryModel.self) private var library
     @Environment(ModelSetupModel.self) private var models
-    @State private var confirming: (DestructiveAction, MeetingListItem)?
-    @State private var renaming: MeetingListItem?
-    @State private var newTitle = ""
     @FocusState private var focused: Bool
 
     var body: some View {
@@ -120,12 +139,7 @@ struct LibrarySidebar: View {
                             .buttonStyle(.plain)
                             .id(item.id)
                             .accessibilityAddTraits(library.selection == item.id ? [.isSelected] : [])
-                            .contextMenu {
-                                Button("Rename…") { newTitle = item.title; renaming = item }
-                                Divider()
-                                Button("Delete Audio Only…") { confirming = (.deleteAudioOnly, item) }.disabled(item.status.audio == .audioDeleted)
-                                Button("Delete Meeting…", role: .destructive) { confirming = (.deleteMeeting, item) }
-                            }
+                            .contextMenu { MeetingActionsMenu(meeting: .init(item)) }   // the header's ⋯ menu too (T79)
                         }
                     }
                 }
@@ -143,18 +157,6 @@ struct LibrarySidebar: View {
         }
         .safeAreaInset(edge: .bottom, spacing: 0) { LocalModelFooter(state: .init(models.status)) }
         .background(Color.canvas)
-        .sheet(item: $renaming) { item in
-            EditTextSheet(title: "Rename Meeting", text: $newTitle, help: "Shown in the meeting list, the meeting header, search and exports.") {
-                library.rename(item.id, to: newTitle)
-            }
-        }
-        .confirmationDialog(confirming.map { $0.0.confirmationTitle($0.1.title) } ?? "", isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } }),
-                            titleVisibility: .visible, presenting: confirming) { c in
-            Button(c.0.buttonTitle, role: .destructive) { library.delete(c.0, c.1.id) }
-            Button("Cancel", role: .cancel) {}
-        } message: { c in
-            Text(c.0.explanation(library.store?.diskUsage(c.1.id) ?? .init(originalAudioBytes: 0, derivedBytes: 0)))
-        }
     }
 
     func move(_ delta: Int, _ proxy: ScrollViewProxy) -> KeyPress.Result {

@@ -92,13 +92,16 @@ public struct MeetingListItem: Identifiable, Hashable, Sendable {
     public var duration: SessionDuration
     public var status: MeetingStatus
     public var hasNotes: Bool
+    /// A final or live transcript exists, so the meeting can be exported (what `MeetingDetail.transcript != nil` says).
+    public var hasTranscript: Bool = false
 
     public static func load(_ store: MeetingStore, limit: Int = 500) throws -> [MeetingListItem] {
         try store.meetings().prefix(limit).map { m in
             let jobs = try store.jobs(meeting: m.id)
             return MeetingListItem(id: m.id, title: m.title, createdAt: m.createdAt, duration: m.duration,
                                    status: MeetingStatus(meeting: m, jobs: jobs, events: try store.events(m.id)),
-                                   hasNotes: m.currentSummaryRevisionID != nil)
+                                   hasNotes: m.currentSummaryRevisionID != nil,
+                                   hasTranscript: (m.currentTranscriptRevisionID ?? m.provisionalTranscriptRevisionID) != nil)
         }
     }
 }

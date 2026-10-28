@@ -164,6 +164,32 @@ final class LibraryModel {
         answers?.endSession()
     }
 
+    // MARK: Meeting actions (T79): asked for from the shared ⋯ / right-click menu, presented once by MainView.
+
+    struct ActionRequest: Identifiable {
+        enum Kind { case rename, destructive(DestructiveAction) }
+        let id = UUID()
+        let kind: Kind
+        let meetingID: MeetingID
+        let title: String
+    }
+    var actionRequest: ActionRequest?
+    var renameRequest: ActionRequest? { if case .rename = actionRequest?.kind { actionRequest } else { nil } }
+    var deleteRequest: (request: ActionRequest, action: DestructiveAction)? {
+        if let r = actionRequest, case .destructive(let a) = r.kind { (r, a) } else { nil }
+    }
+
+    func requestRename(_ id: MeetingID, title: String) { actionRequest = .init(kind: .rename, meetingID: id, title: title) }
+    func requestDelete(_ action: DestructiveAction, _ id: MeetingID, title: String) {
+        actionRequest = .init(kind: .destructive(action), meetingID: id, title: title)
+    }
+
+    /// Exports any meeting, open or not: the open one's loaded detail, or a fresh load from the store.
+    func export(_ format: MeetingExport.Format, _ id: MeetingID) {
+        guard let store, let d = detail?.meeting.id == id ? detail : (try? MeetingDetail.load(store, id)) ?? nil else { return }
+        MeetingExport.run(format, d, store: store)
+    }
+
     /// × and Esc (T78): clear the results and the question, then put the cursor back in the ask field for the next one.
     func clearAsk() {
         closeAskPanel()

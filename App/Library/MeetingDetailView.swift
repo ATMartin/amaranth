@@ -1,16 +1,12 @@
 import SwiftUI
-import AppKit
-import UniformTypeIdentifiers
 import Domain
 import Presentation
-import Export
 
 struct MeetingDetailView: View {
     let detail: MeetingDetail
     @Environment(LibraryModel.self) private var library
     @Environment(PlaybackModel.self) private var playback
     @Environment(ModelSetupModel.self) private var models
-    @State private var confirming: DestructiveAction?
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
 
     var notesModelInstalled: Bool { if case .ready = models.status { true } else { false } }
@@ -20,14 +16,11 @@ struct MeetingDetailView: View {
         @Bindable var library = library
         VStack(spacing: 0) {
             header
-            HStack(alignment: .bottom) {
-                UnderlineTabs(tabs: LibraryModel.DetailTab.allCases, selection: $library.detailTab, title: \.rawValue,
-                              badge: { $0 == .recording && audioIssues > 0 ? "\(audioIssues == 1 ? "A moment" : "\(audioIssues) moments") in the audio need a closer look" : nil })
-                    .help("Notes (⌘1) · Transcript (⌘2) · Audio details (⌘3)")
-                Spacer()
-                detailsToggle.padding(.bottom, 6)
-            }
-            .padding(.horizontal, AppStyle.double + 8)
+            UnderlineTabs(tabs: LibraryModel.DetailTab.allCases, selection: $library.detailTab, title: \.rawValue,
+                          badge: { $0 == .recording && audioIssues > 0 ? "\(audioIssues == 1 ? "A moment" : "\(audioIssues) moments") in the audio need a closer look" : nil })
+                .help("Notes (⌘1) · Transcript (⌘2) · Audio details (⌘3)")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, AppStyle.double + 8)
             Hairline()
             // Close to the content on every tab (handoff): play, the position, a scrubber and the length.
             PlaybackBar(detail: detail, spaceShortcut: library.detailTab == .transcript)
@@ -35,30 +28,14 @@ struct MeetingDetailView: View {
             switch library.detailTab {
             case .notes: NotesPane(detail: detail, notesModelInstalled: notesModelInstalled) { library.detailTab = .transcript }
             case .transcript: TranscriptPane(detail: detail)
-            case .recording: RecordingDetailsPane(detail: detail) { confirming = .deleteAudioOnly }
+            case .recording: RecordingDetailsPane(detail: detail) { library.requestDelete(.deleteAudioOnly, detail.meeting.id, title: detail.meeting.title) }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear { loadPlayback() }
         .onChange(of: detail.meeting.id) { _, _ in loadPlayback() }
         .onChange(of: library.focusRowID) { _, id in if id != nil { library.detailTab = .transcript } }
-        .focusedSceneValue(\.exportMarkdown, detail.transcript == nil ? nil : ExportAction { export(.markdown) })
-        .confirmationDialog(confirming?.confirmationTitle(detail.meeting.title) ?? "", isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } }),
-                            titleVisibility: .visible, presenting: confirming) { action in
-            Button(action.buttonTitle, role: .destructive) { playback.stop(); library.delete(action, detail.meeting.id) }
-            Button("Cancel", role: .cancel) {}
-        } message: { action in Text(action.explanation(detail.diskUsage)) }
-    }
-
-    /// The one place ⌘D is registered (the View menu item from T29 calls the same toggle).
-    var detailsToggle: some View {
-        Button { showDetails.toggle() } label: {
-            Image(systemName: showDetails ? "info.circle.fill" : "info.circle").font(.system(size: AppStyle.iconLarge))
-        }
-        .buttonStyle(.borderless)
-        .keyboardShortcut("d", modifiers: .command)
-        .help("Show details: where each note came from, transcript gaps and flags (⌘D)")   // View ▸ Show Details calls the same toggle
-        .accessibilityLabel(showDetails ? "Hide details" : "Show details")
+        .focusedSceneValue(\.exportMarkdown, detail.transcript == nil ? nil : ExportAction { [library, id = detail.meeting.id] in library.export(.markdown, id) })
     }
 
     /// Eyebrow date and time, the meeting title in the display face, then people, length, calendar and status on one
@@ -68,7 +45,7 @@ struct MeetingDetailView: View {
             Text(detail.meeting.createdAt.formatted(.dateTime.month(.wide).day().year().hour().minute()).replacingOccurrences(of: " at ", with: " · "))
                 .appFont(.eyebrow).foregroundStyle(Color.brandSecondary)
                 .help("Recorded \(detail.meeting.createdAt.formatted(date: .complete, time: .shortened))")
-            // Static: renaming lives in the sidebar row's context menu (T26).
+            // Static: Rename… is in the ⋯ menu and the card's right-click menu (T26, T79).
             Text(detail.meeting.title).appFont(.display).lineLimit(2).foregroundStyle(Color.brandText).accessibilityAddTraits(.isHeader)
             HStack(spacing: AppStyle.double) {
                 // Narrow windows drop the calendar chip's words, then a linked event's title, before anything truncates.
@@ -89,8 +66,7 @@ struct MeetingDetailView: View {
                 Spacer()
                 if case .failed = detail.status.processing { Button("Retry Processing") { library.retry(detail.meeting.id) }.buttonStyle(.brandOutline).help("Run the failed processing steps again") }
                 if case .notQueued = detail.status.processing, detail.meeting.canPlayAudio { Button("Process") { library.process(detail.meeting.id) }.buttonStyle(.brandOutline).help("Transcribe, find speakers and write notes on this Mac") }
-                shareMenu
-                moreMenu
+                actionsMenu
             }
             .appFont(.caption)
             .padding(.top, 2)
@@ -99,35 +75,15 @@ struct MeetingDetailView: View {
         .padding(.horizontal, AppStyle.double + 8).padding(.top, AppStyle.double + 4).padding(.bottom, AppStyle.grid + 2)
     }
 
-    /// Share access in the header (handoff): the exports, as before in the toolbar.
-    var shareMenu: some View {
-        Menu {
-            Button("Markdown…") { export(.markdown) }
-            Button("Plain Text…") { export(.text) }
-            Button("JSON…") { export(.json) }
-            Divider()
-            Button("Original Audio…") { exportAudio() }.disabled(detail.playbackUnavailableReason != nil)
-        } label: {
-            Label("Export", systemImage: "square.and.arrow.up").appFont(.caption)
-        }
-        .menuStyle(.button).buttonStyle(.borderless).fixedSize()
-        .foregroundStyle(Color.brandText)
-        .disabled(detail.transcript == nil)
-        .help("Export the transcript and notes (Markdown: ⌘E). Your private scratchpad is not included.")
-    }
-
-    /// Delete, behind a menu and a confirmation that says what stays.
-    var moreMenu: some View {
-        Menu {
-            Button("Delete Audio Only…") { confirming = .deleteAudioOnly }.disabled(detail.meeting.audio == .deletedByUser)
-            Button("Delete Meeting…", role: .destructive) { confirming = .deleteMeeting }
-        } label: {
+    /// The meeting's ⋯ (T79): the same menu as the card's right-click menu, Export and Show Details included.
+    var actionsMenu: some View {
+        Menu { MeetingActionsMenu(meeting: .init(detail)) } label: {
             Image(systemName: "ellipsis.circle").font(.system(size: AppStyle.iconLarge))
         }
         .menuStyle(.button).buttonStyle(.borderless).menuIndicator(.hidden).fixedSize()
         .foregroundStyle(Color.brandSecondary)
-        .help("Delete this meeting's audio, or the whole meeting")
-        .accessibilityLabel("More actions")
+        .help("Rename, export, show details or delete")
+        .accessibilityLabel("Meeting actions")
     }
 
     /// `eventTitle: false` is the narrowest variant: a linked event shows as its icon only (the tooltip names it).
@@ -141,49 +97,6 @@ struct MeetingDetailView: View {
 
     func loadPlayback() {
         playback.load(meetingDirectory: library.store!.meetingDirectory(detail.meeting.id), segments: detail.segments)
-    }
-
-    enum Format { case markdown, text, json }
-
-    func exportInput() -> ExportInput? {
-        guard let t = detail.displayTranscript else { return nil }
-        return ExportInput(meeting: detail.meeting, transcript: t, summary: detail.summary, userNotes: detail.userNotes, scratchpad: detail.scratchpad)
-    }
-
-    func export(_ f: Format) {
-        guard let input = exportInput() else { return }
-        let panel = NSSavePanel()
-        let base = detail.meeting.title.replacingOccurrences(of: "/", with: "-")
-        switch f {
-        case .markdown: panel.allowedContentTypes = [UTType(filenameExtension: "md") ?? .plainText]; panel.nameFieldStringValue = base + ".md"
-        case .text: panel.allowedContentTypes = [.plainText]; panel.nameFieldStringValue = base + ".txt"
-        case .json: panel.allowedContentTypes = [.json]; panel.nameFieldStringValue = base + ".json"
-        }
-        panel.message = "Exports the transcript and notes shown. The private scratchpad is not included."
-        guard panel.runModal() == .OK, let url = panel.url else { return }
-        do {
-            let data: Data = switch f {
-            case .markdown: Data(Exporter.markdown(input).utf8)
-            case .text: Data(Exporter.text(input).utf8)
-            case .json: try Exporter.json(input)
-            }
-            try data.write(to: url, options: .atomic)
-        } catch {
-            NSAlert(error: error).runModal()
-        }
-    }
-
-    func exportAudio() {
-        let panel = NSOpenPanel()
-        panel.canChooseDirectories = true; panel.canChooseFiles = false; panel.canCreateDirectories = true
-        panel.prompt = "Export Audio Here"
-        panel.message = "Copies the original audio segments with a manifest of their times and any gaps."
-        guard panel.runModal() == .OK, let dir = panel.url, let store = library.store else { return }
-        do {
-            _ = try Exporter.exportAudio(meetingDirectory: store.meetingDirectory(detail.meeting.id), meetingID: detail.meeting.id,
-                                         segments: detail.segments, events: detail.events,
-                                         to: dir.appending(path: detail.meeting.title.replacingOccurrences(of: "/", with: "-") + " audio"))
-        } catch { NSAlert(error: error).runModal() }
     }
 }
 

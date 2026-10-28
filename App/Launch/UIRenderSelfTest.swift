@@ -200,7 +200,21 @@ enum UIRenderSelfTest {
         if library.items.contains(where: { $0.id == MeetingID("ui-long") }) {
             library.selection = MeetingID("ui-long")
             for _ in 0..<40 where library.detail?.meeting.id != MeetingID("ui-long") { try? await Task.sleep(for: .milliseconds(50)) }
-            if let d = library.detail { _ = await host(MeetingDetailView(detail: d), "header-narrow", size: CGSize(width: 560, height: 200)) }
+            if let d = library.detail {
+                _ = await host(MeetingDetailView(detail: d), "header-narrow", size: CGSize(width: 560, height: 200))
+                // T79: the header with only ⋯ on the right, at the detail column's width in a 900 and an 1100 pt window
+                // with the sidebar (180) and Ask (250) open; and the whole window at 900 pt.
+                _ = await host(MeetingDetailView(detail: d), "header-900", size: CGSize(width: 470, height: 200))
+                _ = await host(MeetingDetailView(detail: d), "header-1100", size: CGSize(width: 670, height: 200))
+                _ = await host(MainView(), "main-900", size: CGSize(width: 900, height: 600))
+                // The shared ⋯ / right-click menu's items, laid out flat: for the open meeting and for a card without a
+                // transcript (Export disabled). Both come from MeetingActionsMenu, so they cannot drift apart.
+                let card = library.items.first { !$0.hasTranscript } ?? library.items[0]
+                _ = await host(HStack(alignment: .top, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 6) { Text("Header ⋯").bold(); MeetingActionsMenu(meeting: .init(d)) }
+                    VStack(alignment: .leading, spacing: 6) { Text("Card: \(card.title)").bold(); MeetingActionsMenu(meeting: .init(card)) }
+                }.padding(), "meeting-actions-menu", size: CGSize(width: 520, height: 260))
+            }
         }
         // Header people editor (T50): with names and empty.
         _ = await host(PeopleEditor(people: ["Dana Whitfield", "Ravi Patel"].map { Person(name: $0) }, save: { _ in }, cancel: {}), "people-editor", size: CGSize(width: 290, height: 230))

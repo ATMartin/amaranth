@@ -2446,7 +2446,7 @@
       "id": "T79",
       "title": "Meeting header: one ⋯ menu, shared with the sidebar's right-click menu",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): MeetingActionsMenu shared by the header \u22ef and the card context menu; Export button and \u24d8 removed; \u2318D on View \u25b8 Show Details",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",
