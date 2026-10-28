@@ -53,6 +53,7 @@ struct RecordToolbarControl: View {
 struct RecordOptionsForm: View {
     @Bindable var model: RecorderModel
     let record: () -> Void
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppStyle.double) {
@@ -87,7 +88,7 @@ struct RecordOptionsForm: View {
             }
             .appFont(.caption).fixedSize(horizontal: false, vertical: true)
             HStack {
-                SettingsLink { Text("Recording Settings…") }.buttonStyle(.brandLink).appFont(.caption)
+                Button("Recording Settings…") { openSettings(.recording) }.buttonStyle(.brandLink).appFont(.caption)
                 if model.customized { Button("Use Defaults") { model.loadDefaults() }.buttonStyle(.brandLink).appFont(.caption) }
                 Spacer()
                 Button(action: record) {

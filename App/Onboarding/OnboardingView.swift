@@ -33,7 +33,7 @@ struct OnboardingView: View {
     var modelText: String {
         if case .ready = models.status { return "The speech and notes models are installed, so transcripts and notes are made automatically after each meeting." }
         let gb = Double(models.downloadBytes) / 1e9
-        return String(format: "Transcripts and notes need a one-time %.1f GB model download (Settings → Models, or the toolbar). Until then, Amaranth records audio and processes it later.", gb)
+        return String(format: "Transcripts and notes need a one-time %.1f GB model download (Settings → Models). Until then, Amaranth records audio and processes it later.", gb)
     }
 
     func point(_ icon: String, _ title: String, _ text: String) -> some View {

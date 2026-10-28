@@ -367,7 +367,9 @@ enum UIRenderSelfTest {
             let labels = window.toolbar?.items.map { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label } ?? []
             let toggle = labels.firstIndex { $0.hasPrefix("Switch to") }
             let expected = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua ? "Switch to Light Mode" : "Switch to Dark Mode"
+            // T77: no models button in the toolbar any more (Settings → Models and the sidebar footer).
             let pass = toggle != nil && labels[toggle!] == expected && !labels.contains("Export") && labels.contains { $0.hasSuffix("Ask") }
+                && !labels.contains { $0.localizedCaseInsensitiveContains("model") }
             SelfTest.log(["step": "toolbar", "items": labels.joined(separator: " | "), "ok": "\(pass)"])
             // The whole window including its title bar and toolbar (the window frame view, not just the content).
             if let frameView = window.contentView?.superview {
@@ -426,7 +428,11 @@ enum UIRenderSelfTest {
         }
         // Onboarding, the model sheet and the menu-bar menu's items (T43: every screen in both appearances).
         _ = await host(OnboardingView {}, "onboarding", size: CGSize(width: 560, height: 520))
-        _ = await host(ModelSetupView(model: models), "model-sheet", size: CGSize(width: 560, height: 460))
+        // T77: model setup lives only in Settings → Models (at the Settings size); the sidebar footer in each state.
+        _ = await host(ModelSetupView(model: models).frame(maxHeight: .infinity, alignment: .top), "settings-models", size: CGSize(width: 560, height: 640))
+        for (kind, name) in [(LocalModelFooter.Kind.ready, "ready"), (.installing, "installing"), (.missing, "missing")] {
+            _ = await host(LocalModelFooter(state: kind).background(Color.canvas), "sidebar-footer-\(name)", size: CGSize(width: 200, height: 40))
+        }
         _ = await host(VStack(alignment: .leading, spacing: 6) { MenuBarContent(recorder: recorder) }.padding(), "menu-bar", size: CGSize(width: 260, height: 180))
         // Switching meetings: frames straight after the selection changes, while the next meeting loads.
         if library.items.count >= 2 {

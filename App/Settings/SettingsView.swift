@@ -2,6 +2,20 @@ import SwiftUI
 import Domain
 import Presentation
 
+/// Settings tabs, persisted so a control elsewhere can open Settings on a given tab (T77: the sidebar footer opens Models).
+enum SettingsTab: String {
+    case models, recording, appearance, calendar, notices
+    static let key = "settingsTab"
+}
+
+extension OpenSettingsAction {
+    /// Opens the Settings window on `tab`.
+    @MainActor func callAsFunction(_ tab: SettingsTab) {
+        UserDefaults.standard.set(tab.rawValue, forKey: SettingsTab.key)
+        callAsFunction()
+    }
+}
+
 struct SettingsView: View {
     static let notices: String = Bundle.main.url(forResource: "THIRD_PARTY_NOTICES", withExtension: "md")
         .flatMap { try? String(contentsOf: $0, encoding: .utf8) } ?? "Notices file missing from this build."
@@ -10,21 +24,24 @@ struct SettingsView: View {
     var calendar: CalendarModel
     var reminders: ReminderController?
     var library: LibraryModel?
+    @AppStorage(SettingsTab.key) private var tab = SettingsTab.models.rawValue
 
     var body: some View {
-        TabView {
+        TabView(selection: $tab) {
+            // Status, details and Install/verify (T77: the only place for them; the toolbar button and sheet are gone).
             ModelSetupView(model: models)
-                .tabItem { Label("Models", systemImage: "cpu") }
+                .frame(maxHeight: .infinity, alignment: .top)
+                .tabItem { Label("Models", systemImage: "cpu") }.tag(SettingsTab.models.rawValue)
             RecordingSettings(recorder: recorder)
-                .tabItem { Label("Recording", systemImage: "mic") }
+                .tabItem { Label("Recording", systemImage: "mic") }.tag(SettingsTab.recording.rawValue)
             AppearanceSettings()
-                .tabItem { Label("Appearance", systemImage: "textformat.size") }
+                .tabItem { Label("Appearance", systemImage: "textformat.size") }.tag(SettingsTab.appearance.rawValue)
             CalendarSettingsView(calendar: calendar, recorder: recorder, reminders: reminders, library: library)
-                .tabItem { Label("Calendar", systemImage: "calendar") }
+                .tabItem { Label("Calendar", systemImage: "calendar") }.tag(SettingsTab.calendar.rawValue)
             ScrollView {
                 Text(Self.notices).font(.caption.monospaced()).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).padding()
             }
-            .tabItem { Label("Notices", systemImage: "doc.text") }
+            .tabItem { Label("Notices", systemImage: "doc.text") }.tag(SettingsTab.notices.rawValue)
         }
         .frame(width: 560, height: 640)   // Settings → Calendar fits without scrolling to its last button
     }

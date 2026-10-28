@@ -6,8 +6,6 @@ import Storage
 struct MainView: View {
     @Environment(LibraryModel.self) private var library
     @Environment(RecorderModel.self) private var recorder
-    @Environment(ModelSetupModel.self) private var models
-    @State private var showingModels = false
     @AppStorage("onboarded") private var onboarded = false
     @AppStorage(ReviewPreferences.showDetailsKey) private var showDetails = ReviewPreferences.showDetailsDefault
     /// The Ask pane on the right (Inner Circle handoff); ⌘K opens it.
@@ -78,20 +76,7 @@ struct MainView: View {
                 .help(columns == .detailOnly ? "Show the meeting list (⌃⌘S)" : "Hide the meeting list (⌃⌘S)")
             }
             .sharedBackgroundVisibility(.hidden)
-            ToolbarItem(placement: .navigation) {
-                Button { showingModels = true } label: {
-                    if case .ready = models.status { Label("Models ready", systemImage: "checkmark.seal") }
-                    else if case .installing = models.status { Label("Installing models…", systemImage: "arrow.down.circle") }
-                    else { Label("Record-only — install models", systemImage: "arrow.down.circle") }
-                }
-                .help("Local speech and notes models")
-            }
-            .sharedBackgroundVisibility(.hidden)
             ToolbarItem(placement: .primaryAction) { AppearanceToggle(compact: true) }.sharedBackgroundVisibility(.hidden)
-        }
-        .sheet(isPresented: $showingModels) {
-            ModelSetupView(model: models)
-                .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { showingModels = false } } }
         }
         .sheet(isPresented: Binding(get: { !onboarded }, set: { if !$0 { onboarded = true } })) {
             OnboardingView { onboarded = true }
@@ -108,6 +93,7 @@ struct MainView: View {
 /// each row reports the selected trait. ↑/↓ move the selection, Home/End jump to the ends.
 struct LibrarySidebar: View {
     @Environment(LibraryModel.self) private var library
+    @Environment(ModelSetupModel.self) private var models
     @State private var confirming: (DestructiveAction, MeetingListItem)?
     @State private var renaming: MeetingListItem?
     @State private var newTitle = ""
@@ -155,13 +141,7 @@ struct LibrarySidebar: View {
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Meetings")
         }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            // True of every meeting: capture, transcription, notes and answers all run on this Mac.
-            Label("Processing on this Mac", systemImage: "leaf").appFont(.caption2).foregroundStyle(Color.statusOK)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, AppStyle.double).padding(.vertical, AppStyle.grid + 2)
-                .help("Recording, transcription, notes and answers run on this Mac. Nothing is uploaded.")
-        }
+        .safeAreaInset(edge: .bottom, spacing: 0) { LocalModelFooter(state: .init(models.status)) }
         .background(Color.canvas)
         .sheet(item: $renaming) { item in
             EditTextSheet(title: "Rename Meeting", text: $newTitle, help: "Shown in the meeting list, the meeting header, search and exports.") {
@@ -184,6 +164,50 @@ struct LibrarySidebar: View {
         library.selection = ids[i]
         proxy.scrollTo(ids[i])
         return .handled
+    }
+}
+
+/// The sidebar's footer (T77). Models ready: the quiet leaf and "Processing on this Mac". No local model: a warning and
+/// "No local model found". Either way a click opens Settings on the Models tab, the only home of model setup.
+struct LocalModelFooter: View {
+    enum Kind: Equatable {
+        case ready, installing, missing
+        init(_ status: ModelSetupModel.Status) {
+            switch status {
+            case .ready, .checking: self = .ready   // checking takes milliseconds at launch: no warning flash
+            case .installing: self = .installing
+            case .recordOnly, .failed: self = .missing
+            }
+        }
+    }
+    let state: Kind
+    @Environment(\.openSettings) private var openSettings
+
+    var body: some View {
+        Button { openSettings(.models) } label: {
+            Group {
+                switch state {
+                case .ready: Label("Processing on this Mac", systemImage: "leaf").foregroundStyle(Color.statusOK)
+                case .installing: Label("Installing local model…", systemImage: "arrow.down.circle").foregroundStyle(Color.brandSecondary)
+                case .missing: Label("No local model found", systemImage: "exclamationmark.triangle.fill").foregroundStyle(Color.statusAttention)
+                }
+            }
+            .appFont(.caption2, weight: state == .missing ? .medium : nil)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, AppStyle.double).padding(.vertical, AppStyle.grid + 2)
+        .help(help)
+        .accessibilityHint("Opens Settings on the Models tab")
+    }
+
+    var help: String {
+        switch state {
+        case .ready: "Recording, transcription, notes and answers run on this Mac. Nothing is uploaded. Click for model details."
+        case .installing: "The local model pack is installing. Click to see progress."
+        case .missing: "Transcripts and notes need the local model pack. Amaranth still records. Click to install it in Settings → Models."
+        }
     }
 }
 

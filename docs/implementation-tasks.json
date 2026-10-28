@@ -2398,7 +2398,7 @@
       "id": "T77",
       "title": "Models: Settings tab instead of the toolbar; sidebar footer warns when missing",
       "milestone": "Polish",
-      "status": "planned (accepted 2026-10-28, not started)",
+      "status": "done (2026-10-28): toolbar models button and sheet removed; Settings \u2192 Models is the only home; LocalModelFooter warns and opens Settings on Models",
       "optional": false,
       "depends_on": [],
       "owner_role": "App UI",
