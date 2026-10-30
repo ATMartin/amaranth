@@ -19,6 +19,19 @@ struct MainView: View {
         NavigationSplitView(columnVisibility: $columns) {
             LibrarySidebar()
                 .toolbar(removing: .sidebarToggle)
+                // The system sidebar toggle, with a list icon (T75). View ▸ Show/Hide Sidebar keeps ⌃⌘S. Declared on the
+                // sidebar column so AppKit keeps it beside the window controls, open or closed, like the Ask toggle on the right.
+                .toolbar {
+                    ToolbarItem(placement: .automatic) {
+                        Button {
+                            withAnimation { columns = columns == .detailOnly ? .all : .detailOnly }
+                        } label: {
+                            Label(columns == .detailOnly ? "Show Sidebar" : "Hide Sidebar", systemImage: "list.bullet")
+                        }
+                        .help(columns == .detailOnly ? "Show the meeting list (⌃⌘S)" : "Hide the meeting list (⌃⌘S)")
+                    }
+                    .sharedBackgroundVisibility(.hidden)
+                }
                 .navigationSplitViewColumnWidth(min: 160, ideal: 180, max: 320)   // T80: a little narrower
         } detail: {
             Group {
@@ -73,18 +86,6 @@ struct MainView: View {
         .toolbarBackground(Color.canvas, for: .windowToolbar)
         .toolbarBackgroundVisibility(.visible, for: .windowToolbar)
         .canvasTitleBar()
-        .toolbar {
-            // The system sidebar toggle, with a list icon (T75). View ▸ Show/Hide Sidebar keeps ⌃⌘S.
-            ToolbarItem(placement: .navigation) {
-                Button {
-                    withAnimation { columns = columns == .detailOnly ? .all : .detailOnly }
-                } label: {
-                    Label(columns == .detailOnly ? "Show Sidebar" : "Hide Sidebar", systemImage: "list.bullet")
-                }
-                .help(columns == .detailOnly ? "Show the meeting list (⌃⌘S)" : "Hide the meeting list (⌃⌘S)")
-            }
-            .sharedBackgroundVisibility(.hidden)
-        }
         // The shared meeting menu's Rename… and delete confirmations (T79), for the open meeting or any card.
         .sheet(isPresented: Binding(get: { library.renameRequest != nil }, set: { if !$0 { library.actionRequest = nil } })) {
             if let r = library.renameRequest {
@@ -148,6 +149,9 @@ struct LibrarySidebar: View {
     @Environment(LibraryModel.self) private var library
     @Environment(ModelSetupModel.self) private var models
     @FocusState private var focused: Bool
+    /// Where meeting titles and folder/filter names start: one grid step in from the headings (Your meetings, Folders,
+    /// the day headings), so rows read as nested under them.
+    static let rowIndent = AppStyle.grid * 2 + 2
 
     var body: some View {
         @Bindable var library = library
@@ -286,7 +290,7 @@ struct FolderRowLabel: View {
             Spacer(minLength: 2)
             Text("\(count)").appFont(.caption2, monospacedDigit: true).foregroundStyle(selected ? Color.brandText : Color.brandSecondary)
         }
-        .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.grid).padding(.vertical, 4)
+        .padding(.leading, LibrarySidebar.rowIndent).padding(.trailing, AppStyle.grid).padding(.vertical, 4)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background { if selected || targeted { RoundedRectangle(cornerRadius: 6).fill(Color.selection) } }
         .overlay { if targeted { RoundedRectangle(cornerRadius: 6).strokeBorder(Color.brandAccent, lineWidth: 1.5) } }
@@ -363,7 +367,7 @@ struct MeetingRow: View {
                 // T85: 2 pt under caption2, quieter than the title: Secondary at 80%, or Selected Metadata on the selected card.
                 .appFont(.cardMeta, monospacedDigit: true).foregroundStyle(selected ? Color.selectedMetadata : Color.brandSecondary.opacity(0.8))
         }
-        .padding(.leading, AppStyle.grid + 2).padding(.trailing, AppStyle.half + 2).padding(.vertical, 5)
+        .padding(.leading, LibrarySidebar.rowIndent).padding(.trailing, AppStyle.half + 2).padding(.vertical, 5)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
             if selected {

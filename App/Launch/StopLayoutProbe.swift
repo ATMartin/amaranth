@@ -75,20 +75,26 @@ enum StopLayoutProbe {
         let label: (NSToolbarItem) -> String = { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label }
         func frame(_ prefix: String) -> CGRect? {
             guard let item = items.first(where: { label($0).hasPrefix(prefix) || label($0).hasSuffix(prefix) }) else { return nil }
-            // SwiftUI items have no `view`; their AppKit viewer is private, so ask first: if macOS drops it the step fails
-            // instead of raising NSUnknownKeyException.
-            let viewer = item.responds(to: NSSelectorFromString("_itemViewer")) ? item.value(forKey: "_itemViewer") as? NSView : nil
-            return (item.view ?? viewer).map { $0.convert($0.bounds, to: nil) }
+            return viewerFrame(item)
         }
         let ask = frame("Ask"), appearance = frame("Switch to")
         let width = window.frame.width
-        let hidden = items.filter { item in !visible.contains { $0 === item } }.map(label)
+        // The sidebar's tracking separator (it splits the toolbar so the list toggle stays by the window controls) is never
+        // a visible item; anything else missing from visibleItems is in the overflow menu.
+        let hidden = items.filter { item in !visible.contains { $0 === item } }.map(label).filter { !$0.contains("splitViewSeparator") }
         let ok = hidden.isEmpty && ask.map { width - $0.maxX < 40 } == true
             && appearance.flatMap { a in ask.map { a.maxX <= $0.minX + 1 && $0.minX - a.maxX < 24 } } == true
         if !ok { failed = true }
         log(["step": step, "ok": "\(ok)", "items": items.map(label).joined(separator: " | "), "hidden": hidden.joined(separator: " | "),
              "ask": ask.map { "\(Int($0.minX))-\(Int($0.maxX))" } ?? "-", "appearance": appearance.map { "\(Int($0.minX))-\(Int($0.maxX))" } ?? "-",
              "windowWidth": "\(Int(width))"])
+    }
+
+    /// A toolbar item's frame in window coordinates. SwiftUI items have no `view`; their AppKit viewer is private, so ask
+    /// first: if macOS drops it the step fails instead of raising NSUnknownKeyException.
+    static func viewerFrame(_ item: NSToolbarItem) -> CGRect? {
+        let viewer = item.responds(to: NSSelectorFromString("_itemViewer")) ? item.value(forKey: "_itemViewer") as? NSView : nil
+        return (item.view ?? viewer).map { $0.convert($0.bounds, to: nil) }
     }
 
     static func run(recorder: RecorderModel, library: LibraryModel) async {
@@ -112,10 +118,22 @@ enum StopLayoutProbe {
         // menu has exactly one sidebar item.
         let sidebarItems = NSApp.mainMenu?.items.first { $0.title == "View" }?.submenu?.items
             .filter { $0.title.localizedCaseInsensitiveContains("sidebar") }.map { "\($0.title) [\($0.keyEquivalentModifierMask.rawValue >> 16):\($0.keyEquivalent)]" } ?? []
-        let button = window.toolbar?.items.first { $0.label.hasSuffix("Sidebar") }?.label ?? "-"
+        let toggle = window.toolbar?.items.first { $0.label.hasSuffix("Sidebar") }
+        let button = toggle?.label ?? "-"
         let expected = args.contains("--sidebar-closed") ? "Show Sidebar" : "Hide Sidebar"
+        // It stays beside the window controls, open or closed (the close/minimise/zoom buttons end near x 80).
+        let toggleFrame = toggle.flatMap(viewerFrame)
+        let zoomMaxX = window.standardWindowButton(.zoomButton).map { $0.convert($0.bounds, to: nil).maxX } ?? 0
+        let besideControls = toggleFrame.map { $0.minX >= zoomMaxX && $0.minX - zoomMaxX < 40 } == true
+        // Record follows the centre column: just past the sidebar when it is open, after the toggle when it is closed.
+        let record = window.toolbar?.items.first { $0.itemIdentifier.rawValue.contains("-") && $0.label.isEmpty
+            && !$0.itemIdentifier.rawValue.hasPrefix("com.apple") }.flatMap(viewerFrame)
+        let sidebarOK = button == expected && sidebarItems.count == 1 && besideControls
+        if !sidebarOK { failed = true }
         log(["step": "sidebar-toggle", "button": button, "viewMenu": sidebarItems.joined(separator: " | "),
-             "ok": "\(button == expected && sidebarItems.count == 1)"])
+             "toggle": toggleFrame.map { "\(Int($0.minX))-\(Int($0.maxX))" } ?? "-", "zoomMaxX": "\(Int(zoomMaxX))",
+             "record": record.map { "\(Int($0.minX))-\(Int($0.maxX))" } ?? "-",
+             "ok": "\(sidebarOK)"])
         toolbarCorner("toolbar-corner", window)
         // The same corner with the Ask pane closed (the preference is put back below; stop-layout.sh restores defaults too).
         let askShown = UserDefaults.standard.object(forKey: "askPaneShown")
