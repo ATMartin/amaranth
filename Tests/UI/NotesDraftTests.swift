@@ -55,6 +55,7 @@ struct NotesDraftTests {
         #expect(d.block(next)?.kind == .bullet && d.block(next)?.text == "Lyon rollout")
         let after = d.insertLine(after: next)
         #expect(d.block(after)?.kind == .bullet, "Return after a bullet starts a bullet")
+        #expect(d.insertLine(after: after) == after && d.block(after)?.kind == .paragraph, "Return on an empty bullet ends the list")
         #expect(d.insertLine(after: d.blocks.last!.id) == d.blocks.last!.id, "Return on the empty last line stays there")
         #expect(d.remove(after) == next, "the cursor goes to the line before")
         #expect(d.remove(d.blocks[0].id) == nil && d.blocks[0].section == .decisions, "generated headings stay")

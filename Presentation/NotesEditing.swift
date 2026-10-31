@@ -47,6 +47,11 @@ public struct NotesDraft: Equatable, Sendable {
     @discardableResult
     public mutating func insertLine(after id: NoteBlockID?) -> NoteBlockID {
         let i = id.flatMap { id in blocks.firstIndex { $0.id == id } }
+        // Return on an empty bullet ends the list: the line becomes a paragraph (as in other editors).
+        if let i, blocks[i].isUser, blocks[i].kind == .bullet, blocks[i].text.isEmpty {
+            blocks[i].kind = .paragraph
+            return blocks[i].id
+        }
         // Return on the empty trailing line stays on it.
         if let i, i == blocks.count - 1, blocks[i].isUser, blocks[i].text.isEmpty { return blocks[i].id }
         let kind: NoteBlock.Kind = i.map { blocks[$0].kind == .bullet ? .bullet : .paragraph } ?? .paragraph

@@ -19,6 +19,9 @@ public struct MeetingDetail: Sendable {
     public var notes: NotesDocumentRevision?
     /// Generated notes held back because the notes changed while they were generated ("New notes are ready. Replace?").
     public var pendingNotes: SummaryRevision?
+    /// The generated notes the shown document was composed from (what exports disclose); `summary` unless a newer result
+    /// is pending.
+    public var notesSummary: SummaryRevision?
     public var diskUsage: MeetingStore.DiskUsage
     public var segments: [AudioSegmentRecord]
 
@@ -78,10 +81,18 @@ public struct MeetingDetail: Sendable {
         // Until a final transcript exists, show the live provisional one (labelled as such in the UI).
         let transcript = try (m.currentTranscriptRevisionID ?? m.provisionalTranscriptRevisionID).flatMap { try store.transcriptRevision($0) }
         let display = transcript?.applyingTextCorrections(edits)
+        let summary = try store.currentSummary(id), notes = try store.currentNotesDocument(id), pending = try store.pendingNotes(id)
+        var notesSummary = summary
+        if pending != nil, let based = notes?.basedOnSummaryRevisionID, var older = try store.summaryRevision(based) {
+            older.isStale = m.currentTranscriptRevisionID != older.transcriptRevisionID || (edits.map(\.sequence).max() ?? 0) > older.editSequence
+            notesSummary = older
+        } else if pending != nil {
+            notesSummary = nil
+        }
         return MeetingDetail(meeting: m, status: MeetingStatus(meeting: m, jobs: jobs, events: events), events: events, jobs: jobs,
                              transcript: transcript, displayTranscript: display,
                              rows: transcript.map { TranscriptRows.build($0, edits: edits) } ?? [], edits: edits,
-                             summary: try store.currentSummary(id), notes: try store.currentNotesDocument(id), pendingNotes: try store.pendingNotes(id),
+                             summary: summary, notes: notes, pendingNotes: pending, notesSummary: notesSummary,
                              diskUsage: store.diskUsage(id), segments: try store.segments(id))
     }
 }

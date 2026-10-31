@@ -1,6 +1,9 @@
 # 0002 — Frozen domain contracts v1
 
 Date: 2026-10-15 · Task: T01 · Status: Accepted · `ContractVersion.current = 1`
+**Amended by [0008](0008-single-notes-field-spec.md) (Milestone R):** `EvidenceRef` gains `userNote` (a user block of
+the notes document); `personalNote` is only decoded from old summaries and never valid; `SummaryInputSnapshot` carries
+the notes document instead of the scratchpad; ScratchpadRevision and ManualNotesRevision left the domain.
 
 All persisted, exported and IPC JSON travels in a `Versioned<T>` envelope. Readers reject newer versions.
 Contract changes belong to the integration owner and must update every affected adapter, fixture and test.

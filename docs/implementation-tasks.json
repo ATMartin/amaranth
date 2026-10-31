@@ -2886,7 +2886,7 @@
       "id": "T95",
       "title": "Milestone R validation",
       "milestone": "R",
-      "status": "planned",
+      "status": "done (2026-10-31): Sonnet verdict v1 PASS WITH FIXES (docs/qualification/milestone-r-verdict-v1.md): must-fix 1 (an edited generated line and its regenerated item shared a block ID) fixed in NotesComposer.compose with tests; should-fixes 1, 3, 4, 5, 6 applied (synchronous ordered notes saves, wording + doc amendments, exports use the summary the shown notes came from, editor/Markdown polish, live-notes save marked only on success); 2 (a cited user line leaves the document: the spec's rule) and 7 (migration notes) reported to the user. Verdict v2 PASS (milestone-r-verdict-v2.md). Evidence: scripts/check.sh at T94 passed (one ASR real-model test, silenceAndToneProduceNoWords, failed once under load; 3/3 alone and green in every other full run; R does not touch ASR); pipeline-e2e pass with real models (notes job ok, evidence valid); ui-render light/dark pass; a read-only sqlite backup of the real library migrated v5 → v6 (5 meetings, 5 documents, 50 generated lines, 0 scratchpad / Your notes rows, 0 mismatched; Tests/Storage realLibraryCopyMigrates, AMARANTH_LIBRARY_COPY). Manual checklist 78–84 left for the user",
       "optional": false,
       "depends_on": [
         "T89",

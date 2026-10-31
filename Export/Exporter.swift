@@ -211,6 +211,11 @@ public enum Exporter {
                 default: out.append(ch)
                 }
             }
+            // A line that would start a list, rule or setext heading ("+ ", "- ", "---", "===", "1. ") stays text.
+            if let first = out.first, "+-=".contains(first) { out = "\\" + out }
+            if let dot = out.firstIndex(where: { !$0.isNumber }), dot != out.startIndex, ".)".contains(out[dot]) {
+                out.insert("\\", at: dot)
+            }
             return out
         }
         var out = ["# \(esc(m.title.isEmpty ? "Meeting" : m.title))", ""]

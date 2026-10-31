@@ -175,7 +175,12 @@ struct NotesDocumentEditor: View {
                     NoteLineRow(block: block, section: section, detail: detail, focused: focused,
                                 setText: { draft.setText(block.id, $0) }, setDetail: { draft.setDetail(block.id, $0) },
                                 submit: { focused.wrappedValue = draft.insertLine(after: block.id) },
-                                deleteEmpty: { focused.wrappedValue = draft.remove(block.id) },
+                                deleteEmpty: {
+                                    // The cursor goes to the line above, unless that line is hidden (collapsed Limitations).
+                                    let above = draft.remove(block.id)
+                                    let hidden = above.map { a in sections[a] == .limitations && !limitationsExpanded && draft.block(a)?.isUser == false } ?? true
+                                    focused.wrappedValue = hidden ? nil : above
+                                },
                                 removeLine: { _ = draft.remove(block.id) },
                                 removeEvidence: { draft.removeEvidence($0, from: block.id) }, jump: jump)
                 }
@@ -200,7 +205,7 @@ struct NotesDocumentEditor: View {
         case .overview:
             Eyebrow(text: block.text)
         default:
-            Eyebrow(text: block.text, detail: n == 1 ? "1 item" : "\(n) items").padding(.top, AppStyle.grid)
+            Eyebrow(text: block.text, detail: n == 0 ? nil : n == 1 ? "1 item" : "\(n) items").padding(.top, AppStyle.grid)
         }
     }
 }

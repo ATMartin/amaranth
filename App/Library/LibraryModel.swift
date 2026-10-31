@@ -396,14 +396,20 @@ final class LibraryModel {
         perform { _ = try scheduler?.enqueueNotes(id) }
     }
 
-    /// Saves the pane's draft as a new notes revision (spec 0008 §6) and returns it. `immediately`: synchronously (meeting
-    /// switch, leaving the pane, quit), so nothing typed is lost.
+    /// Saves the pane's draft as a new notes revision (spec 0008 §6) and returns it, or nil when nothing was written.
+    /// Always synchronous (one small row), so saves land in the order they were made and a debounced save can never
+    /// overtake the flush on meeting switch or quit. `immediately` (the flush) skips the refresh.
     @discardableResult
     func saveNotes(_ draft: NotesDraft, immediately: Bool = false) -> NotesDocumentRevision? {
         guard let store, draft.isDirty else { return nil }
         let rev = draft.revision()
-        if immediately { return (try? store.saveNotesDocument(rev)) == true ? rev : nil }
-        perform { try store.saveNotesDocument(rev) }
+        do {
+            guard try store.saveNotesDocument(rev) else { return nil }
+        } catch {
+            self.error = error.localizedDescription
+            return nil
+        }
+        if !immediately { reloadDetail() }
         return rev
     }
 

@@ -338,9 +338,9 @@ final class RecorderModel {
 
     private func saveNotes() {
         guard let store, let id = meetingID, notes != savedNotes else { return }
-        _ = try? notes.save(for: id, in: store)
-        savedNotes = notes
         lastNotesSave = Date()
+        // Only a written save counts; a failed one is retried on the next tick and at Stop.
+        if (try? notes.save(for: id, in: store)) != nil { savedNotes = notes }
     }
 
     func pause() { session?.pause(); tick() }

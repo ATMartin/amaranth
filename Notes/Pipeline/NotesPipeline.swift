@@ -93,7 +93,7 @@ public final class NotesPipeline: @unchecked Sendable {
         var personalTokens = 0
         personal = personal.prefix { l in personalTokens += generator.countTokens(l.text) + 12; return personalTokens <= options.personalNoteTokenLimit }
         if personal.count < doc.lines.filter(\.isPersonalNote).count {
-            limitations.append("Only the first part of your included personal notes fit in the notes model's context.")
+            limitations.append("Only the first part of the lines you wrote fit in the notes model's context.")
         }
         let chunks = Perf.measure("notes.chunking") { makeChunks(spoken, doc: doc, reserve: personalTokens) }
         diagnostics.chunks = chunks.count

@@ -147,7 +147,7 @@ enum MeetingExport {
     /// `folderName`: the meeting's folder, named in the JSON export (T39).
     @MainActor static func run(_ f: Format, _ detail: MeetingDetail, folderName: String?) {
         guard let t = detail.displayTranscript else { return }
-        let input = ExportInput(meeting: detail.meeting, transcript: t, summary: detail.summary, notes: detail.notes, folderName: folderName)
+        let input = ExportInput(meeting: detail.meeting, transcript: t, summary: detail.notesSummary, notes: detail.notes, folderName: folderName)
         let panel = NSSavePanel()
         let base = detail.meeting.title.replacingOccurrences(of: "/", with: "-")
         switch f {

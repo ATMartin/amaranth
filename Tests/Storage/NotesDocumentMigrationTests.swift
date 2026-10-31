@@ -152,4 +152,38 @@ struct NotesDocumentMigrationTests {
         #expect(try store.saveNotesDocument(three) == false)
         #expect(try store.saveNotesDocument(NotesDocumentRevision(meetingID: MeetingID("nope"), createdAt: Date(), origin: .edited, blocks: [])) == false)
     }
+
+    /// T95: migrates a copy of a real library (path in AMARANTH_LIBRARY_COPY; never the library itself) and checks every
+    /// live meeting gets exactly one document whose generated lines match its current notes. Prints counts only.
+    @Test func realLibraryCopyMigrates() throws {
+        guard let path = ProcessInfo.processInfo.environment["AMARANTH_LIBRARY_COPY"] else { return }
+        let root = URL(filePath: path)
+        #expect(!root.path.contains("Library/Application Support"), "a copy, never the library itself")
+        let before = try SQLiteDB(path: root.appending(path: "amaranth.sqlite").path)
+        let version = try before.run("PRAGMA user_version").first?["user_version"]?.int ?? 0
+        let pads = try before.run("SELECT count(*) AS n FROM scratchpad_revisions").first?["n"]?.int ?? 0
+        let manual = try before.run("SELECT count(*) AS n FROM manual_notes_revisions").first?["n"]?.int ?? 0
+        let store = try MeetingStore(root: root)
+        var docs = 0, userLines = 0, modelLines = 0, mismatched = 0
+        let meetings = try store.meetings()
+        for m in meetings {
+            let revs = try store.notesDocumentRevisions(m.id)
+            #expect(revs.count == 1, "one document per meeting")
+            docs += revs.count
+            guard let d = revs.first else { continue }
+            userLines += d.userBlocks.count
+            modelLines += d.blocks.filter { !$0.isUser && $0.section == nil }.count
+            if let s = try store.currentSummary(m.id) {
+                let items = s.content.overview + s.content.topics + s.content.decisions + s.content.actionItems + s.content.openQuestions + s.content.limitations
+                if d.blocks.filter({ !$0.isUser && $0.section == nil }).map(\.id.rawValue) != items.map(\.id.rawValue) { mismatched += 1 }
+                let pending = try store.pendingNotes(m.id)
+                #expect(d.basedOnSummaryRevisionID == s.id && pending == nil)
+            }
+        }
+        #expect(mismatched == 0)
+        let after = try store.withDB { db in try db.run("PRAGMA user_version").first?["user_version"]?.int ?? 0 }
+        print(#"{"realLibraryCopy":{"versionBefore":\#(version),"versionAfter":\#(after),"meetings":\#(meetings.count),"documents":\#(docs),"#
+              + #""modelLines":\#(modelLines),"userLines":\#(userLines),"scratchpadRowsBefore":\#(pads),"yourNotesRowsBefore":\#(manual),"mismatched":\#(mismatched)}}"#)
+    }
 }
+

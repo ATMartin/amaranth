@@ -59,6 +59,20 @@ struct NotesDocumentTests {
         #expect(plain.blocks == [kept])
     }
 
+    /// Validator must-fix (T95): a generated line the user edited keeps its item's ID; regenerating the same item must
+    /// not produce two blocks with one ID.
+    @Test func regeneratingAnEditedLineKeepsBlockIDsUnique() {
+        let item = SummaryItem(id: SummaryItemID("overview-0"), kind: .overview, text: "They reviewed the rollout.", evidence: [spoken])
+        let s = summary(SummaryContent(overview: [item]))
+        var doc = NotesComposer.compose(summary: s, userBlocks: [], meetingID: m, createdAt: Date())
+        let i = doc.blocks.firstIndex { $0.id == NoteBlockID("overview-0") }!
+        doc.blocks[i] = doc.blocks[i].editing(text: "They reviewed the Lyon rollout.")
+        let again = NotesComposer.compose(summary: s, userBlocks: doc.userBlocks, meetingID: m, createdAt: Date())
+        #expect(Set(again.blocks.map(\.id)).count == again.blocks.count)
+        #expect(again.blocks.first { $0.id == NoteBlockID("overview-0") }?.isUser == false, "the generated line keeps the item's ID")
+        #expect(again.userBlocks.map(\.text) == ["They reviewed the Lyon rollout."], "the user's edit is kept, under its own ID")
+    }
+
     @Test func plainTextBecomesUserBlocks() {
         let blocks = NotesComposer.userBlocks(fromText: "# Client\n\n- Lyon rollout\n* budget\n• owner\n#hashtag stays text\nplain line\n", typedAt: 3)
         #expect(blocks.map(\.kind) == [.heading, .bullet, .bullet, .bullet, .paragraph, .paragraph])
@@ -82,6 +96,7 @@ struct NotesDocumentTests {
             let s = summary(SummaryContent(overview: items.filter { $0.kind == .overview }, decisions: items.filter { $0.kind == .decision },
                                            actionItems: items.filter { $0.kind == .actionItem }, openQuestions: items.filter { $0.kind == .openQuestion }))
             let doc = NotesComposer.compose(summary: Bool.random(using: &rng) ? s : nil, userBlocks: user, meetingID: m, createdAt: Date())
+            #expect(Set(doc.blocks.map(\.id)).count == doc.blocks.count, "block IDs are unique")
             let cited = Set(s.content.allItems.flatMap(\.evidence).compactMap { if case .userNote(let n) = $0 { n.blockID } else { nil } })
             for b in user where !b.text.trimmingCharacters(in: .whitespaces).isEmpty {
                 #expect(doc.blocks.contains(b) || (doc.basedOnSummaryRevisionID != nil && cited.contains(b.id)), "\(b.text) lost")

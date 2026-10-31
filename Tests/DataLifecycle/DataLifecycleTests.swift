@@ -124,9 +124,11 @@ struct ExportTests {
         var hostile = f.transcript
         hostile.segments[0].words[0].text = "![x](http://example.com/p.png) <img src=x> [click](http://evil)"
         var hostileNotes = doc
-        hostileNotes.blocks += NotesComposer.userBlocks(fromText: "[phish](http://evil) <script>")
+        hostileNotes.blocks += NotesComposer.userBlocks(fromText: "[phish](http://evil) <script>\n---\n1. not a list\n+ plus")
         let md = Exporter.markdown(ExportInput(meeting: input.meeting, transcript: hostile, notes: hostileNotes))
         #expect(!md.contains("![x](") && !md.contains("<img") && !md.contains("[click](") && !md.contains("[phish](") && !md.contains("<script"))
+        let lines = md.components(separatedBy: "\n")
+        #expect(!lines.contains("---") && !lines.contains { $0.hasPrefix("1. not") || $0.hasPrefix("+ plus") }, "typed lines can't become rules or lists")
 
         // JSON (version 2): versioned, decodable; the generated record verbatim and the notes document with each block's
         // author, typed-at time and evidence.

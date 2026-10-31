@@ -166,7 +166,7 @@ entirely (not keep them as a hidden intermediate step), and kept that choice aft
 
 **Version.** `NotesPrompts.version` and `PipelineVersions.notes` → `notes-v3`: the prompts changed, and checkpoint keys
 and job config hashes must not mix versions (a test pins them equal). This does **not** make existing notes stale:
-staleness is computed from the transcript revision, edit sequence and scratchpad only (`NotesRecords`), and the
+staleness is computed from the transcript revision and edit sequence only since spec 0008 (scratchpad until then; `NotesRecords`), and the
 scheduler only auto-enqueues notes for meetings that have none. Existing notes keep their stored topics until
 regenerated: the Notes tab no longer shows them, but exports of those old revisions still include a Topics section.
 

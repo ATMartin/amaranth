@@ -66,6 +66,7 @@ pairs. Light mode is unchanged and keeps AA. Revisit before release: a lighter s
 - Notes: a "Meeting notes · Draft" eyebrow, the overview's first item as a lede, Decisions in sage-edged blocks, Next
   steps with owner and date (or "No owner stated · no date stated"), Still open, and Details to confirm (limitations).
   Below a hairline: Your notes and Private scratchpad, storage unchanged. Source links still show with Details on (T25).
+  *(Superseded by [0008](../0008-single-notes-field-spec.md): one editable notes field; no separate editors.)*
 - Audio details: a plain-language headline, one notice per stretch of missing audio (`Presentation/AudioDetails.swift`
   reports only the source, times, and whether the other source has audio there, never a cause), with Listen around.
   Then sources, storage and retention, the raw events under a disclosure, and Delete audio… (confirmation as before).

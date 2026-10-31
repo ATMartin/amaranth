@@ -139,7 +139,11 @@ public enum NotesComposer {
         let cited = Set((summary?.content.allItems ?? []).flatMap { $0.evidence + $0.ownerEvidence }.compactMap { ref -> NoteBlockID? in
             if case .userNote(let n) = ref { n.blockID } else { nil }
         })
+        // A generated line the user edited keeps its item's ID; when the same item is generated again, the user's copy
+        // gets a fresh ID so no two blocks share one.
+        let modelIDs = Set(blocks.map(\.id))
         let kept = userBlocks.filter { !cited.contains($0.id) && !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            .map { b -> NoteBlock in var b = b; if modelIDs.contains(b.id) { b.id = NoteBlockID() }; return b }
         if !kept.isEmpty {
             if !blocks.isEmpty {
                 blocks.append(NoteBlock(kind: .heading, text: NoteSection.alsoNoted.title, section: .alsoNoted, author: .model(summaryItemID: nil, uncertain: false)))
