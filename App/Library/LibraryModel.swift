@@ -396,6 +396,26 @@ final class LibraryModel {
         perform { _ = try scheduler?.enqueueNotes(id) }
     }
 
+    /// Saves the pane's draft as a new notes revision (spec 0008 §6) and returns it. `immediately`: synchronously (meeting
+    /// switch, leaving the pane, quit), so nothing typed is lost.
+    @discardableResult
+    func saveNotes(_ draft: NotesDraft, immediately: Bool = false) -> NotesDocumentRevision? {
+        guard let store, draft.isDirty else { return nil }
+        let rev = draft.revision()
+        if immediately { return (try? store.saveNotesDocument(rev)) == true ? rev : nil }
+        perform { try store.saveNotesDocument(rev) }
+        return rev
+    }
+
+    /// Previous Versions, newest first.
+    func notesRevisions(_ id: MeetingID) -> [NotesDocumentRevision] { (try? store?.notesDocumentRevisions(id, limit: 30)) ?? [] }
+
+    /// Restores an earlier version as the newest revision; the current one stays in the list.
+    func restoreNotes(_ old: NotesDocumentRevision) {
+        guard let store else { return }
+        perform { try store.saveNotesDocument(NotesEditing.restoring(old, currentSummaryID: try store.currentSummary(old.meetingID)?.id)) }
+    }
+
     /// Notes generated while the user changed the notes (spec 0008 §4): Replace composes them with the current lines.
     func replaceWithPendingNotes(_ id: MeetingID) {
         guard let store else { return }
@@ -406,40 +426,6 @@ final class LibraryModel {
     func dismissPendingNotes(_ id: MeetingID) {
         guard let store else { return }
         perform { try store.dismissPendingNotes(id) }
-    }
-
-    /// `immediately`: write synchronously (used when flushing on meeting switch or quit, so nothing typed is lost).
-    func saveUserNotes(_ id: MeetingID, markdown: String, immediately: Bool = false) {
-        guard let store else { return }
-        if immediately {
-            if (try? store.latestManualNotes(id))?.markdown != markdown {
-                try? store.saveManualNotes(ManualNotesRevision(meetingID: id, basedOnSummaryRevisionID: try? store.currentSummary(id)?.id,
-                                                               markdown: markdown, createdAt: Date()))
-            }
-            return
-        }
-        perform {
-            guard try store.latestManualNotes(id)?.markdown != markdown else { return }
-            try store.saveManualNotes(ManualNotesRevision(meetingID: id, basedOnSummaryRevisionID: try store.currentSummary(id)?.id,
-                                                          markdown: markdown, createdAt: Date()))
-        }
-    }
-
-    /// Each change is a new scratchpad revision (summaries cite scratchpad text by revision and offset).
-    func saveScratchpad(_ id: MeetingID, text: String, include: Bool, immediately: Bool = false) {
-        guard let store else { return }
-        if immediately {
-            let current = try? store.latestScratchpad(id)
-            if current?.text != text || current?.includeInSummary != include {
-                try? store.saveScratchpad(ScratchpadRevision(meetingID: id, text: text, includeInSummary: include, createdAt: Date()))
-            }
-            return
-        }
-        perform {
-            let current = try store.latestScratchpad(id)
-            guard current?.text != text || current?.includeInSummary != include else { return }
-            try store.saveScratchpad(ScratchpadRevision(meetingID: id, text: text, includeInSummary: include, createdAt: Date()))
-        }
     }
 
     func delete(_ action: DestructiveAction, _ id: MeetingID) {

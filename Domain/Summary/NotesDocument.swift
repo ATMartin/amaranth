@@ -163,7 +163,7 @@ public enum NotesComposer {
                     ? "\(item.owner ?? "No owner stated")  ·  \(item.due?.originalText ?? "no date stated")" : nil
                 // The item's ID names the block, so search and Ask refs stay the generated item's.
                 out.append(NoteBlock(id: NoteBlockID(item.id.rawValue), kind: kind, text: text, detail: detail, author: .model(summaryItemID: item.id, uncertain: item.uncertain),
-                                     evidence: item.evidence + item.ownerEvidence.filter { !item.evidence.contains($0) }))
+                                     evidence: item.evidence))   // as shown before; owner evidence stays in the SummaryRevision
             }
         }
         section(.overview, c.overview, .paragraph)

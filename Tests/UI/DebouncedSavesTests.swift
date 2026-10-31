@@ -24,10 +24,4 @@ import Testing
         try await Task.sleep(for: .milliseconds(400))
         #expect(calls.count == 1 && calls[0] == ("notes", false) && !saves.hasPending)
     }
-
-    @Test func collapsedHintCountsWords() {
-        #expect(CollapsedEditorHint.text(for: "") == nil && CollapsedEditorHint.text(for: "  \n ") == nil)
-        #expect(CollapsedEditorHint.text(for: "call") == "1 word")
-        #expect(CollapsedEditorHint.text(for: "call the\nvendor today") == "4 words")
-    }
 }

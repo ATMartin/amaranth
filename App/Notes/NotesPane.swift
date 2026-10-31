@@ -3,58 +3,27 @@ import AppKit
 import Domain
 import Presentation
 
-/// Generated notes with their evidence, the user's own notes (never overwritten by regeneration), and the private
-/// scratchpad with its explicit "include when generating notes" switch. Both editors start collapsed (T24).
+/// The meeting's notes (spec 0008): one editable document. Generated sections look as they did (an eyebrow per section,
+/// decisions on the sage edge, next steps with their owner and date, Limitations collapsed); every line can be edited,
+/// and lines the user writes anywhere are kept through regeneration. A trailing empty line is always there to type into.
 struct NotesPane: View {
     let detail: MeetingDetail
     let notesModelInstalled: Bool
     let showTranscript: () -> Void
     @Environment(LibraryModel.self) private var library
-    @State private var userNotes = ""
-    @State private var scratchpad = ""
-    @State private var includeScratchpad = false
+    @State private var draft: NotesDraft?
     @State private var saves = DebouncedSaves()
-    @FocusState private var focusedEditor: Editor?
-    enum Editor: Hashable { case notes, scratchpad }
-    @AppStorage("notesUserNotesExpanded") private var userNotesExpanded = false
-    @AppStorage("notesScratchpadExpanded") private var scratchpadExpanded = false
+    @State private var confirmRegenerate = false
+    @State private var versions: [NotesDocumentRevision] = []
+    @FocusState private var focused: NoteBlockID?
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: AppStyle.double + 4) {
                 stateBanner
-                if let s = detail.summary { generated(s) }
-                // The user's own text, apart from the generated draft (handoff): same storage and privacy as before.
-                Hairline().padding(.top, AppStyle.grid)
-                CollapsibleEditor(title: "Your notes", systemImage: "square.and.pencil", hint: CollapsedEditorHint.text(for: userNotes),
-                                  help: "Yours alone: regenerating notes never changes this text.", isExpanded: expansion($userNotesExpanded)) {
-                    TextEditor(text: $userNotes).appFont(.body).frame(minHeight: 120)
-                        .editableField(focused: $focusedEditor, as: .notes, isEmpty: userNotes.isEmpty, placeholder: "Write your own notes…")
-                        .onChange(of: userNotes) { _, v in
-                            let id = detail.meeting.id
-                            saves.schedule("notes") { now in library.saveUserNotes(id, markdown: v, immediately: now) }
-                        }
-                }
-                CollapsibleEditor(title: "Private scratchpad", systemImage: "lock",
-                                  hint: CollapsedEditorHint.text(for: scratchpad).map { includeScratchpad ? $0 + " · used for notes" : $0 } ?? "Only for you",
-                                  help: "Private: not exported or searched unless you choose to.", isExpanded: expansion($scratchpadExpanded)) {
-                    VStack(alignment: .leading) {
-                        TextEditor(text: $scratchpad).appFont(.body).frame(minHeight: 80)
-                            .editableField(focused: $focusedEditor, as: .scratchpad, isEmpty: scratchpad.isEmpty, placeholder: "Private notes, only on this Mac…")
-                            .onChange(of: scratchpad) { _, v in
-                                let id = detail.meeting.id
-                                // Read the switch when the save runs, not when typing happened (flipping it within the
-                                // debounce window must not be reverted).
-                                saves.schedule("scratchpad") { now in library.saveScratchpad(id, text: v, include: includeScratchpad, immediately: now) }
-                            }
-                        Toggle("Use these private notes when generating notes", isOn: $includeScratchpad)
-                            .onChange(of: includeScratchpad) { _, v in
-                                saves.cancel("scratchpad")   // this save includes the latest text
-                                library.saveScratchpad(detail.meeting.id, text: scratchpad, include: v)
-                            }
-                        Text("Private: not exported or searched unless you choose to. Notes that used them are labelled.")
-                            .appFont(.caption).foregroundStyle(Color.brandSecondary)
-                    }
+                if let draft {
+                    NotesDocumentEditor(draft: Binding(get: { draft }, set: { self.draft = $0; scheduleSave() }), detail: detail,
+                                        focused: $focused, jump: jump)
                 }
             }
             .appFont(.body)
@@ -63,55 +32,106 @@ struct NotesPane: View {
             .frame(maxWidth: 760, alignment: .leading)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .onAppear(perform: loadEditors)
-        .onChange(of: detail.meeting.id) { _, _ in flushPendingSave(); loadEditors() }
+        .onAppear(perform: load)
+        .onChange(of: detail.meeting.id) { _, _ in flushPendingSave(); load() }
+        // Notes written elsewhere (generation published, Replace, a restore) replace the draft unless the user is typing:
+        // then their save is based on the older notes and the new ones show as pending instead of being overwritten.
+        .onChange(of: detail.notes?.id) { _, id in
+            if id != draft?.base?.id, draft?.isDirty != true { load() }
+        }
         .onDisappear { flushPendingSave() }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in flushPendingSave() }
+        .confirmationDialog(NotesEditing.regenerateQuestion, isPresented: $confirmRegenerate) {
+            Button("Regenerate") { regenerate() }
+            Button("Cancel", role: .cancel) {}
+        } message: { Text(NotesEditing.regenerateExplanation) }
     }
 
-    func loadEditors() {
-        userNotes = detail.userNotes?.markdown ?? ""
-        scratchpad = detail.scratchpad?.text ?? ""
-        includeScratchpad = detail.scratchpad?.includeInSummary ?? false
+    func load() {
+        draft = NotesDraft(meetingID: detail.meeting.id, base: detail.notes)
     }
 
-    /// Writes pending saves synchronously (meeting switch, collapsing, closing, quitting) so typed text is never lost.
+    func scheduleSave() {
+        guard let d = draft, d.isDirty else { saves.cancel("notes"); return }
+        saves.schedule("notes") { now in
+            if let saved = library.saveNotes(d, immediately: now), draft?.meetingID == saved.meetingID { draft?.didSave(saved) }
+        }
+    }
+
+    /// Writes the pending save synchronously (meeting switch, closing, quitting) so typed text is never lost.
     func flushPendingSave() { saves.flush() }
 
-    /// Collapsing an editor writes its debounced edit first.
-    func expansion(_ stored: Binding<Bool>) -> Binding<Bool> {
-        Binding(get: { stored.wrappedValue }, set: { v in
-            if !v { flushPendingSave() }
-            stored.wrappedValue = v
-        })
+    /// Spec 0008 §5: asks first when the notes have the user's edits since they were generated.
+    func requestRegenerate() {
+        flushPendingSave()
+        if NotesEditing.regenerateNeedsConfirmation(draft?.base) { confirmRegenerate = true } else { regenerate() }
+    }
+
+    func regenerate() {
+        flushPendingSave()
+        library.regenerateNotes(detail.meeting.id)
     }
 
     @ViewBuilder var stateBanner: some View {
+        if detail.pendingNotes != nil {
+            banner("New notes are ready. Replace?", "sparkles", .statusAttention) {
+                HStack {
+                    Button("Dismiss") { library.dismissPendingNotes(detail.meeting.id) }
+                        .help("Keep these notes as they are")
+                    Button("Replace") { flushPendingSave(); library.replaceWithPendingNotes(detail.meeting.id) }
+                        .help("Use the new notes. Lines you wrote are kept, and this version stays in Previous Versions")
+                }
+            }
+        }
         switch detail.notesState(notesModelInstalled: notesModelInstalled) {
         case .none:
-            banner("No notes yet.", "doc.text", .brandSecondary) { Button("Generate Notes") { library.regenerateNotes(detail.meeting.id) } }
+            banner("No generated notes yet.", "doc.text", .brandSecondary) { Button("Generate Notes") { requestRegenerate() } }
         case .waiting(let why):
             banner(why, "hourglass", .brandSecondary) { EmptyView() }
         case .generating(let p):
             banner("Generating notes on this Mac… \(Int(p * 100))%", "gearshape.2", .brandSecondary) { ProgressView(value: p).frame(width: 120) }
         case .failed(let code):
             banner("Notes could not be generated (\(code)). The transcript is unaffected.", "xmark.octagon", .statusFailed) {
-                Button("Try Again") { library.regenerateNotes(detail.meeting.id) }
+                Button("Try Again") { requestRegenerate() }
             }
         case .unavailable(let why):
             banner(why, "info.circle", .brandSecondary) { EmptyView() }
         case .ready(let stale, let failure):
             if stale {
                 banner("The transcript or speakers changed after these notes were made.", "exclamationmark.arrow.circlepath", .statusAttention) {
-                    Button("Regenerate") { library.regenerateNotes(detail.meeting.id) }
+                    Button("Regenerate") { requestRegenerate() }
                 }
-            }
-            if let failure {
+            } else if let failure {
                 banner("Regenerating failed (\(failure)); these are the previous notes.", "exclamationmark.triangle", .statusAttention) {
-                    Button("Try Again") { library.regenerateNotes(detail.meeting.id) }
+                    Button("Try Again") { requestRegenerate() }
                 }
             }
         }
+        if detail.notes != nil {
+            HStack(spacing: AppStyle.grid) {
+                Spacer()
+                versionsMenu
+                if detail.pendingNotes == nil, case .ready(false, nil) = detail.notesState(notesModelInstalled: notesModelInstalled) {
+                    Button("Regenerate") { requestRegenerate() }.controlSize(.small).disabled(!notesModelInstalled)
+                }
+            }
+        }
+    }
+
+    /// Recent revisions by time; choosing one restores a copy of it as the newest revision.
+    var versionsMenu: some View {
+        Menu {
+            ForEach(versions.dropFirst()) { r in
+                Button(NotesEditing.versionLabel(r)) { flushPendingSave(); library.restoreNotes(r) }
+            }
+            if versions.count < 2 { Text("No earlier versions") }
+        } label: {
+            Label("Previous Versions", systemImage: "clock.arrow.circlepath")
+        }
+        .menuStyle(.button).controlSize(.small).fixedSize()
+        .onAppear { versions = library.notesRevisions(detail.meeting.id) }
+        .onChange(of: detail.notes?.id) { _, _ in versions = library.notesRevisions(detail.meeting.id) }
+        .help("Restore an earlier version of these notes")
     }
 
     /// One line, no box (T45): icon and text in the state's colour, a small button on the right. The text stays; failed
@@ -125,63 +145,6 @@ struct NotesPane: View {
         .padding(.vertical, AppStyle.half)
     }
 
-    /// The generated draft (handoff): a Meeting notes eyebrow, the overview at body size (T84: no larger lede), decisions in
-    /// sage-edged blocks, next steps with their owner and date (or that none was stated), open questions, and what the
-    /// model could not establish (Limitations), each in its own section.
-    @ViewBuilder func generated(_ s: SummaryRevision) -> some View {
-        VStack(alignment: .leading, spacing: AppStyle.half) {
-            Eyebrow(text: "Meeting notes")
-            if s.influencedByPersonalNotes {
-                Label("These notes also used your private scratchpad.", systemImage: "lock.doc").appFont(.caption).foregroundStyle(Color.brandSecondary)
-            }
-        }
-        if !s.content.overview.isEmpty {
-            VStack(alignment: .leading, spacing: AppStyle.grid + 2) {
-                ForEach(s.content.overview) { item in
-                    NoteItemRow(item: item, detail: detail, jump: jump)
-                }
-            }
-        }
-        if !s.content.decisions.isEmpty {
-            section("Decisions", s.content.decisions.count) {
-                ForEach(s.content.decisions) { item in
-                    NoteItemRow(item: item, detail: detail, jump: jump)
-                        .padding(.vertical, AppStyle.grid).padding(.leading, AppStyle.double)
-                        .overlay(alignment: .leading) { Rectangle().fill(Color.sage).frame(width: 3) }
-                }
-            }
-        }
-        if !s.content.actionItems.isEmpty {
-            section("Next steps", s.content.actionItems.count) {
-                ForEach(s.content.actionItems) { NoteItemRow(item: $0, detail: detail, jump: jump) }
-            }
-        }
-        if !s.content.openQuestions.isEmpty {
-            section("Still open", s.content.openQuestions.count) {
-                ForEach(s.content.openQuestions) { NoteItemRow(item: $0, detail: detail, jump: jump) }
-            }
-        }
-        if !s.content.limitations.isEmpty {
-            DisclosureGroup {
-                VStack(alignment: .leading, spacing: 4) {
-                    ForEach(s.content.limitations) { Text("• " + $0.text).appFont(.callout).foregroundStyle(Color.brandSecondary) }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            } label: {
-                Label("Limitations (\(s.content.limitations.count))", systemImage: "info.circle").appFont(.callout, weight: .medium)
-                    .foregroundStyle(Color.brandSecondary)
-            }
-            .help("What the notes model could not confirm from the transcript")
-        }
-    }
-
-    func section<C: View>(_ title: String, _ count: Int, @ViewBuilder _ content: () -> C) -> some View {
-        VStack(alignment: .leading, spacing: AppStyle.grid + 4) {
-            Eyebrow(text: title, detail: count == 1 ? "1 item" : "\(count) items")
-            content()
-        }
-    }
-
     func jump(_ e: TranscriptEvidence) {
         guard let t = detail.transcript, let row = TranscriptRows.row(for: e, in: detail.rows, revision: t) else { return }
         library.focusRowID = row.id
@@ -189,46 +152,115 @@ struct NotesPane: View {
     }
 }
 
-struct NoteItemRow: View {
-    let item: SummaryItem
+/// The notes document as editable lines. Return adds a line after the current one; Delete on an empty line removes it.
+/// In a line you write, "# " starts a heading and "- " a bullet.
+struct NotesDocumentEditor: View {
+    @Binding var draft: NotesDraft
     let detail: MeetingDetail
+    var focused: FocusState<NoteBlockID?>.Binding
+    let jump: (TranscriptEvidence) -> Void
+    @State private var limitationsExpanded = false
+
+    var body: some View {
+        let blocks = draft.blocks
+        let sections = NotesEditing.sections(blocks)
+        VStack(alignment: .leading, spacing: AppStyle.grid + 4) {
+            ForEach(blocks) { block in
+                let section = sections[block.id]
+                if section == .limitations && !limitationsExpanded && !block.isUser {
+                    EmptyView()
+                } else if let s = block.section {
+                    heading(block, s)
+                } else {
+                    NoteLineRow(block: block, section: section, detail: detail, focused: focused,
+                                setText: { draft.setText(block.id, $0) }, setDetail: { draft.setDetail(block.id, $0) },
+                                submit: { focused.wrappedValue = draft.insertLine(after: block.id) },
+                                deleteEmpty: { focused.wrappedValue = draft.remove(block.id) },
+                                removeLine: { _ = draft.remove(block.id) },
+                                removeEvidence: { draft.removeEvidence($0, from: block.id) }, jump: jump)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder func heading(_ block: NoteBlock, _ s: NoteSection) -> some View {
+        let n = NotesEditing.itemCount(after: block.id, in: draft.blocks)
+        switch s {
+        case .limitations:
+            Button { limitationsExpanded.toggle() } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "chevron.right").appFont(.caption, weight: .bold).rotationEffect(.degrees(limitationsExpanded ? 90 : 0))
+                    Label("Limitations (\(n))", systemImage: "info.circle").appFont(.callout, weight: .medium)
+                }
+                .foregroundStyle(Color.brandSecondary).contentShape(Rectangle())
+            }
+            .buttonStyle(.plain).padding(.top, AppStyle.grid)
+            .help("What the notes model could not confirm from the transcript")
+            .accessibilityValue(limitationsExpanded ? "Expanded" : "Collapsed")
+        case .overview:
+            Eyebrow(text: block.text)
+        default:
+            Eyebrow(text: block.text, detail: n == 1 ? "1 item" : "\(n) items").padding(.top, AppStyle.grid)
+        }
+    }
+}
+
+struct NoteLineRow: View {
+    let block: NoteBlock
+    let section: NoteSection?
+    let detail: MeetingDetail
+    var focused: FocusState<NoteBlockID?>.Binding
+    let setText: (String) -> Void
+    let setDetail: (String) -> Void
+    let submit: () -> Void
+    let deleteEmpty: () -> Void
+    let removeLine: () -> Void
+    let removeEvidence: (EvidenceRef) -> Void
     let jump: (TranscriptEvidence) -> Void
     @Environment(\.showDetails) private var showDetails
     @Environment(\.textScale) private var scale
 
     var transcriptEvidence: [TranscriptEvidence] {
-        item.evidence.compactMap { if case .transcript(let e) = $0 { e } else { nil } }
+        block.evidence.compactMap { if case .transcript(let e) = $0 { e } else { nil } }
     }
+    var muted: Bool { section == .limitations && !block.isUser }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: AppStyle.half) {
-            HStack(alignment: .firstTextBaseline) {
-                if let t = item.title { Text(t).appFont(.body, weight: .semibold) }
-                Text(item.text).appFont(.body).lineSpacing(AppStyle.readingLineSpacing(scale) * 0.6)
-                    .textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
-                if item.uncertain {
+        let row = VStack(alignment: .leading, spacing: AppStyle.half) {
+            HStack(alignment: .firstTextBaseline, spacing: AppStyle.grid) {
+                if block.kind == .bullet { Text("•").foregroundStyle(Color.brandSecondary).accessibilityHidden(true) }
+                TextField(placeholder, text: Binding(get: { block.text }, set: setText), axis: .vertical)
+                    .textFieldStyle(.plain)
+                    .appFont(muted ? .callout : .body, weight: block.kind == .heading ? .semibold : .regular)
+                    .foregroundStyle(muted ? Color.brandSecondary : Color.brandText)
+                    .lineSpacing(AppStyle.readingLineSpacing(scale) * 0.6)
+                    .focused(focused, equals: block.id)
+                    .onSubmit(submit)
+                    .onKeyPress(.delete) {
+                        guard block.text.isEmpty else { return .ignored }
+                        deleteEmpty()
+                        return .handled
+                    }
+                    .accessibilityLabel(block.isUser ? "Your note" : "Note")
+                if block.isUncertain {
                     Image(systemName: "questionmark.circle").font(.system(size: AppStyle.icon * scale)).foregroundStyle(Color.statusAttention)
                         .help("Not fully confirmed by the transcript — check the cited passage").accessibilityLabel("Not fully confirmed by the transcript")
                 }
             }
-            if item.kind == .actionItem || item.owner != nil || item.due != nil {
-                // Missing data is said, never filled in.
-                Text("\(item.owner ?? "No owner stated")  ·  \(item.due?.originalText ?? "no date stated")")
-                    .appFont(.caption).foregroundStyle(Color.brandSecondary)
+            if let d = block.detail {
+                // Missing data is said, never filled in; the line is editable like the text.
+                TextField("Owner · date", text: Binding(get: { d }, set: setDetail))
+                    .textFieldStyle(.plain).appFont(.caption).foregroundStyle(Color.brandSecondary)
+                    .padding(.leading, block.kind == .bullet ? AppStyle.double : 0)
             }
             // Evidence is attribution, shown only with Details on; the uncertain marker above is a warning and always shows.
-            if showDetails {
+            if showDetails, !block.evidence.isEmpty {
                 HStack(spacing: AppStyle.grid + 2) {
-                    ForEach(Array(item.evidence.enumerated()), id: \.offset) { _, ref in
-                        switch ref {
-                        case .transcript(let e):
-                            Button(time(e)) { jump(e) }.buttonStyle(SourceLinkStyle()).help("Show in transcript")
-                                .accessibilityLabel("Source at \(time(e))")
-                        case .userNote, .personalNote:
-                            Label("your note", systemImage: "square.and.pencil").appFont(.caption).foregroundStyle(Color.brandSecondary)
-                        }
+                    ForEach(Array(block.evidence.enumerated()), id: \.offset) { _, ref in
+                        chip(ref).contextMenu { Button("Remove Source") { removeEvidence(ref) } }
                     }
                 }
+                .padding(.leading, block.kind == .bullet ? AppStyle.double : 0)
             }
         }
         .contentShape(Rectangle())
@@ -237,41 +269,30 @@ struct NoteItemRow: View {
             let refs = transcriptEvidence
             if refs.count == 1 { Button("Show in Transcript") { jump(refs[0]) } }
             else { ForEach(Array(refs.enumerated()), id: \.offset) { _, e in Button("Show in Transcript at \(time(e))") { jump(e) } } }
+            if !block.text.isEmpty { Divider(); Button("Remove Line", role: .destructive) { removeLine() } }
+        }
+        if section == .decisions {
+            row.padding(.vertical, AppStyle.grid).padding(.leading, AppStyle.double)
+                .overlay(alignment: .leading) { Rectangle().fill(Color.sage).frame(width: 3) }
+        } else {
+            row
+        }
+    }
+
+    var placeholder: String { block.text.isEmpty && block.isUser ? "Write a note…" : "" }
+
+    @ViewBuilder func chip(_ ref: EvidenceRef) -> some View {
+        switch ref {
+        case .transcript(let e):
+            Button(time(e)) { jump(e) }.buttonStyle(SourceLinkStyle()).help("Show in transcript")
+                .accessibilityLabel("Source at \(time(e))")
+        case .userNote, .personalNote:
+            Label("your note", systemImage: "square.and.pencil").appFont(.caption).foregroundStyle(Color.brandSecondary)
         }
     }
 
     func time(_ e: TranscriptEvidence) -> String {
         guard let seg = detail.transcript?.segment(e.segmentID), let w = seg.words.first(where: { $0.id == e.firstWord }) else { return "?" }
         return TranscriptRows.clock(w.interval.start)
-    }
-}
-
-/// A titled editor that collapses to one line (with a word count when it holds text). A plain button rather than a
-/// DisclosureGroup: no animation fighting the TextEditor's height, and the whole title row is the click target.
-struct CollapsibleEditor<Content: View>: View {
-    let title: String
-    let systemImage: String
-    let hint: String?
-    let help: String
-    @Binding var isExpanded: Bool
-    @ViewBuilder var content: () -> Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Button { isExpanded.toggle() } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "chevron.right").appFont(.caption, weight: .bold).foregroundStyle(Color.brandSecondary)
-                        .rotationEffect(.degrees(isExpanded ? 90 : 0))
-                    Label(title, systemImage: systemImage).appFont(.callout, weight: .medium)
-                    if !isExpanded, let hint { Text(hint).appFont(.caption).foregroundStyle(Color.brandSecondary) }
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .help(help)
-            .accessibilityValue(isExpanded ? "Expanded" : "Collapsed")
-            // The editor draws its own field border; no extra box around it (T45).
-            if isExpanded { content().padding(.leading, AppStyle.double) }
-        }
     }
 }

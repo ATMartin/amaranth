@@ -15,6 +15,10 @@ public struct MeetingDetail: Sendable {
     public var rows: [TranscriptRow]
     public var edits: [UserEdit]
     public var summary: SummaryRevision?
+    /// The meeting's notes (spec 0008): what the Notes tab shows and edits.
+    public var notes: NotesDocumentRevision?
+    /// Generated notes held back because the notes changed while they were generated ("New notes are ready. Replace?").
+    public var pendingNotes: SummaryRevision?
     public var userNotes: ManualNotesRevision?
     public var scratchpad: ScratchpadRevision?
     public var diskUsage: MeetingStore.DiskUsage
@@ -79,7 +83,8 @@ public struct MeetingDetail: Sendable {
         return MeetingDetail(meeting: m, status: MeetingStatus(meeting: m, jobs: jobs, events: events), events: events, jobs: jobs,
                              transcript: transcript, displayTranscript: display,
                              rows: transcript.map { TranscriptRows.build($0, edits: edits) } ?? [], edits: edits,
-                             summary: try store.currentSummary(id), userNotes: try store.latestManualNotes(id),
+                             summary: try store.currentSummary(id), notes: try store.currentNotesDocument(id), pendingNotes: try store.pendingNotes(id),
+                             userNotes: try store.latestManualNotes(id),
                              scratchpad: try store.latestScratchpad(id), diskUsage: store.diskUsage(id), segments: try store.segments(id))
     }
 }

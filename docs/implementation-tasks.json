@@ -2766,7 +2766,7 @@
       "id": "T91",
       "title": "Notes pane: one editable notes field",
       "milestone": "R",
-      "status": "planned",
+      "status": "done (2026-10-31): NotesPane is one block editor over the document (fallback-free: a line per block in SwiftUI, chosen over AttributedString/NSTextView because blocks keep their identity, author and chips trivially): Eyebrow headings with item counts, sage decision edge, editable owner · date line, collapsed Limitations, inline chips with Details on (right-click Remove Source), uncertain mark on unedited model lines, right-click Show in Transcript / Remove Line; Return adds a line, Delete on an empty line removes it, \"# \"/\"- \" shortcuts, a trailing \"Write a note…\" line. Presentation.NotesDraft/NotesEditing hold the rules (edit → user block, empty lines never saved, saves keep basedOn so typing over regenerated notes shows them as pending). Debounced saves flushed on switch/disappear/quit. Banner \"New notes are ready. Replace?\" (Replace/Dismiss); Regenerate asks when the notes have edits; Previous Versions menu (30 newest) restores a copy based on the current summary. Your notes / Private scratchpad editors, their AppStorage keys, CollapsedEditorHint and the scratchpad label removed; LibraryModel.saveUserNotes/saveScratchpad removed. ui-render: notes-state-edited / -pending-replace / -user-lines-only (light, dark) + notes-<meeting> for generated; NotesDraftTests incl. persistence across relaunch and exact restore. Return/Delete key handling is for the hands-on checklist (T95)",
       "optional": false,
       "depends_on": [
         "T90"

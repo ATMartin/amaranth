@@ -93,20 +93,14 @@ enum UIRenderSelfTest {
         let calendarSource = FakeCalendarSource(status: .fullAccess, events: Self.calendarEvents(on: Date()))
         let calendar = CalendarModel(source: calendarSource)
         UserDefaults.standard.set(true, forKey: "onboarded")
-        // Editors expanded (T24) without touching the user's own expansion preferences.
-        // Fixed names: cfprefsd may write an empty plist for a suite after it's removed, so reuse two instead of leaving one
-        // per run in ~/Library/Preferences. Each run starts them empty.
-        let expandedSuite = "amaranth-ui-render-expanded"
-        UserDefaults.standard.removePersistentDomain(forName: expandedSuite)
-        let expanded = UserDefaults(suiteName: expandedSuite)!
-        expanded.set(true, forKey: "notesUserNotesExpanded"); expanded.set(true, forKey: "notesScratchpadExpanded")
+        // Views read preferences from a suite of their own, never the user's. A fixed name: cfprefsd may write an empty plist
+        // for a suite after it's removed, so reuse one instead of leaving one per run in ~/Library/Preferences.
+        UserDefaults.standard.removePersistentDomain(forName: "amaranth-ui-render-expanded")   // used before spec 0008
         let collapsedSuite = "amaranth-ui-render-collapsed"
         UserDefaults.standard.removePersistentDomain(forName: collapsedSuite)
         let collapsed = UserDefaults(suiteName: collapsedSuite)!   // empty: every preference at its default
         defer {
-            for s in [expandedSuite, collapsedSuite] {
-                UserDefaults.standard.removePersistentDomain(forName: s)
-            }
+            UserDefaults.standard.removePersistentDomain(forName: collapsedSuite)
         }
         var ok = true
         func makeView<V: View>(_ v: V, size: CGSize) -> NSView {
@@ -153,7 +147,7 @@ enum UIRenderSelfTest {
             _ = await host(TranscriptPane(detail: d).environment(\.showDetails, true).environment(\.transcriptStyle, .bubbles), "transcript-bubbles-details-\(name)", size: CGSize(width: 900, height: 700))
             let tNotes = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, false).defaultAppStorage(collapsed), "notes-\(name)", size: CGSize(width: 900, height: 700))
             _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, true).defaultAppStorage(collapsed), "notes-details-\(name)", size: CGSize(width: 900, height: 700))
-            _ = await host(NotesPane(detail: d, notesModelInstalled: true, showTranscript: {}).defaultAppStorage(expanded), "notes-expanded-\(name)", size: CGSize(width: 900, height: 900))
+            if d.meeting.id == Fixtures.twoSourceConversation.meeting.id { ok = await renderNotesStates(d, host: { v, n, s in await host(v, n, size: s) }) && ok }
             _ = await host(RecordingDetailsPane(detail: d), "recording-tab-\(name)", size: CGSize(width: 900, height: 600))
             SelfTest.log(["step": "render", "meeting": item.title, "rows": "\(d.rows.count)", "gaps": "\(d.rows.filter(\.isGap).count)",
                           "unknownSpeakerRows": "\(d.rows.filter { !$0.isGap && $0.assignment == .unknown }.count)",
@@ -717,6 +711,34 @@ enum UIRenderSelfTest {
         (.preparing, [], nil),
         (.stopping, [.init(source: .microphone, status: .healthy)], nil),
     ]
+
+    /// Spec 0008 (T91): the notes pane's states over one meeting's generated notes: edited (a corrected line, a heading
+    /// and lines of the user's under Also noted), new notes waiting to replace them, and lines typed before any notes
+    /// were generated. Values only: nothing is written to the store.
+    @MainActor static func renderNotesStates(_ d: MeetingDetail, host: (AnyView, String, CGSize) async -> Double) async -> Bool {
+        guard let s = d.summary, let generated = d.notes else { SelfTest.log(["step": "notes-states", "ok": "false"]); return false }
+        let size = CGSize(width: 900, height: 760)
+        let typed = [NoteBlock(kind: .heading, text: "Client background", author: .user(typedAt: 75)),
+                     NoteBlock(kind: .bullet, text: "The earlier project was the Lyon rollout (3 sites)", author: .user(typedAt: 92)),
+                     NoteBlock(kind: .paragraph, text: "Follow up with Dana about the budget", author: .user(typedAt: nil))]
+        var edited = generated
+        edited.origin = .edited
+        if let i = edited.blocks.firstIndex(where: { !$0.isUser && $0.section == nil && $0.kind != .heading }) {
+            edited.blocks[i] = edited.blocks[i].editing(text: edited.blocks[i].text + " (corrected)")
+        }
+        edited.blocks += [NoteBlock(kind: .heading, text: NoteSection.alsoNoted.title, section: .alsoNoted, author: .model(summaryItemID: nil, uncertain: false))] + typed
+        var e = d; e.notes = edited
+        _ = await host(AnyView(NotesPane(detail: e, notesModelInstalled: true, showTranscript: {}).environment(\.showDetails, true)), "notes-state-edited", size)
+        var p = e; p.pendingNotes = s
+        _ = await host(AnyView(NotesPane(detail: p, notesModelInstalled: true, showTranscript: {})), "notes-state-pending-replace", size)
+        var u = d; u.summary = nil; u.pendingNotes = nil
+        u.notes = NotesDocumentRevision(meetingID: d.meeting.id, createdAt: Date(), origin: .edited, blocks: typed)
+        _ = await host(AnyView(NotesPane(detail: u, notesModelInstalled: true, showTranscript: {})), "notes-state-user-lines-only", size)
+        SelfTest.log(["step": "notes-states", "generatedBlocks": "\(generated.blocks.count)", "editedUserLines": "\(edited.userBlocks.count)",
+                      "regenerateAsks": "\(NotesEditing.regenerateNeedsConfirmation(edited)) / \(NotesEditing.regenerateNeedsConfirmation(generated))",
+                      "ok": "true"])
+        return NotesEditing.regenerateNeedsConfirmation(edited) && !NotesEditing.regenerateNeedsConfirmation(generated)
+    }
 
     static func persistFixture(_ f: FixtureMeeting, _ store: MeetingStore) throws {
         try store.upsertMeeting(f.meeting)

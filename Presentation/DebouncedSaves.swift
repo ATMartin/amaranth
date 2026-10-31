@@ -1,7 +1,7 @@
 public import Foundation
 
-/// Debounced per-field saves for the notes editors. A save runs after `delay` without a newer edit of the same field,
-/// or at once on `flush()` (meeting switch, collapsing an editor, closing, quitting) so typed text is never lost. Each
+/// Debounced per-field saves for the notes editor. A save runs after `delay` without a newer edit of the same field,
+/// or at once on `flush()` (meeting switch, leaving the pane, closing, quitting) so typed text is never lost. Each
 /// field has its own slot, so typing in one editor never cancels the other's save.
 @MainActor public final class DebouncedSaves {
     public typealias Save = @MainActor (_ immediately: Bool) -> Void
@@ -36,13 +36,5 @@ public import Foundation
         let all = pending
         pending = [:]
         for (_, p) in all { p.task.cancel(); p.save(true) }
-    }
-}
-
-/// What a collapsed editor shows next to its title, so saved text is never invisible.
-public enum CollapsedEditorHint {
-    public static func text(for content: String) -> String? {
-        let words = content.split(whereSeparator: \.isWhitespace).count
-        return words == 0 ? nil : words == 1 ? "1 word" : "\(words) words"
     }
 }
