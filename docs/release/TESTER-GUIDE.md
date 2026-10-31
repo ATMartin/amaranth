@@ -32,7 +32,7 @@ offline.
    - each source has its own meter and status;
    - the menu bar shows a red icon and the elapsed time;
    - live text appears a few seconds behind speech (provisional, no speakers);
-   - you can type private notes in the scratchpad.
+   - you can type notes (**Notes**, ⇧⌘N): each line goes into the meeting's notes and is used when they're generated.
 4. **Pause** (⇧⌘P) records nothing until Resume. **Stop and Save** (⇧⌘S) finishes. Closing the window keeps
    recording. Quitting asks first.
 5. Tell participants you are recording.
@@ -51,8 +51,12 @@ when the Mac is hot or low on memory, and the meeting shows why.
   - Press **ⓘ** (⌘D) to show where each item came from (time links), transcript gaps and flags; right-click an item
     for **Show in Transcript** in either mode.
   - Items marked **?** are only partly confirmed by the transcript.
-  - If you edit speakers or text, the notes say they're out of date; press **Regenerate**.
-  - **Your notes** are never changed by regeneration.
+  - The notes are one editable page: click any line to change it, or type your own lines anywhere (Return adds a line,
+    "# " starts a heading, "- " a bullet). Lines you write are used the next time notes are generated, and are never
+    lost: they're either cited by the new notes or kept word for word under **Also noted**.
+  - If you edit speakers or text, the notes say they're out of date; press **Regenerate**. After you've edited the
+    notes, Regenerate asks first; **Previous Versions** restores any earlier version.
+  - If you type while notes are being generated, the new notes wait: **New notes are ready. Replace?**
 - **Search** (sidebar, ⌘K) covers titles, transcripts and notes.
 - **Rename** a meeting by right-clicking it in the sidebar.
 
@@ -70,8 +74,8 @@ when the Mac is hot or low on memory, and the meeting shows why.
 | Play / pause (Transcript tab) | Space |
 
 ## Export
-**Export → Markdown / Plain Text / JSON** saves the transcript and notes with timestamps, speakers and gaps. Your
-private scratchpad is **not** included. **Export → Original Audio…** copies the lossless audio segments plus a
+**Export → Markdown / Plain Text / JSON** saves the transcript and the notes as shown, with timestamps, speakers
+and gaps. **Export → Original Audio…** copies the lossless audio segments plus a
 manifest of times and gaps.
 
 ## Delete

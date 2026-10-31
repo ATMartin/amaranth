@@ -16,7 +16,8 @@ public struct TranscriptEvidence: Hashable, Sendable, Codable {
     }
 }
 
-/// Evidence from the user's private scratchpad. A distinct type so it can never masquerade as speech.
+/// Before spec 0008: evidence from the user's private scratchpad. Only decoded (old summaries in a library being
+/// migrated, or kept as the record); never produced or valid.
 public struct ScratchpadEvidence: Hashable, Sendable, Codable {
     public var revisionID: RevisionID
     /// UTF-16 offsets into the scratchpad revision text, half-open.
@@ -213,42 +214,5 @@ public struct SummaryRevision: Hashable, Sendable, Codable, Identifiable {
                 }
             }
         }
-    }
-}
-
-/// Private scratchpad. Never appended invisibly to the transcript; excluded from summaries and exports
-/// unless explicitly included.
-public struct ScratchpadRevision: Hashable, Sendable, Codable, Identifiable {
-    public var id: RevisionID
-    public var meetingID: MeetingID
-    public var text: String
-    public var includeInSummary: Bool
-    public var createdAt: Date
-
-    public init(id: RevisionID = RevisionID(), meetingID: MeetingID, text: String, includeInSummary: Bool = false,
-                createdAt: Date) {
-        self.id = id
-        self.meetingID = meetingID
-        self.text = text
-        self.includeInSummary = includeInSummary
-        self.createdAt = createdAt
-    }
-}
-
-/// User-authored note edits, stored apart from machine summary revisions.
-public struct ManualNotesRevision: Hashable, Sendable, Codable, Identifiable {
-    public var id: RevisionID
-    public var meetingID: MeetingID
-    public var basedOnSummaryRevisionID: RevisionID?
-    public var markdown: String
-    public var createdAt: Date
-
-    public init(id: RevisionID = RevisionID(), meetingID: MeetingID, basedOnSummaryRevisionID: RevisionID?,
-                markdown: String, createdAt: Date) {
-        self.id = id
-        self.meetingID = meetingID
-        self.basedOnSummaryRevisionID = basedOnSummaryRevisionID
-        self.markdown = markdown
-        self.createdAt = createdAt
     }
 }

@@ -33,14 +33,13 @@ public enum EditTag {}
 public enum SummaryItemTag {}
 public enum JobTag {}
 public enum ModelManifestTag {}
-public enum ScratchpadTag {}
 public enum FolderTag {}
 
 public typealias MeetingID = Identifier<MeetingTag>
 public typealias AudioSegmentID = Identifier<SegmentTag>
 public typealias EpochID = Identifier<EpochTag>
 public typealias CaptureEventID = Identifier<CaptureEventTag>
-/// Immutable revision identifier shared by transcript, summary and scratchpad revisions.
+/// Immutable revision identifier shared by transcript, summary and notes document revisions.
 /// A revision's content never changes after publication; edits produce a new revision.
 public typealias RevisionID = Identifier<RevisionTag>
 public typealias TranscriptSegmentID = Identifier<TranscriptSegmentTag>
@@ -54,6 +53,5 @@ public typealias EditID = Identifier<EditTag>
 public typealias SummaryItemID = Identifier<SummaryItemTag>
 public typealias JobID = Identifier<JobTag>
 public typealias ModelManifestID = Identifier<ModelManifestTag>
-public typealias ScratchpadID = Identifier<ScratchpadTag>
 /// A sidebar folder (T39). Folders are one level deep; a meeting is in at most one.
 public typealias FolderID = Identifier<FolderTag>

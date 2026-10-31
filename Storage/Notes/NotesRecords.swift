@@ -1,9 +1,8 @@
 public import Foundation
 public import Domain
 
-/// Generated notes, the private scratchpad, and user-authored notes. Generated revisions are immutable and published
-/// atomically; a failed regeneration never replaces a usable summary, and user notes are separate records that
-/// regeneration never touches.
+/// Generated notes (the record of what the model produced). Revisions are immutable and published atomically; a failed
+/// regeneration never replaces a usable summary. What the user sees and edits is the notes document (NotesDocumentRecords).
 extension MeetingStore {
     /// Publishes `s` as the meeting's current summary unless the meeting was deleted (late results cannot resurrect it).
     /// Spec 0008 §3–4: if the notes document is still the snapshot generation read (`s.notesRevisionID`, or the same
@@ -82,52 +81,5 @@ extension MeetingStore {
         guard let s = try pendingNotes(meeting), var d = try currentNotesDocument(meeting) else { return }
         d.id = RevisionID(); d.createdAt = Date(); d.basedOnSummaryRevisionID = s.id; d.origin = .edited
         try saveNotesDocument(d)
-    }
-
-    // MARK: Scratchpad (private; excluded from summaries, exports and search unless explicitly included)
-    // Each save must be a new revision (new ID): summaries cite scratchpad text by revision and offset.
-
-    public func saveScratchpad(_ s: ScratchpadRevision) throws {
-        try withDB { db in
-            try db.transaction {
-            guard try !Self.isTombstoned(db, s.meetingID) else { return }
-            try db.run("INSERT OR REPLACE INTO scratchpad_revisions (id, meeting_id, created_at, json) VALUES (?,?,?,?)",
-                       [.text(s.id.rawValue), .text(s.meetingID.rawValue), .double(s.createdAt.timeIntervalSince1970), .blob(try ContractCoding.encode(s))])
-            }
-        }
-    }
-
-    public func scratchpadRevision(_ id: RevisionID) throws -> ScratchpadRevision? {
-        try withDB { db in
-            try db.run("SELECT json FROM scratchpad_revisions WHERE id=?", [.text(id.rawValue)])
-                .compactMap { $0["json"]?.blob }.map { try ContractCoding.decode(ScratchpadRevision.self, from: $0) }.first
-        }
-    }
-
-    public func latestScratchpad(_ meeting: MeetingID) throws -> ScratchpadRevision? {
-        try withDB { db in
-            try db.run("SELECT json FROM scratchpad_revisions WHERE meeting_id=? ORDER BY created_at DESC, rowid DESC LIMIT 1", [.text(meeting.rawValue)])
-                .compactMap { $0["json"]?.blob }.map { try ContractCoding.decode(ScratchpadRevision.self, from: $0) }.first
-        }
-    }
-
-    // MARK: User-authored notes
-
-    public func saveManualNotes(_ n: ManualNotesRevision) throws {
-        try withDB { db in
-            try db.transaction {
-                guard try !Self.isTombstoned(db, n.meetingID) else { return }
-                try db.run("INSERT OR REPLACE INTO manual_notes_revisions (id, meeting_id, created_at, json) VALUES (?,?,?,?)",
-                           [.text(n.id.rawValue), .text(n.meetingID.rawValue), .double(n.createdAt.timeIntervalSince1970), .blob(try ContractCoding.encode(n))])
-                try Self.reindex(db, n.meetingID)
-            }
-        }
-    }
-
-    public func latestManualNotes(_ meeting: MeetingID) throws -> ManualNotesRevision? {
-        try withDB { db in
-            try db.run("SELECT json FROM manual_notes_revisions WHERE meeting_id=? ORDER BY created_at DESC, rowid DESC LIMIT 1", [.text(meeting.rawValue)])
-                .compactMap { $0["json"]?.blob }.map { try ContractCoding.decode(ManualNotesRevision.self, from: $0) }.first
-        }
     }
 }

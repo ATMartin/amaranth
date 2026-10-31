@@ -51,7 +51,7 @@ struct InvariantTests {
         cites.content.overview[0].evidence.append(.userNote(NoteEvidence(revisionID: notes.id, blockID: model.id)))
         #expect(throws: DomainError.self, "a model block is not the user's line") { try cites.validateReferences(transcript: f.transcript!, notes: notes) }
         var old = f.summary!
-        old.content.overview[0].evidence.append(.personalNote(.init(revisionID: f.scratchpad!.id, start: 0, end: 3)))
+        old.content.overview[0].evidence.append(.personalNote(.init(revisionID: RevisionID("pad"), start: 0, end: 3)))
         old.influencedByPersonalNotes = true
         #expect(throws: DomainError.self) { try old.validateReferences(transcript: f.transcript!, notes: notes) }
     }

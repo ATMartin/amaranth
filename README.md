@@ -25,7 +25,7 @@ It all happens on your Mac. Nothing is uploaded, and there's no account.
 - **Records any call.** Zoom, Meet, Teams, Slack or anything else that plays sound. Amaranth records your mic and
   the call audio separately, so it can tell you apart from the other people on the call.
 - **Shows live text** a few seconds behind the conversation, so you can see it's working. You can also jot down
-  private notes in a scratchpad while you talk.
+  notes while you talk; they're used when the meeting's notes are written.
 - **Writes a transcript with speakers** after you stop. Rename "Speaker 2" to a real name once and it's fixed
   everywhere. Click any line to play the audio from that point.
 - **Drafts notes you can check.** Every decision and next step links back to the lines it came from. Anything the

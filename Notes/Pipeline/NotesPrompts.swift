@@ -10,7 +10,7 @@ import Foundation
 /// without agreement is left out rather than kept as a topic. Without topics the overview had too little to work from,
 /// so it now also reads a spread of transcript lines and may cite them directly.
 ///
-/// notes-v4 (T90, spec 0008): the user's lines in the meeting's notes are always part of the input (no scratchpad switch);
+/// notes-v4 (T90, spec 0008): the user's lines in the meeting's notes are always part of the input (no switch any more);
 /// a line typed during the recording carries its time. With no user lines every request is byte-identical to notes-v3's
 /// (pinned by NotesPromptGoldenTests), so T21's comparison against baseline-v0 still holds.
 public enum NotesPrompts {

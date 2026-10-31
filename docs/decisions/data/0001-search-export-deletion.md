@@ -1,6 +1,11 @@
 # Data 0001: Search, export, retention and deletion (T11)
 
 Date: 2026-10-16 · Task: T11 · Status: Accepted for v0.
+**Amended by [0008](../0008-single-notes-field-spec.md) (Milestone R, library v6):** search, Ask and exports read the
+meeting's one notes document (no separate "your notes" kind; Ask cites a user's line as "your note"); there is no
+private text any more, so the scratchpad rules below no longer apply. JSON exports are version 2 (`notes` replaces
+`userNotes` and `scratchpad`). Deletion also purges `notes_document_revisions`. The test names in the table below were
+renamed accordingly (e.g. `exportsSelectedRevisionsWithTimestampsSpeakersGapsAndTheNotesShown`).
 
 ## Decision
 

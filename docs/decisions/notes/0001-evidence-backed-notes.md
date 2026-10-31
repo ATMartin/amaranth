@@ -3,6 +3,11 @@
 Date: 2026-10-16 · Task: T09 · Status: Accepted for v0 (`notes-v1`). **The plan §10 human quality gates have not been
 evaluated.** Review sheets are prepared for a human reviewer. The automatic proxies below are not those gates.
 Pipeline steps 2–4 and speed amended by [notes/0002](0002-faster-notes.md) (T18).
+**Amended by [0008](../0008-single-notes-field-spec.md) (Milestone R, notes-v4):** generated notes are no longer
+read-only; they are composed into one editable notes document per meeting. The private scratchpad is gone: the lines
+the user writes in the notes (typed during the meeting or after) are always context, labelled as not spoken, and never
+support a decision or next step alone; every such line is cited or kept word for word. Where this record says
+"scratchpad", read "the user's lines in the notes document".
 
 ## Decision
 

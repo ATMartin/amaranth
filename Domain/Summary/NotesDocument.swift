@@ -89,7 +89,7 @@ public struct NoteBlock: Hashable, Sendable, Codable, Identifiable {
 
 /// How a revision came to be; used to tell whether the user changed the notes since they were last generated.
 public enum NotesDocumentOrigin: String, Hashable, Sendable, Codable {
-    /// Built from a v5 library's generated notes, "Your notes" and included scratchpad (spec 0008 §8).
+    /// Built when a v5 library was migrated (spec 0008 §8).
     case migrated
     /// Composed from a generation result.
     case generated
@@ -192,24 +192,5 @@ public enum NotesComposer {
             }
             return NoteBlock(kind: .paragraph, text: line, author: .user(typedAt: typedAt))
         }
-    }
-
-    /// The first notes document of a meeting from a v5 library (spec 0008 §8): its generated notes as model blocks
-    /// (transcript evidence kept, scratchpad citations dropped), then "Your notes", then the scratchpad text that was used
-    /// for generation (`includedScratchpad`; nil when it never was).
-    public static func migrated(meetingID: MeetingID, summary: SummaryRevision?, manualNotes: ManualNotesRevision?,
-                                includedScratchpad: ScratchpadRevision?, createdAt: Date) -> NotesDocumentRevision {
-        var s = summary
-        if var content = s?.content {
-            func strip(_ items: [SummaryItem]) -> [SummaryItem] {
-                items.map { var i = $0; i.evidence.removeAll { !$0.isSpoken }; i.ownerEvidence.removeAll { !$0.isSpoken }; return i }
-            }
-            content.overview = strip(content.overview); content.topics = strip(content.topics); content.decisions = strip(content.decisions)
-            content.actionItems = strip(content.actionItems); content.openQuestions = strip(content.openQuestions)
-            content.limitations = strip(content.limitations).filter { !$0.text.contains("personal notes") }
-            s?.content = content
-        }
-        let user = userBlocks(fromText: manualNotes?.markdown ?? "") + userBlocks(fromText: includedScratchpad?.text ?? "")
-        return compose(summary: s, userBlocks: user, meetingID: meetingID, createdAt: createdAt, origin: .migrated)
     }
 }

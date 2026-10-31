@@ -2,6 +2,9 @@
 
 Date: 2026-10-16 · Task: T10 · Status: Accepted for v0. It is verified by unit tests, an offscreen render self-test and
 code review. **No person has used it interactively yet.** Hands-on checks are in the manual checklist (tracked item 17).
+**Amended by [0008](../0008-single-notes-field-spec.md) (Milestone R):** the Notes tab is one editable notes field (no
+separate Your notes or Private scratchpad editors), with Previous Versions and "New notes are ready. Replace?"; the live
+view's Scratchpad is now Notes, whose lines go into the meeting's notes.
 
 ## Decision
 

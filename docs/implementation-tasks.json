@@ -1517,7 +1517,7 @@
       "id": "T46",
       "title": "Notes templates: model, storage and editor",
       "milestone": "L",
-      "status": "planned",
+      "status": "planned (revised by T94 2026-10-31; needs the user’s review before L starts)",
       "optional": false,
       "depends_on": [
         "T23",
@@ -1532,10 +1532,10 @@
       ],
       "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. The user wants to write their own notes template: a list of sections (“here's the subsections I want”) from which the notes stage infers what to extract. Today sections are fixed (overview, decisions, action items, open questions, limitations after T23). Granola's ‘/ for templates’ is the reference. The user accepts that custom templates may make notes slower; measure it (T47).",
       "deliverables": [
-        "Domain: `NotesTemplate { id, name, sections: [TemplateSection { key, title, instruction: String, kind: .list | .paragraph | .actionItems }], isBuiltIn }`. Built-in “Default” template reproduces today's sections exactly.",
+        "Domain: `NotesTemplate { id, name, sections: [TemplateSection { key, title, instruction: String, kind: .list | .paragraph | .actionItems }], isBuiltIn }`. A template defines the notes document's starting sections: their headings (NoteSection or a custom key) and what generation extracts into each. The built-in “Default” template reproduces today's sections exactly (Meeting notes, Decisions, Next steps, Still open, Limitations), i.e. today's NotesComposer output.",
         "Storage: `notes_templates` table (JSON blob per template is fine) with CRUD in MeetingStore; the Default template is seeded and read-only.",
-        "Settings → “Notes templates”: list, duplicate Default, edit name and sections in a plain-text editor using Markdown headings (`## Section title` followed by a one-line instruction), with live validation (non-empty, ≤ 8 sections, unique titles).",
-        "Tests: parsing/serialising the Markdown form round-trips; Default template equality with today's prompt sections."
+        "Settings → “Notes templates”: list, duplicate Default, edit name and sections in a plain-text editor using Markdown headings (`## Section title` followed by a one-line instruction), with live validation (non-empty, ≤ 8 sections, unique titles; “Also noted” is reserved for the user's uncited lines).",
+        "Tests: parsing/serialising the Markdown form round-trips; Default template equality with today's prompt sections and with NotesComposer's section order and titles."
       ],
       "acceptance": [
         "Templates persist across launches; the Default template cannot be edited or deleted; editor validation prevents saving an invalid template."
@@ -1544,13 +1544,14 @@
       "review_timestamps": [
         "00:46–01:04"
       ],
-      "dependency_note": "2026-10-26: L now runs before T21. The default template must reproduce today's notes (notes-v3 sections and prompt) so T21's notes checks against baseline-v0 stay comparable. 2026-10-30: depends on Milestone R (spec 0008); revise against the notes document in T94 before starting."
+      "dependency_note": "2026-10-26: L now runs before T21. The default template must reproduce today's notes (notes-v3 sections and prompt) so T21's notes checks against baseline-v0 stay comparable. 2026-10-30: depends on Milestone R (spec 0008); revised against the notes document in T94 (2026-10-31).",
+      "revision_note": "Revised 2026-10-31 by T94 for Milestone R (spec 0008): notes are one editable document per meeting; generated SummaryRevisions are the record and NotesComposer turns them into blocks. **Needs the user's review before L starts.**"
     },
     {
       "id": "T47",
       "title": "Template-driven notes generation with the existing evidence checks",
       "milestone": "L",
-      "status": "planned",
+      "status": "planned (revised by T94 2026-10-31; needs the user’s review before L starts)",
       "optional": false,
       "depends_on": [
         "T46",
@@ -1566,26 +1567,27 @@
       ],
       "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Make the notes stage take a template: each section's title + instruction drives extraction, while evidence validation (line-numbered transcript, deterministic evidence checks, verifier; docs/decisions/notes/0001-evidence-backed-notes.md) applies to every item regardless of section. `SummaryContent` gains a generic `sections: [SummarySection { key, title, items }]` while the fixed fields keep being filled for the Default template (contract stays decodable).",
       "deliverables": [
-        "Prompt builder: generic per-section extraction from the template, batched as in notes/0002; action-item sections keep owner/due extraction; paragraph sections produce one item.",
-        "Pipeline writes `sections` for custom templates and the legacy fields for Default; `promptVersion` includes a template hash so staleness is per template.",
+        "Prompt builder: generic per-section extraction from the template, batched as in notes/0002; action-item sections keep owner/due extraction; paragraph sections produce one item. The user's lines from the notes document stay context exactly as in notes-v4 (PERSONAL NOTE lines, cap, never alone for a decision or next step).",
+        "Pipeline writes `sections` for custom templates and the legacy fields for Default; `promptVersion` includes a template hash so staleness is per template. NotesComposer composes custom sections as model blocks under the template's headings; the survival rule is unchanged (uncited user lines under Also noted).",
         "Measure notes time for the 60-minute corpus meeting with Default vs a 6-section custom template; report in docs/qualification/.",
-        "Notes checks (valid evidence 100%, planted coverage, injection suite) run for the Default template unchanged and, with a planted custom template, for the generic path."
+        "Notes checks (valid evidence 100%, planted coverage, injection suite, NotesPromptGoldenTests for Default without user lines) run for the Default template unchanged and, with a planted custom template, for the generic path."
       ],
       "acceptance": [
-        "Default template output is unchanged versus T23 (byte-identical items on the corpus) — this is a refactor for Default.",
-        "Custom template: every item has valid evidence; injection suite passes; time delta reported."
+        "Default template output is unchanged versus notes-v4 (byte-identical requests without user lines: NotesPromptGoldenTests) — this is a refactor for Default.",
+        "Custom template: every item has valid evidence; every user line is cited or kept; injection suite passes; time delta reported."
       ],
       "fallback": "If generic sections cannot pass the injection suite, restrict custom sections to the `.list` kind and say so.",
       "review_timestamps": [
         "00:46–01:04"
       ],
-      "dependency_note": "2026-10-30: depends on Milestone R (spec 0008); revise against the notes document in T94 before starting."
+      "dependency_note": "2026-10-30: depends on Milestone R (spec 0008); revised against the notes document in T94 (2026-10-31).",
+      "revision_note": "Revised 2026-10-31 by T94 for Milestone R (spec 0008): notes are one editable document per meeting; generated SummaryRevisions are the record and NotesComposer turns them into blocks. **Needs the user's review before L starts.**"
     },
     {
       "id": "T48",
       "title": "Choose a template per meeting and regenerate; exports render custom sections",
       "milestone": "L",
-      "status": "planned",
+      "status": "planned (revised by T94 2026-10-31; needs the user’s review before L starts)",
       "optional": false,
       "depends_on": [
         "T47",
@@ -1600,18 +1602,19 @@
       ],
       "context": "Source: the user's recorded design review of 2026-10-23 (transcript with timestamps in docs/design-review/2026-10-23/transcript.md; decision record docs/decisions/0005-design-review-2026-10-23.md). Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (see App/Launch/UIRenderSelfTest.swift). Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. The Recording tab, export/sharing and the model-management sheet are explicitly out of scope: do not change them. Users pick a default template in Settings and can regenerate a meeting's notes with another one.",
       "deliverables": [
-        "Settings → Notes templates: “Default for new meetings” picker. NotesPane: a small template menu next to the state banner (“Notes template: Default ▾ … Regenerate with ▸”).",
-        "Regeneration creates a new SummaryRevision (existing versioning); the previous revision stays until the new one succeeds.",
-        "Exporter renders `sections` in order for custom templates (TXT/MD/JSON); Default unchanged."
+        "Settings → Notes templates: “Default for new meetings” picker. NotesPane: the template in the notes toolbar row beside Previous Versions and Regenerate (“Notes template: Default ▾ … Regenerate with ▸”).",
+        "Regenerating with another template follows spec 0008: it asks first when the notes have edits, keeps the user's lines (cited or under Also noted), the previous document stays in Previous Versions, a result held while the user typed shows “New notes are ready. Replace?”, and a failure keeps the current notes.",
+        "Exports already render the notes document as shown (T93), so custom sections export without exporter changes; JSON keeps the SummaryRevision with `sections`. Add export tests for a custom template."
       ],
       "acceptance": [
-        "Switching template and regenerating shows the new sections with evidence links; exports match; failure keeps the prior notes (existing rule)."
+        "Switching template and regenerating shows the new sections with source chips, keeps every line the user wrote, and exports match the pane; failure keeps the prior notes."
       ],
       "fallback": "None.",
       "review_timestamps": [
         "00:46–01:04"
       ],
-      "dependency_note": "2026-10-30: depends on Milestone R (spec 0008); revise against the notes document in T94 before starting."
+      "dependency_note": "2026-10-30: depends on Milestone R (spec 0008); revised against the notes document in T94 (2026-10-31).",
+      "revision_note": "Revised 2026-10-31 by T94 for Milestone R (spec 0008): notes are one editable document per meeting; generated SummaryRevisions are the record and NotesComposer turns them into blocks. **Needs the user's review before L starts.**"
     },
     {
       "id": "T49",
@@ -2853,7 +2856,7 @@
       "id": "T94",
       "title": "Remove the old notes stores and update docs",
       "milestone": "R",
-      "status": "planned",
+      "status": "done (2026-10-31): v5 record types (scratchpad, Your notes) live only in Storage/Notes/V5NotesMigration.swift with the v6 step; Domain keeps only decode compatibility for old SummaryRevisions (ScratchpadEvidence, .personalNote, scratchpadRevisionID / influencedByPersonalNotes, withoutScratchpadReferences for exports); the store's scratchpad and Your notes APIs, fixtures' scratchpad and ScratchpadID are gone; notes/0001, ui/0001, data/0001 amended (pointer to 0008); TESTER-GUIDE, README and ui-manual-checklist updated (superseded items marked, new items 78-84 for T95); T46-T48 revised on the notes document and marked for the user's review. grep -rn -i scratchpad: migration, deletion, schema history, the legacy decode fields and their tests only",
       "optional": false,
       "depends_on": [
         "T91",

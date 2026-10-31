@@ -12,17 +12,16 @@ public struct FixtureMeeting: Sendable, Codable, Hashable {
     public var diarization: [DiarizationResult]
     public var edits: [UserEdit]
     public var summary: SummaryRevision?
-    public var scratchpad: ScratchpadRevision?
     public var jobs: [ProcessingJob]
 
     public var status: MeetingStatus { MeetingStatus(meeting: meeting, jobs: jobs, events: events) }
 
     public init(name: String, meeting: Meeting, epochs: [CaptureEpoch], audioSegments: [AudioSegmentRecord], events: [CaptureEvent],
                 transcript: TranscriptRevision?, diarization: [DiarizationResult], edits: [UserEdit], summary: SummaryRevision?,
-                scratchpad: ScratchpadRevision?, jobs: [ProcessingJob]) {
+                jobs: [ProcessingJob]) {
         self.name = name; self.meeting = meeting; self.epochs = epochs; self.audioSegments = audioSegments; self.events = events
         self.transcript = transcript; self.diarization = diarization; self.edits = edits; self.summary = summary
-        self.scratchpad = scratchpad; self.jobs = jobs
+        self.jobs = jobs
     }
 }
 
@@ -195,8 +194,6 @@ public enum Fixtures {
             epochs: eps,
             audioSegments: audioSegments(m, epochs: eps, covered: [.microphone: [full], .systemOutput: [full]]),
             events: [], transcript: transcript, diarization: [diar], edits: [], summary: summary,
-            scratchpad: ScratchpadRevision(id: RevisionID("fx-two-source-p1"), meetingID: m,
-                                           text: "ask about notarization creds", includeInSummary: false, createdAt: referenceDate),
             jobs: ProcessingStage.allCases.filter { $0 != .live }.map { job(m, $0, .succeeded) })
     }
 
@@ -235,7 +232,7 @@ public enum Fixtures {
                 CaptureEvent(id: CaptureEventID("fx-ms-ev2"), meetingID: m, source: .systemOutput,
                              interval: .seconds(35, 35), kind: .sourceRecovered, reasonCode: "tap.restarted", recoverable: true),
             ],
-            transcript: transcript, diarization: [], edits: [], summary: nil, scratchpad: nil,
+            transcript: transcript, diarization: [], edits: [], summary: nil,
             jobs: [job(m, .prepare, .succeeded), job(m, .transcribe, .succeeded), job(m, .diarize, .succeeded),
                    job(m, .reconcile, .succeeded), job(m, .notes, .failed, error: "notes.schemaInvalid", progress: 0.4)])
     }
@@ -260,7 +257,7 @@ public enum Fixtures {
                 CaptureEvent(id: CaptureEventID("fx-p-ev2"), meetingID: m, source: nil, interval: .seconds(45, 45),
                              kind: .resume, reasonCode: "user.resume", recoverable: true),
             ],
-            transcript: nil, diarization: [], edits: [], summary: nil, scratchpad: nil,
+            transcript: nil, diarization: [], edits: [], summary: nil,
             jobs: [job(m, .prepare, .succeeded),
                    job(m, .transcribe, .suspended, progress: 0.3, suspension: .recordingActive)])
     }
@@ -279,7 +276,6 @@ public enum Fixtures {
             s.epochID = EpochID("fx-stale-" + $0.epochID.rawValue); return s }
         f.transcript?.meetingID = m
         f.diarization = f.diarization.map { var d = $0; d.meetingID = m; return d }
-        f.scratchpad?.meetingID = m
         f.jobs = f.jobs.map { var j = $0; j.key.meetingID = m; j.id = JobID("fx-stale-" + $0.id.rawValue); return j }
         let rev = f.transcript!.id
         let g5 = f.transcript!.segments[5]

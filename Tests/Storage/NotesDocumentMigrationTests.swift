@@ -44,12 +44,12 @@ struct NotesDocumentMigrationTests {
             return id
         }
         func manual(_ id: MeetingID, _ text: String) throws {
-            let n = ManualNotesRevision(meetingID: id, basedOnSummaryRevisionID: nil, markdown: text, createdAt: Date(timeIntervalSince1970: 20))
+            let n = MeetingStore.V5ManualNotes(id: RevisionID(), meetingID: id, basedOnSummaryRevisionID: nil, markdown: text, createdAt: Date(timeIntervalSince1970: 20))
             try db.run("INSERT INTO manual_notes_revisions (id, meeting_id, created_at, json) VALUES (?,?,?,?)",
                        [.text(n.id.rawValue), .text(id.rawValue), .double(20), .blob(try ContractCoding.encode(n))])
         }
         func pad(_ id: MeetingID, _ text: String, include: Bool, rev: RevisionID = RevisionID(), at: Double = 30) throws {
-            let p = ScratchpadRevision(id: rev, meetingID: id, text: text, includeInSummary: include, createdAt: Date(timeIntervalSince1970: at))
+            let p = MeetingStore.V5Scratchpad(id: rev, meetingID: id, text: text, includeInSummary: include, createdAt: Date(timeIntervalSince1970: at))
             try db.run("INSERT INTO scratchpad_revisions (id, meeting_id, created_at, json) VALUES (?,?,?,?)",
                        [.text(p.id.rawValue), .text(id.rawValue), .double(at), .blob(try ContractCoding.encode(p))])
         }
@@ -96,8 +96,12 @@ struct NotesDocumentMigrationTests {
 
         let d = try doc("excludedPad")
         #expect(d.userBlocks.isEmpty)
-        #expect(try store.latestScratchpad(ids["excludedPad"]!) == nil, "never-included scratchpad deleted")
-        #expect(try store.latestScratchpad(ids["includedPad"]!) != nil, "an included one stays readable")
+        func padRows(_ name: String) throws -> Int64 {
+            try store.withDB { try $0.run("SELECT count(*) AS n FROM scratchpad_revisions WHERE meeting_id=?", [.text(name)]).first?["n"]?.int ?? -1 }
+        }
+        #expect(try padRows("excludedPad") == 0, "never-included scratchpad deleted")
+        #expect(try padRows("includedPad") == 1, "the included one stays (purged with the meeting)")
+        #expect(try padRows("switchedOff") == 1, "only the revision used for notes stays")
 
         let e = try doc("switchedOff")
         #expect(e.userBlocks.map(\.text) == ["used lemonbadger line"], "the revision generation used, not the later private text")

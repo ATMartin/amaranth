@@ -19,8 +19,8 @@ import Testing
         let saves = DebouncedSaves(delay: .milliseconds(100))
         var calls: [(String, Bool)] = []
         saves.schedule("notes") { now in calls.append(("notes", now)) }
-        saves.schedule("scratchpad") { now in calls.append(("scratchpad", now)) }
-        saves.cancel("scratchpad")
+        saves.schedule("other") { now in calls.append(("other", now)) }
+        saves.cancel("other")
         try await Task.sleep(for: .milliseconds(400))
         #expect(calls.count == 1 && calls[0] == ("notes", false) && !saves.hasPending)
     }

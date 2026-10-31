@@ -56,14 +56,21 @@ struct LifecycleFixture {
                                         speakers: [s1])
         try store.publishTranscript(transcript)
         let ev = EvidenceRef.transcript(TranscriptEvidence(revisionID: transcript.id, segmentID: TranscriptSegmentID("s0"), firstWord: WordID("a0"), lastWord: WordID("a6")))
-        let pad = ScratchpadRevision(id: RevisionID("pad-1"), meetingID: m, text: "PRIVATE-PAD remember to ask about hiring", includeInSummary: true, createdAt: Date())
-        try store.saveScratchpad(pad)
+        // Rows a v5 library left behind (spec 0008 §8 keeps the scratchpad that was used for notes and the Your notes
+        // rows until the meeting is deleted): deletion must purge them too.
+        let pad = MeetingStore.V5Scratchpad(id: RevisionID("pad-1"), meetingID: m, text: "PRIVATE-PAD remember to ask about hiring", includeInSummary: true, createdAt: Date())
+        let mine = MeetingStore.V5ManualNotes(id: RevisionID(), meetingID: m, basedOnSummaryRevisionID: nil, markdown: "My own note: call the vendor", createdAt: Date())
+        try store.withDB { db in
+            try db.run("INSERT INTO scratchpad_revisions (id, meeting_id, created_at, json) VALUES (?,?,?,?)",
+                       [.text(pad.id.rawValue), .text(m.rawValue), .double(0), .blob(try ContractCoding.encode(pad))])
+            try db.run("INSERT INTO manual_notes_revisions (id, meeting_id, created_at, json) VALUES (?,?,?,?)",
+                       [.text(mine.id.rawValue), .text(m.rawValue), .double(0), .blob(try ContractCoding.encode(mine))])
+        }
         try store.publishSummary(SummaryRevision(meetingID: m, transcriptRevisionID: transcript.id, editSequence: 0, createdAt: Date(),
                                                  producer: ProducerInfo(component: "t", configHash: "t"), promptVersion: "notes-v1",
                                                  content: SummaryContent(decisions: [SummaryItem(kind: .decision, text: "Ship the \(marker) build on Thursday", evidence: [ev], uncertain: true)],
                                                                          actionItems: [SummaryItem(kind: .actionItem, text: "Dana prepares the release", evidence: [ev], owner: "Dana", due: DueDate(originalText: "by Thursday"))]),
                                                  validation: SummaryValidationReport(status: .valid), scratchpadRevisionID: pad.id, influencedByPersonalNotes: true))
-        try store.saveManualNotes(ManualNotesRevision(meetingID: m, basedOnSummaryRevisionID: nil, markdown: "My own note: call the vendor", createdAt: Date()))
         // The notes document (spec 0008): the generated notes plus a line the user wrote.
         var doc = try #require(try store.currentNotesDocument(m))
         doc.id = RevisionID(); doc.origin = .edited
@@ -308,7 +315,10 @@ struct SearchAndDeletionTests {
         #expect(try f.store.meetings().isEmpty)
         #expect(try f.store.search(f.marker).isEmpty && f.store.search("roadmap").isEmpty && f.store.searchRowCount(f.meeting) == 0)
         #expect(try f.store.transcriptRevisions(f.meeting).isEmpty && f.store.summaryRevisions(f.meeting).isEmpty)
-        #expect(try f.store.latestScratchpad(f.meeting) == nil && f.store.latestManualNotes(f.meeting) == nil && f.store.segments(f.meeting).isEmpty)
+        #expect(try f.store.segments(f.meeting).isEmpty)
+        for table in ["scratchpad_revisions", "manual_notes_revisions"] {
+            #expect(try f.store.withDB { try $0.run("SELECT count(*) AS n FROM \(table) WHERE meeting_id=?", [.text(f.meeting.rawValue)]).first?["n"]?.int } == 0)
+        }
         #expect(try f.store.currentNotesDocument(f.meeting) == nil && f.store.notesDocumentRevisions(f.meeting).isEmpty)
         #expect(!FileManager.default.fileExists(atPath: f.store.meetingDirectory(f.meeting).path))
         #expect(!FileManager.default.fileExists(atPath: f.store.workDirectory(f.meeting).path), "checkpoints holding transcript text are gone")
