@@ -263,7 +263,7 @@ final class LibraryModel {
     /// A citation chip (T54): the cited line in the transcript, like a notes evidence link; a note without transcript
     /// evidence opens Notes. The panel stays open so the other citations remain a click away.
     func open(citation p: Passage) {
-        let e = AskPassages.jumpEvidence(p), notes = p.source == .notes && e == nil
+        let e = AskPassages.jumpEvidence(p), notes = p.source != .transcript && e == nil
         if selection == p.meetingID, let d = detail, d.meeting.id == p.meetingID {
             jump(to: e, notes: notes, in: d)
         } else {

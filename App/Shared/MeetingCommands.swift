@@ -147,8 +147,7 @@ enum MeetingExport {
     /// `folderName`: the meeting's folder, named in the JSON export (T39).
     @MainActor static func run(_ f: Format, _ detail: MeetingDetail, folderName: String?) {
         guard let t = detail.displayTranscript else { return }
-        let input = ExportInput(meeting: detail.meeting, transcript: t, summary: detail.summary, userNotes: detail.userNotes,
-                                scratchpad: detail.scratchpad, folderName: folderName)
+        let input = ExportInput(meeting: detail.meeting, transcript: t, summary: detail.summary, notes: detail.notes, folderName: folderName)
         let panel = NSSavePanel()
         let base = detail.meeting.title.replacingOccurrences(of: "/", with: "-")
         switch f {
@@ -156,7 +155,7 @@ enum MeetingExport {
         case .text: panel.allowedContentTypes = [.plainText]; panel.nameFieldStringValue = base + ".txt"
         case .json: panel.allowedContentTypes = [.json]; panel.nameFieldStringValue = base + ".json"
         }
-        panel.message = "Exports the transcript and notes shown. The private scratchpad is not included."
+        panel.message = "Exports the transcript and the notes shown."
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
             let data: Data = switch f {

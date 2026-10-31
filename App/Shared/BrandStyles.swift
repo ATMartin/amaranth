@@ -183,7 +183,7 @@ extension ButtonStyle where Self == BrandLinkStyle {
     static var brandLink: BrandLinkStyle { BrandLinkStyle() }
 }
 
-/// An on/off chip (the live Scratchpad toggle): on is the Selection colour with an accent label and edge.
+/// An on/off chip (the live Notes toggle): on is the Selection colour with an accent label and edge.
 struct BrandChipToggleStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
         Button { configuration.isOn.toggle() } label: {

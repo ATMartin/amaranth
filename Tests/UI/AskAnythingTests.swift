@@ -93,6 +93,15 @@ struct AskFollowUpTests {
         #expect(AskFollowUp.maxTurns == 3)
     }
 
+    /// T93: a user's line is cited as "your note" and shown to the model as not spoken.
+    @Test func userNotesAreCitedAsYourNote() {
+        let p = Passage(meetingID: MeetingID("m"), meetingTitle: "Call", meetingDate: Date(), source: .userNote, ref: "b1",
+                        lines: [.init(segmentID: nil, start: nil, speaker: nil, text: "Lyon rollout was 2024", matched: true)], evidence: [], score: 1)
+        #expect(AskPassages.label(p, acrossMeetings: false) == "your note")
+        #expect(AskPassages.label(p, acrossMeetings: true).hasSuffix("· your note"))
+        #expect(AskPassages.render([p], acrossMeetings: false)[0].text == "The user's own note (not spoken): Lyon rollout was 2024")
+    }
+
     @Test func crossMeetingLabelsNameTheMeeting() {
         let p = Passage(meetingID: MeetingID("m"), meetingTitle: "Leesa 1:1", meetingDate: Date(timeIntervalSince1970: 1_792_000_000), source: .transcript, ref: "s",
                         lines: [.init(segmentID: TranscriptSegmentID("s"), start: .seconds(601), speaker: "Speaker 2", text: "Gusto is hiring.", matched: true)],

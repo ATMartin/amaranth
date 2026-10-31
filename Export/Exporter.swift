@@ -1,12 +1,9 @@
 public import Foundation
 public import Domain
 
-/// What goes into an export. Defaults follow plan §11: the private scratchpad is excluded, audio is excluded.
+/// What goes into an export. Audio is excluded (plan §11; `exportAudio` is separate and explicit).
 public struct ExportOptions: Sendable, Hashable {
     public var includeNotes = true
-    public var includeUserNotes = true
-    /// The private scratchpad is exported only when explicitly selected.
-    public var includeScratchpad = false
     public init() {}
 }
 
@@ -14,25 +11,27 @@ public struct ExportOptions: Sendable, Hashable {
 public struct ExportInput: Sendable {
     public var meeting: Meeting
     public var transcript: TranscriptRevision
+    /// The generated notes the document was composed from: their prompt version and staleness are disclosed.
     public var summary: SummaryRevision?
-    public var userNotes: ManualNotesRevision?
-    public var scratchpad: ScratchpadRevision?
+    /// The meeting's notes as the Notes tab shows them (spec 0008). Without one, the generated notes are shown as composed.
+    public var notes: NotesDocumentRevision?
     /// The name of the meeting's folder (T39), for the JSON export only; nil when unfiled.
     public var folderName: String?
     public init(meeting: Meeting, transcript: TranscriptRevision, summary: SummaryRevision? = nil,
-                userNotes: ManualNotesRevision? = nil, scratchpad: ScratchpadRevision? = nil, folderName: String? = nil) {
-        self.meeting = meeting; self.transcript = transcript; self.summary = summary; self.userNotes = userNotes; self.scratchpad = scratchpad
-        self.folderName = folderName
+                notes: NotesDocumentRevision? = nil, folderName: String? = nil) {
+        self.meeting = meeting; self.transcript = transcript; self.summary = summary; self.folderName = folderName
+        self.notes = notes ?? summary.map { NotesComposer.compose(summary: $0, userBlocks: [], meetingID: meeting.id, createdAt: $0.createdAt) }
     }
 }
 
 /// TXT / Markdown / versioned JSON exports (T11). Transcript lines carry session timestamps (and wall-clock time when
 /// known), the speaker label shown in the app, and the source track. Unknown and overlapping speakers stay explicit;
-/// audio without text is listed as a gap, never omitted. Notes are labelled when stale, uncertain, or influenced by
-/// personal notes.
+/// audio without text is listed as a gap, never omitted. The notes are the meeting's notes document as shown (spec 0008),
+/// labelled when stale or uncertain.
 public enum Exporter {
     public static let jsonFormat = "amaranth-export"
-    public static let jsonVersion = 1
+    /// 2 (spec 0008): `notes` (the notes document) replaces `userNotes` and `scratchpad`.
+    public static let jsonVersion = 2
     /// ISO-8601 with fractional seconds (UTC).
     nonisolated(unsafe) static let isoFormatter: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter(); f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]; return f
@@ -114,44 +113,50 @@ public enum Exporter {
         return f.string(from: c.utcOrigin)
     }
 
-    /// Timestamp of the first transcript evidence of an item (for "see [00:12:03]").
-    static func evidenceTimes(_ item: SummaryItem, _ t: TranscriptRevision) -> [String] {
-        item.evidence.compactMap { ref -> String? in
+    /// Times of a line's transcript evidence (for "see [00:12:03]"); "your note" for a line it cites.
+    static func evidenceTimes(_ refs: [EvidenceRef], _ t: TranscriptRevision) -> [String] {
+        refs.compactMap { ref -> String? in
             switch ref {
             case .transcript(let e):
                 guard let seg = t.segment(e.segmentID), let w = seg.words.first(where: { $0.id == e.firstWord }) else { return nil }
                 return clock(w.interval.start)
-            case .userNote:
+            case .userNote, .personalNote:
                 return "your note"
-            case .personalNote:
-                return "personal note"
             }
         }
     }
 
-    static func notesDisclosures(_ s: SummaryRevision, transcript: TranscriptRevision) -> [String] {
-        var out = ["Generated locally from the transcript (\(s.promptVersion)); check important items against the cited times."]
-        if s.transcriptRevisionID != transcript.id || s.isStale { out.append("These notes were generated from an earlier version of the transcript.") }
-        if s.influencedByPersonalNotes { out.append("These notes also used the author's private personal notes, which were not spoken in the meeting.") }
+    /// What the export says about the notes: how they were generated, whether that was from an older transcript, and that
+    /// lines the author wrote are in them (never spoken unless they cite the transcript).
+    static func notesDisclosures(_ s: SummaryRevision?, notes: NotesDocumentRevision, transcript: TranscriptRevision) -> [String] {
+        var out: [String] = []
+        if let s {
+            out.append("Generated locally from the transcript (\(s.promptVersion)); check important items against the cited times.")
+            if s.transcriptRevisionID != transcript.id || s.isStale { out.append("These notes were generated from an earlier version of the transcript.") }
+        }
+        if !notes.userBlocks.isEmpty { out.append("Includes lines the author wrote or edited, as written.") }
         return out
     }
 
-    static func items(_ s: SummaryRevision) -> [(String, [SummaryItem])] {
-        [("Overview", s.content.overview), ("Decisions", s.content.decisions), ("Action items", s.content.actionItems),
-         ("Open questions", s.content.openQuestions), ("Topics", s.content.topics), ("Limitations", s.content.limitations)]
-            .filter { !$0.1.isEmpty }
-    }
-
-    static func describe(_ item: SummaryItem, _ t: TranscriptRevision) -> String {
-        var s = (item.title.map { "\($0): " } ?? "") + item.text
+    /// One notes line as text: its text, then its detail (owner · date), uncertainty and cited times.
+    static func describe(_ b: NoteBlock, _ t: TranscriptRevision) -> String {
+        var s = b.text
         var extras: [String] = []
-        if let o = item.owner { extras.append("owner: \(o)") }
-        if let d = item.due { extras.append("due: \(d.originalText)") }
-        if item.uncertain { extras.append("uncertain") }
-        let times = evidenceTimes(item, t)
+        if let d = b.detail { extras.append(d.split(separator: " ").joined(separator: " ")) }
+        if b.isUncertain { extras.append("uncertain") }
+        let times = evidenceTimes(b.evidence, t)
         if !times.isEmpty { extras.append("see " + times.prefix(3).joined(separator: ", ")) }
         if !extras.isEmpty { s += " (" + extras.joined(separator: "; ") + ")" }
         return s
+    }
+
+    /// The notes document's lines with text, as (heading?, line) pairs for the formats below.
+    enum NotesLine { case heading(String, generated: Bool), item(NoteBlock) }
+    static func notesLines(_ d: NotesDocumentRevision) -> [NotesLine] {
+        d.blocks.compactMap { b in
+            guard !b.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+            return b.kind == .heading ? .heading(b.text, generated: b.section != nil) : .item(b)
+        }
     }
 
     /// Transcript lines and gap markers interleaved in time order.
@@ -175,20 +180,16 @@ public enum Exporter {
         if let w = wallClock(m) { out.append("Recorded \(w)") }
         out.append("Duration \(clock(SessionTime(nanoseconds: m.duration.nanoseconds))); transcript revision \(t.id.rawValue)")
         out.append("")
-        if options.includeNotes, let s = input.summary {
+        if options.includeNotes, let d = input.notes, !d.isEmpty {
             out.append("NOTES")
-            out += notesDisclosures(s, transcript: t).map { "  * \($0)" }
-            for (title, list) in items(s) {
-                out.append(""); out.append(title.uppercased())
-                out += list.map { "  - " + describe($0, t) }
+            out += notesDisclosures(input.summary, notes: d, transcript: t).map { "  * \($0)" }
+            for line in notesLines(d) {
+                switch line {
+                case .heading(let h, let generated): out.append(""); out.append(generated ? h.uppercased() : h)
+                case .item(let b): out.append((b.kind == .bullet ? "  - " : "  ") + describe(b, t))
+                }
             }
             out.append("")
-        }
-        if options.includeUserNotes, let n = input.userNotes, !n.markdown.isEmpty {
-            out += ["YOUR NOTES", n.markdown, ""]
-        }
-        if options.includeScratchpad, let p = input.scratchpad, !p.text.isEmpty {
-            out += ["PRIVATE SCRATCHPAD (included by choice)", p.text, ""]
         }
         out.append("TRANSCRIPT")
         out += timeline(t, line: { l in
@@ -218,20 +219,16 @@ public enum Exporter {
         if let w = wallClock(m) { meta.append("Recorded \(w)") }
         meta.append("Duration \(clock(SessionTime(nanoseconds: m.duration.nanoseconds)))")
         out += ["_" + meta.joined(separator: " · ") + "_", ""]
-        if options.includeNotes, let s = input.summary {
+        if options.includeNotes, let d = input.notes, !d.isEmpty {
             out.append("## Notes")
-            out += notesDisclosures(s, transcript: t).map { "> \($0)" }
-            for (title, list) in items(s) {
-                out += ["", "### \(title)", ""]
-                out += list.map { "- " + esc(describe($0, t)) }
+            out += notesDisclosures(input.summary, notes: d, transcript: t).map { "> \($0)" }
+            for line in notesLines(d) {
+                switch line {
+                case .heading(let h, let generated): out += ["", generated ? "### \(esc(h))" : "#### \(esc(h))", ""]
+                case .item(let b): out.append((b.kind == .bullet ? "- " : "") + esc(describe(b, t)) + (b.kind == .bullet ? "" : "\n"))
+                }
             }
             out.append("")
-        }
-        if options.includeUserNotes, let n = input.userNotes, !n.markdown.isEmpty {
-            out += ["## Your notes", "", n.markdown, ""]
-        }
-        if options.includeScratchpad, let p = input.scratchpad, !p.text.isEmpty {
-            out += ["## Private scratchpad (included by choice)", "", esc(p.text), ""]
         }
         out += ["## Transcript", ""]
         out += timeline(t, line: { l in
@@ -248,9 +245,11 @@ public enum Exporter {
         public var meeting: Meeting
         public var speakers: [String: String]
         public var transcript: TranscriptRevision
+        /// The generated notes as the model produced them (the record).
         public var summary: SummaryRevision?
-        public var userNotes: ManualNotesRevision?
-        public var scratchpad: ScratchpadRevision?
+        /// The notes as shown (version 2, spec 0008): every block with its author (the user, with when it was typed during
+        /// the recording, or the model) and its evidence.
+        public var notes: NotesDocumentRevision?
         /// Present only for a filed meeting (T39), so exports of unfiled meetings are unchanged.
         public var folder: FolderRef?
         public struct FolderRef: Codable, Sendable, Equatable { public var name: String }
@@ -262,9 +261,8 @@ public enum Exporter {
         meeting.people = meeting.people.map { Person(name: $0.name, source: $0.source) }
         let doc = JSONDocument(format: jsonFormat, version: jsonVersion, exportedAt: exportedAt, meeting: meeting,
                                speakers: Dictionary(input.transcript.speakers.map { ($0.id.rawValue, $0.displayName ?? $0.label) }, uniquingKeysWith: { a, _ in a }),
-                               transcript: input.transcript, summary: options.includeNotes ? input.summary : nil,
-                               userNotes: options.includeUserNotes ? input.userNotes : nil,
-                               scratchpad: options.includeScratchpad ? input.scratchpad : nil,
+                               transcript: input.transcript, summary: options.includeNotes ? input.summary?.withoutScratchpadReferences : nil,
+                               notes: options.includeNotes ? input.notes : nil,
                                folder: input.folderName.map { .init(name: $0) })
         let e = JSONEncoder()
         e.outputFormatting = [.prettyPrinted, .sortedKeys]

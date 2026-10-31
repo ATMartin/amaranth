@@ -19,8 +19,6 @@ public struct MeetingDetail: Sendable {
     public var notes: NotesDocumentRevision?
     /// Generated notes held back because the notes changed while they were generated ("New notes are ready. Replace?").
     public var pendingNotes: SummaryRevision?
-    public var userNotes: ManualNotesRevision?
-    public var scratchpad: ScratchpadRevision?
     public var diskUsage: MeetingStore.DiskUsage
     public var segments: [AudioSegmentRecord]
 
@@ -84,8 +82,7 @@ public struct MeetingDetail: Sendable {
                              transcript: transcript, displayTranscript: display,
                              rows: transcript.map { TranscriptRows.build($0, edits: edits) } ?? [], edits: edits,
                              summary: try store.currentSummary(id), notes: try store.currentNotesDocument(id), pendingNotes: try store.pendingNotes(id),
-                             userNotes: try store.latestManualNotes(id),
-                             scratchpad: try store.latestScratchpad(id), diskUsage: store.diskUsage(id), segments: try store.segments(id))
+                             diskUsage: store.diskUsage(id), segments: try store.segments(id))
     }
 }
 
@@ -132,7 +129,7 @@ public enum DestructiveAction: Sendable {
         case .deleteAudioOnly:
             "Removes the recorded audio and processing files (\(bytes)). The transcript, notes and your edits stay and remain searchable; playback and re-transcription will no longer be possible. This cannot be undone."
         case .deleteMeeting:
-            "Removes the audio, transcript, notes, your notes and edits, and search entries (\(bytes)). Files you exported earlier are not affected. This cannot be undone."
+            "Removes the audio, transcript, notes, your edits, and search entries (\(bytes)). Files you exported earlier are not affected. This cannot be undone."
         }
     }
 

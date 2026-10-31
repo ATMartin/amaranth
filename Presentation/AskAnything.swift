@@ -84,6 +84,7 @@ public enum AskPassages {
                           text: p.lines.map { line in
                               switch p.source {
                               case .notes: "Meeting notes: \(line.text)"
+                              case .userNote: "The user's own note (not spoken): \(line.text)"
                               case .transcript:
                                   (line.start.map { "[\(TranscriptRows.clock($0))] " } ?? "") + (line.speaker.map { "\($0): " } ?? "Unknown speaker: ")
                                       + trimmed(line.text, to: line.matched ? 900 : 320)
@@ -98,7 +99,11 @@ public enum AskPassages {
     }
 
     public static func label(_ p: Passage, acrossMeetings: Bool, withDate: Bool = false) -> String {
-        let place = p.source == .notes ? "notes" : (p.lines.first(where: \.matched) ?? p.lines.first)?.start.map { TranscriptRows.clock($0) } ?? "transcript"
+        let place = switch p.source {
+        case .notes: "notes"
+        case .userNote: "your note"
+        case .transcript: (p.lines.first(where: \.matched) ?? p.lines.first)?.start.map { TranscriptRows.clock($0) } ?? "transcript"
+        }
         guard acrossMeetings else { return place }
         let date = withDate ? " (" + p.meetingDate.formatted(date: .abbreviated, time: .omitted) + ")" : ""
         return "\(p.meetingTitle)\(date) · \(place)"

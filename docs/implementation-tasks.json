@@ -2824,7 +2824,7 @@
       "id": "T93",
       "title": "Search, export and Ask on the single notes field",
       "milestone": "R",
-      "status": "planned",
+      "status": "done (2026-10-31): ExportInput takes the notes document (composed from the summary when none is given); TXT/MD render it as shown (generated headings, user headings, bullets, detail line, uncertain, cited times, \"your note\" for user-line citations; typed text escaped in MD) with disclosures (prompt version, stale, \"Includes lines the author wrote or edited, as written.\"); JSON version 2: `notes` (blocks with author, typedAt, evidence) replaces userNotes/scratchpad, the generated summary is exported without pre-0008 scratchpad references. ExportOptions is includeNotes only; export panel message and MeetingDetail.userNotes/scratchpad gone; delete-meeting wording updated. Search indexes the document (T89); Retriever marks user lines as Passage.Source.userNote; Ask shows them to the model as \"The user's own note (not spoken)\" and cites them as \"your note\" (chips open Notes). Tests: export content incl. edited and typed lines, hostile Markdown in a typed line, JSON v2; search finds user and model lines; Retriever and AskPassages cite a user line. Legacy scratchpad/ManualNotes types and store APIs remain for T94",
       "optional": false,
       "depends_on": [
         "T90"

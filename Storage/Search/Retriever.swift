@@ -2,9 +2,10 @@ public import Foundation
 public import Domain
 
 /// A short stretch of a meeting that may answer a question (T53): a window of transcript lines around a match, or one
-/// generated-notes item. `evidence` resolves to transcript words, so an answer citing the passage can jump to them.
+/// line of the meeting's notes. `evidence` resolves to transcript words, so an answer citing the passage can jump to them.
 public struct Passage: Hashable, Sendable {
-    public enum Source: String, Sendable { case transcript, notes }
+    /// `userNote`: a line of the notes the user wrote (spec 0008), cited as "your note"; `notes`: a generated line.
+    public enum Source: String, Sendable { case transcript, notes, userNote }
     public struct Line: Hashable, Sendable {
         public var segmentID: TranscriptSegmentID?
         public var start: SessionTime?
@@ -21,7 +22,7 @@ public struct Passage: Hashable, Sendable {
     public var meetingTitle: String
     public var meetingDate: Date
     public var source: Source
-    /// Segment ID of the best-matching line, or the notes item ID.
+    /// Segment ID of the best-matching line, or the notes block ID.
     public var ref: String
     public var lines: [Line]
     public var evidence: [TranscriptEvidence]
@@ -119,8 +120,14 @@ public struct Retriever: Sendable {
                                         evidence: context.flatMap(Self.evidence),
                                         score: (best.score + extra) * (1 + meetingBoost[w.meeting, default: 0])))
             }
+            // Who wrote each notes line: the current document of its meeting (read once per meeting).
+            var userLines: [String: Set<String>] = [:]
             for h in hits where h.kind == "notes" {
-                passages.append(Passage(meetingID: MeetingID(h.meetingID), meetingTitle: h.title, meetingDate: h.date, source: .notes, ref: h.ref,
+                if userLines[h.meetingID] == nil {
+                    userLines[h.meetingID] = Set(try MeetingStore.currentNotesDocument(db, MeetingID(h.meetingID))?.blocks.filter(\.isUser).map(\.id.rawValue) ?? [])
+                }
+                let source: Passage.Source = userLines[h.meetingID]?.contains(h.ref) == true ? .userNote : .notes
+                passages.append(Passage(meetingID: MeetingID(h.meetingID), meetingTitle: h.title, meetingDate: h.date, source: source, ref: h.ref,
                                         lines: [h.line], evidence: h.evidence, score: h.score * (1 + meetingBoost[h.meetingID, default: 0])))
             }
             let ranked = passages.sorted { $0.score > $1.score }

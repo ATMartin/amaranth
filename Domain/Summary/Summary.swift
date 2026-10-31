@@ -171,6 +171,22 @@ public struct SummaryRevision: Hashable, Sendable, Codable, Identifiable {
         self.notesRevisionID = notesRevisionID
     }
 
+    /// The revision without references to a pre-0008 private scratchpad (its citations and switch), for exports: that
+    /// text was never shared, and nothing points at it any more.
+    public var withoutScratchpadReferences: SummaryRevision {
+        var s = self
+        func strip(_ items: [SummaryItem]) -> [SummaryItem] {
+            items.map { var i = $0; i.evidence.removeAll { if case .personalNote = $0 { true } else { false } }
+                        i.ownerEvidence.removeAll { if case .personalNote = $0 { true } else { false } }; return i }
+        }
+        s.content = SummaryContent(overview: strip(content.overview), topics: strip(content.topics), decisions: strip(content.decisions),
+                                   actionItems: strip(content.actionItems), openQuestions: strip(content.openQuestions),
+                                   limitations: content.limitations.filter { !$0.text.contains("your personal notes") })
+        s.scratchpadRevisionID = nil
+        s.influencedByPersonalNotes = false
+        return s
+    }
+
     /// Every evidence reference must resolve against the given transcript, or against a user block of the notes snapshot
     /// generation read (`notes`, whose ID must be `notesRevisionID`). Scratchpad evidence is never valid any more.
     public func validateReferences(transcript: TranscriptRevision, notes: NotesDocumentRevision? = nil) throws {

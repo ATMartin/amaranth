@@ -311,7 +311,7 @@ struct FlowChips: View {
 
     @ViewBuilder var chips: some View {
         ForEach(Array(passages.enumerated()), id: \.offset) { _, p in
-            CitationChip(label: AskPassages.label(p, acrossMeetings: acrossMeetings), notes: p.source == .notes) { open(p) }
+            CitationChip(label: AskPassages.label(p, acrossMeetings: acrossMeetings), notes: p.source != .transcript) { open(p) }
         }
     }
 }

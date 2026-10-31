@@ -267,7 +267,7 @@ enum UIRenderSelfTest {
             if let other = library.items.first(where: { $0.id != long.id }) { library.link(other.id, to: events[0]) }
             try? await Task.sleep(for: .milliseconds(300))
             let also = (try? store.meetings(linkedTo: linked.identifier)) ?? []
-            let exported = library.detail.flatMap { d in d.displayTranscript.map { ExportInput(meeting: d.meeting, transcript: $0, summary: d.summary, userNotes: d.userNotes, scratchpad: d.scratchpad) } }
+            let exported = library.detail.flatMap { d in d.displayTranscript.map { ExportInput(meeting: d.meeting, transcript: $0, summary: d.summary, notes: d.notes) } }
                 .flatMap { try? Exporter.json($0) }.map { String(decoding: $0, as: UTF8.self) } ?? ""
             if let d = library.detail {
                 _ = await host(MeetingDetailView(detail: d), "header-linked", size: CGSize(width: 900, height: 200))

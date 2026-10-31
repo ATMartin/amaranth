@@ -36,6 +36,21 @@ struct RetrieverTests {
         #expect(Retriever.terms("  ?! ").isEmpty)
     }
 
+    /// T93 (spec 0008 §7): a line the user wrote in the notes is retrieved like any notes line and marked as theirs, so
+    /// Ask cites it as "your note"; a generated line stays "notes".
+    @Test func userLinesAreRetrievedAsYourNote() throws {
+        let (store, root) = try fixtureStore()
+        defer { try? FileManager.default.removeItem(at: root) }
+        var doc = try #require(try store.currentNotesDocument(launch.meeting.id))
+        doc.id = RevisionID(); doc.origin = .edited
+        doc.blocks += NotesComposer.userBlocks(fromText: "The marmalade budget was approved by finance last week")
+        try store.saveNotesDocument(doc)
+        let mine = try #require(try Retriever(store: store).search("who approved the marmalade budget?", in: launch.meeting.id).first)
+        #expect(mine.source == .userNote && mine.ref == doc.blocks.last?.id.rawValue && mine.lines.first?.text.contains("marmalade") == true)
+        let generated = try Retriever(store: store).search("notarization", in: launch.meeting.id).filter { $0.source != .transcript }
+        #expect(!generated.isEmpty && generated.allSatisfy { $0.source == .notes })
+    }
+
     @Test func ranksTheAnsweringLineFirst() throws {
         let (store, root) = try fixtureStore()
         defer { try? FileManager.default.removeItem(at: root) }

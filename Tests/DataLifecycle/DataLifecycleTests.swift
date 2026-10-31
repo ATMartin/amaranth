@@ -73,7 +73,7 @@ struct LifecycleFixture {
 
     func input() throws -> ExportInput {
         ExportInput(meeting: try store.meeting(meeting)!, transcript: transcript, summary: try store.currentSummary(meeting),
-                    userNotes: try store.latestManualNotes(meeting), scratchpad: try store.latestScratchpad(meeting))
+                    notes: try store.currentNotesDocument(meeting))
     }
 
     /// True if `needle` occurs anywhere in the database files' raw bytes.
@@ -87,7 +87,8 @@ struct LifecycleFixture {
 
 @Suite("Export")
 struct ExportTests {
-    @Test func exportsSelectedRevisionsWithTimestampsSpeakersAndGapsButNoScratchpadByDefault() throws {
+    /// T93 (spec 0008 §7): exports carry the notes document as the pane shows it; the old private scratchpad never.
+    @Test func exportsSelectedRevisionsWithTimestampsSpeakersGapsAndTheNotesShown() throws {
         let f = try LifecycleFixture()
         defer { try? FileManager.default.removeItem(at: f.root) }
         let input = try f.input()
@@ -95,34 +96,45 @@ struct ExportTests {
             #expect(text.contains("[00:00:01]") && text.contains("Dana") && text.contains(f.marker))
             #expect(text.contains("Unknown speaker") && text.contains("mic"), "unknown speakers and sources stay explicit")
             #expect(text.contains("00:00:30–00:01:00") && text.contains("speech could not be transcribed"), "gaps are listed, not omitted")
-            #expect(text.contains("owner: Dana") && text.contains("due: by Thursday") && text.contains("uncertain"))
-            #expect(text.contains("private personal notes"), "notes influenced by personal notes are disclosed")
-            #expect(!text.contains("PRIVATE-PAD"), "the private scratchpad is excluded by default")
-            #expect(text.contains("call the vendor"))
-            #expect(!text.localizedCaseInsensitiveContains("topics"), "no Topics section without topics (T23)")
+            #expect(text.contains("Dana · by Thursday") && text.contains("uncertain") && text.contains("see 00:00:01"))
+            #expect(text.contains("book the velvetotter venue") && text.contains("lines the author wrote"), "the user's lines, disclosed")
+            #expect(!text.contains("PRIVATE-PAD") && !text.contains("call the vendor"), "old private scratchpad and Your notes are not exported")
+            #expect(!text.contains("personal notes"), "no 'used your private notes' line")
+            #expect(text.localizedCaseInsensitiveContains("next steps") && !text.localizedCaseInsensitiveContains("topics"))
         }
-        // T23: notes no longer have topics, but an older revision that has them still exports them.
+        // An edited line exports as edited; a line the user typed is exported as written.
+        var doc = try #require(input.notes)
+        let i = try #require(doc.blocks.firstIndex { $0.text.contains("Dana prepares") })
+        doc.blocks[i] = doc.blocks[i].editing(text: "Dana prepares the release notes too")
+        let edited = ExportInput(meeting: input.meeting, transcript: input.transcript, summary: input.summary, notes: doc)
+        #expect(Exporter.text(edited).contains("Dana prepares the release notes too"))
+        // An older revision with topics still exports them (composed when no document is given).
         var old = try #require(input.summary)
         old.content.topics = [SummaryItem(kind: .topic, title: "Release timing", text: "When to ship", evidence: old.content.decisions[0].evidence)]
-        let oldInput = ExportInput(meeting: input.meeting, transcript: input.transcript, summary: old, userNotes: input.userNotes)
+        let oldInput = ExportInput(meeting: input.meeting, transcript: input.transcript, summary: old)
         for text in [Exporter.text(oldInput), Exporter.markdown(oldInput)] { #expect(text.localizedCaseInsensitiveContains("topics") && text.contains("Release timing") && text.contains("When to ship")) }
-        // Injected Markdown in spoken text stays inert text (no links, images or HTML in the export).
+        // Injected Markdown in spoken text, and in a typed line, stays inert text (no links, images or HTML in the export).
         var hostile = f.transcript
         hostile.segments[0].words[0].text = "![x](http://example.com/p.png) <img src=x> [click](http://evil)"
-        let md = Exporter.markdown(ExportInput(meeting: input.meeting, transcript: hostile))
-        #expect(!md.contains("![x](") && !md.contains("<img") && !md.contains("[click]("))
-        var opts = ExportOptions(); opts.includeScratchpad = true
-        #expect(Exporter.markdown(input, options: opts).contains("PRIVATE-PAD"))
+        var hostileNotes = doc
+        hostileNotes.blocks += NotesComposer.userBlocks(fromText: "[phish](http://evil) <script>")
+        let md = Exporter.markdown(ExportInput(meeting: input.meeting, transcript: hostile, notes: hostileNotes))
+        #expect(!md.contains("![x](") && !md.contains("<img") && !md.contains("[click](") && !md.contains("[phish](") && !md.contains("<script"))
 
-        // JSON: versioned, decodable, verbatim selected revisions; scratchpad absent unless chosen.
+        // JSON (version 2): versioned, decodable; the generated record verbatim and the notes document with each block's
+        // author, typed-at time and evidence.
         let data = try Exporter.json(input)
-        let doc = try JSONDecoder.iso.decode(Exporter.JSONDocument.self, from: data)
-        #expect(doc.format == "amaranth-export" && doc.version == 1)
-        #expect(doc.transcript.id == f.transcript.id && doc.transcript.segments == f.transcript.segments
-                 && doc.transcript.coverage == f.transcript.coverage && doc.transcript.speakers == f.transcript.speakers)
-        #expect(doc.summary?.id == input.summary?.id && doc.summary?.content == input.summary?.content && doc.scratchpad == nil)
-        #expect(doc.speakers["spk1"] == "Dana")
-        #expect(String(decoding: data, as: UTF8.self).contains("PRIVATE-PAD") == false)
+        let json = try JSONDecoder.iso.decode(Exporter.JSONDocument.self, from: data)
+        #expect(json.format == "amaranth-export" && json.version == 2)
+        #expect(json.transcript.id == f.transcript.id && json.transcript.segments == f.transcript.segments
+                 && json.transcript.coverage == f.transcript.coverage && json.transcript.speakers == f.transcript.speakers)
+        #expect(json.summary?.id == input.summary?.id && json.summary?.content.decisions.map(\.text) == input.summary?.content.decisions.map(\.text))
+        #expect(json.summary?.content.allItems.allSatisfy { $0.evidence.allSatisfy(\.isSpoken) } == true, "pre-0008 scratchpad citations stripped")
+        #expect(json.notes?.blocks == input.notes?.blocks)
+        #expect(json.notes?.userBlocks.map(\.text) == ["My own line: book the velvetotter venue"])
+        #expect(json.speakers["spk1"] == "Dana")
+        let raw = String(decoding: data, as: UTF8.self)
+        #expect(!raw.contains("PRIVATE-PAD") && !raw.contains("scratchpad") && !raw.contains("userNotes"))
 
         // A newer transcript does not leak into an export of the selected one; stale notes are labelled.
         var newer = f.transcript
@@ -202,7 +214,7 @@ struct ExportTests {
 
 @Suite("Search and deletion", .serialized)
 struct SearchAndDeletionTests {
-    @Test func searchCoversTranscriptNotesTitlesAndUserNotesButNotTheScratchpad() throws {
+    @Test func searchCoversTranscriptNotesAndTitlesButNotTheOldScratchpad() throws {
         let f = try LifecycleFixture()
         defer { try? FileManager.default.removeItem(at: f.root) }
         let hits = try f.store.search(f.marker)
