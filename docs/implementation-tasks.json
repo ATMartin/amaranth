@@ -2796,7 +2796,7 @@
       "id": "T92",
       "title": "Notes while recording",
       "milestone": "R",
-      "status": "planned",
+      "status": "done (2026-10-31): the live Scratchpad toggle is Notes (⌘⇧N, same place); Presentation.RecordingNotes turns the field into user blocks with typedAt = recording time first typed (lines matched by a diff, so edits keep their block and time and a deleted line does not shift others' times; \"# \"/\"- \" as in the pane); saved every 10 s while changed and at Stop before anything else, replacing only the blocks the recording wrote. RecordingScratchpad, its tests and RecorderModel's scratchpad state removed; ui-render live-notes-closed/-open (light, dark). Tests: typed-at times, edits and insertions, deletion, other lines left alone, and the acceptance path (saved lines → snapshot → publish keeps them word for word with their times)",
       "optional": false,
       "depends_on": [
         "T89"

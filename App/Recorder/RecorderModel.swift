@@ -7,7 +7,7 @@ import Storage
 import Presentation
 
 /// Recorder state for the UI (T10). UI state is polled at 10 Hz from session snapshots — audio callbacks never publish
-/// to SwiftUI. The scratchpad is private: saved as revisions on this Mac, excluded from notes/exports unless included.
+/// to SwiftUI. Notes typed while recording go into the meeting's notes document (spec 0008 §2).
 @MainActor @Observable
 final class RecorderModel {
     /// Per-recording sources and microphone. They follow the Settings defaults (T30) until changed for this meeting
@@ -19,9 +19,10 @@ final class RecorderModel {
     private(set) var customized = false
     private var loadingDefaults = false
     var title = ""
-    var scratchpad = ""
-    /// Whether the scratchpad editor is open above the live transcript (T33). Closed by default; kept for the session.
-    var scratchpadOpen = false
+    /// The live Notes field (T92): each line is saved with the recording time it was first typed.
+    private(set) var notes = RecordingNotes()
+    /// Whether the Notes field is open above the live transcript (T33). Closed by default; kept for the session.
+    var notesOpen = false
     private(set) var meetingID: MeetingID?
     /// The open recording's meeting folder (shown in the health popover, T34).
     private(set) var directory: URL?
@@ -29,8 +30,8 @@ final class RecorderModel {
     private(set) var savedUpTo: [SourceKind: Double] = [:]
     private(set) var diskSecondsLeft: Double?
     private(set) var diskWarned = false
-    private var savedScratchpad = ""
-    private var lastScratchpadSave = Date.distantPast
+    private var savedNotes = RecordingNotes()
+    private var lastNotesSave = Date.distantPast
     /// Live provisional text while recording (T14).
     weak var live: LiveTextModel?
     /// Final-quality transcription while recording (T19).
@@ -191,7 +192,7 @@ final class RecorderModel {
         let folderID = self.folderID
         automaticTitle = self.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? title : nil
         eventPrompt = .none
-        scratchpad = ""; savedScratchpad = ""; savedUpTo = [:]; diskWarned = false; diskSecondsLeft = nil
+        notes = RecordingNotes(); savedNotes = notes; savedUpTo = [:]; diskWarned = false; diskSecondsLeft = nil
         // Starting capture can block while a TCC prompt is open: never on the main thread.
         let store = self.store
         Task.detached(priority: .userInitiated) {
@@ -328,15 +329,18 @@ final class RecorderModel {
         let disk = s.diskStatus()
         diskSecondsLeft = disk.secondsLeft
         diskWarned = disk.warned
-        if scratchpad != savedScratchpad, Date().timeIntervalSince(lastScratchpadSave) > 10 { saveScratchpad() }
+        if notes != savedNotes, Date().timeIntervalSince(lastNotesSave) > 10 { saveNotes() }
         updateQuiet()
     }
 
-    private func saveScratchpad() {
-        guard let store, let id = meetingID, scratchpad != savedScratchpad else { return }
-        _ = try? RecordingScratchpad.save(scratchpad, for: id, in: store)
-        savedScratchpad = scratchpad
-        lastScratchpadSave = Date()
+    /// The Notes field's new text, stamped with the recording's current time.
+    func typeNotes(_ text: String) { notes.update(text, at: session?.now.seconds ?? elapsed) }
+
+    private func saveNotes() {
+        guard let store, let id = meetingID, notes != savedNotes else { return }
+        _ = try? notes.save(for: id, in: store)
+        savedNotes = notes
+        lastNotesSave = Date()
     }
 
     func pause() { session?.pause(); tick() }
@@ -394,7 +398,7 @@ final class RecorderModel {
         poll?.invalidate()
         poll = nil
         stopQuietMonitor()
-        saveScratchpad()
+        saveNotes()   // before generation can read them
         if let live { Task { await live.finish(r) } }
         incremental?.stop()
         session = nil

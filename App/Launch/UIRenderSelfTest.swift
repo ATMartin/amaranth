@@ -410,17 +410,17 @@ enum UIRenderSelfTest {
             .init(source: .systemOutput, status: .silent, peakLevelDBFS: -90, deviceName: "System audio"),
         ], savedUpTo: [.microphone: 3720, .systemOutput: 3700], now: 3723, diskWarning: RecorderPresentation.diskWarning(secondsLeft: 900),
            folder: "/Users/example/Library/Application Support/Amaranth/meetings/2026-10-25-m1"), "recording-health", size: CGSize(width: 380, height: 260))
-        // Live view (T33): scratchpad closed by default, then open above the transcript.
-        _ = await host(LiveTranscriptView(), "live-scratchpad-closed", size: CGSize(width: 900, height: 400))
+        // Live view (T33, T92): Notes closed by default, then open above the transcript.
+        _ = await host(LiveTranscriptView(), "live-notes-closed", size: CGSize(width: 900, height: 400))
         // The live view where MainView shows it while recording: the detail column of the split view.
         _ = await host(NavigationSplitView { LibrarySidebar() } detail: {
             LiveTranscriptView().safeAreaInset(edge: .top, spacing: 0) { RecorderBanner(model: recorder) }
         }, "live-in-window", size: CGSize(width: 1200, height: 760))
-        recorder.scratchpadOpen = true
-        recorder.scratchpad = "Ask Dana about the notarization date"
-        _ = await host(LiveTranscriptView(), "live-scratchpad-open", size: CGSize(width: 900, height: 400))
-        recorder.scratchpadOpen = false
-        recorder.scratchpad = ""
+        recorder.notesOpen = true
+        recorder.typeNotes("Ask Dana about the notarization date")
+        _ = await host(LiveTranscriptView(), "live-notes-open", size: CGSize(width: 900, height: 400))
+        recorder.notesOpen = false
+        recorder.typeNotes("")
         _ = await host(RecorderBannerContent(items: [
             .init(kind: .error, text: "Could not start recording: example error"),
             .init(kind: .permission, text: "Amaranth isn't allowed to record microphone. Allow it in System Settings → Privacy & Security."),

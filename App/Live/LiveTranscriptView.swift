@@ -8,7 +8,7 @@ struct LiveTranscriptView: View {
     @Environment(LiveTextModel.self) private var live
     @Environment(RecorderModel.self) private var recorder
     @Environment(LibraryModel.self) private var library
-    @FocusState private var scratchpadFocused: Bool
+    @FocusState private var notesFocused: Bool
 
     var body: some View {
         @Bindable var recorder = recorder
@@ -24,21 +24,23 @@ struct LiveTranscriptView: View {
                 case .paused(let why), .unavailable(let why): Text(why).font(.caption).foregroundStyle(Color.statusAttention)
                 case .off: EmptyView()
                 }
-                Toggle(isOn: $recorder.scratchpadOpen) { Label("Scratchpad", systemImage: "note.text") }
+                Toggle(isOn: $recorder.notesOpen) { Label("Notes", systemImage: "note.text") }
                     .toggleStyle(BrandChipToggleStyle())
                     .keyboardShortcut("n", modifiers: [.command, .shift])
-                    .help("Private scratchpad for this meeting (⌘⇧N)")
+                    .help("Notes for this meeting, used when its notes are generated (⌘⇧N)")
             }
             .padding(.horizontal, AppStyle.double + 8).padding(.top, AppStyle.double + 4).padding(.bottom, AppStyle.half)
             Text("The final transcript, with speakers, is made after you stop. Audio is saved either way.")
                 .appFont(.caption).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.double + 8)
-            // Inline above the transcript, never a modal; text keeps flowing into the recorder and is saved at Stop.
-            if recorder.scratchpadOpen {
-                TextField("Private scratchpad (only on this Mac)", text: $recorder.scratchpad, axis: .vertical).lineLimit(2...6)
+            // Inline above the transcript, never a modal; lines go into the meeting's notes (saved every few seconds and at
+            // Stop) and into the notes generated after Stop.
+            if recorder.notesOpen {
+                TextField("Notes: one line per thought, used when this meeting's notes are generated",
+                          text: Binding(get: { recorder.notes.text }, set: { recorder.typeNotes($0) }), axis: .vertical).lineLimit(2...6)
                     .textFieldStyle(.roundedBorder).font(.callout).padding(.horizontal, AppStyle.double + 8).padding(.top)
-                    .focused($scratchpadFocused)
+                    .focused($notesFocused)
                     // Only when empty: focusing selects all existing text, and the next keystroke would replace it.
-                    .onAppear { if recorder.scratchpad.isEmpty { scratchpadFocused = true } }
+                    .onAppear { if recorder.notes.text.isEmpty { notesFocused = true } }
             }
             Hairline().padding(.top, AppStyle.grid + 4)
             ScrollViewReader { proxy in
