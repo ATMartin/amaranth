@@ -153,7 +153,27 @@ enum Schema {
         ALTER TABLE meetings ADD COLUMN folder_id TEXT;
         CREATE INDEX meetings_by_folder ON meetings (folder_id);
         """,
+        // v6 (T89, spec 0008): one notes document per meeting replaces "Your notes" and the private scratchpad. Revisions
+        // are immutable JSON; the newest is current. `migrateData(to: 6)` builds each meeting's first document in the same
+        // transaction. The old tables stay (read by that step, purged on deletion).
+        """
+        CREATE TABLE notes_document_revisions (
+            id TEXT PRIMARY KEY,
+            meeting_id TEXT NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
+            created_at REAL NOT NULL,
+            json BLOB NOT NULL
+        );
+        CREATE INDEX notes_documents_by_meeting ON notes_document_revisions (meeting_id, created_at);
+        """,
     ]
+
+    /// Steps that rewrite stored content after a version's SQL, in that migration's transaction.
+    static func migrateData(to version: Int, _ db: SQLiteDB) throws {
+        switch version {
+        case 6: try MeetingStore.migrateToNotesDocuments(db)
+        default: break
+        }
+    }
 
     /// Applies pending migrations; returns the version the database had before.
     @discardableResult
@@ -165,6 +185,7 @@ enum Schema {
         for (i, sql) in migrations.enumerated() where i >= current {
             try db.transaction {
                 try db.exec(sql)
+                try migrateData(to: i + 1, db)
                 try db.exec("PRAGMA user_version = \(i + 1)")
             }
         }

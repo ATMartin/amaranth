@@ -3,11 +3,11 @@ public import Domain
 
 /// One search result: where in which meeting the text matched.
 public struct SearchHit: Hashable, Sendable {
-    public enum Kind: String, Sendable { case title, transcript, notes, userNotes, speaker, person }
+    public enum Kind: String, Sendable { case title, transcript, notes, speaker, person }
     public var meetingID: MeetingID
     public var meetingTitle: String
     public var kind: Kind
-    /// Segment ID (transcript), summary item ID (notes), or revision ID (user notes).
+    /// Segment ID (transcript) or notes block ID (notes).
     public var ref: String
     /// Session time of the match for transcript hits.
     public var start: SessionTime?
@@ -24,9 +24,8 @@ public struct SearchHit: Hashable, Sendable {
     }
 }
 
-/// Local SQLite FTS5 search (T11). The index mirrors *current* content only (the meeting's current transcript and
-/// summary revisions and latest user notes); it is rewritten whenever that content changes and purged on deletion.
-/// The private scratchpad is never indexed.
+/// Local SQLite FTS5 search (T11). The index mirrors *current* content only (the meeting's current transcript and its
+/// current notes document, spec 0008); it is rewritten whenever that content changes and purged on deletion.
 extension MeetingStore {
     /// `meeting`: only that meeting's rows (the ask field's "This meeting" scope); nil searches every meeting.
     /// `anyTerm`: match lines with any of the words (ranked by bm25) instead of all of them.
@@ -104,18 +103,16 @@ extension MeetingStore {
                 try insert(.transcript, seg.id.rawValue, seg.interval.start.nanoseconds, seg.text, speaker: speaker.isEmpty ? nil : speaker, evidence: evidence)
             }
         }
-        if let sid = m.currentSummaryRevisionID,
-           let blob = try db.run("SELECT json FROM summary_revisions WHERE id=?", [.text(sid.rawValue)]).first?["json"]?.blob {
-            let s = try ContractCoding.decode(SummaryRevision.self, from: blob)
-            for item in s.content.allItems where item.kind != .limitation {
-                let evidence = (item.evidence + item.ownerEvidence).compactMap { if case .transcript(let e) = $0 { e } else { nil } }
-                try insert(.notes, item.id.rawValue, nil, [item.title, item.text, item.owner].compactMap { $0 }.joined(separator: " — "), evidence: evidence)
+        // The notes document as the pane shows it, user and model lines alike. Generated headings are structure, and what
+        // the model could not establish (Limitations) is not meeting content.
+        if let doc = try currentNotesDocument(db, meeting) {
+            var section: NoteSection?
+            for b in doc.blocks {
+                if let s = b.section { section = s; continue }
+                guard b.isUser || section != .limitations else { continue }
+                let evidence = b.evidence.compactMap { if case .transcript(let e) = $0 { e } else { nil } }
+                try insert(.notes, b.id.rawValue, nil, [b.text, b.detail].compactMap { $0 }.joined(separator: " — "), evidence: evidence)
             }
-        }
-        if let blob = try db.run("SELECT json FROM manual_notes_revisions WHERE meeting_id=? ORDER BY created_at DESC, rowid DESC LIMIT 1",
-                                 [.text(meeting.rawValue)]).first?["json"]?.blob {
-            let n = try ContractCoding.decode(ManualNotesRevision.self, from: blob)
-            try insert(.userNotes, n.id.rawValue, nil, n.markdown)
         }
     }
 

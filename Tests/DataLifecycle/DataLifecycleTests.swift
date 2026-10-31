@@ -64,6 +64,11 @@ struct LifecycleFixture {
                                                                          actionItems: [SummaryItem(kind: .actionItem, text: "Dana prepares the release", evidence: [ev], owner: "Dana", due: DueDate(originalText: "by Thursday"))]),
                                                  validation: SummaryValidationReport(status: .valid), scratchpadRevisionID: pad.id, influencedByPersonalNotes: true))
         try store.saveManualNotes(ManualNotesRevision(meetingID: m, basedOnSummaryRevisionID: nil, markdown: "My own note: call the vendor", createdAt: Date()))
+        // The notes document (spec 0008): the generated notes plus a line the user wrote.
+        var doc = try #require(try store.currentNotesDocument(m))
+        doc.id = RevisionID(); doc.origin = .edited
+        doc.blocks += NotesComposer.userBlocks(fromText: "My own line: book the velvetotter venue")
+        try store.saveNotesDocument(doc)
     }
 
     func input() throws -> ExportInput {
@@ -205,7 +210,7 @@ struct SearchAndDeletionTests {
         let t = try #require(hits.first { $0.kind == .transcript })
         #expect(t.meetingID == f.meeting && t.start == .seconds(1) && t.snippet.contains("[\(f.marker)]") && t.meetingTitle == "Roadmap sync")
         #expect(try f.store.search("roadmap").contains { $0.kind == .title })
-        #expect(try f.store.search("vendor").contains { $0.kind == .userNotes })
+        #expect(try f.store.search("velvetotter").map(\.kind) == [.notes], "user lines are notes")
         #expect(try f.store.search("PRIVATE-PAD hiring").isEmpty, "the private scratchpad is not indexed")
         #expect(try f.store.search("thurs").contains { $0.kind == .transcript }, "prefix search")
         // User input cannot inject FTS syntax.
@@ -292,6 +297,7 @@ struct SearchAndDeletionTests {
         #expect(try f.store.search(f.marker).isEmpty && f.store.search("roadmap").isEmpty && f.store.searchRowCount(f.meeting) == 0)
         #expect(try f.store.transcriptRevisions(f.meeting).isEmpty && f.store.summaryRevisions(f.meeting).isEmpty)
         #expect(try f.store.latestScratchpad(f.meeting) == nil && f.store.latestManualNotes(f.meeting) == nil && f.store.segments(f.meeting).isEmpty)
+        #expect(try f.store.currentNotesDocument(f.meeting) == nil && f.store.notesDocumentRevisions(f.meeting).isEmpty)
         #expect(!FileManager.default.fileExists(atPath: f.store.meetingDirectory(f.meeting).path))
         #expect(!FileManager.default.fileExists(atPath: f.store.workDirectory(f.meeting).path), "checkpoints holding transcript text are gone")
         // Late worker results cannot resurrect anything.
@@ -302,6 +308,7 @@ struct SearchAndDeletionTests {
         // Nothing of the meeting's content remains in the database file bytes, and after relaunch nothing is found.
         #expect(try !f.databaseContains(f.marker))
         #expect(try !f.databaseContains("Roadmap sync") && !f.databaseContains("call the vendor") && !f.databaseContains("PRIVATE-PAD"))
+        #expect(try !f.databaseContains("velvetotter"), "notes document revisions are purged")
         #expect(try !f.databaseContains("Quillon Brightwater") && !f.databaseContains("zephyrbadger") && !f.databaseContains("Velvetquartz"))
         let reopened = try MeetingStore(root: f.root)
         #expect(try reopened.search(f.marker).isEmpty && reopened.meetings().isEmpty)

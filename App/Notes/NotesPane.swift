@@ -224,8 +224,8 @@ struct NoteItemRow: View {
                         case .transcript(let e):
                             Button(time(e)) { jump(e) }.buttonStyle(SourceLinkStyle()).help("Show in transcript")
                                 .accessibilityLabel("Source at \(time(e))")
-                        case .personalNote:
-                            Label("your private note", systemImage: "lock").appFont(.caption).foregroundStyle(Color.brandSecondary)
+                        case .userNote, .personalNote:
+                            Label("your note", systemImage: "square.and.pencil").appFont(.caption).foregroundStyle(Color.brandSecondary)
                         }
                     }
                 }

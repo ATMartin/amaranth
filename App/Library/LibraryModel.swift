@@ -283,7 +283,7 @@ final class LibraryModel {
         case .transcript:
             detailTab = .transcript
             focusRowID = d.rows.first { $0.segmentID?.rawValue == hit.ref }?.id
-        case .notes, .userNotes: detailTab = .notes
+        case .notes: detailTab = .notes
         case .speaker: detailTab = .transcript
         case .title, .person: break
         }

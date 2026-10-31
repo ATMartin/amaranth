@@ -65,7 +65,8 @@ extension MeetingStore {
         try withDB { db in
             try db.transaction {
                 for table in ["search_index", "capture_epochs", "audio_segments", "capture_events", "processing_jobs", "transcript_revisions",
-                              "diarization_results", "user_edits", "summary_revisions", "scratchpad_revisions", "manual_notes_revisions"] {
+                              "diarization_results", "user_edits", "summary_revisions", "scratchpad_revisions", "manual_notes_revisions",
+                              "notes_document_revisions"] {
                     try db.run("DELETE FROM \(table) WHERE meeting_id=?", [.text(id.rawValue)])
                 }
                 let scrubbed = Meeting(id: id, title: "", createdAt: m.createdAt, captureState: m.captureState, selectedSources: m.selectedSources,

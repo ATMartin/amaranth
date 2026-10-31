@@ -132,6 +132,7 @@ struct RetrieverTests {
                 DROP INDEX meetings_by_folder;
                 ALTER TABLE meetings DROP COLUMN folder_id;
                 DROP TABLE folders;
+                DROP TABLE notes_document_revisions;
                 PRAGMA user_version = 3;
                 """)
         }

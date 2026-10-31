@@ -292,7 +292,7 @@ struct MeetingStoreTests {
                       .int(f.meeting.duration.nanoseconds), .blob(try ContractCoding.encode(f.meeting))])
         }
         let store = try MeetingStore(root: root)
-        #expect(try store.withDB { try $0.run("PRAGMA user_version").first?["user_version"]?.int } == 5)
+        #expect(try store.withDB { try $0.run("PRAGMA user_version").first?["user_version"]?.int } == Int64(Schema.migrations.count))
         #expect(try store.meeting(f.meeting.id) == f.meeting)
         #expect(try store.folders().isEmpty)
         #expect(try store.meetings(in: nil).map(\.id) == [f.meeting.id])

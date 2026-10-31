@@ -2709,7 +2709,7 @@
       "id": "T89",
       "title": "Notes document: domain, storage, migration to library v6",
       "milestone": "R",
-      "status": "planned",
+      "status": "done (2026-10-31): Domain NotesDocumentRevision/NoteBlock/NoteAuthor/NoteSection + NotesComposer (compose, migrated, userBlocks(fromText:)); EvidenceRef.userNote; schema v6 notes_document_revisions with the data step in the same transaction; never-included scratchpad revisions deleted (only the revision used for notes stays), WAL checkpointed; search indexes the current document as .notes (userNotes kind gone; model blocks keep their summary item IDs as refs); publishSummary composes a document keeping the user lines (snapshot rule comes in T90); deletion purges the table; tests: NotesDocumentTests, NotesDocumentMigrationTests (8 cases incl. deleted meeting and switched-off scratchpad), lifecycle bytes",
       "optional": false,
       "depends_on": [],
       "owner_role": "Storage",

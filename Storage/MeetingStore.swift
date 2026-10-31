@@ -24,8 +24,10 @@ public final class MeetingStore: @unchecked Sendable {
             try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
             chmod(dir.path, 0o700)
         }
-        // Databases created before search existed (v1), or before the v4 index layout (T53), get their index built once.
-        if (1..<4).contains(previousVersion) { try rebuildSearchIndex() }
+        // Databases created before search existed (v1), before the v4 index layout (T53), or before notes documents (v6,
+        // spec 0008) get their index built once. The v6 step may have deleted scratchpad text: checkpoint it out of the WAL.
+        if (1..<6).contains(previousVersion) { try rebuildSearchIndex() }
+        if (1..<6).contains(previousVersion) { try checkpointAndTruncateWAL() }
     }
 
     public static func defaultRoot() -> URL {

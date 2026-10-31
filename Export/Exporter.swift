@@ -121,6 +121,8 @@ public enum Exporter {
             case .transcript(let e):
                 guard let seg = t.segment(e.segmentID), let w = seg.words.first(where: { $0.id == e.firstWord }) else { return nil }
                 return clock(w.interval.start)
+            case .userNote:
+                return "your note"
             case .personalNote:
                 return "personal note"
             }

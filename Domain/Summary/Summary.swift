@@ -32,6 +32,9 @@ public struct ScratchpadEvidence: Hashable, Sendable, Codable {
 
 public enum EvidenceRef: Hashable, Sendable, Codable {
     case transcript(TranscriptEvidence)
+    /// A line the user wrote in the meeting's notes document (spec 0008).
+    case userNote(NoteEvidence)
+    /// Before spec 0008: the private scratchpad. Still decodable so v5 libraries migrate; never produced.
     case personalNote(ScratchpadEvidence)
 
     public var isSpoken: Bool { if case .transcript = self { true } else { false } }
@@ -179,6 +182,8 @@ public struct SummaryRevision: Hashable, Sendable, Codable, Identifiable {
                           let a = seg.words.firstIndex(where: { $0.id == e.firstWord }),
                           let b = seg.words.firstIndex(where: { $0.id == e.lastWord }), a <= b
                     else { throw DomainError.invalidReference("item \(item.id) transcript evidence") }
+                case .userNote:
+                    break   // checked against the notes document by the notes pipeline
                 case .personalNote(let e):
                     guard influencedByPersonalNotes, let pad = scratchpad, pad.id == e.revisionID,
                           e.start >= 0, e.start <= e.end, e.end <= pad.text.utf16.count

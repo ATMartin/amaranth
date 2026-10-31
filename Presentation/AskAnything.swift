@@ -68,7 +68,6 @@ public enum AskResults {
         case .title: "title"
         case .transcript: hit.start.map { TranscriptRows.clock($0) } ?? "transcript"
         case .notes: "notes"
-        case .userNotes: "your notes"
         case .speaker: "speaker"
         case .person: "people"
         }

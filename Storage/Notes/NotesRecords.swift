@@ -5,7 +5,8 @@ public import Domain
 /// atomically; a failed regeneration never replaces a usable summary, and user notes are separate records that
 /// regeneration never touches.
 extension MeetingStore {
-    /// Publishes `s` as the meeting's current summary unless the meeting was deleted (late results cannot resurrect it).
+    /// Publishes `s` as the meeting's current summary unless the meeting was deleted (late results cannot resurrect it),
+    /// and composes a new notes document from it and the current document's user lines (spec 0008 §3).
     @discardableResult
     public func publishSummary(_ s: SummaryRevision) throws -> Bool {
         try withDB { db in
@@ -19,6 +20,8 @@ extension MeetingStore {
                 m.currentSummaryRevisionID = s.id
                 try db.run("UPDATE meetings SET current_summary_revision=?, json=? WHERE id=?",
                            [.text(s.id.rawValue), .blob(try ContractCoding.encode(m)), .text(m.id.rawValue)])
+                let user = try Self.currentNotesDocument(db, s.meetingID)?.userBlocks ?? []
+                try Self.insertNotesDocument(db, NotesComposer.compose(summary: s, userBlocks: user, meetingID: s.meetingID, createdAt: Date()))
                 try Self.reindex(db, m.id)
                 return true
             }
