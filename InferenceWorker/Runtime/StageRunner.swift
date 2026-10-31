@@ -286,7 +286,7 @@ public final class StageRunner: @unchecked Sendable {
             let generator = try models.notes()
             let pipeline = NotesPipeline(generator: generator, workDirectory: job.workDirectory.appending(path: "notes"))
             let rev = try pipeline.run(meetingID: i.meetingID, transcript: i.transcript, editSequence: i.editSequence,
-                                       scratchpad: i.scratchpad, cancellation: cancellation) { p in
+                                       notes: i.notes, cancellation: cancellation) { p in
                 progress(WorkerProgress(jobID: job.jobID, progress: p, checkpoint: nil))
             }
             output = .summary(rev)

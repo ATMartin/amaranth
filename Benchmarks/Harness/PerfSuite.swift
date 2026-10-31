@@ -620,7 +620,7 @@ enum PerfSuite {
         }
         var m = NotesMetrics(items: items.count, itemsWithValidEvidence: items.filter(valid).count, uncertain: items.filter(\.uncertain).count)
         if si.set == "notes-planted", let t = transcript, let cut = si.reference.flatMap(Double.init) {
-            let doc = NotesInputDocument.build(transcript: t, scratchpad: nil)
+            let doc = NotesInputDocument.build(transcript: t, notes: nil)
             var found = 0, expected = 0
             for pl in NotesEval.planted where pl.at < cut {
                 expected += 1

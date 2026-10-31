@@ -129,7 +129,7 @@ enum PipelineSelfTest {
             let r = report(store, rec.meetingID, micReference: f.micReference)
             var notesOK = false
             if let summary, let tr = try store.transcriptRevision(summary.transcriptRevisionID) {
-                notesOK = (try? summary.validateReferences(transcript: tr, scratchpad: nil)) != nil
+                notesOK = (try? summary.validateReferences(transcript: tr)) != nil
                     && !summary.content.allItems.filter({ $0.kind != .limitation }).isEmpty && !summary.isStale
                 log(["step": "notes", "items": "\(summary.content.allItems.filter { $0.kind != .limitation }.count)",
                      "decisions": "\(summary.content.decisions.count)", "actions": "\(summary.content.actionItems.count)",

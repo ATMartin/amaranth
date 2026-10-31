@@ -396,6 +396,18 @@ final class LibraryModel {
         perform { _ = try scheduler?.enqueueNotes(id) }
     }
 
+    /// Notes generated while the user changed the notes (spec 0008 §4): Replace composes them with the current lines.
+    func replaceWithPendingNotes(_ id: MeetingID) {
+        guard let store else { return }
+        perform { try store.replaceWithPendingNotes(id) }
+    }
+
+    /// Keeps the notes as they are; the held result stays in the record of generated notes.
+    func dismissPendingNotes(_ id: MeetingID) {
+        guard let store else { return }
+        perform { try store.dismissPendingNotes(id) }
+    }
+
     /// `immediately`: write synchronously (used when flushing on meeting switch or quit, so nothing typed is lost).
     func saveUserNotes(_ id: MeetingID, markdown: String, immediately: Bool = false) {
         guard let store else { return }

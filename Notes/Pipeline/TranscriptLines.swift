@@ -2,7 +2,7 @@ public import Foundation
 public import Domain
 
 /// A numbered, citable unit of the notes input: one speaker's consecutive words within one transcript segment, or one
-/// paragraph of the user's personal notes (only when they opted in). Numbers are what the model cites as evidence.
+/// line the user wrote in the meeting's notes (spec 0008). Numbers are what the model cites as evidence.
 public struct NotesLine: Hashable, Sendable, Codable {
     /// A contiguous word span inside one transcript segment.
     public struct Span: Hashable, Sendable, Codable {
@@ -13,17 +13,20 @@ public struct NotesLine: Hashable, Sendable, Codable {
     public enum Origin: Hashable, Sendable, Codable {
         /// One or more consecutive spans by the same speaker (merged so short turns don't waste tokens).
         case spoken([Span])
-        case personalNote(start: Int, end: Int)   // UTF-16 offsets into the scratchpad text
+        /// A user block of the notes document generation read.
+        case userNote(NoteBlockID)
     }
     public var id: Int
     public var origin: Origin
     /// Rendered speaker ("Speaker 2", a user-given name, "Unknown speaker") or "personal note".
     public var speaker: String
     public var text: String
-    /// Session seconds; -1 for personal notes (they have no time).
+    /// Session seconds; -1 for the user's lines (they are not placed in the transcript).
     public var start: Double
+    /// For a user line typed during the recording: seconds from the start when it was first typed.
+    public var typedAt: Double?
 
-    public var isPersonalNote: Bool { if case .personalNote = origin { true } else { false } }
+    public var isPersonalNote: Bool { if case .userNote = origin { true } else { false } }
 }
 
 /// Non-citable marker shown to the model in place of audio that has no text (so it knows the record is incomplete).
@@ -60,10 +63,10 @@ public struct NotesInputDocument: Sendable, Codable {
     }
 
     /// Splits segments at speaker changes, merges consecutive runs by the same speaker (pause < 3 s, ≤ `maxWords`) into
-    /// one citable line, numbers lines in time order, and adds personal-note paragraphs only if
-    /// `scratchpad?.includeInSummary` is true. Gaps ≥ `minGap` seconds of missing, untranscribed or paused audio become
+    /// one citable line, numbers lines in time order, then adds the user blocks of `notes` (always: spec 0008 §1) as
+    /// personal-note lines in document order. Gaps ≥ `minGap` seconds of missing, untranscribed or paused audio become
     /// non-citable markers.
-    public static func build(transcript: TranscriptRevision, scratchpad: ScratchpadRevision?, maxWords: Int = 80,
+    public static func build(transcript: TranscriptRevision, notes: NotesDocumentRevision?, maxWords: Int = 80,
                              minGap: Double = 5) -> NotesInputDocument {
         let names = Dictionary(transcript.speakers.map { ($0.id, $0.displayName ?? $0.label) }, uniquingKeysWith: { a, _ in a })
         func label(_ a: SpeakerAssignment) -> String {
@@ -107,18 +110,13 @@ public struct NotesInputDocument: Sendable, Codable {
             lastEnd = max(lastEnd, r.end)
             lastAddressed = addressed
         }
-        if let pad = scratchpad, pad.includeInSummary {
-            var offset = 0, n = 0
-            for para in pad.text.components(separatedBy: "\n") {
-                let len = para.utf16.count
-                let trimmed = para.trimmingCharacters(in: .whitespaces)
-                if !trimmed.isEmpty {
-                    lines.append(NotesLine(id: personalNoteBase + n, origin: .personalNote(start: offset, end: offset + len),
-                                           speaker: "personal note", text: trimmed, start: -1))
-                    n += 1
-                }
-                offset += len + 1
-            }
+        for (n, block) in (notes?.userBlocks ?? []).enumerated() {
+            let text = block.text.components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+                .joined(separator: " ")
+            var typedAt: Double?
+            if case .user(let t) = block.author { typedAt = t }
+            lines.append(NotesLine(id: personalNoteBase + n, origin: .userNote(block.id), speaker: "personal note", text: text, start: -1,
+                                   typedAt: typedAt))
         }
         var gaps: [NotesGap] = []
         for c in transcript.coverage where c.interval.duration.seconds >= minGap {
@@ -146,7 +144,10 @@ public struct NotesInputDocument: Sendable, Codable {
                 pending.removeFirst()
             }
             // No timestamps: the model doesn't need them and they cost tokens on every line.
-            if l.isPersonalNote {
+            if l.isPersonalNote, let t = l.typedAt {
+                // Typed during the meeting: the time relates the line to what was being said then.
+                out.append("[\(l.id)] (PERSONAL NOTE typed by the user at \(Self.clock(t)), not spoken) \(l.text)")
+            } else if l.isPersonalNote {
                 out.append("[\(l.id)] (PERSONAL NOTE written by the user, not spoken) \(l.text)")
             } else {
                 out.append("[\(l.id)] \(l.speaker): \(l.text)")
@@ -163,14 +164,14 @@ public struct NotesInputDocument: Sendable, Codable {
     }
 
     /// Converts a cited line into contract evidence references (one per segment span it covers).
-    public func evidence(_ id: Int, transcript: RevisionID, scratchpad: RevisionID?) -> [EvidenceRef] {
+    public func evidence(_ id: Int, transcript: RevisionID, notes: RevisionID?) -> [EvidenceRef] {
         guard let l = line(id) else { return [] }
         switch l.origin {
         case .spoken(let spans):
             return spans.map { .transcript(TranscriptEvidence(revisionID: transcript, segmentID: $0.segment, firstWord: $0.firstWord, lastWord: $0.lastWord)) }
-        case .personalNote(let s, let e):
-            guard let scratchpad else { return [] }
-            return [.personalNote(ScratchpadEvidence(revisionID: scratchpad, start: s, end: e))]
+        case .userNote(let block):
+            guard let notes else { return [] }
+            return [.userNote(NoteEvidence(revisionID: notes, blockID: block))]
         }
     }
 }

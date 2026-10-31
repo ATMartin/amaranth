@@ -24,31 +24,36 @@ struct InvariantTests {
 
     @Test func summaryEvidenceResolves() throws {
         let f = Fixtures.twoSourceConversation
-        try f.summary!.validateReferences(transcript: f.transcript!, scratchpad: f.scratchpad)
+        try f.summary!.validateReferences(transcript: f.transcript!)
     }
 
     @Test func summaryEvidenceAgainstWrongRevisionFails() throws {
         let f = Fixtures.twoSourceConversation
         var other = f.transcript!
         other.id = RevisionID("other")
-        #expect(throws: DomainError.self) { try f.summary!.validateReferences(transcript: other, scratchpad: nil) }
+        #expect(throws: DomainError.self) { try f.summary!.validateReferences(transcript: other) }
     }
 
-    @Test func personalNoteEvidenceRequiresOptIn() throws {
+    /// Spec 0008: a user line cites a user block of the snapshot generation read; scratchpad evidence is never valid.
+    @Test func userNoteEvidenceMustResolveToTheSnapshotsUserBlock() throws {
         let f = Fixtures.twoSourceConversation
+        let mine = NoteBlock(kind: .paragraph, text: "The earlier project was the Lyon rollout", author: .user(typedAt: 12))
+        let model = NoteBlock(kind: .paragraph, text: "Generated", author: .model(summaryItemID: nil, uncertain: false))
+        let notes = NotesDocumentRevision(meetingID: f.meeting.id, createdAt: Date(), origin: .edited, blocks: [mine, model])
         var s = f.summary!
-        s.content.overview[0].evidence.append(.personalNote(.init(revisionID: f.scratchpad!.id, start: 0, end: 3)))
-        #expect(throws: DomainError.self) { try s.validateReferences(transcript: f.transcript!, scratchpad: f.scratchpad) }
-        s.influencedByPersonalNotes = true
-        try s.validateReferences(transcript: f.transcript!, scratchpad: f.scratchpad)
-    }
-
-    @Test func snapshotDropsScratchpadUnlessIncluded() {
-        let f = Fixtures.twoSourceConversation
-        #expect(SummaryInputSnapshot(transcript: f.transcript!, edits: [], scratchpad: f.scratchpad).scratchpad == nil)
-        var pad = f.scratchpad!
-        pad.includeInSummary = true
-        #expect(SummaryInputSnapshot(transcript: f.transcript!, edits: [], scratchpad: pad).scratchpad != nil)
+        s.notesRevisionID = notes.id
+        s.content.overview[0].evidence.append(.userNote(NoteEvidence(revisionID: notes.id, blockID: mine.id)))
+        try s.validateReferences(transcript: f.transcript!, notes: notes)
+        #expect(throws: DomainError.self) { try s.validateReferences(transcript: f.transcript!) }
+        var other = notes; other.id = RevisionID()
+        #expect(throws: DomainError.self) { try s.validateReferences(transcript: f.transcript!, notes: other) }
+        var cites = s
+        cites.content.overview[0].evidence.append(.userNote(NoteEvidence(revisionID: notes.id, blockID: model.id)))
+        #expect(throws: DomainError.self, "a model block is not the user's line") { try cites.validateReferences(transcript: f.transcript!, notes: notes) }
+        var old = f.summary!
+        old.content.overview[0].evidence.append(.personalNote(.init(revisionID: f.scratchpad!.id, start: 0, end: 3)))
+        old.influencedByPersonalNotes = true
+        #expect(throws: DomainError.self) { try old.validateReferences(transcript: f.transcript!, notes: notes) }
     }
 
     @Test func floatingModelRevisionsRejected() {

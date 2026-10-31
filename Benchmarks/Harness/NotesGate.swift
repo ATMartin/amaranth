@@ -20,7 +20,7 @@ enum NotesGate {
             let work = results.appending(path: "work/\(si.item.id)")
             let t0 = ContinuousClock.now
             let rev = try NotesPipeline(generator: runner, workDirectory: work)
-                .run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
+                .run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, notes: nil, cancellation: CancellationToken())
             let seconds = LlmProbe.secs(t0)
             try ContractCoding.encode(rev).write(to: results.appending(path: "\(si.item.id)-summary.json"))
             let m = PerfSuite.notesMetrics(rev, transcript: tr, si: si)

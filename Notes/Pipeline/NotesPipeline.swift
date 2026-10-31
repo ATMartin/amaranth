@@ -5,7 +5,7 @@ import CryptoKit
 /// T09: evidence-backed meeting notes from a transcript revision, fully local (plan §8).
 ///
 /// 1. **Input:** the transcript as numbered lines (`NotesInputDocument`); audio without text appears as non-citable
-///    markers; the private scratchpad is included only when the user opted in, labelled as not spoken.
+///    markers; the lines the user wrote in the meeting's notes are always included, labelled as not spoken (spec 0008).
 /// 2. **Map:** token-budgeted chunks (default 5,000 tokens with 3 lines of overlap) cover the *whole* meeting. Each chunk
 ///    is extracted with a grammar-constrained prompt; invalid or truncated output gets one bounded repair attempt with a
 ///    smaller item cap. A chunk that still fails is reported as a limitation, never skipped silently.
@@ -80,11 +80,12 @@ public final class NotesPipeline: @unchecked Sendable {
     }
     public private(set) var diagnostics = Diagnostics()
 
-    public func run(meetingID: MeetingID, transcript: TranscriptRevision, editSequence: Int, scratchpad: ScratchpadRevision?,
+    /// `notes`: the snapshot of the meeting's notes document; only its user blocks are read.
+    public func run(meetingID: MeetingID, transcript: TranscriptRevision, editSequence: Int, notes: NotesDocumentRevision?,
                     cancellation: CancellationToken, progress: @Sendable (Double) -> Void = { _ in }) throws -> SummaryRevision {
         try FileManager.default.createDirectory(at: workDirectory, withIntermediateDirectories: true)
         diagnostics = Diagnostics()
-        let doc = NotesInputDocument.build(transcript: transcript, scratchpad: scratchpad)
+        let doc = NotesInputDocument.build(transcript: transcript, notes: notes)
         let spoken = doc.lines.filter { !$0.isPersonalNote }
         var personal = doc.lines.filter(\.isPersonalNote)
         var limitations: [String] = []
@@ -260,9 +261,9 @@ public final class NotesPipeline: @unchecked Sendable {
 
         // 6. Overview + assemble
         try cancellation.check()
-        let scratchID = (scratchpad?.includeInSummary ?? false) ? scratchpad?.id : nil
+        let notesID = personal.isEmpty ? nil : notes?.id
         func refs(_ lines: [Int]) -> [EvidenceRef] {
-            lines.flatMap { doc.evidence($0, transcript: transcript.id, scratchpad: scratchID) }
+            lines.flatMap { doc.evidence($0, transcript: transcript.id, notes: notesID) }
         }
         /// Lines that name the owner or are spoken by them.
         func ownerLines(_ c: Candidate) -> [Int] {
@@ -280,7 +281,7 @@ public final class NotesPipeline: @unchecked Sendable {
         let overview = try Perf.measure("notes.overview") { try makeOverview(reduced, sample: Self.overviewSample(doc), speakers: lineSpeakers, refs: refs,
                                                                                     passage: { passage($0) }, cancellation: cancellation) }
         progress(1)
-        limitations += computedLimitations(transcript: transcript, doc: doc, scratchpadIncluded: scratchID != nil)
+        limitations += computedLimitations(transcript: transcript, doc: doc)
         let limitationItems = limitations.enumerated().map { SummaryItem(id: SummaryItemID("limitation-\($0.offset)"), kind: .limitation, text: $0.element, evidence: []) }
         let content = SummaryContent(overview: overview, topics: [],
                                      decisions: items.filter { $0.kind == .decision }, actionItems: items.filter { $0.kind == .actionItem },
@@ -293,8 +294,8 @@ public final class NotesPipeline: @unchecked Sendable {
         producer.configHash = configHash
         let rev = SummaryRevision(meetingID: meetingID, transcriptRevisionID: transcript.id, editSequence: editSequence, createdAt: Date(),
                                   producer: producer, promptVersion: NotesPrompts.version, content: content, validation: report,
-                                  scratchpadRevisionID: scratchID, influencedByPersonalNotes: scratchID != nil)
-        try rev.validateReferences(transcript: transcript, scratchpad: scratchID == nil ? nil : scratchpad)
+                                  notesRevisionID: notes?.id)
+        try rev.validateReferences(transcript: transcript, notes: notes)
         return rev
     }
 
@@ -479,7 +480,7 @@ public final class NotesPipeline: @unchecked Sendable {
 
     // MARK: Limitations (computed)
 
-    func computedLimitations(transcript: TranscriptRevision, doc: NotesInputDocument, scratchpadIncluded: Bool) -> [String] {
+    func computedLimitations(transcript: TranscriptRevision, doc: NotesInputDocument) -> [String] {
         var out: [String] = []
         func total(_ s: CoverageRegion.Status) -> Double {
             transcript.coverage.filter { $0.status == s }.map(\.interval.duration.seconds).reduce(0, +)
@@ -502,7 +503,6 @@ public final class NotesPipeline: @unchecked Sendable {
         if doc.lines.contains(where: { !$0.isPersonalNote && EvidenceChecker.looksAddressedToAI($0.text) }) {
             out.append("Someone in the meeting addressed the notes or an AI directly; that was treated as speech, not as instructions.")
         }
-        if scratchpadIncluded { out.append("These notes also used your personal notes, which were not spoken in the meeting.") }
         let d = diagnostics
         let dropped = d.droppedInvalidEvidence + d.droppedAddressedToAI + d.droppedByVerifier
         if dropped > 0 { out.append("\(dropped) generated items were removed because the transcript did not support them.") }

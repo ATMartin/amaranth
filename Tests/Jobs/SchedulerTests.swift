@@ -68,7 +68,7 @@ final class FakeExecutor: JobExecutor, @unchecked Sendable {
             out = .summary(SummaryRevision(meetingID: i.meetingID, transcriptRevisionID: i.transcript.id, editSequence: i.editSequence,
                                            createdAt: Date(), producer: producer, promptVersion: "fake",
                                            content: SummaryContent(decisions: [SummaryItem(kind: .decision, text: "fake decision", evidence: [ev])]),
-                                           validation: SummaryValidationReport(status: .valid)))
+                                           validation: SummaryValidationReport(status: .valid), notesRevisionID: i.notes?.id))
         case .reconcile:
             if let g = lock.withLock({ gate[.reconcile] }) { for await _ in g { break } }
             return try await reconcileRunner.run(job, cancellation: CancellationToken(), progress: progress)
@@ -263,7 +263,7 @@ struct SchedulerTests {
         let first = try #require(try store.currentSummary(m))
         let currentTranscript = try store.meeting(m)?.currentTranscriptRevisionID
         #expect(!first.isStale && first.transcriptRevisionID == currentTranscript)
-        try store.saveManualNotes(ManualNotesRevision(meetingID: m, basedOnSummaryRevisionID: first.id, markdown: "my notes", createdAt: Date()))
+        try store.saveNotesDocument(Self.typing("my notes", into: try #require(try store.currentNotesDocument(m))))
 
         // A speaker edit re-reconciles; notes become stale instead of silently regenerating.
         let rev = try #require(try store.meeting(m)?.currentTranscriptRevisionID)
@@ -280,15 +280,74 @@ struct SchedulerTests {
         let failing = try #require(try s.enqueueNotes(m))
         #expect(try await JobFixture.wait { try store.jobs(meeting: m).first { $0.id == failing.id }?.state == .failed })
         #expect(try store.currentSummary(m)?.id == first.id)
-        #expect(try store.latestManualNotes(m)?.markdown == "my notes")
+        #expect(try store.currentNotesDocument(m)?.userBlocks.map(\.text) == ["my notes"])
 
         // Retry after the fault: a fresh summary for the current transcript, not stale.
         exec.lock.withLock { exec.failing = [:] }
         for var j in try store.jobs(meeting: m, states: [.failed]) { try j.transition(to: .queued, at: Date()); try store.upsertJob(j) }
         s.poke()
         #expect(try await JobFixture.wait { try store.currentSummary(m).map { $0.id != first.id && !$0.isStale } ?? false })
-        #expect(try store.latestManualNotes(m)?.markdown == "my notes")
+        #expect(try store.currentNotesDocument(m)?.userBlocks.map(\.text) == ["my notes"], "the user's line survives regeneration")
+        #expect(try store.currentNotesDocument(m)?.basedOnSummaryRevisionID == store.currentSummary(m)?.id)
         #expect(try store.summaryRevisions(m).count == 2)
+    }
+
+    /// The current document plus one user line, as the editor saves it.
+    static func typing(_ text: String, into d: NotesDocumentRevision) -> NotesDocumentRevision {
+        var n = d
+        n.id = RevisionID(); n.createdAt = Date(); n.origin = .edited
+        n.blocks += NotesComposer.userBlocks(fromText: text)
+        return n
+    }
+
+    /// Spec 0008 §4: a result for a snapshot the user has since changed is held, not published; Replace composes it with the
+    /// current lines (including those typed after the snapshot); Dismiss keeps the user's notes.
+    @Test func notesChangedDuringGenerationAreHeldForReplaceOrDismiss() async throws {
+        let (store, m, root) = try JobFixture.storeWithMeeting()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let exec = FakeExecutor()
+        var cfg = JobFixture.config(); cfg.notesConfigHash = "notes-test"
+        let s = JobScheduler(store: store, executor: exec, configuration: cfg)
+        try s.start()
+        defer { s.stop() }
+        try s.enqueuePipeline(m)
+        #expect(try await JobFixture.wait { try store.currentSummary(m) != nil })
+        let first = try #require(try store.currentNotesDocument(m))
+        try store.saveNotesDocument(Self.typing("before the snapshot", into: first))
+
+        // Regenerate; while it runs the user types another line.
+        let (stream, cont) = AsyncStream<Void>.makeStream()
+        exec.lock.withLock { exec.gate[.notes] = stream }
+        let job = try #require(try s.enqueueNotes(m))
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).first { $0.id == job.id }?.state == .running })
+        let typed = Self.typing("typed while generating", into: try #require(try store.currentNotesDocument(m)))
+        try store.saveNotesDocument(typed)
+        cont.yield(); cont.finish()
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).first { $0.id == job.id }?.state == .succeeded })
+        #expect(try store.currentNotesDocument(m)?.id == typed.id, "not overwritten")
+        let pending = try #require(try store.pendingNotes(m))
+        #expect(pending.notesRevisionID != typed.id)
+
+        // Replace: the new notes, with both lines (the later one was never seen by the model) under Also noted.
+        let replaced = try #require(try store.replaceWithPendingNotes(m))
+        #expect(replaced.basedOnSummaryRevisionID == pending.id && replaced.origin == .generated)
+        #expect(replaced.userBlocks.map(\.text) == ["before the snapshot", "typed while generating"])
+        #expect(try store.pendingNotes(m) == nil)
+        #expect(try store.notesDocumentRevisions(m).contains { $0.id == typed.id }, "the replaced version stays in Previous Versions")
+
+        // Dismiss: same race again, the user keeps theirs.
+        let (stream2, cont2) = AsyncStream<Void>.makeStream()
+        exec.lock.withLock { exec.gate[.notes] = stream2 }
+        try store.saveNotesDocument(Self.typing("another line", into: replaced))
+        let job2 = try #require(try s.enqueueNotes(m))
+        #expect(try await JobFixture.wait { try store.jobs(meeting: m).first { $0.id == job2.id }?.state == .running })
+        let mine = Self.typing("and one more", into: try #require(try store.currentNotesDocument(m)))
+        try store.saveNotesDocument(mine)
+        cont2.yield(); cont2.finish()
+        #expect(try await JobFixture.wait { try store.pendingNotes(m) != nil })
+        try store.dismissPendingNotes(m)
+        #expect(try store.pendingNotes(m) == nil)
+        #expect(try store.currentNotesDocument(m).map { $0.hasSameContent(as: mine) } == true)
     }
 
     @Test func noNotesModelMeansNoNotesJobAndDeletedMeetingsGetNoSummary() async throws {

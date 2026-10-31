@@ -120,16 +120,16 @@ public protocol Reconciler: Sendable {
                  edits: [UserEdit]) throws -> ReconciliationResult
 }
 
-/// Immutable input to note generation: a committed transcript revision plus applied edits.
+/// Immutable input to note generation: a committed transcript revision plus applied edits, and the meeting's notes
+/// document as it was when generation started (spec 0008: its user lines are context).
 public struct SummaryInputSnapshot: Hashable, Sendable, Codable {
     public var transcript: TranscriptRevision
     public var edits: [UserEdit]
-    /// Present only when the user explicitly opted to include personal notes.
-    public var scratchpad: ScratchpadRevision?
-    public init(transcript: TranscriptRevision, edits: [UserEdit], scratchpad: ScratchpadRevision?) {
+    public var notes: NotesDocumentRevision?
+    public init(transcript: TranscriptRevision, edits: [UserEdit], notes: NotesDocumentRevision?) {
         self.transcript = transcript
         self.edits = edits
-        self.scratchpad = scratchpad?.includeInSummary == true ? scratchpad : nil
+        self.notes = notes
     }
 }
 

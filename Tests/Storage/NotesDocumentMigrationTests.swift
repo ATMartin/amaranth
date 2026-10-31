@@ -138,7 +138,7 @@ struct NotesDocumentMigrationTests {
         // Publishing generated notes composes a document that keeps the user's lines.
         let s = SummaryRevision(meetingID: m, transcriptRevisionID: tr, editSequence: 0, createdAt: Date(), producer: ProducerInfo(component: "t", configHash: "t"),
                                 promptVersion: "notes-v3", content: SummaryContent(overview: [SummaryItem(kind: .overview, text: "Overview", evidence: [spoken])]),
-                                validation: SummaryValidationReport(status: .valid))
+                                validation: SummaryValidationReport(status: .valid), notesRevisionID: two.id)
         #expect(try store.publishSummary(s))
         let composed = try #require(try store.currentNotesDocument(m))
         #expect(composed.origin == .generated && composed.basedOnSummaryRevisionID == s.id)

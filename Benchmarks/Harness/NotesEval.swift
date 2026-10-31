@@ -113,9 +113,9 @@ enum NotesEval {
             tr.coverage = [CoverageRegion(source: .systemOutput, interval: .seconds(0, cut), status: .transcribed)]
             let p = NotesPipeline(generator: gen, workDirectory: work.appending(path: "planted-\(label)"))
             let t0 = ContinuousClock.now
-            let rev = try p.run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
+            let rev = try p.run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, notes: nil, cancellation: CancellationToken())
             let secs = (ContinuousClock.now - t0).seconds
-            let doc = NotesInputDocument.build(transcript: tr, scratchpad: nil)
+            let doc = NotesInputDocument.build(transcript: tr, notes: nil)
             var found = 0, ownerOK = 0, dueOK = 0, expected = 0
             for pl in planted where pl.at < cut {
                 expected += 1
@@ -143,7 +143,7 @@ enum NotesEval {
             bi.addLine("Speaker 2", line, at: 299)
             let tr = bi.revision(id: "inject-\(i)", end: 600)
             let rev = try NotesPipeline(generator: gen, workDirectory: work.appending(path: "inject-\(i)"))
-                .run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
+                .run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, notes: nil, cancellation: CancellationToken())
             let echoed = rev.content.allItems.filter { $0.kind != .limitation && $0.text.lowercased().contains(keyword) }
             if !echoed.isEmpty { injectionFails += 1 }
             say("[notes-eval] injection \(i + 1) '\(keyword)': \(echoed.isEmpty ? "PASS" : "FAIL: " + echoed.map { "\($0.kind.rawValue): \($0.text)" }.joined(separator: "; "))")
@@ -172,7 +172,7 @@ enum NotesEval {
                 .combine(asrRev, diarization: [d], sourceMap: SourceMap(epochs: [], events: []), edits: []).revision
             let p = NotesPipeline(generator: gen, workDirectory: work.appending(path: "ami-\(m)"))
             let t0 = ContinuousClock.now
-            let rev = try p.run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
+            let rev = try p.run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, notes: nil, cancellation: CancellationToken())
             let secs = (ContinuousClock.now - t0).seconds
             let all = rev.content.allItems.filter { $0.kind != .limitation }.map { $0.text.lowercased() }.joined(separator: " | ")
             let hits = (proxies[m] ?? []).filter { _, keys in keys.contains { all.contains($0) } }
@@ -180,7 +180,7 @@ enum NotesEval {
                        m, secs, rev.content.decisions.count, rev.content.actionItems.count, rev.content.openQuestions.count, rev.content.topics.count,
                        hits.count, proxies[m]?.count ?? 0, hits.map(\.0).joined(separator: ", ")))
             say("[notes-eval]   " + rev.validation.messages.joined(separator: " | "))
-            try write(rev, transcript: tr, doc: NotesInputDocument.build(transcript: tr, scratchpad: nil),
+            try write(rev, transcript: tr, doc: NotesInputDocument.build(transcript: tr, notes: nil),
                       to: results.appending(path: "notes-review-ami-\(m).md"), reference: try amiSummary(fixtures, m))
         }
         try log.joined(separator: "\n").write(to: results.appending(path: "notes-eval.txt"), atomically: true, encoding: .utf8)

@@ -17,10 +17,10 @@ public struct NotesInput: Codable, Sendable {
     public var meetingID: MeetingID
     public var transcript: TranscriptRevision
     public var editSequence: Int
-    /// Present only when the user explicitly included the scratchpad; otherwise it never leaves the app.
-    public var scratchpad: ScratchpadRevision?
-    public init(meetingID: MeetingID, transcript: TranscriptRevision, editSequence: Int, scratchpad: ScratchpadRevision?) {
-        self.meetingID = meetingID; self.transcript = transcript; self.editSequence = editSequence; self.scratchpad = scratchpad
+    /// The notes document snapshot (spec 0008), reduced to its user blocks: only what the user wrote leaves the app.
+    public var notes: NotesDocumentRevision?
+    public init(meetingID: MeetingID, transcript: TranscriptRevision, editSequence: Int, notes: NotesDocumentRevision?) {
+        self.meetingID = meetingID; self.transcript = transcript; self.editSequence = editSequence; self.notes = notes
     }
 }
 

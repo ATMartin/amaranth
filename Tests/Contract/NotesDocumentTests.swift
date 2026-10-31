@@ -65,4 +65,27 @@ struct NotesDocumentTests {
         #expect(blocks.map(\.text) == ["Client", "Lyon rollout", "budget", "owner", "#hashtag stays text", "plain line"])
         #expect(blocks.allSatisfy { $0.author == .user(typedAt: 3) })
     }
+
+    /// Property: whatever the model cites, every user line with text is either cited by an item or kept word for word.
+    @Test func everyUserLineSurvivesAnyCitationSet() {
+        var rng = SystemRandomNumberGenerator()
+        for _ in 0..<300 {
+            let user = (0..<Int.random(in: 0...8, using: &rng)).map { i in
+                NoteBlock(kind: [.heading, .paragraph, .bullet].randomElement(using: &rng)!, text: i % 5 == 4 ? "  " : "line \(i)",
+                          author: .user(typedAt: Bool.random(using: &rng) ? Double(i) : nil))
+            }
+            let items = (0..<Int.random(in: 0...5, using: &rng)).map { k in
+                SummaryItem(kind: [.overview, .decision, .actionItem, .openQuestion].randomElement(using: &rng)!, text: "item \(k)",
+                            evidence: [spoken] + user.filter { _ in Int.random(in: 0..<3, using: &rng) == 0 }
+                                .map { .userNote(NoteEvidence(revisionID: RevisionID("d"), blockID: $0.id)) })
+            }
+            let s = summary(SummaryContent(overview: items.filter { $0.kind == .overview }, decisions: items.filter { $0.kind == .decision },
+                                           actionItems: items.filter { $0.kind == .actionItem }, openQuestions: items.filter { $0.kind == .openQuestion }))
+            let doc = NotesComposer.compose(summary: Bool.random(using: &rng) ? s : nil, userBlocks: user, meetingID: m, createdAt: Date())
+            let cited = Set(s.content.allItems.flatMap(\.evidence).compactMap { if case .userNote(let n) = $0 { n.blockID } else { nil } })
+            for b in user where !b.text.trimmingCharacters(in: .whitespaces).isEmpty {
+                #expect(doc.blocks.contains(b) || (doc.basedOnSummaryRevisionID != nil && cited.contains(b.id)), "\(b.text) lost")
+            }
+        }
+    }
 }

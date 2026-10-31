@@ -137,15 +137,16 @@ public final class JobScheduler: @unchecked Sendable {
         poke()
     }
 
-    /// (Re)generates notes from the meeting's current transcript, edits and (if included) scratchpad. Idempotent for
-    /// unchanged inputs. Never touches user-authored notes; the previous summary stays current until this succeeds.
+    /// (Re)generates notes from the meeting's current transcript, edits and the lines the user wrote in its notes. Idempotent
+    /// for unchanged inputs. The previous notes stay current until this succeeds, and a result never overwrites notes the
+    /// user changed while it ran (`MeetingStore.publishSummary`).
     @discardableResult
     public func enqueueNotes(_ meeting: MeetingID) throws -> ProcessingJob? {
         guard let config = configuration.notesConfigHash,
               let tr = try store.meeting(meeting)?.currentTranscriptRevisionID else { return nil }
         let edit = try store.edits(meeting).map(\.sequence).max() ?? 0
-        let pad = try store.latestScratchpad(meeting).flatMap { $0.includeInSummary ? $0 : nil }
-        let hash = StageFiles.hash([tr.rawValue, "\(edit)", pad?.id.rawValue ?? "no-scratchpad"])
+        let user = try store.currentNotesDocument(meeting)?.userBlocks ?? []
+        let hash = StageFiles.hash([tr.rawValue, "\(edit)", user.isEmpty ? "no-notes" : StageFiles.sha256(try ContractCoding.encode(user))])
         let job = try store.enqueue(ProcessingJob(key: JobKey(meetingID: meeting, stage: .notes, inputHash: hash, configHash: config),
                                                   createdAt: Date(), updatedAt: Date()))
         poke()
@@ -401,10 +402,11 @@ public final class JobScheduler: @unchecked Sendable {
             guard let m0 = try store.meeting(m), let tr = try m0.currentTranscriptRevisionID.flatMap({ try store.transcriptRevision($0) }) else {
                 throw JobFailure.permanent("notes: no transcript")
             }
-            let pad = try store.latestScratchpad(m).flatMap { $0.includeInSummary ? $0 : nil }
+            // The snapshot: the current document's ID (publishing compares against it) with only the user's blocks.
+            let snapshot = try store.currentNotesDocument(m).map { d -> NotesDocumentRevision in var s = d; s.blocks = d.userBlocks; return s }
             let edits = try store.edits(m)
             // Notes read the transcript as the user sees it (text corrections applied).
-            input = .notes(NotesInput(meetingID: m, transcript: tr.applyingTextCorrections(edits), editSequence: edits.map(\.sequence).max() ?? 0, scratchpad: pad))
+            input = .notes(NotesInput(meetingID: m, transcript: tr.applyingTextCorrections(edits), editSequence: edits.map(\.sequence).max() ?? 0, notes: snapshot))
         case .live:
             throw JobFailure.permanent("stage \(job.key.stage) not available in this milestone")
         }
@@ -481,7 +483,7 @@ public final class JobScheduler: @unchecked Sendable {
             }
             try s.validateReferences(transcript: try store.transcriptRevision(s.transcriptRevisionID)
                                          ?? { throw JobFailure.permanent("notes: transcript revision missing") }(),
-                                     scratchpad: try s.scratchpadRevisionID.flatMap { try store.scratchpadRevision($0) })
+                                     notes: try s.notesRevisionID.flatMap { try store.notesDocumentRevision($0) })
             try store.publishSummary(s)
         case .prepared:
             break

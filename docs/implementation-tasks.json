@@ -2735,7 +2735,7 @@
       "id": "T90",
       "title": "Generation from the notes document: user lines as context, survival rule, snapshot publishing",
       "milestone": "R",
-      "status": "planned",
+      "status": "done (2026-10-31): notes-v4 (PipelineVersions too); NotesInputDocument.build(transcript:notes:) reads only user blocks, always; typed lines render (PERSONAL NOTE typed by the user at mm:ss, not spoken) (the system prompt already names PERSONAL NOTE lines, kept byte-identical); cap and its limitation unchanged; the 'used your personal notes' limitation gone; evidence .userNote; SummaryRevision.notesRevisionID = snapshot, validateReferences(transcript:notes:) rejects scratchpad evidence; scheduler snapshots the current document (user blocks only) and hashes the user lines into the job key; publishSummary composes only if the document is the snapshot (or has the same blocks), else the result is pending (derived: current summary not the document's basedOn; survives relaunch); replaceWithPendingNotes / dismissPendingNotes in the store and LibraryModel; staleness = transcript/edits only. Tests: golden hash of every request of a full run pinned from notes-v3 (26325e5) and unchanged; survival property test (300 random citation sets); user line alone cannot make a decision; client-project fixture; scheduler race test (held, Replace keeps the line typed after the snapshot, Dismiss)",
       "optional": false,
       "depends_on": [
         "T89"

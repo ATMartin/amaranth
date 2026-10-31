@@ -59,7 +59,7 @@ enum NotesTrace {
         let dir = work ?? FileManager.default.temporaryDirectory.appending(path: "notes-trace-\(UUID().uuidString)")
         let pipeline = NotesPipeline(generator: Recorder(runner, out: fh), workDirectory: dir)
         let t0 = ContinuousClock.now
-        let rev = try pipeline.run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, scratchpad: nil, cancellation: CancellationToken())
+        let rev = try pipeline.run(meetingID: tr.meetingID, transcript: tr, editSequence: 0, notes: nil, cancellation: CancellationToken())
         let c = rev.content
         print(String(format: "notes %.1f s; items: %d decisions, %d actions, %d questions, %d topics, %d overview; uncertain %d",
                      LlmProbe.secs(t0), c.decisions.count, c.actionItems.count, c.openQuestions.count, c.topics.count, c.overview.count,

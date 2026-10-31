@@ -128,8 +128,9 @@ public struct SummaryValidationReport: Hashable, Sendable, Codable {
     }
 }
 
-/// An immutable generated-notes revision. Published atomically; a failed regeneration never replaces a
-/// usable prior version. Human note edits are stored separately in `ManualNotesRevision`.
+/// An immutable generated-notes revision: the record of what the model produced. Published atomically; a failed
+/// regeneration never replaces a usable prior version. What the user sees and edits is the notes document composed from
+/// it (spec 0008).
 public struct SummaryRevision: Hashable, Sendable, Codable, Identifiable {
     public var id: RevisionID
     public var meetingID: MeetingID
@@ -143,14 +144,18 @@ public struct SummaryRevision: Hashable, Sendable, Codable, Identifiable {
     public var validation: SummaryValidationReport
     /// Set when underlying transcript/attribution changed after generation.
     public var isStale: Bool
+    /// Before spec 0008: the included scratchpad revision. Never set now; kept so old revisions decode.
     public var scratchpadRevisionID: RevisionID?
-    /// True when the user explicitly included personal notes as context; must be labeled in UI/exports.
+    /// Before spec 0008: the scratchpad was included. Never set now; kept so old revisions decode.
     public var influencedByPersonalNotes: Bool
+    /// The notes document revision generation read (its snapshot): user lines cited as `.userNote` belong to it, and
+    /// publishing compares it with the current document (spec 0008 §4).
+    public var notesRevisionID: RevisionID?
 
     public init(id: RevisionID = RevisionID(), meetingID: MeetingID, transcriptRevisionID: RevisionID,
                 editSequence: Int, createdAt: Date, producer: ProducerInfo, promptVersion: String,
                 content: SummaryContent, validation: SummaryValidationReport, isStale: Bool = false,
-                scratchpadRevisionID: RevisionID? = nil, influencedByPersonalNotes: Bool = false) {
+                scratchpadRevisionID: RevisionID? = nil, influencedByPersonalNotes: Bool = false, notesRevisionID: RevisionID? = nil) {
         self.id = id
         self.meetingID = meetingID
         self.transcriptRevisionID = transcriptRevisionID
@@ -163,11 +168,12 @@ public struct SummaryRevision: Hashable, Sendable, Codable, Identifiable {
         self.isStale = isStale
         self.scratchpadRevisionID = scratchpadRevisionID
         self.influencedByPersonalNotes = influencedByPersonalNotes
+        self.notesRevisionID = notesRevisionID
     }
 
-    /// Every evidence reference must resolve against the given transcript (and scratchpad, if any),
-    /// and personal-note evidence is only allowed when the user opted in.
-    public func validateReferences(transcript: TranscriptRevision, scratchpad: ScratchpadRevision?) throws {
+    /// Every evidence reference must resolve against the given transcript, or against a user block of the notes snapshot
+    /// generation read (`notes`, whose ID must be `notesRevisionID`). Scratchpad evidence is never valid any more.
+    public func validateReferences(transcript: TranscriptRevision, notes: NotesDocumentRevision? = nil) throws {
         guard transcript.id == transcriptRevisionID else {
             throw DomainError.invalidReference("summary targets \(transcriptRevisionID), got \(transcript.id)")
         }
@@ -182,12 +188,12 @@ public struct SummaryRevision: Hashable, Sendable, Codable, Identifiable {
                           let a = seg.words.firstIndex(where: { $0.id == e.firstWord }),
                           let b = seg.words.firstIndex(where: { $0.id == e.lastWord }), a <= b
                     else { throw DomainError.invalidReference("item \(item.id) transcript evidence") }
-                case .userNote:
-                    break   // checked against the notes document by the notes pipeline
-                case .personalNote(let e):
-                    guard influencedByPersonalNotes, let pad = scratchpad, pad.id == e.revisionID,
-                          e.start >= 0, e.start <= e.end, e.end <= pad.text.utf16.count
-                    else { throw DomainError.invalidReference("item \(item.id) personal-note evidence") }
+                case .userNote(let e):
+                    guard let notes, notes.id == notesRevisionID, e.revisionID == notes.id,
+                          notes.blocks.contains(where: { $0.id == e.blockID && $0.isUser })
+                    else { throw DomainError.invalidReference("item \(item.id) user-note evidence") }
+                case .personalNote:
+                    throw DomainError.invalidReference("item \(item.id) scratchpad evidence")
                 }
             }
         }
