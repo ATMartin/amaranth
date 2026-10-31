@@ -34,7 +34,7 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "K → M → N → O → Fixes → J → L → T21 → F → P → Q (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; Q (local updates) placed after P on 2026-10-27 as “for later”; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
+    "milestone_order": "R → L → T21 → F → P → Q (user decision 2026-10-30: Milestone R before L; J, Polish and Polish 2 are done). Earlier: K → M → N → O → Fixes → J → L → T21 → F → P → Q (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; Q (local updates) placed after P on 2026-10-27 as “for later”; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md"
@@ -60,7 +60,8 @@
     "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit",
     "Q": "Local updates (“Check for Updates…” from a local drop folder): T70–T73. Planned 2026-10-27 at the user's request; placed after P (“for later”), can move earlier. User decisions 2026-10-27: Release and Debug builds are both published, Debug offered only with a Settings opt-in; check at launch and show a note when a newer build exists (never install on its own); no rollbacks (an older or equal build is never offered); the script part ships now as T69. Local only: a free personal team can't notarize, so a web feed / Sparkle stays out of scope (keep discovery behind an update-source interface so one can be added later).",
     "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
-    "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit."
+    "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit.",
+    "R": "One notes field per meeting (personal/private notes removed; editable notes; typing during the meeting feeds generation): T89–T95. Spec docs/decisions/0008 accepted 2026-10-30 with all recommendations (user lines always survive, Regenerate asks and keeps history, snapshot + 'Replace?' while generating, inline source chips, rich-text editor, typed-at times). Never-included scratchpads are deleted by the v6 migration (user, 2026-10-31). Placed next, before L; L's tasks are revised in T94."
   },
   "tasks": [
     {
@@ -1519,7 +1520,8 @@
       "status": "planned",
       "optional": false,
       "depends_on": [
-        "T23"
+        "T23",
+        "T94"
       ],
       "owner_role": "Notes pipeline",
       "module_scope": [
@@ -1542,7 +1544,7 @@
       "review_timestamps": [
         "00:46–01:04"
       ],
-      "dependency_note": "2026-10-26: L now runs before T21. The default template must reproduce today's notes (notes-v3 sections and prompt) so T21's notes checks against baseline-v0 stay comparable."
+      "dependency_note": "2026-10-26: L now runs before T21. The default template must reproduce today's notes (notes-v3 sections and prompt) so T21's notes checks against baseline-v0 stay comparable. 2026-10-30: depends on Milestone R (spec 0008); revise against the notes document in T94 before starting."
     },
     {
       "id": "T47",
@@ -1551,7 +1553,8 @@
       "status": "planned",
       "optional": false,
       "depends_on": [
-        "T46"
+        "T46",
+        "T94"
       ],
       "owner_role": "Notes pipeline",
       "module_scope": [
@@ -1575,7 +1578,8 @@
       "fallback": "If generic sections cannot pass the injection suite, restrict custom sections to the `.list` kind and say so.",
       "review_timestamps": [
         "00:46–01:04"
-      ]
+      ],
+      "dependency_note": "2026-10-30: depends on Milestone R (spec 0008); revise against the notes document in T94 before starting."
     },
     {
       "id": "T48",
@@ -1584,7 +1588,8 @@
       "status": "planned",
       "optional": false,
       "depends_on": [
-        "T47"
+        "T47",
+        "T94"
       ],
       "owner_role": "App UI",
       "module_scope": [
@@ -1605,7 +1610,8 @@
       "fallback": "None.",
       "review_timestamps": [
         "00:46–01:04"
-      ]
+      ],
+      "dependency_note": "2026-10-30: depends on Milestone R (spec 0008); revise against the notes document in T94 before starting."
     },
     {
       "id": "T49",
@@ -2698,6 +2704,208 @@
       ],
       "fallback": "None.",
       "review_timestamps": []
+    },
+    {
+      "id": "T89",
+      "title": "Notes document: domain, storage, migration to library v6",
+      "milestone": "R",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "Storage",
+      "module_scope": [
+        "Domain/Summary/",
+        "Storage/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0008-single-notes-field-spec.md (accepted 2026-10-30; the user took every recommendation). Read it first: Design §1–8 define the notes document, authorship, the 'your lines survive' rule, the snapshot rule and the migration. Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite, Notes/ the notes pipeline, Export/ the exporters. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (App/Launch/UIRenderSelfTest.swift), the pipeline self-test App/Launch/PipelineSelfTest.swift. Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. Today a meeting has three notes stores: SummaryRevision (generated, Domain/Summary/Summary.swift), ManualNotesRevision ('Your notes') and ScratchpadRevision (private scratchpad, optional includeInSummary; typed live via App/Live/LiveTranscriptView.swift + Presentation/RecordingScratchpad.swift). Milestone R replaces the last two with one notes document per meeting. Spec §1 and §8. Never-included scratchpads are deleted by the migration (user decision 2026-10-31); the real library is backed up before the installed build migrates it.",
+      "deliverables": [
+        "Domain: `NotesDocumentRevision { id, meetingID, createdAt, basedOnSummaryRevisionID?, blocks: [NoteBlock] }`, `NoteBlock { id, kind: heading | paragraph | bullet, text, author: user(typedAt: TimeInterval?) | model(summaryItemID, evidence: [EvidenceRef], uncertain: Bool) }`; editing a model block's text converts it to a user block (drops uncertain, keeps remaining evidence). `EvidenceRef` gains `.userNote(NoteEvidence { revisionID, blockID })`; `.personalNote` stays decodable for migration only.",
+        "Storage: `notes_document_revisions` table; `saveNotesDocument`, `currentNotesDocument`, `notesDocumentRevisions` (newest first) in MeetingStore; each save is a new revision; tombstoned meetings refuse saves.",
+        "Migration v5 → v6 per spec §8: current generated notes as model blocks (transcript evidence kept, scratchpad citations dropped), 'Your notes' appended as user blocks, included scratchpads appended as user blocks; never-included scratchpad rows deleted.",
+        "Deletion purges the new table (extend the byte-level deletion tests); search index reads the notes document as kind `.notes` and drops `.userNotes`.",
+        "Tests: round-trip coding; migration on a v5 fixture with each combination (summary only, + your notes, + included / not-included scratchpad); deletion bytes."
+      ],
+      "acceptance": [
+        "A v5 library migrates without data loss; every migrated meeting has exactly one current notes document; never-included scratchpad text appears nowhere in notes, search or exports."
+      ],
+      "fallback": "None."
+    },
+    {
+      "id": "T90",
+      "title": "Generation from the notes document: user lines as context, survival rule, snapshot publishing",
+      "milestone": "R",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T89"
+      ],
+      "owner_role": "Notes pipeline",
+      "module_scope": [
+        "Notes/Pipeline/",
+        "Domain/Pipeline/",
+        "Storage/Notes/",
+        "App/Library/LibraryModel.swift",
+        "Tests/Notes/"
+      ],
+      "context": "Spec: docs/decisions/0008-single-notes-field-spec.md (accepted 2026-10-30; the user took every recommendation). Read it first: Design §1–8 define the notes document, authorship, the 'your lines survive' rule, the snapshot rule and the migration. Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite, Notes/ the notes pipeline, Export/ the exporters. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (App/Launch/UIRenderSelfTest.swift), the pipeline self-test App/Launch/PipelineSelfTest.swift. Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. Today a meeting has three notes stores: SummaryRevision (generated, Domain/Summary/Summary.swift), ManualNotesRevision ('Your notes') and ScratchpadRevision (private scratchpad, optional includeInSummary; typed live via App/Live/LiveTranscriptView.swift + Presentation/RecordingScratchpad.swift). Milestone R replaces the last two with one notes document per meeting. Spec §1, §3, §4, §5. Keep notes/0001's evidence rules: user lines may support overview and open questions, never a decision or next step alone. T21 still runs later against baseline-v0, so with no user blocks the prompt must not change apart from the version tag.",
+      "deliverables": [
+        "NotesInputDocument.build takes the document's user blocks (always included, no switch) instead of the scratchpad; lines with typedAt render as `PERSONAL NOTE (typed at mm:ss)`; personalNoteTokenLimit and its limitation message unchanged. Prompt version notes-v4.",
+        "Composer: SummaryRevision + current user blocks → new NotesDocumentRevision: generated sections as model blocks, user blocks no item cites under 'Also noted' verbatim.",
+        "Publishing: generation snapshots the document revision; publish only if it is still current, else hold the result as pending (one per meeting, survives relaunch is not required) for the pane's Replace/Dismiss; Replace re-composes against the current user blocks.",
+        "Auto-generation after Stop unchanged in timing; Regenerate always keeps the previous document revision.",
+        "Remove influencedByPersonalNotes / scratchpad staleness from currentSummary; staleness = transcript or speaker edits only.",
+        "Tests: empty-notes prompt equals notes-v3's byte for byte (except version); every user block survives composition (property test over random citation sets); a user-only line cannot produce a decision; edit during generation → pending, not published; Replace keeps lines typed after the snapshot."
+      ],
+      "acceptance": [
+        "The client-project example (fixture: transcript mentioning 'the earlier project' + a typed line describing it) yields notes that cite or keep the line; no generation ever drops a user line or overwrites a document changed after its snapshot."
+      ],
+      "fallback": "None."
+    },
+    {
+      "id": "T91",
+      "title": "Notes pane: one editable notes field",
+      "milestone": "R",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T90"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Notes/",
+        "Presentation/",
+        "App/Launch/UIRenderSelfTest.swift",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0008-single-notes-field-spec.md (accepted 2026-10-30; the user took every recommendation). Read it first: Design §1–8 define the notes document, authorship, the 'your lines survive' rule, the snapshot rule and the migration. Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite, Notes/ the notes pipeline, Export/ the exporters. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (App/Launch/UIRenderSelfTest.swift), the pipeline self-test App/Launch/PipelineSelfTest.swift. Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. Today a meeting has three notes stores: SummaryRevision (generated, Domain/Summary/Summary.swift), ManualNotesRevision ('Your notes') and ScratchpadRevision (private scratchpad, optional includeInSummary; typed live via App/Live/LiveTranscriptView.swift + Presentation/RecordingScratchpad.swift). Milestone R replaces the last two with one notes document per meeting. Spec §5 and §6. Replaces the generated view plus the 'Your notes' and 'Private scratchpad' editors in App/Notes/NotesPane.swift. Prefer SwiftUI TextEditor with AttributedString if it can carry block identity and chips; otherwise wrap NSTextView. Keep the look of today's notes (Eyebrow sections, sage decision edge, owner · date line, collapsed Limitations).",
+      "deliverables": [
+        "One rich-text editor over the current notes document: headings and bullets, inline source chips shown with Details on (deletable), uncertain marker on unedited model blocks, right-click Show in Transcript.",
+        "Debounced saves as new revisions; flush on meeting switch, disappear and quit (as DebouncedSaves does today).",
+        "Banners: existing states, plus 'New notes are ready. Replace?' (Replace / Dismiss) when a pending result exists.",
+        "Regenerate asks first when there are user edits since the last generation; 'Previous Versions' menu lists recent revisions by time and restores one as a new revision.",
+        "Remove the Your notes / Private scratchpad editors, their AppStorage keys and the 'used your private scratchpad' label.",
+        "ui-render scenes (light/dark): generated, edited, pending-replace, empty-with-user-lines."
+      ],
+      "acceptance": [
+        "Editing any part of the notes persists across relaunch; Regenerate after edits asks, keeps typed lines, and the previous version restores exactly."
+      ],
+      "fallback": "None."
+    },
+    {
+      "id": "T92",
+      "title": "Notes while recording",
+      "milestone": "R",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T89"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "App/Live/",
+        "App/Recorder/",
+        "Presentation/",
+        "App/Launch/UIRenderSelfTest.swift",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0008-single-notes-field-spec.md (accepted 2026-10-30; the user took every recommendation). Read it first: Design §1–8 define the notes document, authorship, the 'your lines survive' rule, the snapshot rule and the migration. Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite, Notes/ the notes pipeline, Export/ the exporters. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (App/Launch/UIRenderSelfTest.swift), the pipeline self-test App/Launch/PipelineSelfTest.swift. Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. Today a meeting has three notes stores: SummaryRevision (generated, Domain/Summary/Summary.swift), ManualNotesRevision ('Your notes') and ScratchpadRevision (private scratchpad, optional includeInSummary; typed live via App/Live/LiveTranscriptView.swift + Presentation/RecordingScratchpad.swift). Milestone R replaces the last two with one notes document per meeting. Spec §2. Replaces the live scratchpad (T33) field and RecordingScratchpad.",
+      "deliverables": [
+        "The live view's Scratchpad toggle becomes Notes (⌘⇧N, same place); each line saved as a user block with typedAt = recording time when the line was first typed; same save cadence and flush at Stop as today.",
+        "After Stop, the lines are in the meeting's notes document and go into the automatic generation.",
+        "Remove RecordingScratchpad and RecorderModel's scratchpad state; update the live ui-render scenes."
+      ],
+      "acceptance": [
+        "Lines typed during a recording appear in the notes after Stop with their typed-at times, and the generated notes cite or keep them."
+      ],
+      "fallback": "None."
+    },
+    {
+      "id": "T93",
+      "title": "Search, export and Ask on the single notes field",
+      "milestone": "R",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T90"
+      ],
+      "owner_role": "Data",
+      "module_scope": [
+        "Export/",
+        "Storage/Search/",
+        "Presentation/AskAnything.swift",
+        "App/Shared/MeetingCommands.swift",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0008-single-notes-field-spec.md (accepted 2026-10-30; the user took every recommendation). Read it first: Design §1–8 define the notes document, authorship, the 'your lines survive' rule, the snapshot rule and the migration. Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite, Notes/ the notes pipeline, Export/ the exporters. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (App/Launch/UIRenderSelfTest.swift), the pipeline self-test App/Launch/PipelineSelfTest.swift. Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. Today a meeting has three notes stores: SummaryRevision (generated, Domain/Summary/Summary.swift), ManualNotesRevision ('Your notes') and ScratchpadRevision (private scratchpad, optional includeInSummary; typed live via App/Live/LiveTranscriptView.swift + Presentation/RecordingScratchpad.swift). Milestone R replaces the last two with one notes document per meeting. Spec §7.",
+      "deliverables": [
+        "TXT/MD export the notes document as shown; JSON exports blocks with author, typedAt and evidence.",
+        "Remove ExportOptions.includeUserNotes / scratchpad, the 'PRIVATE SCRATCHPAD' sections, the 'used your private notes' line and the export panel's scratchpad message.",
+        "Ask anything retrieves from the notes document; citations to user blocks read 'your note'.",
+        "Tests: export golden files updated; search finds text from user and model blocks; Ask cites a user line."
+      ],
+      "acceptance": [
+        "Exports, search and Ask all show the same notes the pane shows; no code path references the scratchpad except the migration and deletion."
+      ],
+      "fallback": "None."
+    },
+    {
+      "id": "T94",
+      "title": "Remove the old notes stores and update docs",
+      "milestone": "R",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T91",
+        "T92",
+        "T93"
+      ],
+      "owner_role": "Notes pipeline",
+      "module_scope": [
+        "Domain/",
+        "Storage/",
+        "App/",
+        "Tests/",
+        "docs/"
+      ],
+      "context": "Spec: docs/decisions/0008-single-notes-field-spec.md (accepted 2026-10-30; the user took every recommendation). Read it first: Design §1–8 define the notes document, authorship, the 'your lines survive' rule, the snapshot rule and the migration. Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite, Notes/ the notes pipeline, Export/ the exporters. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (App/Launch/UIRenderSelfTest.swift), the pipeline self-test App/Launch/PipelineSelfTest.swift. Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. Today a meeting has three notes stores: SummaryRevision (generated, Domain/Summary/Summary.swift), ManualNotesRevision ('Your notes') and ScratchpadRevision (private scratchpad, optional includeInSummary; typed live via App/Live/LiveTranscriptView.swift + Presentation/RecordingScratchpad.swift). Milestone R replaces the last two with one notes document per meeting. Spec 'What stays the same' and §8. Milestone L (templates) runs next and was written for read-only generated notes.",
+      "deliverables": [
+        "Delete ScratchpadRevision / ManualNotesRevision use outside migration and deletion; remove dead tests and self-test branches.",
+        "Update docs/decisions/notes/0001, ui/0001 and data/0001 with an amendment line pointing to 0008; TESTER-GUIDE and ui-manual-checklist items for notes.",
+        "Revise T46–T48 (Milestone L) to build templates on the notes document (a template defines the starting sections); mark them for the user's review before L starts."
+      ],
+      "acceptance": [
+        "`grep -rn -i scratchpad` finds only migration, deletion and their tests; L's tasks reference the notes document."
+      ],
+      "fallback": "None."
+    },
+    {
+      "id": "T95",
+      "title": "Milestone R validation",
+      "milestone": "R",
+      "status": "planned",
+      "optional": false,
+      "depends_on": [
+        "T89",
+        "T90",
+        "T91",
+        "T92",
+        "T93",
+        "T94"
+      ],
+      "owner_role": "App UI",
+      "module_scope": [
+        "docs/qualification/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0008-single-notes-field-spec.md (accepted 2026-10-30; the user took every recommendation). Read it first: Design §1–8 define the notes document, authorship, the 'your lines survive' rule, the snapshot rule and the migration. Amaranth is a local-only SwiftUI macOS meeting recorder: App/ holds the app target (views and models), Presentation/ holds view-model logic shared with tests, Domain/ the frozen contracts, Storage/ SQLite, Notes/ the notes pipeline, Export/ the exporters. Build and run with `xcodebuild -project Amaranth.xcodeproj -scheme Amaranth` or open in Xcode; `scripts/check.sh` runs the package tests; the UI render self-test is `Amaranth.app --self-test ui-render` (App/Launch/UIRenderSelfTest.swift), the pipeline self-test App/Launch/PipelineSelfTest.swift. Dev-machine quirks: launch self-tests via `open`, not by exec'ing the binary; Intel binaries live in /usr/local/bin, use /opt/homebrew or mise shims. Today a meeting has three notes stores: SummaryRevision (generated, Domain/Summary/Summary.swift), ManualNotesRevision ('Your notes') and ScratchpadRevision (private scratchpad, optional includeInSummary; typed live via App/Live/LiveTranscriptView.swift + Presentation/RecordingScratchpad.swift). Milestone R replaces the last two with one notes document per meeting. Sonnet validator per coordination.milestone_validation, against spec 0008 and T89–T94 acceptance. The validator may migrate a copy of the real library, never the library itself.",
+      "deliverables": [
+        "docs/qualification/milestone-r-validation-brief.md and verdict; scripts/check.sh, ui-render (light/dark), pipeline self-test; manual checklist items for typing during a recording, editing, regenerate-after-edit, replace-while-generating, previous versions."
+      ],
+      "acceptance": [
+        "Validator PASS (or PASS WITH FIXES with must-fixes applied)."
+      ],
+      "fallback": "None."
     }
   ]
 }
