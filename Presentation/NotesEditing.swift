@@ -121,6 +121,18 @@ public enum NotesEditing {
         }
     }
 
+    /// "Generate" until the meeting has generated notes, then "Regenerate".
+    public static func generateTitle(_ state: MeetingDetail.NotesState) -> String {
+        if case .ready = state { "Regenerate" } else { "Generate" }
+    }
+
+    /// With no generated notes there is no generated "Meeting notes" heading, so the pane shows one itself.
+    public static func needsHeader(_ blocks: [NoteBlock]) -> Bool { !blocks.contains { $0.section != nil } }
+
+    /// Under that heading while the meeting has no notes at all.
+    public static func isEmpty(_ blocks: [NoteBlock]) -> Bool { blocks.allSatisfy { $0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
+    public static let emptyInvitation = "There are no notes for this meeting yet. Write your own below, or generate notes from the transcript."
+
     public static let regenerateQuestion = "Regenerate notes?"
     public static let regenerateExplanation = "Lines you wrote are kept, and you can restore this version from Previous Versions."
 

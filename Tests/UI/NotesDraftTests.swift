@@ -94,4 +94,18 @@ struct NotesDraftTests {
         #expect(try reopened.currentNotesDocument(m)?.blocks == generated.blocks)
         #expect(try reopened.notesDocumentRevisions(m).count == 3, "nothing is lost: the edited version stays too")
     }
+
+    /// No notes: the pane shows its own "Meeting notes" heading and an invitation; the button says Generate until the
+    /// meeting has generated notes.
+    @Test func emptyNotesHeadingAndGenerateTitle() {
+        let empty = NotesDraft(meetingID: m, base: nil)
+        #expect(NotesEditing.needsHeader(empty.blocks) && NotesEditing.isEmpty(empty.blocks))
+        let typed = NotesComposer.userBlocks(fromText: "Ask Dana")
+        #expect(NotesEditing.needsHeader(typed) && !NotesEditing.isEmpty(typed))
+        let generated = [NoteBlock(kind: .heading, text: NoteSection.overview.title, section: .overview, author: .model(summaryItemID: nil, uncertain: false))]
+        #expect(!NotesEditing.needsHeader(generated))
+        #expect(NotesEditing.generateTitle(.none) == "Generate")
+        #expect(NotesEditing.generateTitle(.unavailable("x")) == "Generate")
+        #expect(NotesEditing.generateTitle(.ready(stale: true, regenerationError: nil)) == "Regenerate")
+    }
 }

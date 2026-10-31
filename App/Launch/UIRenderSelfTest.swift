@@ -734,6 +734,8 @@ enum UIRenderSelfTest {
         var u = d; u.summary = nil; u.pendingNotes = nil
         u.notes = NotesDocumentRevision(meetingID: d.meeting.id, createdAt: Date(), origin: .edited, blocks: typed)
         _ = await host(AnyView(NotesPane(detail: u, notesModelInstalled: true, showTranscript: {})), "notes-state-user-lines-only", size)
+        var z = u; z.notes = nil; z.jobs = []
+        _ = await host(AnyView(NotesPane(detail: z, notesModelInstalled: true, showTranscript: {})), "notes-state-empty", size)
         SelfTest.log(["step": "notes-states", "generatedBlocks": "\(generated.blocks.count)", "editedUserLines": "\(edited.userBlocks.count)",
                       "regenerateAsks": "\(NotesEditing.regenerateNeedsConfirmation(edited)) / \(NotesEditing.regenerateNeedsConfirmation(generated))",
                       "ok": "true"])

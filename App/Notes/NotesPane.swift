@@ -21,6 +21,15 @@ struct NotesPane: View {
         ScrollView {
             VStack(alignment: .leading, spacing: AppStyle.double + 4) {
                 stateBanner
+                if let draft, NotesEditing.needsHeader(draft.blocks) {
+                    VStack(alignment: .leading, spacing: AppStyle.grid) {
+                        Eyebrow(text: NoteSection.overview.title)
+                        if NotesEditing.isEmpty(draft.blocks) {
+                            Text(NotesEditing.emptyInvitation).appFont(.callout).italic().foregroundStyle(Color.brandSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
                 if let draft {
                     NotesDocumentEditor(draft: Binding(get: { draft }, set: { self.draft = $0; scheduleSave() }), detail: detail,
                                         focused: $focused, jump: jump)
@@ -61,10 +70,19 @@ struct NotesPane: View {
     /// Writes the pending save synchronously (meeting switch, closing, quitting) so typed text is never lost.
     func flushPendingSave() { saves.flush() }
 
-    /// Spec 0008 §5: asks first when the notes have the user's edits since they were generated.
+    /// Spec 0008 §5: asks first when the notes have the user's edits since they were generated. Generating the first
+    /// notes never asks: there is nothing generated to replace, and the user's lines are kept.
     func requestRegenerate() {
         flushPendingSave()
-        if NotesEditing.regenerateNeedsConfirmation(draft?.base) { confirmRegenerate = true } else { regenerate() }
+        let generated = detail.summary != nil
+        if generated, NotesEditing.regenerateNeedsConfirmation(draft?.base) { confirmRegenerate = true } else { regenerate() }
+    }
+
+    /// Generate (no generated notes yet) or Regenerate, with a sparkle: the notes model writes these.
+    func generateButton(_ state: MeetingDetail.NotesState) -> some View {
+        Button { requestRegenerate() } label: { Label(NotesEditing.generateTitle(state), systemImage: "sparkles") }
+            .help(state == .none ? "Generate notes from the transcript on this Mac. Lines you wrote are kept"
+                  : "Generate these notes again from the transcript. Lines you wrote are kept")
     }
 
     func regenerate() {
@@ -83,9 +101,10 @@ struct NotesPane: View {
                 }
             }
         }
-        switch detail.notesState(notesModelInstalled: notesModelInstalled) {
+        let state = detail.notesState(notesModelInstalled: notesModelInstalled)
+        switch state {
         case .none:
-            banner("No generated notes yet.", "doc.text", .brandSecondary) { Button("Generate Notes") { requestRegenerate() } }
+            EmptyView()   // the Generate button and the empty-notes invitation say it
         case .waiting(let why):
             banner(why, "hourglass", .brandSecondary) { EmptyView() }
         case .generating(let p):
@@ -99,7 +118,7 @@ struct NotesPane: View {
         case .ready(let stale, let failure):
             if stale {
                 banner("The transcript or speakers changed after these notes were made.", "exclamationmark.arrow.circlepath", .statusAttention) {
-                    Button("Regenerate") { requestRegenerate() }
+                    generateButton(state)
                 }
             } else if let failure {
                 banner("Regenerating failed (\(failure)); these are the previous notes.", "exclamationmark.triangle", .statusAttention) {
@@ -107,12 +126,14 @@ struct NotesPane: View {
                 }
             }
         }
-        if detail.notes != nil {
+        let offersGenerate = detail.pendingNotes == nil && [.none, .ready(stale: false, regenerationError: nil)].contains(state)
+        let unavailable = if case .unavailable = state { true } else { false }
+        if detail.notes != nil || offersGenerate || unavailable {
             HStack(spacing: AppStyle.grid) {
                 Spacer()
-                versionsMenu
-                if detail.pendingNotes == nil, case .ready(false, nil) = detail.notesState(notesModelInstalled: notesModelInstalled) {
-                    Button("Regenerate") { requestRegenerate() }.controlSize(.small).disabled(!notesModelInstalled)
+                if detail.notes != nil { versionsMenu }
+                if offersGenerate || unavailable {
+                    generateButton(state).controlSize(.small).disabled(unavailable || !notesModelInstalled)
                 }
             }
         }
