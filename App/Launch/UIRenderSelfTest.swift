@@ -736,6 +736,12 @@ enum UIRenderSelfTest {
         _ = await host(AnyView(NotesPane(detail: u, notesModelInstalled: true, showTranscript: {})), "notes-state-user-lines-only", size)
         var z = u; z.notes = nil; z.jobs = []
         _ = await host(AnyView(NotesPane(detail: z, notesModelInstalled: true, showTranscript: {})), "notes-state-empty", size)
+        // Generated notes with only Limitations (a very short meeting): the line to type into sits above the footnote.
+        var lim = d; lim.pendingNotes = nil
+        lim.notes = NotesDocumentRevision(meetingID: d.meeting.id, createdAt: Date(), basedOnSummaryRevisionID: s.id, origin: .generated, blocks: [
+            NoteBlock(kind: .heading, text: NoteSection.limitations.title, section: .limitations, author: .model(summaryItemID: nil, uncertain: false)),
+            NoteBlock(kind: .bullet, text: "The recording is too short to summarize.", author: .model(summaryItemID: SummaryItemID("lim1"), uncertain: false))])
+        _ = await host(AnyView(NotesPane(detail: lim, notesModelInstalled: true, showTranscript: {})), "notes-state-limitations-only", size)
         SelfTest.log(["step": "notes-states", "generatedBlocks": "\(generated.blocks.count)", "editedUserLines": "\(edited.userBlocks.count)",
                       "regenerateAsks": "\(NotesEditing.regenerateNeedsConfirmation(edited)) / \(NotesEditing.regenerateNeedsConfirmation(generated))",
                       "ok": "true"])

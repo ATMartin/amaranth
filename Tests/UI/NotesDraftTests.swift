@@ -21,11 +21,19 @@ struct NotesDraftTests {
         ])
     }
 
-    @Test func aFreshDraftHasATrailingLineAndIsClean() {
+    /// No "Write a note…" line after the notes (2026-10-31 feedback); notes with no lines get one line to type into.
+    @Test func aFreshDraftIsTheNotesAndIsClean() {
         let d = NotesDraft(meetingID: m, base: generated)
-        #expect(d.blocks.count == 5 && d.blocks.last?.isUser == true && d.blocks.last?.text == "")
+        #expect(d.blocks == generated.blocks)
         #expect(!d.isDirty && d.content == generated.blocks)
         #expect(NotesDraft(meetingID: m, base: nil).blocks.count == 1)
+        let onlyLimitations = NotesDocumentRevision(meetingID: m, createdAt: Date(), origin: .generated, blocks: [
+            NoteBlock(kind: .heading, text: "Limitations", section: .limitations, author: .model(summaryItemID: nil, uncertain: false)),
+            NoteBlock(kind: .bullet, text: "Short recording", author: .model(summaryItemID: SummaryItemID("l1"), uncertain: false))])
+        let l = NotesDraft(meetingID: m, base: onlyLimitations)
+        #expect(l.blocks.count == 3 && l.blocks.last?.isUser == true && NotesEditing.layout(l.blocks).notes.map(\.id) == [l.blocks[2].id],
+                "the line to type into is in the notes, not under Limitations")
+        #expect(!l.isDirty)
     }
 
     @Test func editingAModelLineMakesItTheUsersAndSavesAsANewRevision() {
@@ -38,7 +46,7 @@ struct NotesDraftTests {
         #expect(d.isDirty)
         let rev = d.revision(at: Date(timeIntervalSince1970: 9))
         #expect(rev.id != generated.id && rev.origin == .edited && rev.basedOnSummaryRevisionID == RevisionID("sum"))
-        #expect(rev.blocks.count == 4, "the empty trailing line is never saved")
+        #expect(rev.blocks.count == 4)
         #expect(NotesEditing.regenerateNeedsConfirmation(rev) && !NotesEditing.regenerateNeedsConfirmation(generated))
         d.didSave(rev)
         #expect(!d.isDirty && d.base?.id == rev.id)
@@ -46,11 +54,12 @@ struct NotesDraftTests {
 
     @Test func typingLinesShortcutsAndRemoving() {
         var d = NotesDraft(meetingID: m, base: generated)
-        let trailing = d.blocks.last!.id
-        d.setText(trailing, "# Client background")
-        #expect(d.block(trailing)?.kind == .heading && d.block(trailing)?.text == "Client background")
-        #expect(d.blocks.last?.text == "", "a new trailing line appears")
-        let next = d.blocks.last!.id
+        let end = d.lineAtEnd()
+        #expect(d.blocks.last?.id == end && d.block(end)?.text == "", "clicking below the notes adds a line at their end")
+        #expect(d.lineAtEnd() == end, "and reuses it while it is empty")
+        d.setText(end, "# Client background")
+        #expect(d.block(end)?.kind == .heading && d.block(end)?.text == "Client background")
+        let next = d.insertLine(after: end)
         d.setText(next, "- Lyon rollout")
         #expect(d.block(next)?.kind == .bullet && d.block(next)?.text == "Lyon rollout")
         let after = d.insertLine(after: next)
@@ -95,15 +104,20 @@ struct NotesDraftTests {
         #expect(try reopened.notesDocumentRevisions(m).count == 3, "nothing is lost: the edited version stays too")
     }
 
-    /// No notes: the pane shows its own "Meeting notes" heading and an invitation; the button says Generate until the
-    /// meeting has generated notes.
-    @Test func emptyNotesHeadingAndGenerateTitle() {
+    /// The pane's layout: the pinned header replaces the generated overview heading, Limitations is a footnote (lines the
+    /// user wrote after it show with the notes), and the button says Generate until the meeting has generated notes.
+    @Test func layoutAndGenerateTitle() {
+        let model = NoteAuthor.model(summaryItemID: nil, uncertain: false)
+        let blocks = [NoteBlock(id: NoteBlockID("o"), kind: .heading, text: "Meeting notes", section: .overview, author: model),
+                      NoteBlock(id: NoteBlockID("o1"), kind: .paragraph, text: "Summary", author: .model(summaryItemID: SummaryItemID("o1"), uncertain: false)),
+                      NoteBlock(id: NoteBlockID("l"), kind: .heading, text: "Limitations", section: .limitations, author: model),
+                      NoteBlock(id: NoteBlockID("l1"), kind: .bullet, text: "Short", author: .model(summaryItemID: SummaryItemID("l1"), uncertain: false)),
+                      NoteBlock(id: NoteBlockID("u"), kind: .paragraph, text: "Mine", author: .user(typedAt: nil))]
+        let layout = NotesEditing.layout(blocks)
+        #expect(layout.notes.map(\.id) == [NoteBlockID("o1"), NoteBlockID("u")])
+        #expect(layout.limitations.map(\.id) == [NoteBlockID("l"), NoteBlockID("l1")])
         let empty = NotesDraft(meetingID: m, base: nil)
-        #expect(NotesEditing.needsHeader(empty.blocks) && NotesEditing.isEmpty(empty.blocks))
-        let typed = NotesComposer.userBlocks(fromText: "Ask Dana")
-        #expect(NotesEditing.needsHeader(typed) && !NotesEditing.isEmpty(typed))
-        let generated = [NoteBlock(kind: .heading, text: NoteSection.overview.title, section: .overview, author: .model(summaryItemID: nil, uncertain: false))]
-        #expect(!NotesEditing.needsHeader(generated))
+        #expect(NotesEditing.isEmpty(NotesEditing.layout(empty.blocks).notes))
         #expect(NotesEditing.generateTitle(.none) == "Generate")
         #expect(NotesEditing.generateTitle(.unavailable("x")) == "Generate")
         #expect(NotesEditing.generateTitle(.ready(stale: true, regenerationError: nil)) == "Regenerate")

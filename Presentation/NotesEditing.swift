@@ -2,8 +2,8 @@ public import Foundation
 public import Domain
 
 /// The notes pane's working copy of a meeting's notes document (spec 0008 §6). Edits go through here so the authorship
-/// rule holds everywhere: changing a model block's text, detail or sources makes it the user's. A trailing empty line is
-/// always there to type into; empty user lines are never saved.
+/// rule holds everywhere: changing a model block's text, detail or sources makes it the user's. Notes with no lines get
+/// one empty line to type into; empty user lines are never saved.
 public struct NotesDraft: Equatable, Sendable {
     public var meetingID: MeetingID
     /// The revision this draft started from (nil: the meeting had no notes yet). A save keeps its `basedOnSummaryRevisionID`,
@@ -15,7 +15,7 @@ public struct NotesDraft: Equatable, Sendable {
         self.meetingID = meetingID
         self.base = base
         blocks = base?.blocks ?? []
-        ensureTrailingLine()
+        ensureEditableLine()
     }
 
     /// The blocks a save writes: everything but empty user lines.
@@ -34,7 +34,6 @@ public struct NotesDraft: Equatable, Sendable {
             else if text.hasPrefix("- ") || text.hasPrefix("* ") { b.kind = .bullet; b.text = String(text.dropFirst(2)) }
         }
         blocks[i] = b
-        ensureTrailingLine()
     }
 
     /// Sets the owner · date line under a next step.
@@ -52,12 +51,11 @@ public struct NotesDraft: Equatable, Sendable {
             blocks[i].kind = .paragraph
             return blocks[i].id
         }
-        // Return on the empty trailing line stays on it.
+        // Return on an empty last line stays on it.
         if let i, i == blocks.count - 1, blocks[i].isUser, blocks[i].text.isEmpty { return blocks[i].id }
         let kind: NoteBlock.Kind = i.map { blocks[$0].kind == .bullet ? .bullet : .paragraph } ?? .paragraph
         let b = NoteBlock(kind: kind, text: "", author: .user(typedAt: nil))
         blocks.insert(b, at: i.map { $0 + 1 } ?? blocks.count)
-        ensureTrailingLine()
         return b.id
     }
 
@@ -66,7 +64,7 @@ public struct NotesDraft: Equatable, Sendable {
     public mutating func remove(_ id: NoteBlockID) -> NoteBlockID? {
         guard let i = blocks.firstIndex(where: { $0.id == id }), blocks[i].section == nil else { return nil }
         blocks.remove(at: i)
-        ensureTrailingLine()
+        ensureEditableLine()
         return i > 0 ? blocks[i - 1].id : blocks.first?.id
     }
 
@@ -88,8 +86,18 @@ public struct NotesDraft: Equatable, Sendable {
     /// After a save of this draft: the saved revision becomes the base, the typing stays as it is.
     public mutating func didSave(_ saved: NotesDocumentRevision) { base = saved }
 
-    mutating func ensureTrailingLine() {
-        if let last = blocks.last, last.isUser, last.kind != .heading, last.text.isEmpty { return }
+    /// Clicking below the notes: a new paragraph at the end of the notes (before Limitations), or the empty line already there.
+    public mutating func lineAtEnd() -> NoteBlockID {
+        let notes = NotesEditing.layout(blocks).notes
+        if let last = notes.last, last.isUser, last.kind != .heading, last.text.isEmpty { return last.id }
+        let b = NoteBlock(kind: .paragraph, text: "", author: .user(typedAt: nil))
+        blocks.insert(b, at: notes.last.flatMap { l in blocks.firstIndex { $0.id == l.id }.map { $0 + 1 } } ?? blocks.count)
+        return b.id
+    }
+
+    /// Notes with no lines outside the section headings and Limitations get one empty line to type into.
+    mutating func ensureEditableLine() {
+        if NotesEditing.layout(blocks).notes.contains(where: { $0.section == nil }) { return }
         blocks.append(NoteBlock(kind: .paragraph, text: "", author: .user(typedAt: nil)))
     }
 }
@@ -126,12 +134,22 @@ public enum NotesEditing {
         if case .ready = state { "Regenerate" } else { "Generate" }
     }
 
-    /// With no generated notes there is no generated "Meeting notes" heading, so the pane shows one itself.
-    public static func needsHeader(_ blocks: [NoteBlock]) -> Bool { !blocks.contains { $0.section != nil } }
+    /// The pane (2026-10-31 feedback): one editable region under the pinned "Meeting notes" header, then the generated
+    /// Limitations as a footnote. The generated overview heading is that header, so it isn't repeated; lines the user
+    /// wrote after the Limitations heading show at the end of the notes.
+    public static func layout(_ blocks: [NoteBlock]) -> (notes: [NoteBlock], limitations: [NoteBlock]) {
+        let sections = sections(blocks)
+        var notes: [NoteBlock] = [], limitations: [NoteBlock] = []
+        for b in blocks {
+            if b.section == .limitations || (sections[b.id] == .limitations && !b.isUser) { limitations.append(b) }
+            else if b.section != .overview { notes.append(b) }
+        }
+        return (notes, limitations)
+    }
 
-    /// Under that heading while the meeting has no notes at all.
     public static func isEmpty(_ blocks: [NoteBlock]) -> Bool { blocks.allSatisfy { $0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
-    public static let emptyInvitation = "There are no notes for this meeting yet. Write your own below, or generate notes from the transcript."
+    /// The placeholder of the notes' only line while there are none.
+    public static let emptyInvitation = "No notes for this meeting yet. Start typing, or generate notes from the transcript."
 
     public static let regenerateQuestion = "Regenerate notes?"
     public static let regenerateExplanation = "Lines you wrote are kept, and you can restore this version from Previous Versions."

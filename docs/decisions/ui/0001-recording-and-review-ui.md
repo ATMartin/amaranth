@@ -51,10 +51,11 @@ transcript hit jumps to that row.
     a disclosure.
   - A state banner: none, queued or paused, generating %, failed with retry, stale with Regenerate, or regeneration
     failed while the previous notes are shown.
-    *Amended 2026-10-31:* with no notes, the pane shows the "Meeting notes" heading itself with an italic line inviting
-    the user to write notes or generate them, instead of a "No generated notes yet" banner. The button reads
-    "Generate" (sparkles icon) until the meeting has generated notes, then "Regenerate"; generating the first notes
-    never asks.
+    *Amended 2026-10-31:* the "Meeting notes" heading (left) and Previous Versions and Generate (right) are pinned
+    above the notes in every state; the notes are one editable region with no separate "Write a note…" line, and
+    Limitations is a collapsed footnote under them. Empty notes show an italic invitation inside their only line, not a
+    "No generated notes yet" banner. The button reads "Generate" (sparkles icon) until the meeting has generated notes,
+    then "Regenerate"; generating the first notes never asks. Banners only explain; the header has the action.
   - **Your notes**, which regeneration never touches. Saves debounce for 1 s per field and are flushed synchronously
     when switching meetings, closing the view, or quitting.
   - **Private scratchpad**, with an explicit "use these private notes when generating notes" switch.
