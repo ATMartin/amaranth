@@ -41,7 +41,7 @@ struct NotesPane: View {
         } message: { Text(NotesEditing.regenerateExplanation) }
     }
 
-    /// Pinned: the heading on the left, Previous Versions and Generate in the top right corner, whatever the state.
+    /// Pinned: the heading on the left, History and Generate in the top right corner, whatever the state.
     var header: some View {
         let state = detail.notesState(notesModelInstalled: notesModelInstalled)
         let canGenerate = notesModelInstalled && detail.pendingNotes == nil && {
@@ -111,7 +111,7 @@ struct NotesPane: View {
                     Button("Dismiss") { library.dismissPendingNotes(detail.meeting.id) }
                         .help("Keep these notes as they are")
                     Button("Replace") { flushPendingSave(); library.replaceWithPendingNotes(detail.meeting.id) }
-                        .help("Use the new notes. Lines you wrote are kept, and this version stays in Previous Versions")
+                        .help("Use the new notes. Lines you wrote are kept, and this version stays in History")
                 }
             }
         }
@@ -145,7 +145,7 @@ struct NotesPane: View {
             }
             if versions.count < 2 { Text("No earlier versions") }
         } label: {
-            Label("Previous Versions", systemImage: "clock.arrow.circlepath")
+            Label("History", systemImage: "clock.arrow.circlepath")
         }
         .menuStyle(.button).controlSize(.small).fixedSize()
         .onAppear { versions = library.notesRevisions(detail.meeting.id) }
@@ -173,13 +173,14 @@ struct NotesPane: View {
 
 /// The notes document as editable lines. Return adds a line after the current one; Delete on an empty line removes it.
 /// In a line you write, "# " starts a heading and "- " a bullet. Clicking below the notes adds a line at their end;
-/// the generated Limitations follow as a collapsed footnote.
+/// the generated Limitations follow, collapsed, as "Footnotes".
 struct NotesDocumentEditor: View {
     @Binding var draft: NotesDraft
     let detail: MeetingDetail
     var focused: FocusState<NoteBlockID?>.Binding
     let jump: (TranscriptEvidence) -> Void
     @State private var limitationsExpanded = false
+    @Environment(\.footnotesExpanded) private var footnotesExpanded
 
     var body: some View {
         let blocks = draft.blocks
@@ -197,13 +198,17 @@ struct NotesDocumentEditor: View {
             Color.clear.frame(height: AppStyle.double + 4).contentShape(Rectangle())
                 .onTapGesture { focused.wrappedValue = draft.lineAtEnd() }
                 .accessibilityHidden(true)
+            // Shown as "Footnotes"; its items sit close together under the heading.
             if let heading = layout.limitations.first {
-                self.heading(heading, .limitations)
-                if limitationsExpanded {
-                    ForEach(layout.limitations.dropFirst()) { line($0, section: .limitations, placeholder: "") }
+                VStack(alignment: .leading, spacing: AppStyle.half) {
+                    self.heading(heading, .limitations)
+                    if limitationsExpanded {
+                        ForEach(layout.limitations.dropFirst()) { line($0, section: .limitations, placeholder: "") }
+                    }
                 }
             }
         }
+        .onAppear { if footnotesExpanded { limitationsExpanded = true } }
     }
 
     func line(_ block: NoteBlock, section: NoteSection?, placeholder: String) -> some View {
@@ -228,7 +233,7 @@ struct NotesDocumentEditor: View {
             Button { limitationsExpanded.toggle() } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "chevron.right").appFont(.caption, weight: .bold).rotationEffect(.degrees(limitationsExpanded ? 90 : 0))
-                    Label("Limitations (\(n))", systemImage: "info.circle").appFont(.callout, weight: .medium)
+                    Text("Footnotes (\(n))").appFont(.callout, weight: .medium)
                 }
                 .foregroundStyle(Color.brandSecondary).contentShape(Rectangle())
             }
@@ -241,6 +246,11 @@ struct NotesDocumentEditor: View {
             Eyebrow(text: block.text, detail: n == 0 ? nil : n == 1 ? "1 item" : "\(n) items").padding(.top, AppStyle.grid)
         }
     }
+}
+
+extension EnvironmentValues {
+    /// Footnotes start expanded (the headless render only).
+    @Entry var footnotesExpanded = false
 }
 
 struct NoteLineRow: View {
@@ -272,7 +282,7 @@ struct NoteLineRow: View {
                     .textFieldStyle(.plain)
                     .appFont(muted ? .callout : .body, weight: block.kind == .heading ? .semibold : .regular)
                     .foregroundStyle(muted ? Color.brandSecondary : Color.brandText)
-                    .lineSpacing(AppStyle.readingLineSpacing(scale) * 0.6)
+                    .lineSpacing(muted ? 0 : AppStyle.readingLineSpacing(scale) * 0.6)
                     .focused(focused, equals: block.id)
                     .onSubmit(submit)
                     .onKeyPress(.delete) {

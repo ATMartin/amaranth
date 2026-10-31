@@ -742,6 +742,12 @@ enum UIRenderSelfTest {
             NoteBlock(kind: .heading, text: NoteSection.limitations.title, section: .limitations, author: .model(summaryItemID: nil, uncertain: false)),
             NoteBlock(kind: .bullet, text: "The recording is too short to summarize.", author: .model(summaryItemID: SummaryItemID("lim1"), uncertain: false))])
         _ = await host(AnyView(NotesPane(detail: lim, notesModelInstalled: true, showTranscript: {})), "notes-state-limitations-only", size)
+        // Footnotes expanded, with several items: they sit close together under their heading.
+        var foot = lim
+        foot.notes?.blocks += ["Speaker names are unconfirmed.", "Part of the system audio was not captured, so some remarks may be missing."].enumerated().map {
+            NoteBlock(kind: .bullet, text: $1, author: .model(summaryItemID: SummaryItemID("lim\($0 + 2)"), uncertain: false))
+        }
+        _ = await host(AnyView(NotesPane(detail: foot, notesModelInstalled: true, showTranscript: {}).environment(\.footnotesExpanded, true)), "notes-state-footnotes-open", size)
         SelfTest.log(["step": "notes-states", "generatedBlocks": "\(generated.blocks.count)", "editedUserLines": "\(edited.userBlocks.count)",
                       "regenerateAsks": "\(NotesEditing.regenerateNeedsConfirmation(edited)) / \(NotesEditing.regenerateNeedsConfirmation(generated))",
                       "ok": "true"])

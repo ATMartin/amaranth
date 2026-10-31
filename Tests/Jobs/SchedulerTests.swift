@@ -333,7 +333,7 @@ struct SchedulerTests {
         #expect(replaced.basedOnSummaryRevisionID == pending.id && replaced.origin == .generated)
         #expect(replaced.userBlocks.map(\.text) == ["before the snapshot", "typed while generating"])
         #expect(try store.pendingNotes(m) == nil)
-        #expect(try store.notesDocumentRevisions(m).contains { $0.id == typed.id }, "the replaced version stays in Previous Versions")
+        #expect(try store.notesDocumentRevisions(m).contains { $0.id == typed.id }, "the replaced version stays in History")
 
         // Dismiss: same race again, the user keeps theirs.
         let (stream2, cont2) = AsyncStream<Void>.makeStream()

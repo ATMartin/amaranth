@@ -93,3 +93,7 @@ temporary store holding the fixtures and a synthetic 2-hour meeting, and writes 
   recordings need a person (checklist).
 - The microphone-mode setting applies to meetings processed after the next launch.
 - Text corrections cannot span two segments; the UI only offers them per row.
+
+Amendment 2026-10-31 (later): in the notes pane "Previous Versions" is called **History**, and the generated
+Limitations show as **Footnotes (n)** with no icon, their items set close together. Stored headings, exports and Ask
+still say "Limitations".

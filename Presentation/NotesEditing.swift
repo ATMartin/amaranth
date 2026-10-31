@@ -152,9 +152,9 @@ public enum NotesEditing {
     public static let emptyInvitation = "No notes for this meeting yet. Start typing, or generate notes from the transcript."
 
     public static let regenerateQuestion = "Regenerate notes?"
-    public static let regenerateExplanation = "Lines you wrote are kept, and you can restore this version from Previous Versions."
+    public static let regenerateExplanation = "Lines you wrote are kept, and you can restore this version from History."
 
-    /// Previous Versions: a copy of `old` as the newest revision. Based on the current generated notes, so restoring an
+    /// History: a copy of `old` as the newest revision. Based on the current generated notes, so restoring an
     /// older version never shows them as new notes waiting to replace it.
     public static func restoring(_ old: NotesDocumentRevision, currentSummaryID: RevisionID?, at date: Date = Date()) -> NotesDocumentRevision {
         NotesDocumentRevision(meetingID: old.meetingID, createdAt: date, basedOnSummaryRevisionID: currentSummaryID ?? old.basedOnSummaryRevisionID,
