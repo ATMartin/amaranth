@@ -9,7 +9,13 @@ SCRATCH=${SCRATCH:-.build-check}
 
 echo "== swift test (contracts, capture, models, scoring)"
 swift test --scratch-path "$SCRATCH" 2>&1 | tee /tmp/amaranth-swift-test.log | grep -E "✘|error:|Test run with" || true
+# swift test prints one "Test run with" line per test binary; every one must pass (a single passing line used to be
+# enough, so failures slipped through).
 grep -q "Test run with .* passed" /tmp/amaranth-swift-test.log
+if grep -q "✘ Test run with" /tmp/amaranth-swift-test.log; then
+  echo "swift test FAILED (see /tmp/amaranth-swift-test.log); real-model and capture timing tests are flaky under load"
+  exit 1
+fi
 
 echo "== xcodegen + xcodebuild (app + XPC worker)"
 xcodegen generate --quiet
