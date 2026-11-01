@@ -11,7 +11,8 @@
     "user_test_machine": "M2 Max, macOS 26.5.2",
     "speakers": "Editable anonymous labels",
     "retention": "Until explicit user deletion",
-    "design_review_2026_10_23": "No tags (folders only); no accounts, spaces, invitations or cloud; Recording tab unchanged; export unchanged; no live speaker count; topics removed from notes; ask-anything is the search direction"
+    "design_review_2026_10_23": "No tags (folders only); no accounts, spaces, invitations or cloud; Recording tab unchanged; export unchanged; no live speaker count; topics removed from notes; ask-anything is the search direction",
+    "tester_machines_2026_10_31": "Others may use the app soon, on machines like the user's (M2 Max, 96 GB) or better. That is the supported profile for F; 16 GB and 8 GB stay unverified and are not targeted for now."
   },
   "assumptions": {
     "language": "English",
@@ -34,31 +35,32 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "R → L → T21 → F → P → Q (user decision 2026-10-30: Milestone R before L; J, Polish and Polish 2 are done). Earlier: K → M → N → O → Fixes → J → L → T21 → F → P → Q (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; Q (local updates) placed after P on 2026-10-27 as “for later”; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
+    "milestone_order": "Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), Q (local updates, T70–T73: scripts/install-local.sh covers one Mac), T15.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
-    "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md"
+    "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md",
+    "milestone_order_2026_10_30": "Superseded by milestone_order (2026-10-31). R → L → T21 → F → P → Q (user decision 2026-10-30: Milestone R before L; J, Polish and Polish 2 are done). Earlier: K → M → N → O → Fixes → J → L → T21 → F → P → Q (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; Q (local updates) placed after P on 2026-10-27 as “for later”; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful."
   },
   "milestones": {
     "A": "Prove feasibility: T01-T04 (validated)",
     "B": "Reliable recorder: T05-T08 (validated)",
     "C": "Complete usable workflow: T09-T11 (validated)",
     "D": "Live text: T14",
-    "E": "Local model performance and delay reduction: T16-T21 (docs/milestone-e-performance-plan.md). T21 runs after Milestone L (user decision 2026-10-26; earlier: after G)",
-    "F": "Release qualification: T12, T13 (moved from D on 2026-10-22; runs last, after T21, by user decision 2026-10-26)",
+    "E": "Local model performance and delay reduction: T16-T21 (docs/milestone-e-performance-plan.md). T21 runs after Milestone L (user decision 2026-10-26; earlier: after G). 2026-10-31: T21 runs next after the loose ends (L parked), trimmed to items of 60 min or less",
+    "F": "Release qualification: T12, T13 (moved from D on 2026-10-22). 2026-10-31: trimmed for a small group of testers with machines like the user's (M2 Max class or better): no 8 GB/16 GB matrix, no runs over 60 min, no notarization (free signing team); runs after the feedback round",
     "Later": "T15",
     "G": "Design-review quick wins (notes and transcript noise, rename, cards, focus, tooltips): T22-T29. Runs before T21",
     "H": "Recorder simplification (sidebar = meetings only, toolbar Record): T30-T34",
     "I": "Transcript reading view and density: T35-T38",
     "J": "Folders (single level, no tags): T39-T42",
     "K": "Light mode and lightweight visual language: T43-T45",
-    "L": "Notes templates: T46-T48",
+    "L": "Notes templates: T46-T48. Parked as Later 2026-10-31 (user: not needed yet); tasks kept as written",
     "M": "Calendar and people placeholders: T49-T51",
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
     "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
-    "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them",
+    "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them. Parked as Later 2026-10-31 (kept on purpose for future integrations); open questions stay open",
     "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit",
-    "Q": "Local updates (“Check for Updates…” from a local drop folder): T70–T73. Planned 2026-10-27 at the user's request; placed after P (“for later”), can move earlier. User decisions 2026-10-27: Release and Debug builds are both published, Debug offered only with a Settings opt-in; check at launch and show a note when a newer build exists (never install on its own); no rollbacks (an older or equal build is never offered); the script part ships now as T69. Local only: a free personal team can't notarize, so a web feed / Sparkle stays out of scope (keep discovery behind an update-source interface so one can be added later).",
+    "Q": "Local updates (“Check for Updates…” from a local drop folder): T70–T73. Planned 2026-10-27 at the user's request; placed after P (“for later”), can move earlier. User decisions 2026-10-27: Release and Debug builds are both published, Debug offered only with a Settings opt-in; check at launch and show a note when a newer build exists (never install on its own); no rollbacks (an older or equal build is never offered); the script part ships now as T69. Local only: a free personal team can't notarize, so a web feed / Sparkle stays out of scope (keep discovery behind an update-source interface so one can be added later).. Parked as Later 2026-10-31 (install-local.sh covers one Mac); tasks kept as written",
     "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
     "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit.",
     "R": "One notes field per meeting (personal/private notes removed; editable notes; typing during the meeting feeds generation): T89–T95. Spec docs/decisions/0008 accepted 2026-10-30 with all recommendations (user lines always survive, Regenerate asks and keeps history, snapshot + 'Replace?' while generating, inline source chips, rich-text editor, typed-at times). Never-included scratchpads are deleted by the v6 migration (user, 2026-10-31). Placed next, before L; L's tasks are revised in T94."
@@ -432,6 +434,21 @@
         "docs/qualification/"
       ],
       "deliverables": [
+        "Release build only. Offline: run a meeting end to end with networking denied, and separately record every attempted outbound connection with networking allowed.",
+        "Fault injection on the user's machine: kill during recording and during processing, sleep/lock, mic disconnect, permission revocation, full disk, worker hang and cancellation. Every gap must be visible; none silent.",
+        "Back-to-back meetings, relaunch recovery, and one 60-min Release recording (at most once) with cold and warm processing times.",
+        "Meeting apps and devices the user actually has (real call where possible) for capture and live text; T14 latency from persisted samples.",
+        "Machine-readable measurements plus a short report: tested, failed and unverified configurations."
+      ],
+      "acceptance": [
+        "Zero silent data loss in the tests run; every induced discontinuity is visible.",
+        "No audio, transcript or notes leave the app (inference, logs, telemetry, automatic downloads).",
+        "Supported profile is M2 Max class or better; 16 GB, 8 GB, base M2 and two-/four-hour recordings are reported as not measured (user decision), never as passing.",
+        "T14 gates pass on real recordings, or are reported as failed/unverified."
+      ],
+      "fallback": "Fix the owning module and rerun affected gates. Explicitly revise a scope or budget decision with evidence; never relabel a failing test as passing.",
+      "milestone_note": "Moved from D to F by user decision 2026-10-22 so release qualification measures the Milestone E pipeline.",
+      "original_deliverables": [
         "Execute the real-app/device/OS matrix and the held-out quality corpus in release builds.",
         "Inject permission revocation, disconnects, lock/sleep, kill, full disk, malformed models, worker hangs and cancellations.",
         "Run two-hour normal recordings, a four-hour soak, back-to-back meetings and cold/warm processing measurements.",
@@ -439,15 +456,14 @@
         "Publish machine-readable measurements and a readable release report listing tested, failed and unverified configurations.",
         "Validate T14 live text in release builds on real calls: provisional-text latency from persisted samples, capture loss/memory/thermal with a real meeting app, and the live-to-final transition."
       ],
-      "acceptance": [
+      "original_acceptance": [
         "All supported-profile gates in plan section 10 pass with raw evidence; no unsupported claim relies on M2 Max results alone.",
         "Zero silent data loss in the matrix; every induced discontinuity is visible.",
         "16 GB and 8 GB support decisions are separate. Unavailable hardware remains unverified.",
         "No audio/transcript/notes leave the app through inference, logs, telemetry or automatic dependency downloads.",
         "T14 gates (median < 5 s, p95 < 10 s outside pressure pauses; capture gates during a real call) pass on real recordings, or are reported as failed/unverified."
       ],
-      "fallback": "Fix the owning module and rerun affected gates. Explicitly revise a scope or budget decision with evidence; never relabel a failing test as passing.",
-      "milestone_note": "Moved from D to F by user decision 2026-10-22 so release qualification measures the Milestone E pipeline."
+      "scope_note": "Trimmed 2026-10-31 (user decision): testers will have machines like the user's or better; no runs over 60 min; the original deliverables and acceptance are kept as original_*."
     },
     {
       "id": "T13",
@@ -478,7 +494,8 @@
         "Live text works in the packaged build during the fresh-install workflow."
       ],
       "fallback": "Preserve a usable local build and explain the specific signing/distribution blocker. Do not claim notarization or clean-machine validation without evidence.",
-      "milestone_note": "Moved from D to F by user decision 2026-10-22."
+      "milestone_note": "Moved from D to F by user decision 2026-10-22.",
+      "scope_note": "2026-10-31: still needed (others may use the app soon). Without notarization (free signing team) this delivers the documented developer build from the fallback and marks distribution qualification incomplete; the tested-hardware matrix is the user's machine class. The fresh-install workflow on a clean user account and a human tester stay required."
     },
     {
       "id": "T14",
@@ -711,7 +728,8 @@
         "Base-M2 results remain projections marked unverified."
       ],
       "fallback": "Report unmet gates explicitly; never relabel a failing gate as passing.",
-      "dependency_note": "2026-10-26: runs after Milestone L (order K → M → N → J → L → T21 → F). Notes are template-driven by then; measure with the default template, which must match notes-v3."
+      "dependency_note": "2026-10-31: runs next after the loose ends; L is parked, so notes use the built-in sections. notes-v4 requests without user lines are byte-identical to notes-v3 (NotesPromptGoldenTests), so the comparison against baseline-v0 holds. Earlier (2026-10-26): ran after Milestone L.",
+      "scope_note": "Trimmed 2026-10-31: only perf-suite items of 60 min or less, the 60-min item at most once; any gate that names a longer meeting is reported as not measured (user decision). Goal: confirm the Milestone E speed and quality results still hold after Milestones G–R."
     },
     {
       "id": "T22",
@@ -1517,7 +1535,7 @@
       "id": "T46",
       "title": "Notes templates: model, storage and editor",
       "milestone": "L",
-      "status": "planned (revised by T94 2026-10-31; needs the user’s review before L starts)",
+      "status": "parked (Later, user decision 2026-10-31: templates not needed yet); revised by T94, never reviewed by the user",
       "optional": false,
       "depends_on": [
         "T23",
@@ -1551,7 +1569,7 @@
       "id": "T47",
       "title": "Template-driven notes generation with the existing evidence checks",
       "milestone": "L",
-      "status": "planned (revised by T94 2026-10-31; needs the user’s review before L starts)",
+      "status": "parked (Later, user decision 2026-10-31: templates not needed yet); revised by T94, never reviewed by the user",
       "optional": false,
       "depends_on": [
         "T46",
@@ -1587,7 +1605,7 @@
       "id": "T48",
       "title": "Choose a template per meeting and regenerate; exports render custom sections",
       "milestone": "L",
-      "status": "planned (revised by T94 2026-10-31; needs the user’s review before L starts)",
+      "status": "parked (Later, user decision 2026-10-31: templates not needed yet); revised by T94, never reviewed by the user",
       "optional": false,
       "depends_on": [
         "T47",
@@ -2000,7 +2018,7 @@
       "id": "T62",
       "title": "Google sign-in and account row",
       "milestone": "P",
-      "status": "proposed, pending review (spec 0007)",
+      "status": "parked (Later, user decision 2026-10-31: kept for future integrations); proposed, spec 0007 open questions unanswered",
       "optional": false,
       "depends_on": [
         "T61"
@@ -2032,7 +2050,7 @@
       "id": "T63",
       "title": "Google sync and local cache",
       "milestone": "P",
-      "status": "proposed, pending review (spec 0007)",
+      "status": "parked (Later, user decision 2026-10-31: kept for future integrations); proposed, spec 0007 open questions unanswered",
       "optional": false,
       "depends_on": [
         "T62"
@@ -2060,7 +2078,7 @@
       "id": "T64",
       "title": "Google as a calendar source, merged with EventKit",
       "milestone": "P",
-      "status": "proposed, pending review (spec 0007)",
+      "status": "parked (Later, user decision 2026-10-31: kept for future integrations); proposed, spec 0007 open questions unanswered",
       "optional": false,
       "depends_on": [
         "T63"
@@ -2091,7 +2109,7 @@
       "id": "T65",
       "title": "Fresh events at Record",
       "milestone": "P",
-      "status": "proposed, pending review (spec 0007)",
+      "status": "parked (Later, user decision 2026-10-31: kept for future integrations); proposed, spec 0007 open questions unanswered",
       "optional": false,
       "depends_on": [
         "T64"
@@ -2118,7 +2136,7 @@
       "id": "T66",
       "title": "Google privacy and network qualification",
       "milestone": "P",
-      "status": "proposed, pending review (spec 0007)",
+      "status": "parked (Later, user decision 2026-10-31: kept for future integrations); proposed, spec 0007 open questions unanswered",
       "optional": false,
       "depends_on": [
         "T64"
@@ -2223,7 +2241,7 @@
       "id": "T70",
       "title": "Build numbers and the local publish step",
       "milestone": "Q",
-      "status": "planned",
+      "status": "parked (Later, user decision 2026-10-31)",
       "optional": false,
       "depends_on": [
         "T69"
@@ -2250,7 +2268,7 @@
       "id": "T71",
       "title": "Check for Updates… (menu, launch check, Settings → Updates)",
       "milestone": "Q",
-      "status": "planned",
+      "status": "parked (Later, user decision 2026-10-31)",
       "optional": false,
       "depends_on": [
         "T70"
@@ -2281,7 +2299,7 @@
       "id": "T72",
       "title": "Install and relaunch from inside the app",
       "milestone": "Q",
-      "status": "planned",
+      "status": "parked (Later, user decision 2026-10-31)",
       "optional": false,
       "depends_on": [
         "T71"
@@ -2309,7 +2327,7 @@
       "id": "T73",
       "title": "Milestone Q validation",
       "milestone": "Q",
-      "status": "planned",
+      "status": "parked (Later, user decision 2026-10-31)",
       "optional": false,
       "depends_on": [
         "T72"
