@@ -103,10 +103,15 @@ Old tables stay readable during migration and are then purged by deletion like a
 
 - Live or incremental note generation during the meeting (decided for T19: no incremental notes).
 - Collaborative editing, comments, sync.
-- Templates: Milestone L is revised on top of this document after R ships (templates define the starting sections).
+- Templates: Milestone L was revised on top of this document after R shipped (templates define the starting sections), then parked as Later on 2026-10-31.
 
-## Settled item
+## Settled items
 
 **Scratchpads that were never included in generation** (decided by the user 2026-10-31: **delete**). These were
 promised private (not exported, searched, or used). The v6 migration deletes their rows; their text appears nowhere
 in notes, search or exports. (Alternatives considered: keep them hidden, or merge them into notes.)
+
+**A user line that a generated item cites** (raised by the Milestone R validator, should-fix 2; decided by the user
+2026-10-31: **leave as is**). The line leaves the document and lives on through the item's "your note" source chip, as
+§3 says. Known consequence, accepted: a later Regenerate no longer reads it as a user line, and deleting the generated
+item removes the thought. (Alternatives considered: keep cited lines under Also noted, or keep them hidden as context.)
