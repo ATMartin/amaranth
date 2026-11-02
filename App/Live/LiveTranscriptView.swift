@@ -2,7 +2,7 @@ import SwiftUI
 import Domain
 import Presentation
 
-/// Live provisional text while recording. Clearly marked as provisional; tentative words are dimmed; no speakers are
+/// Live provisional text while recording, under just the meeting title; tentative words are dimmed; no speakers are
 /// guessed (only the source track is shown).
 struct LiveTranscriptView: View {
     @Environment(LiveTextModel.self) private var live
@@ -14,10 +14,8 @@ struct LiveTranscriptView: View {
         @Bindable var recorder = recorder
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: AppStyle.half) {
-                    Eyebrow(text: "Live text", detail: "Provisional")
-                    Text(meetingTitle).appFont(.display).lineLimit(1).foregroundStyle(Color.brandText)
-                }
+                // Just the title (user, 2026-11-02): no "Live text / Provisional" eyebrow or note about the final transcript.
+                Text(meetingTitle).appFont(.display).lineLimit(1).foregroundStyle(Color.brandText)
                 Spacer()
                 switch live.status {
                 case .running: if let p = live.state.percentile(0.5) { Text(String(format: "about %.0f s behind", p)).font(.caption).foregroundStyle(Color.brandSecondary) }
@@ -30,8 +28,6 @@ struct LiveTranscriptView: View {
                     .help("Notes for this meeting, used when its notes are generated (⌘⇧N)")
             }
             .padding(.horizontal, AppStyle.double + 8).padding(.top, AppStyle.double + 4).padding(.bottom, AppStyle.half)
-            Text("The final transcript, with speakers, is made after you stop. Audio is saved either way.")
-                .appFont(.caption).foregroundStyle(Color.brandSecondary).padding(.horizontal, AppStyle.double + 8)
             // Inline above the transcript, never a modal; lines go into the meeting's notes (saved every few seconds and at
             // Stop) and into the notes generated after Stop.
             if recorder.notesOpen {
