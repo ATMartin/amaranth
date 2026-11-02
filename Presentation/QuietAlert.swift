@@ -17,6 +17,18 @@ public enum QuietAlertSettings {
         return min(max(v, choices.first!), choices.last!)
     }
 
+    /// What to do when the call app stops using the microphone (2026-11-02): stop and make notes (default), ask
+    /// "Still recording?", or ignore the microphone. Independent of the quiet toggle above.
+    public enum CallEndedAction: String, CaseIterable, Sendable { case stop, ask, off }
+    public static let callEndedKey = "callEndedAction"
+    public static let callEndedDefault = CallEndedAction.stop
+    /// How long the call app must have let go of the microphone, with no words heard, before acting.
+    public static let micReleaseDelay: Double = 10
+
+    public static func callEnded(_ d: UserDefaults = .standard) -> CallEndedAction {
+        d.string(forKey: callEndedKey).flatMap(CallEndedAction.init(rawValue:)) ?? callEndedDefault
+    }
+
     /// "30 s", "1 min", "2 min"…
     public static func label(_ seconds: Double) -> String {
         seconds < 60 ? "\(Int(seconds)) s" : "\(Int(seconds / 60)) min"
@@ -24,12 +36,13 @@ public enum QuietAlertSettings {
 }
 
 /// Decides when a recording has gone quiet (T68). Pure: the recorder feeds it one `Input` per tick (session seconds,
-/// live words, levels, other apps' microphone use) and reads `alert`. It never stops anything.
+/// live words, levels, other apps' microphone use) and reads `alert`. It never stops anything itself.
 ///
 /// Two signals, either raises the alert:
 /// - **Quiet:** no live word on either source for `threshold` seconds. Words, not levels, because hum and music hold a
 ///   level up. When live text isn't running, every source's level below the silent line counts as quiet instead.
 /// - **Call ended:** another app used the microphone during this recording and none has for `micReleaseDelay` seconds.
+///   The recorder may stop on its own then (`readyToStop`, Settings → "When the call ends").
 ///
 /// Paused time never counts. **Keep Recording** silences the alert until speech resumes; after that the quiet signal is
 /// armed again, and the call-ended signal once another app uses the microphone again.
@@ -79,7 +92,7 @@ public struct QuietMonitor: Sendable {
     private var micSeen = false
     private var micReleasedAt: Double?
 
-    public init(threshold: Double = QuietAlertSettings.defaultThreshold, micReleaseDelay: Double = 30) {
+    public init(threshold: Double = QuietAlertSettings.defaultThreshold, micReleaseDelay: Double = QuietAlertSettings.micReleaseDelay) {
         self.threshold = threshold
         self.micReleaseDelay = micReleaseDelay
     }
@@ -120,11 +133,17 @@ public struct QuietMonitor: Sendable {
         case nil: break
         }
 
-        guard alert == nil, !snoozed else { return nil }
+        guard !snoozed else { return nil }
         let usedLevels = !i.liveText
+        let released = micReleasedAt.map { i.now - $0 >= micReleaseDelay } ?? false
+        if let a = alert {
+            // Already asking because it went quiet, then the call app let go: it's the call ending (no new notification).
+            if a.reason == .quiet, released { alert = Alert(reason: .callEnded, quietSince: a.quietSince, usedLevels: a.usedLevels) }
+            return nil
+        }
         if i.now - quietFrom >= threshold {
             alert = Alert(reason: .quiet, quietSince: quietFrom, usedLevels: usedLevels)
-        } else if let released = micReleasedAt, i.now - released >= micReleaseDelay {
+        } else if released {
             alert = Alert(reason: .callEnded, quietSince: quietFrom, usedLevels: usedLevels)
         }
         return alert
@@ -137,6 +156,12 @@ public struct QuietMonitor: Sendable {
         snoozed = true
         micSeen = false
         micReleasedAt = nil
+    }
+
+    /// "Stop automatically when the call ends": the call-ended alert is up and no one has spoken for `micReleaseDelay`
+    /// either (people still talking in the room, or music with lyrics, keep it at asking). Speech clears the alert.
+    public func readyToStop(now: Double) -> Bool {
+        alert?.reason == .callEnded && now - (alert?.quietSince ?? now) >= micReleaseDelay
     }
 
     /// Where a Stop now should end the meeting: the last speech + `margin`, only while the alert is up, and only when

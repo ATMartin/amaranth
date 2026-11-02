@@ -95,12 +95,13 @@ final class ReminderController: NSObject, UNUserNotificationCenterDelegate {
             let action = response.actionIdentifier
             let meeting = String(response.notification.request.identifier.dropFirst(QuietNotifications.idPrefix.count))
             await MainActor.run {
-                // Only for the recording it was raised for (a late click after that recording ended does nothing).
-                guard let recorder, recorder.meetingID?.rawValue == meeting, recorder.inSession else { return }
                 switch action {
-                case QuietNotifications.stopAction: recorder.stop()
-                case QuietNotifications.keepAction: recorder.keepRecording()
-                default: openMainWindow?(); NSApp.activate()   // the notification itself: show the recording
+                case QuietNotifications.stopAction, QuietNotifications.keepAction:
+                    // Only for the recording it was raised for (a late click after that recording ended does nothing).
+                    guard let recorder, recorder.meetingID?.rawValue == meeting, recorder.inSession else { return }
+                    if action == QuietNotifications.stopAction { recorder.stop() } else { recorder.keepRecording() }
+                default:
+                    openMainWindow?(); NSApp.activate()   // the notification itself (also "Recording stopped"): show the app
                 }
             }
             return

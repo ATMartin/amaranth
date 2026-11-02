@@ -1,7 +1,9 @@
 # capture/0002 — "Still recording?" alert after the meeting goes quiet
 
 Date: 2026-10-27 · Status: **Accepted and implemented (T68)**, Fixes group before J. Amended the same day: no Restore
-(the quiet tail is deleted), and the one notification prompt comes after the first Stop.
+(the quiet tail is deleted), and the one notification prompt comes after the first Stop. **Amended 2026-11-02: stop
+automatically when the call ends** (see the last section); this replaces "Notify only. Never stops on its own" for the
+call-ended signal.
 
 ## Problem
 
@@ -94,3 +96,27 @@ Either signal raises the alert.
   question, nothing in the overflow.
 - Not verified here: the microphone-use signal with a real call app (it returns "no other app" on this Mac when
   idle). Hands-on checklist item 60.
+
+## Amendment 2026-11-02 — stop automatically when the call ends
+
+User, 2026-11-02: ending a meeting still takes extra clicks; "when I end a call, I'd like the active meeting to stop
+recording (or to trigger a notification with a Stop action)", for Meet in a browser most often, and Zoom, Teams, Slack.
+
+- Signal 2 is app-agnostic (any process using audio input, browsers included), so no per-app code. Its delay drops
+  from 30 s to **10 s** (`QuietAlertSettings.micReleaseDelay`).
+- New setting, Settings → Recording → **When the call ends**: "Stop and make notes" (**default**), "Ask “Still
+  recording?”" (the T68 behaviour), "Do nothing". Independent of the quiet toggle (quiet off → the monitor runs with
+  an infinite threshold, call-ended only; both off → no monitor, no polling).
+- Stop rule (`QuietMonitor.readyToStop`): the call-ended alert is up **and** no live word on either source for the same
+  10 s. People still talking in the room after the call (or lyrics in music) keep it at the "Still recording?" ask,
+  and their next word clears it. A quiet alert already up upgrades to call-ended when the app lets go (no second
+  notification), so a long silence before hanging up still auto-stops.
+- The automatic Stop is the normal Stop with the alert up: the meeting ends 5 s after the last words, the quiet tail is
+  deleted, notes are made. The "Saved …" line starts "Stopped automatically: the call ended.", and a "Recording
+  stopped" notification (no buttons; a click opens the app) replaces "Still recording?".
+- Known limits: an app that keeps the microphone after the call (a Meet tab still on a pre-join screen, some Teams
+  builds) never releases, so only the quiet alert asks. A brief release under 10 s (switching devices) does nothing.
+  An app that releases the microphone while muted for 10+ s with nobody speaking would stop the recording; not seen
+  yet, the "Ask" setting avoids it.
+- Tests: `QuietMonitorTests` stops 10 s after release, still-talking only asks, brief release, quiet-then-release
+  upgrade, quiet alert off, setting default.

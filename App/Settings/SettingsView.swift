@@ -89,6 +89,7 @@ struct RecordingSettings: View {
     @AppStorage("processWhileRecording") private var processWhileRecording = true
     @AppStorage(QuietAlertSettings.enabledKey) private var quietAlert = true
     @AppStorage(QuietAlertSettings.thresholdKey) private var quietSeconds = QuietAlertSettings.defaultThreshold
+    @AppStorage(QuietAlertSettings.callEndedKey) private var callEnded = QuietAlertSettings.callEndedDefault.rawValue
 
     var body: some View {
         Form {
@@ -116,6 +117,19 @@ struct RecordingSettings: View {
                 Text("Record uses these every time. You can change them for a single meeting with the ▾ button next to Record.")
                     .font(.caption).foregroundStyle(Color.brandSecondary)
             }
+            // 2026-11-02 (docs/decisions/capture/0002, amendment).
+            Section("When the call ends") {
+                Picker("When the call app stops using the microphone", selection: $callEnded) {
+                    Text("Stop and make notes").tag(QuietAlertSettings.CallEndedAction.stop.rawValue)
+                    Text("Ask “Still recording?”").tag(QuietAlertSettings.CallEndedAction.ask.rawValue)
+                    Text("Do nothing").tag(QuietAlertSettings.CallEndedAction.off.rawValue)
+                }
+                .onChange(of: callEnded) { _, v in
+                    if v != QuietAlertSettings.CallEndedAction.off.rawValue, !recorder.inSession { Task { await QuietNotifications.ask() } }
+                }
+                Text("Works with any call app that uses the microphone: Meet or another browser call, Zoom, Teams, Slack, FaceTime. When it lets go of the microphone and no one has spoken for 10 seconds, Amaranth stops, ends the meeting 5 seconds after the last words and makes the notes. If a call app keeps the microphone after the call (a browser tab left open), the quiet alert below still asks. Changes apply from the next recording.")
+                    .font(.caption).foregroundStyle(Color.brandSecondary)
+            }
             // T68 (docs/decisions/capture/0002).
             Section("When a recording goes quiet") {
                 Toggle("Alert when a recording goes quiet", isOn: $quietAlert)
@@ -127,7 +141,7 @@ struct RecordingSettings: View {
                     ForEach(QuietAlertSettings.choices, id: \.self) { Text(QuietAlertSettings.label($0)).tag($0) }
                 }
                 .disabled(!quietAlert)
-                Text("Asks “Still recording?” when no one has spoken for this long, or when the call app stops using the microphone. Amaranth never stops on its own. Stopping while it asks ends the meeting 5 seconds after the last words and deletes the quiet audio after that. Changes apply from the next recording.")
+                Text("Asks “Still recording?” when no one has spoken for this long. Stopping while it asks ends the meeting 5 seconds after the last words and deletes the quiet audio after that. Changes apply from the next recording.")
                     .font(.caption).foregroundStyle(Color.brandSecondary)
             }
             Picker("My microphone is", selection: $microphoneMode) {

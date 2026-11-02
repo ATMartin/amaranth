@@ -120,6 +120,68 @@ struct QuietMonitorTests {
         #expect(run(&m, 211, 241) { live($0, word: $0, mic: false) }.keys.sorted() == [241], "a new call's release alerts again")
     }
 
+    // 2026-11-02: "Stop automatically when the call ends".
+
+    @Test func stopsTenSecondsAfterTheCallAppLetsGo() {
+        var m = QuietMonitor(threshold: 60)
+        // Talking until 98, the call app lets go at 100: the call-ended alert at 110, and no one spoke since 98.
+        run(&m, 0, 99) { live($0, word: min($0, 98), mic: true) }
+        #expect(!m.readyToStop(now: 99))
+        let raised = run(&m, 100, 110) { live($0, word: 98, mic: false) }
+        #expect(raised.keys.sorted() == [110])
+        #expect(m.alert?.reason == .callEnded)
+        #expect(m.readyToStop(now: 110))
+        #expect(m.trimEnd(duration: 110) == 103, "ends 5 s after the last words")
+    }
+
+    @Test func peopleStillTalkingKeepItAsking() {
+        var m = QuietMonitor(threshold: 60)
+        run(&m, 0, 99) { live($0, word: $0, mic: true) }
+        // Still talking in the room after the call: the alert asks but doesn't stop, and the next word clears it.
+        run(&m, 100, 110) { live($0, word: $0 - 0.5, mic: false) }
+        #expect(m.alert?.reason == .callEnded)
+        #expect(!m.readyToStop(now: 110))
+        _ = m.update(live(111, word: 110.8, mic: false))
+        #expect(m.alert == nil && !m.readyToStop(now: 111))
+        #expect(run(&m, 112, 150) { live($0, word: $0 - 0.5, mic: false) }.isEmpty, "no repeat until an app uses the mic again")
+    }
+
+    @Test func aBriefReleaseDoesNothing() {
+        var m = QuietMonitor(threshold: 600)
+        // Switching devices or a mute that lets go for a few seconds, while nobody speaks.
+        run(&m, 0, 50) { live($0, word: 5, mic: true) }
+        run(&m, 51, 59) { live($0, word: 5, mic: false) }
+        #expect(run(&m, 60, 200) { live($0, word: 5, mic: true) }.isEmpty)
+        #expect(!m.readyToStop(now: 200))
+    }
+
+    @Test func alreadyQuietThenTheCallEnds() {
+        var m = QuietMonitor(threshold: 30)
+        run(&m, 0, 40) { live($0, word: 2, mic: true) }
+        #expect(m.alert?.reason == .quiet)
+        #expect(!m.readyToStop(now: 40), "quiet alone only asks")
+        #expect(run(&m, 41, 51) { live($0, word: 2, mic: false) }.isEmpty, "no second notification")
+        #expect(m.alert?.reason == .callEnded && m.readyToStop(now: 51))
+        #expect(m.alert?.quietSince == 2)
+    }
+
+    @Test func callEndedWithoutTheQuietAlert() {
+        // Quiet alert off: the recorder passes an infinite threshold.
+        var m = QuietMonitor(threshold: .infinity)
+        #expect(run(&m, 0, 1000) { live($0, word: 1, mic: true) }.isEmpty)
+        #expect(run(&m, 1001, 1011) { live($0, word: 1, mic: false) }.keys.sorted() == [1011])
+        #expect(m.readyToStop(now: 1011))
+    }
+
+    @Test func callEndedSettingDefaultsToStop() {
+        let d = UserDefaults(suiteName: "call-\(UUID())")!
+        #expect(QuietAlertSettings.callEnded(d) == .stop)
+        d.set("ask", forKey: QuietAlertSettings.callEndedKey)
+        #expect(QuietAlertSettings.callEnded(d) == .ask)
+        d.set("bogus", forKey: QuietAlertSettings.callEndedKey)
+        #expect(QuietAlertSettings.callEnded(d) == .stop)
+    }
+
     @Test func trimOnlyWhileTheAlertIsUp() {
         var m = QuietMonitor(threshold: 60)
         run(&m, 0, 50) { live($0, word: 12) }

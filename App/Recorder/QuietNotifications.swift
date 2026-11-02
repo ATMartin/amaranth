@@ -34,6 +34,20 @@ enum QuietNotifications {
         }
     }
 
+    /// Amaranth stopped on its own because the call ended (no buttons; a click opens the app). Replaces "Still recording?".
+    static func postStopped(meeting: String) {
+        let center = UNUserNotificationCenter.current()
+        Task {
+            let settings = await center.notificationSettings()
+            guard [.authorized, .provisional].contains(settings.authorizationStatus) else { return }
+            let content = UNMutableNotificationContent()
+            content.title = "Recording stopped"
+            content.body = "The call ended, so Amaranth stopped and is making the notes."
+            content.sound = .default
+            try? await center.add(UNNotificationRequest(identifier: id(meeting), content: content, trigger: nil))
+        }
+    }
+
     /// Speech resumed, Keep Recording, or Stop: the notification no longer applies.
     static func remove(meeting: String) {
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [id(meeting)])
@@ -42,7 +56,7 @@ enum QuietNotifications {
     /// After a Stop (never during a recording or at launch): whether to ask now — the alert is on, Amaranth hasn't asked
     /// before, and nothing was decided (an earlier "Allow" for the T61 reminder counts as decided).
     static func shouldAskAfterStop(_ defaults: UserDefaults = .standard) async -> Bool {
-        guard QuietAlertSettings.enabled(defaults), !defaults.bool(forKey: QuietAlertSettings.askedKey) else { return false }
+        guard QuietAlertSettings.enabled(defaults) || QuietAlertSettings.callEnded(defaults) != .off, !defaults.bool(forKey: QuietAlertSettings.askedKey) else { return false }
         guard await UNUserNotificationCenter.current().notificationSettings().authorizationStatus == .notDetermined else {
             defaults.set(true, forKey: QuietAlertSettings.askedKey); return false
         }

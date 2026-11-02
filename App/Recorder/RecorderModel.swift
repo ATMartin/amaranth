@@ -64,6 +64,8 @@ final class RecorderModel {
     /// T68: "Still recording?" — the alert while it is up (nil otherwise), from `quietMonitor`, fed every tick.
     private(set) var quiet: QuietMonitor.Alert?
     private var quietMonitor: QuietMonitor?
+    /// Settings → "When the call ends", read at Record (2026-11-02).
+    private var callEndedAction = QuietAlertSettings.callEndedDefault
     /// Other apps' microphone use, polled at 1 Hz off the main thread while recording (nil: unknown).
     private var othersUsingMicrophone: Bool?
     private var microphonePoll: Task<Void, Never>?
@@ -235,8 +237,12 @@ final class RecorderModel {
     private func startQuietMonitor() {
         quiet = nil
         othersUsingMicrophone = nil
-        guard QuietAlertSettings.enabled() else { quietMonitor = nil; return }
-        quietMonitor = QuietMonitor(threshold: QuietAlertSettings.threshold())
+        let quietOn = QuietAlertSettings.enabled()
+        callEndedAction = QuietAlertSettings.callEnded()
+        guard quietOn || callEndedAction != .off else { quietMonitor = nil; return }
+        // Quiet alert off: only the call-ended signal (an infinite threshold never goes "quiet").
+        quietMonitor = QuietMonitor(threshold: quietOn ? QuietAlertSettings.threshold() : .infinity)
+        guard callEndedAction != .off else { return }
         microphonePoll = Task.detached(priority: .utility) { [weak self] in
             while !Task.isCancelled {
                 let using = MicrophoneUse.othersUsingInput()
@@ -268,6 +274,12 @@ final class RecorderModel {
         let was = quiet
         quiet = m.alert
         guard let id = meetingID else { return }
+        // "Stop automatically when the call ends": the call app let go of the microphone and no one has spoken since.
+        if callEndedAction == .stop, state == .recording, m.readyToStop(now: elapsed) {
+            stop(automatically: "Stopped automatically: the call ended.")
+            QuietNotifications.postStopped(meeting: id.rawValue)
+            return
+        }
         if let raised {
             let text = QuietMonitor.notification(raised, now: elapsed)
             QuietNotifications.post(title: text.title, body: text.body, meeting: id.rawValue)
@@ -369,7 +381,10 @@ final class RecorderModel {
 
     /// Stop and save. While the quiet alert is up, the meeting ends at the last words + 5 s and the quiet tail is
     /// deleted (T68); otherwise nothing is trimmed.
-    func stop() {
+    func stop() { stop(automatically: nil) }
+
+    /// `automatically`: the "Saved …" line's reason when Amaranth stopped on its own (the call ended).
+    private func stop(automatically reason: String?) {
         // Once only: a late notification click or the disk guard during Stop must not finish the recording twice.
         guard let s = session, state != .stopping else { return }
         poll?.invalidate()
@@ -380,13 +395,13 @@ final class RecorderModel {
         let store = self.store
         Task.detached(priority: .userInitiated) {
             var r = s.stop()
-            var note: String?
+            var note = reason
             if let trimEnd, let plan = CaptureTrim.plan(r, end: .seconds(trimEnd)) {
                 do {
                     r = try CaptureTrim.apply(plan, to: r, store: store)
-                    note = "Ended at the last words: removed \(RecorderPresentation.clock(plan.removedSeconds)) of quiet at the end."
+                    note = [reason, "Ended at the last words: removed \(RecorderPresentation.clock(plan.removedSeconds)) of quiet at the end."].compactMap { $0 }.joined(separator: " ")
                 } catch {
-                    note = "Couldn't remove the quiet end of the recording (\(error.localizedDescription)); the whole recording is kept."
+                    note = [reason, "Couldn't remove the quiet end of the recording (\(error.localizedDescription)); the whole recording is kept."].compactMap { $0 }.joined(separator: " ")
                 }
             }
             let finalNote = note
