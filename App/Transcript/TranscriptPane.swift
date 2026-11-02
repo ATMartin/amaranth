@@ -1,10 +1,11 @@
 import SwiftUI
+import AppKit
 import Domain
 import Presentation
 
 /// Virtualized transcript (`List` reuses rows, so a two-hour meeting scrolls smoothly) in three columns: time, speaker
 /// (disc and name on the first row of each same-speaker run, T35), text. Click a time to play from it; right-click a
-/// row to correct text or change its speaker; click a speaker's name to rename, merge or reassign (T38; the speaker bar
+/// row (text included) to copy or correct text or change its speaker; click a speaker's name to rename, merge or reassign (T38; the speaker bar
 /// shows with Details on). Gaps are rows:
 /// with Details off (skim mode, T25) they draw as hairlines and flags as icons; with Details on, in full.
 struct TranscriptPane: View {
@@ -108,8 +109,17 @@ struct TranscriptPane: View {
         }
     }
 
+    /// The row's menu wherever it's right-clicked, text included: line text isn't selectable, since selectable text
+    /// brings up the system text menu instead of this one; Copy Text stands in for selecting.
     @ViewBuilder func menu(_ row: TranscriptRow) -> some View {
+        if !row.isGap {
+            Button("Copy Text") {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(row.text, forType: .string)
+            }
+        }
         if row.range != nil, !detail.showingProvisional {
+            Divider()
             Button("Correct Text…") { correction = row.text; correcting = row }
             Menu("Assign to Speaker") { assignItems(row) }
             Button("Mark Speaker as Uncertain") { apply { try $0.markUncertain(row) } }
@@ -223,7 +233,7 @@ struct TranscriptRowView: View {
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
                             // Every row, continuation rows included, names its speaker for VoiceOver.
                             Text(row.text).appFont(.body).lineSpacing(AppStyle.readingLineSpacing(scale) * 0.6).foregroundStyle(Color.brandText)
-                                .textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .accessibilityLabel("\(row.speakerLabel): \(row.text)")
                             badges.fixedSize()
                         }
@@ -251,7 +261,7 @@ struct TranscriptRowView: View {
             }
             HStack(alignment: .bottom, spacing: AppStyle.half + 2) {
                 if mine { bubbleCaption }
-                Text(row.text).appFont(.body).textSelection(.enabled)
+                Text(row.text).appFont(.body)
                     .padding(.horizontal, 10).padding(.vertical, 5)
                     .background((mine ? Color.brandAccent : SpeakerDisc.color(row.assignment, colors)).opacity(0.16), in: .rect(cornerRadius: 12))
                     .accessibilityLabel("\(row.speakerLabel): \(row.text)")
