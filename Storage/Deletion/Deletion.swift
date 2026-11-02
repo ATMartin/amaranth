@@ -44,6 +44,9 @@ extension MeetingStore {
         try checkpointAndTruncateWAL()
     }
 
+    /// T96: drops the analysis copies after the audio was trimmed (they hold the whole meeting; reprocessing remakes them).
+    public func removeAudioDerivatives(_ id: MeetingID) { Self.removeAudioDerivatives(in: workDirectory(id)) }
+
     /// Removes `prepare-*` stage folders (16 kHz analysis audio) and any audio file left elsewhere under `dir`.
     static func removeAudioDerivatives(in dir: URL) {
         let fm = FileManager.default

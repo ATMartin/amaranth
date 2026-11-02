@@ -106,7 +106,7 @@ extension MeetingStore {
                            [.text(e.id.rawValue), .text(e.meetingID.rawValue), .int(Int64(e.sequence)), .text(e.conflict.rawValue),
                             .blob(try ContractCoding.encode(e))])
                 switch e.operation {   // search reflects corrections and speaker names at once, before reconciliation runs
-                case .correctText, .renameSpeaker: try Self.reindex(db, e.meetingID)
+                case .correctText, .deleteText, .trimTranscript, .renameSpeaker: try Self.reindex(db, e.meetingID)
                 default: break
                 }
             }

@@ -158,4 +158,19 @@ struct ReconcilerTests {
         #expect(third.editsNeedingReview.allSatisfy { $0.conflict == .needsReview })
         #expect(third.revision.speakers.contains { $0.displayName == "Dana" }, "unaffected edits still apply")
     }
+
+    /// T96: line deletions locate by word like corrections; trims are time-based and always apply.
+    @Test func deletionsAndTrimsReapplyAfterReprocessing() throws {
+        let asr = Build.asr([("hello", 1.0, 1.4, .systemOutput), ("there", 1.5, 1.9, .systemOutput), ("bye", 9.0, 9.2, .systemOutput)])
+        let ws = asr.allWords
+        let del = UserEdit(meetingID: asr.meetingID, baseRevisionID: asr.id, sequence: 1, createdAt: Date(),
+                           operation: .deleteText(WordRange(revisionID: asr.id, first: ws[0].id, last: ws[1].id)))
+        let trim = UserEdit(meetingID: asr.meetingID, baseRevisionID: asr.id, sequence: 2, createdAt: Date(),
+                            operation: .trimTranscript(start: nil, end: .seconds(5)))
+        let gone = UserEdit(meetingID: asr.meetingID, baseRevisionID: asr.id, sequence: 3, createdAt: Date(),
+                            operation: .deleteText(WordRange(revisionID: asr.id, first: WordID("missing"), last: WordID("missing"))))
+        let r = try MeetingReconciler().combine(asr, diarization: [], sourceMap: map, edits: [del, trim, gone])
+        #expect(r.editsNeedingReview.map(\.id) == [gone.id])
+        #expect(r.revision.applyingTextEdits([del, trim]).allWords.isEmpty)
+    }
 }

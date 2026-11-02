@@ -16,6 +16,7 @@ struct TranscriptPane: View {
     @State private var renaming: Speaker?
     @State private var newName = ""
     @State private var selectedRow: String?
+    @State private var trimming: TrimRequest?
     @Environment(\.showDetails) private var showDetails
 
     var speakers: [Speaker] { detail.displayTranscript?.speakers ?? [] }
@@ -92,6 +93,13 @@ struct TranscriptPane: View {
                 apply { try $0.correct(row, text: correction) }
             }
         }
+        .confirmationDialog(trimming.map { TranscriptTrim.title($0.kind, at: $0.row.start) } ?? "", isPresented: Binding(
+            get: { trimming != nil }, set: { if !$0 { trimming = nil } }), titleVisibility: .visible, presenting: trimming) { t in
+            Button(TranscriptTrim.confirmLabel(t.kind), role: .destructive) { trim(t) }
+            Button("Cancel", role: .cancel) {}
+        } message: { t in
+            Text(TranscriptTrim.message(t.kind, at: t.row, audioPresent: detail.meeting.audio == .present))
+        }
         .sheet(item: $renaming) { s in
             // T60: the meeting's people as one-click names; choosing one saves the same edit as typing it.
             SpeakerRenameSheet(speaker: s, text: $newName, suggestions: SpeakerMenu.renameSuggestions(detail.meeting.people, for: s)) {
@@ -106,7 +114,25 @@ struct TranscriptPane: View {
             Menu("Assign to Speaker") { assignItems(row) }
             Button("Mark Speaker as Uncertain") { apply { try $0.markUncertain(row) } }
             if detail.playbackUnavailableReason == nil { Button("Play from Here") { playback.play(from: row.start.seconds) } }
+            // T96: delete lines and trim the meeting from the transcript.
+            Divider()
+            Button("Delete Line") { apply { try $0.delete(row) } }
+            Button("Start from Here…") { trimming = TrimRequest(kind: .start, row: row) }
+            Button("End Here…") { trimming = TrimRequest(kind: .end, row: row) }
         }
+    }
+
+    struct TrimRequest: Identifiable {
+        let kind: TranscriptTrim.Kind
+        let row: TranscriptRow
+        var id: String { "\(kind)/\(row.id)" }
+    }
+
+    func trim(_ t: TrimRequest) {
+        guard let tr = detail.transcript else { return }
+        let composer = EditComposer(meetingID: detail.meeting.id, revision: tr, existing: detail.edits)
+        let edit = try? (t.kind == .start ? composer.start(from: t.row) : composer.end(at: t.row))
+        if let edit { library.trim(edit) }
     }
 
     @ViewBuilder func assignItems(_ row: TranscriptRow) -> some View {

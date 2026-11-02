@@ -35,7 +35,7 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
+    "milestone_order": "T96 (delete lines, start/end here; user request 2026-11-02, before any more milestones) → Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md",
@@ -2928,6 +2928,35 @@
         "Validator PASS (or PASS WITH FIXES with must-fixes applied)."
       ],
       "fallback": "None."
+    },
+    {
+      "id": "T96",
+      "title": "Delete transcript lines; Start from Here… / End Here…",
+      "milestone": "Fixes",
+      "status": "done (2026-11-02)",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI + Storage",
+      "module_scope": [
+        "Domain/",
+        "Presentation/",
+        "Capture/Recorder/CaptureTrim.swift",
+        "Storage/",
+        "App/Transcript/",
+        "App/Library/",
+        "Tests/"
+      ],
+      "context": "User request 2026-11-02: a meeting kept recording while the user talked to their pets after it ended. Manage a meeting's content from the transcript: delete single lines (nothing else changes), and mark a new start or end, which deletes the transcript before/after the chosen line and the audio before/after its time (if audio is still there). Notes are left as they are; the user regenerates them by hand.",
+      "deliverables": [
+        "EditOperation.deleteText(WordRange) and .trimTranscript(start:end:), stored like other user edits; applyingTextEdits (was applyingTextCorrections) hides deleted lines and everything outside the kept window, so the transcript pane, search, exports, Ask and notes generation all follow. The machine revision keeps the words, as with corrections. Trims are time-based, so they survive reprocessing; deletions rebase by word like corrections.",
+        "Transcript row menu: Delete Line (immediate), Start from Here…, End Here… (confirmation naming the time, “cannot be undone”, notes unchanged).",
+        "CaptureTrim.planHead + trimStored: deletes audio segment rows, files and journal lines before the start / from the end (whole 2 s segments, so at most one extra segment stays), shortens the duration for End Here, removes the 16 kHz analysis copies. Refused while transcription or speaker work for the meeting is queued or running."
+      ],
+      "acceptance": [
+        "TranscriptTrimTests, CaptureTrimTests (head plan, trimStored), ReconcilerTests (deletions and trims re-apply); full check.sh passes; checklist 86 for the hands-on run."
+      ],
+      "fallback": "None needed.",
+      "review_timestamps": []
     }
   ]
 }

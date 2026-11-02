@@ -142,9 +142,11 @@ public struct MeetingReconciler: Reconciler {
                 for i in idx { words[i].speaker = assignment; words[i].flags.remove(.uncertainSpeaker) }
             case .markUncertain(let range):
                 if let idx = locate(range, in: words) { for i in idx { words[i].flags.insert(.uncertainSpeaker) } } else { ok = false }
-            case .correctText(let range, _):
-                // Original ASR text is never overwritten; the correction stays an edit applied at display/export time.
+            case .correctText(let range, _), .deleteText(let range):
+                // Original ASR text is never overwritten; corrections and deletions stay edits applied at display/export time.
                 if locate(range, in: words) == nil { ok = false }
+            case .trimTranscript:
+                break   // time-based: always applies
             }
             if !ok {
                 e.conflict = .needsReview

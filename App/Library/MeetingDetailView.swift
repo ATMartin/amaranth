@@ -38,6 +38,7 @@ struct MeetingDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear { loadPlayback() }
         .onChange(of: detail.meeting.id) { _, _ in loadPlayback() }
+        .onChange(of: detail.segments.count) { _, _ in loadPlayback() }   // audio trimmed (T96)
         .onChange(of: library.focusRowID) { _, id in if id != nil { library.detailTab = .transcript } }
         .focusedSceneValue(\.exportMarkdown, detail.transcript == nil ? nil : ExportAction { [library, id = detail.meeting.id] in library.export(.markdown, id) })
     }

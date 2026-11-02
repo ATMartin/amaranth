@@ -51,6 +51,24 @@ public struct EditComposer: Sendable {
         return edit(.correctText(r, replacement: text.trimmingCharacters(in: .whitespacesAndNewlines)))
     }
 
+    /// T96: removes the row from the transcript; nothing else changes.
+    public func delete(_ row: TranscriptRow) throws -> UserEdit {
+        guard let r = row.range else { throw Error.nothingSelected }
+        return edit(.deleteText(r))
+    }
+
+    /// T96 “Start from Here…”: the transcript now starts at this row.
+    public func start(from row: TranscriptRow) throws -> UserEdit {
+        guard row.range != nil else { throw Error.nothingSelected }
+        return edit(.trimTranscript(start: row.start, end: nil))
+    }
+
+    /// T96 “End Here…”: the transcript now ends with this row (words starting after its last word go).
+    public func end(at row: TranscriptRow) throws -> UserEdit {
+        guard row.range != nil else { throw Error.nothingSelected }
+        return edit(.trimTranscript(start: nil, end: SessionTime(nanoseconds: row.end.nanoseconds + 1)))
+    }
+
     public func markUncertain(_ row: TranscriptRow) throws -> UserEdit {
         guard let r = row.range else { throw Error.nothingSelected }
         return edit(.markUncertain(r))

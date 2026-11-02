@@ -60,6 +60,56 @@ public enum CaptureTrim {
         return out
     }
 
+    /// T96 “Start from Here…”: segments ending at or before `start` go (the one straddling it stays, so at most one
+    /// segment of earlier audio remains); events ending by then go and events straddling it are clipped to start there.
+    /// Times are not shifted and the duration stays. Nil when nothing would change.
+    public static func planHead(segments: [AudioSegmentRecord], events: [CaptureEvent], duration: SessionDuration, start: SessionTime) -> Plan? {
+        let keep = segments.filter { $0.interval.end > start }, drop = segments.filter { $0.interval.end <= start }
+        let dropEvents = events.filter { $0.interval.end <= start }
+        guard !drop.isEmpty || !dropEvents.isEmpty else { return nil }
+        let kept = events.filter { $0.interval.end > start }.map { e -> CaptureEvent in
+            guard e.interval.start < start else { return e }
+            var c = e
+            c.interval = SessionInterval(unchecked: start, e.interval.end)
+            return c
+        }
+        let removed = drop.map(\.interval.duration.seconds).reduce(0, +)
+        return Plan(keep: keep, drop: drop, dropEvents: dropEvents, keptEvents: kept, duration: duration, removedSeconds: removed)
+    }
+
+    /// T96: deletes a finished meeting's audio before `start` and/or from `end` on (rows, files, journal lines), plus
+    /// the 16 kHz analysis copies, which hold the whole meeting. Returns the seconds of audio removed (0 when the audio
+    /// was already deleted or nothing lies outside). The caller makes sure no recording or audio job is using it.
+    @discardableResult
+    public static func trimStored(_ id: MeetingID, store: MeetingStore, start: SessionTime?, end: SessionTime?) throws -> Double {
+        guard var meeting = try store.meeting(id), meeting.audio == .present else { return 0 }
+        var segments = try store.segments(id), events = try store.events(id)
+        let directory = store.meetingDirectory(id)
+        var removed = 0.0
+        var plans: [Plan] = []
+        if let start, let p = planHead(segments: segments, events: events, duration: meeting.duration, start: start) {
+            plans.append(p); segments = p.keep; events = p.keptEvents
+        }
+        if let end, let p = plan(segments: segments, events: events, duration: meeting.duration, end: end) {
+            plans.append(p); segments = p.keep; events = p.keptEvents
+        }
+        guard !plans.isEmpty else { return 0 }
+        let original = Dictionary(try store.events(id).map { ($0.id, $0.interval) }, uniquingKeysWith: { a, _ in a })
+        for p in plans {
+            var state = meeting.captureState
+            if state == .capturedWithGaps, !p.keptEvents.contains(where: \.isMissingAudio) { state = .captured }
+            let changed = p.keptEvents.filter { k in original[k.id] != nil && original[k.id] != k.interval }
+            try store.trimCapture(id, removingSegments: p.drop.map(\.id), events: p.dropEvents.map(\.id), replacingEvents: changed,
+                                  duration: p.duration, captureState: state)
+            for s in p.drop { try? FileManager.default.removeItem(at: directory.appending(path: s.relativePath)) }
+            try rewriteJournal(in: directory, dropping: Set(p.drop.map(\.relativePath)), events: Set(p.dropEvents.map(\.id)))
+            meeting.captureState = state; meeting.duration = p.duration
+            removed += p.removedSeconds
+        }
+        store.removeAudioDerivatives(id)
+        return removed
+    }
+
     /// Drops the tail's segment and event lines; keeps every other line byte for byte (including any it can't read).
     static func rewriteJournal(in directory: URL, dropping paths: Set<String>, events: Set<CaptureEventID>) throws {
         let url = directory.appending(path: "journal.jsonl")

@@ -80,7 +80,7 @@ public struct MeetingDetail: Sendable {
         let edits = try store.edits(id)
         // Until a final transcript exists, show the live provisional one (labelled as such in the UI).
         let transcript = try (m.currentTranscriptRevisionID ?? m.provisionalTranscriptRevisionID).flatMap { try store.transcriptRevision($0) }
-        let display = transcript?.applyingTextCorrections(edits)
+        let display = transcript?.applyingTextEdits(edits)
         let summary = try store.currentSummary(id), notes = try store.currentNotesDocument(id), pending = try store.pendingNotes(id)
         var notesSummary = summary
         if pending != nil, let based = notes?.basedOnSummaryRevisionID, var older = try store.summaryRevision(based) {

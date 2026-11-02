@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import Domain
+import Capture
 import Storage
 import ProcessingCore
 import Presentation
@@ -386,9 +387,30 @@ final class LibraryModel {
         let scheduler = processing?.scheduler
         perform {
             try store.appendEdit(edit)
-            if case .correctText = edit.operation { return }   // text corrections are applied at display time
+            switch edit.operation {   // text corrections, deletions and trims are applied at display time
+            case .correctText, .deleteText, .trimTranscript: return
+            default: break
+            }
             try scheduler?.enqueueReconcile(edit.meetingID)
         }
+    }
+
+    /// T96 “Start from Here…” / “End Here…”: hides the transcript outside the kept part, then deletes the audio there
+    /// (if any is left). Refused while transcription or speaker work still reads the audio.
+    func trim(_ edit: UserEdit) {
+        guard let store, case .trimTranscript(let start, let end) = edit.operation else { return }
+        let id = edit.meetingID
+        perform {
+            let busy = try store.jobs(meeting: id).contains { !$0.state.isTerminal && [.prepare, .transcribe, .diarize, .live].contains($0.key.stage) }
+            guard !busy else { throw TrimError.processing }
+            try store.appendEdit(edit)
+            try CaptureTrim.trimStored(id, store: store, start: start, end: end)
+        }
+    }
+
+    enum TrimError: LocalizedError {
+        case processing
+        var errorDescription: String? { "This meeting is still being transcribed. Try again when processing has finished." }
     }
 
     func regenerateNotes(_ id: MeetingID) {

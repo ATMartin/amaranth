@@ -85,4 +85,46 @@ struct CaptureTrimTests {
         _ = try SegmentRecovery.recover(meetingID: r.meetingID, directory: r.directory, store: fresh)
         #expect(try fresh.segments(r.meetingID).map(\.id) == out.segments.map(\.id))
     }
+
+    /// T96: “Start from Here…” keeps the segment holding the cut and every later one; times and duration stay.
+    @Test func headPlanDropsOnlySegmentsEndingBeforeTheStart() throws {
+        let m = MeetingID("t"), e = EpochID("e")
+        let segments = (0..<10).map { i in
+            AudioSegmentRecord(id: AudioSegmentID("s\(i)"), meetingID: m, source: .microphone, epochID: e, sequence: Int64(i), format: Self.fmt,
+                               firstFrameInEpoch: Int64(i) * 32_000, frameCount: 32_000, interval: .seconds(Double(i) * 2, Double(i + 1) * 2),
+                               relativePath: "audio/mic/\(i).caf", sha256: "", state: .committed)
+        }
+        let early = CaptureEvent(meetingID: m, source: nil, interval: .seconds(1, 2), kind: .pause, reasonCode: "user", recoverable: true)
+        let across = CaptureEvent(meetingID: m, source: .microphone, interval: .seconds(4, 8), kind: .gap, reasonCode: "x", recoverable: true)
+        let p = try #require(CaptureTrim.planHead(segments: segments, events: [early, across], duration: .seconds(20), start: .seconds(5)))
+        #expect(p.drop.map(\.sequence) == [0, 1] && p.keep.first?.sequence == 2, "the segment holding 5 s (4–6 s) is kept whole")
+        #expect(p.duration == .seconds(20) && p.removedSeconds == 4)
+        #expect(p.dropEvents == [early] && p.keptEvents.map(\.interval) == [.seconds(5, 8)])
+        #expect(CaptureTrim.planHead(segments: segments, events: [], duration: .seconds(20), start: .seconds(1)) == nil)
+    }
+
+    @Test func trimStoredDeletesBothEndsAndTheAnalysisCopies() async throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "amr-trim-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = try MeetingStore(root: root)
+        let r = try await record(seconds: 8.5, root: root, store: store)
+        try #require(r.segments.count >= 4)
+        let prepared = store.workDirectory(r.meetingID).appending(path: "prepare-1")
+        try FileManager.default.createDirectory(at: prepared, withIntermediateDirectories: true)
+        try Data([1]).write(to: prepared.appending(path: "mic.wav"))
+        let start = r.segments[1].interval.start + SessionDuration.seconds(0.5), end = r.segments[2].interval.end - SessionDuration.seconds(0.5)
+        let removed = try CaptureTrim.trimStored(r.meetingID, store: store, start: start, end: end)
+        let kept = try store.segments(r.meetingID)
+        #expect(kept.map(\.id) == [r.segments[1].id, r.segments[2].id])
+        #expect(removed > 0)
+        for s in r.segments where !kept.contains(where: { $0.id == s.id }) {
+            #expect(!FileManager.default.fileExists(atPath: r.directory.appending(path: s.relativePath).path))
+        }
+        for s in kept { #expect(FileManager.default.fileExists(atPath: r.directory.appending(path: s.relativePath).path)) }
+        #expect(!FileManager.default.fileExists(atPath: prepared.path), "16 kHz copies hold the whole meeting")
+        #expect(try store.meeting(r.meetingID)?.duration == kept.last.map { SessionDuration(nanoseconds: $0.interval.end.nanoseconds) })
+        // Audio already deleted: nothing to do.
+        try store.deleteAudio(r.meetingID)
+        #expect(try CaptureTrim.trimStored(r.meetingID, store: store, start: start, end: nil) == 0)
+    }
 }

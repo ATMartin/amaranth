@@ -223,22 +223,68 @@ public struct TranscriptRevision: Hashable, Sendable, Codable, Identifiable {
 
 extension TranscriptRevision {
     /// The revision as the user sees it: `correctText` edits applied (the replacement goes into the first word of the
-    /// range, the range's other words become empty). Word IDs are kept, so evidence and later edits still resolve; the
-    /// stored machine revision is never modified. Edits that no longer locate (needs review / discarded) are skipped.
-    public func applyingTextCorrections(_ edits: [UserEdit]) -> TranscriptRevision {
-        let corrections = edits.filter { e in
-            if case .correctText = e.operation { e.conflict == .applied } else { false }
+    /// range, the range's other words become empty), `deleteText` ranges removed, and words and coverage outside the
+    /// `trimTranscript` window removed (T96; segments left empty go too). Word IDs are kept, so evidence and later edits
+    /// still resolve; the stored machine revision is never modified. Edits that no longer locate (needs review /
+    /// discarded) are skipped.
+    public func applyingTextEdits(_ edits: [UserEdit]) -> TranscriptRevision {
+        let applied = edits.filter { e in
+            guard e.conflict == .applied else { return false }
+            switch e.operation {
+            case .correctText, .deleteText, .trimTranscript: return true
+            default: return false
+            }
         }.sorted { $0.sequence < $1.sequence }
-        guard !corrections.isEmpty else { return self }
+        guard !applied.isEmpty else { return self }
         var out = self
         var position: [WordID: (Int, Int)] = [:]
         for (si, seg) in out.segments.enumerated() { for (wi, w) in seg.words.enumerated() { position[w.id] = (si, wi) } }
-        for e in corrections {
-            guard case .correctText(let range, let replacement) = e.operation,
-                  let (sa, a) = position[range.first], let (sb, b) = position[range.last], sa == sb, a <= b else { continue }
-            out.segments[sa].words[a].text = replacement
-            if b > a { for i in (a + 1)...b { out.segments[sa].words[i].text = "" } }
+        var deleted = Set<WordID>()
+        var window = KeptWindow()
+        for e in applied {
+            switch e.operation {
+            case .correctText(let range, let replacement):
+                guard let (sa, a) = position[range.first], let (sb, b) = position[range.last], sa == sb, a <= b else { continue }
+                out.segments[sa].words[a].text = replacement
+                if b > a { for i in (a + 1)...b { out.segments[sa].words[i].text = "" } }
+            case .deleteText(let range):
+                guard let (sa, a) = position[range.first], let (sb, b) = position[range.last], sa == sb, a <= b else { continue }
+                for i in a...b { deleted.insert(out.segments[sa].words[i].id) }
+            case .trimTranscript(let start, let end):
+                window.narrow(start: start, end: end)
+            default:
+                continue
+            }
+        }
+        guard !deleted.isEmpty || window.isActive else { return out }
+        for si in out.segments.indices {
+            out.segments[si].words.removeAll { deleted.contains($0.id) || !window.contains($0.interval.start) }
+        }
+        out.segments.removeAll { $0.words.isEmpty }
+        if window.isActive {
+            out.coverage = out.coverage.compactMap { c in
+                let start = max(c.interval.start, window.start ?? c.interval.start)
+                let end = min(c.interval.end, window.end ?? c.interval.end)
+                guard start < end else { return nil }
+                var clipped = c
+                clipped.interval = SessionInterval(unchecked: start, end)
+                return clipped
+            }
         }
         return out
+    }
+
+    /// The part of the meeting the user kept with “Start from Here…” / “End Here…”: later marks only ever narrow it.
+    public struct KeptWindow: Hashable, Sendable {
+        public var start: SessionTime?
+        public var end: SessionTime?
+        public init(start: SessionTime? = nil, end: SessionTime? = nil) { self.start = start; self.end = end }
+        public var isActive: Bool { start != nil || end != nil }
+        /// A word belongs to the window when it starts inside it.
+        public func contains(_ t: SessionTime) -> Bool { (start.map { t >= $0 } ?? true) && (end.map { t < $0 } ?? true) }
+        mutating func narrow(start s: SessionTime?, end e: SessionTime?) {
+            if let s { start = max(start ?? s, s) }
+            if let e { end = min(end ?? e, e) }
+        }
     }
 }

@@ -59,6 +59,12 @@ public enum EditOperation: Hashable, Sendable, Codable {
     case reassign(WordRange, to: SpeakerTarget)
     case markUncertain(WordRange)
     case correctText(WordRange, replacement: String)
+    /// Removes a transcript line from what the user sees, searches, exports and generates notes from (T96). The machine
+    /// revision keeps the words, like a correction keeps the original; the audio is untouched.
+    case deleteText(WordRange)
+    /// Keeps only the transcript from `start` and/or before `end` (T96: “Start from Here…” / “End Here…”). Time-based, so
+    /// it still applies after reprocessing. The matching audio is deleted separately (CaptureTrim).
+    case trimTranscript(start: SessionTime?, end: SessionTime?)
 }
 
 public enum EditConflictState: String, Hashable, Sendable, Codable {

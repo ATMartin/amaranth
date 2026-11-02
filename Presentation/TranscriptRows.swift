@@ -54,7 +54,7 @@ public enum TranscriptRows {
     /// Rows in time order from `revision` with text corrections from `edits` applied; gaps ≥ `minGap` seconds appear
     /// as their own rows so missing or untranscribed audio is never silently omitted.
     public static func build(_ revision: TranscriptRevision, edits: [UserEdit], minGap: Double = 1) -> [TranscriptRow] {
-        let corrected = revision.applyingTextCorrections(edits)
+        let corrected = revision.applyingTextEdits(edits)
         let correctedIDs = Set(edits.compactMap { e -> WordID? in
             if case .correctText(let r, _) = e.operation, e.conflict == .applied { r.first } else { nil }
         })

@@ -406,7 +406,7 @@ public final class JobScheduler: @unchecked Sendable {
             let snapshot = try store.currentNotesDocument(m).map { d -> NotesDocumentRevision in var s = d; s.blocks = d.userBlocks; return s }
             let edits = try store.edits(m)
             // Notes read the transcript as the user sees it (text corrections applied).
-            input = .notes(NotesInput(meetingID: m, transcript: tr.applyingTextCorrections(edits), editSequence: edits.map(\.sequence).max() ?? 0, notes: snapshot))
+            input = .notes(NotesInput(meetingID: m, transcript: tr.applyingTextEdits(edits), editSequence: edits.map(\.sequence).max() ?? 0, notes: snapshot))
         case .live:
             throw JobFailure.permanent("stage \(job.key.stage) not available in this milestone")
         }

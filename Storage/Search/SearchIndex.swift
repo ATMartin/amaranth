@@ -92,7 +92,7 @@ extension MeetingStore {
            let blob = try db.run("SELECT json FROM transcript_revisions WHERE id=?", [.text(tid.rawValue)]).first?["json"]?.blob {
             let edits = try db.run("SELECT json FROM user_edits WHERE meeting_id=? ORDER BY sequence", [.text(meeting.rawValue)])
                 .compactMap { $0["json"]?.blob }.map { try ContractCoding.decode(UserEdit.self, from: $0) }
-            let tr = try ContractCoding.decode(TranscriptRevision.self, from: blob).applyingTextCorrections(edits)
+            let tr = try ContractCoding.decode(TranscriptRevision.self, from: blob).applyingTextEdits(edits)
             let names = speakerNames(tr.speakers, edits)
             for sp in tr.speakers { if let name = names[sp.id], name != sp.label { try insert(.speaker, sp.id.rawValue, nil, name) } }
             for seg in tr.segments {
