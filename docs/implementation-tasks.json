@@ -35,7 +35,7 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), Q (local updates, T70–T73: scripts/install-local.sh covers one Mac), T15.",
+    "milestone_order": "Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md",
@@ -60,7 +60,7 @@
     "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
     "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them. Parked as Later 2026-10-31 (kept on purpose for future integrations); open questions stay open",
     "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit",
-    "Q": "Local updates (“Check for Updates…” from a local drop folder): T70–T73. Planned 2026-10-27 at the user's request; placed after P (“for later”), can move earlier. User decisions 2026-10-27: Release and Debug builds are both published, Debug offered only with a Settings opt-in; check at launch and show a note when a newer build exists (never install on its own); no rollbacks (an older or equal build is never offered); the script part ships now as T69. Local only: a free personal team can't notarize, so a web feed / Sparkle stays out of scope (keep discovery behind an update-source interface so one can be added later).. Parked as Later 2026-10-31 (install-local.sh covers one Mac); tasks kept as written",
+    "Q": "Updates (“Check for Updates…” from GitHub Releases, plus a local folder): T70–T73. Planned 2026-10-27 as local-only; parked 2026-10-31; un-parked and extended 2026-11-02 (user: stop copying DMGs between Macs). User decisions 2026-10-27 still hold: Release and Debug builds are both published, Debug offered only with a Settings opt-in; a quiet note when a newer build exists (never install on its own); no rollbacks. 2026-11-02: remote source = GitHub Releases on the public repo ATMartin/amaranth (zipped app + manifest.json per release; Debug as prerelease; downloads need no token, so builds are public); publishing happens only when the user asks (scripts/publish.sh; install-local.sh stays local); checks at launch and from the menu only, no periodic timer. Not notarized (free personal team): trust rests on the same bundle ID + team ID codesign check. The update check is the app's only network call besides model downloads; Settings → Updates → Off disables it, and F's offline qualification must account for it.",
     "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
     "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit.",
     "R": "One notes field per meeting (personal/private notes removed; editable notes; typing during the meeting feeds generation): T89–T95. Spec docs/decisions/0008 accepted 2026-10-30 with all recommendations (user lines always survive, Regenerate asks and keeps history, snapshot + 'Replace?' while generating, inline source chips, rich-text editor, typed-at times). Never-included scratchpads are deleted by the v6 migration (user, 2026-10-31). Placed next, before L; L's tasks are revised in T94."
@@ -2239,9 +2239,9 @@
     },
     {
       "id": "T70",
-      "title": "Build numbers and the local publish step",
+      "title": "Build numbers and the publish step (GitHub Releases)",
       "milestone": "Q",
-      "status": "parked (Later, user decision 2026-10-31)",
+      "status": "planned (un-parked 2026-11-02, user decision)",
       "optional": false,
       "depends_on": [
         "T69"
@@ -2252,14 +2252,16 @@
         "Config/",
         "scripts/"
       ],
-      "context": "Every build is 0.1.0 (1) today, so “newer” is undefined. The app must only ever see complete builds: xcodebuild writes into the bundle in place.",
+      "context": "Every build is 0.1.0 (1) today, so “newer” is undefined. The app must only ever see complete builds: xcodebuild writes into the bundle in place, and a release's assets appear one by one.",
       "deliverables": [
         "CFBundleVersion = git commit count (one number line shared by Release and Debug); Info.plist keys for the short commit, dirty flag, build date and channel (release/debug), for the app and the XPC worker.",
-        "scripts/publish-local.sh [--debug]: build, verify, then write Amaranth.app + manifest.json (version, build, commit, dirty, channel, date, sha256 of the zipped bundle or a bundle digest, database schema version, commit subjects since the previous published build) into a staging folder and rename it into the drop folder (default dist/updates/<channel>/<build>/), keeping the last few builds per channel.",
-        "install-local.sh reuses the same build stamping."
+        "scripts/publish.sh [--debug] [--local-only]: refuse a dirty tree and a HEAD not on origin (never pushes itself); build, verify (as build-release.sh), zip with ditto -c -k --keepParent, write manifest.json (version, build, commit, channel, date, sha256 of the zip, team ID, minimum macOS, database schema version, commit subjects since the previous published build of that channel).",
+        "Upload with gh release create: tag build-<N> (Release) or build-<N>-debug (prerelease), assets uploaded zip first, manifest.json last (the app ignores a release without a manifest); refuse a tag that already exists.",
+        "--local-only writes the same zip + manifest into dist/updates/<channel>/<build>/ through a staging rename instead (folder source, tests).",
+        "install-local.sh and build-release.sh reuse the same build stamping."
       ],
       "acceptance": [
-        "Two commits give increasing build numbers; a half-written folder is never visible under the drop folder; the manifest matches the bundle."
+        "Two commits give increasing build numbers; a release without its manifest is never offered; the manifest matches the zip; a dirty tree or unpushed HEAD is refused; one real Release publish to GitHub (with the user's go-ahead)."
       ],
       "fallback": "Timestamp build numbers if commit count proves awkward (rebases).",
       "review_timestamps": []
@@ -2268,7 +2270,7 @@
       "id": "T71",
       "title": "Check for Updates… (menu, launch check, Settings → Updates)",
       "milestone": "Q",
-      "status": "parked (Later, user decision 2026-10-31)",
+      "status": "planned (un-parked 2026-11-02, user decision)",
       "optional": false,
       "depends_on": [
         "T70"
@@ -2280,17 +2282,16 @@
         "App/Settings/",
         "Tests/"
       ],
-      "context": "User decisions 2026-10-27: check at launch and show a note when newer; Debug builds only with an opt-in; no rollbacks.",
+      "context": "User decisions 2026-10-27/2026-11-02: check at launch and from the menu only (no timer); show a note when newer; Debug builds only with an opt-in; no rollbacks. Remote source is GitHub Releases on ATMartin/amaranth (public, unauthenticated API, 60 requests/hour).",
       "deliverables": [
-        "Pure UpdateCatalog in Presentation: given the running build and the drop folder's manifests, pick the newest build above the running one (Release only unless the Debug opt-in is on; same build number prefers Release; never lower or equal).",
-        "Amaranth menu → Check for Updates…: dialog with current vs available build, channel, commit and the commit subjects; Install and Relaunch / Later; “You're up to date” otherwise.",
-        "Launch check: a quiet note (banner or toolbar badge, not a modal) when a newer build exists; nothing while recording.",
-        "Verification before offering: manifest digest, codesign strict, same bundle ID and team ID, arm64, LSMinimumSystemVersion.",
-        "Settings → Updates: source Off / Local folder (folder picker, stored as a bookmark), Include Debug builds (off), Check at launch (on).",
-        "Update source behind a protocol so a web feed can be added later."
+        "Pure UpdateCatalog in Presentation: given the running build and the source's manifests, pick the newest build above the running one (Release only unless the Debug opt-in is on; same build number prefers Release; never lower or equal; skip malformed manifests and other team IDs).",
+        "UpdateSource protocol with GitHubReleasesSource (GET /repos/ATMartin/amaranth/releases, read each release's manifest.json asset; timeouts, offline and rate-limit errors shown plainly, never retried in a loop) and LocalFolderSource (dist/updates layout).",
+        "Amaranth menu → Check for Updates…: dialog with current vs available build, channel, commit and the commit subjects; Install and Relaunch / Later; “You're up to date” or the error otherwise.",
+        "Launch check: a quiet note (banner or toolbar badge, not a modal) when a newer build exists; nothing while recording; no periodic checks.",
+        "Settings → Updates: source GitHub (default) / Local folder (folder picker, stored as a bookmark) / Off; Include Debug builds (off); Check at launch (on)."
       ],
       "acceptance": [
-        "UpdateCatalog table tests (channels, ties, older builds, dirty builds, bad manifests); ui-render of the dialog, the launch note and Settings at 900/1100 pt."
+        "UpdateCatalog table tests (channels, ties, older builds, other team, bad or missing manifests); GitHubReleasesSource tests against recorded API responses (no network in tests); ui-render of the dialog, the launch note and Settings at 900/1100 pt."
       ],
       "fallback": "Manual check only if the launch note proves noisy.",
       "review_timestamps": []
@@ -2299,7 +2300,7 @@
       "id": "T72",
       "title": "Install and relaunch from inside the app",
       "milestone": "Q",
-      "status": "parked (Later, user decision 2026-10-31)",
+      "status": "planned (un-parked 2026-11-02, user decision)",
       "optional": false,
       "depends_on": [
         "T71"
@@ -2310,15 +2311,15 @@
         "Presentation/",
         "Tests/"
       ],
-      "context": "A running app can't cleanly replace itself: hand off to a helper that waits for the app to exit. No rollbacks (user decision); the previous bundle is deleted after a successful swap.",
+      "context": "A running app can't cleanly replace itself: hand off to a helper that waits for the app to exit. No rollbacks (user decision); the previous bundle is deleted after a successful swap. Builds are not notarized, so the downloaded bundle must pass our own checks before it replaces anything.",
       "deliverables": [
-        "Refuse while recording (with the reason); flush the scratchpad; confirm that background processing resumes after relaunch rather than restarting.",
-        "Copy to a staging bundle on the same volume as the installed app, verify again, start the helper (embedded tool or /bin/sh script), quit through applicationShouldTerminate.",
-        "Helper: wait for the PID to exit, swap, restore the old bundle on failure, relaunch with --updated-from <build>; the app shows “Updated to build N” once.",
+        "Refuse while recording (with the reason); flush the notes editor; confirm that background processing resumes after relaunch rather than restarting.",
+        "Download the zip (progress, cancel) into a staging folder on the same volume as the installed app; check the manifest sha256, unzip with ditto, then verify: codesign --deep --strict, same bundle ID and team ID as the running app, arm64, LSMinimumSystemVersion, build number equals the manifest's; clear the quarantine attribute only after those pass.",
+        "Start the helper (embedded /bin/sh script), quit through applicationShouldTerminate; helper waits for the PID to exit, swaps, restores the old bundle on failure, relaunches with --updated-from <build>; the app shows “Updated to build N” once.",
         "Refuse to update an app not running from /Applications (e.g. straight from DerivedData)."
       ],
       "acceptance": [
-        "Update from build N to N+1 keeps the library, the microphone/system-audio grants and in-progress processing; a failed swap leaves the old app working."
+        "Update from build N to N+1 from GitHub keeps the library, the microphone/system-audio grants and in-progress processing; a corrupted download, a wrong-team build and a failed swap each leave the old app working."
       ],
       "fallback": "Hand off to install-local.sh's install half if an embedded helper is awkward.",
       "review_timestamps": []
@@ -2327,7 +2328,7 @@
       "id": "T73",
       "title": "Milestone Q validation",
       "milestone": "Q",
-      "status": "parked (Later, user decision 2026-10-31)",
+      "status": "planned (un-parked 2026-11-02, user decision)",
       "optional": false,
       "depends_on": [
         "T72"
@@ -2339,7 +2340,7 @@
       ],
       "context": "Sonnet validator per coordination.milestone_validation.",
       "deliverables": [
-        "End-to-end two-build run (Release, then Debug with the opt-in); refusal while recording; rejection of a half-written build, a build from another team and an older build; launch note; checklist item for the hands-on run."
+        "End-to-end two-build run from GitHub Releases (Release, then Debug with the opt-in) and from a local folder; refusal while recording; rejection of a release without a manifest, a sha256 mismatch, a build from another team and an older build; launch note; offline behaviour (no network → plain message, app unaffected); checklist item for the hands-on run on the second Mac."
       ],
       "acceptance": [
         "Validator verdict with no must-fix items."
