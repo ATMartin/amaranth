@@ -1,6 +1,6 @@
 # 0009 — Meeting history for external AI tools and vaults
 
-Date: 2026-11-02 · Status: **Proposed implementation plan** (requested by the user; no implementation claimed).
+Date: 2026-11-02 · Status: **Accepted 2026-11-03 for Milestone S** (T97–T100 being implemented); Milestones T and U remain proposed.
 Milestones **S–U**, tasks **T97–T108**, in `docs/implementation-tasks.json`.
 
 ## Recommendation
@@ -200,6 +200,9 @@ before the MCP packaging/security work; U can be deferred without reducing live 
 Suggested placement: after the already requested Q update work, if external access is the next priority. This is a
 recommendation, not a change to the existing approved T96 → Q → T21 → feedback → F order. Scheduling S–U against
 T21/F remains a product choice. No fixed engineering dates until T97/T101 establish contract and broker feasibility.
+
+**Placement decided 2026-11-03:** the user picked up Milestone S next, before T21. T98's scale gate is measured on a
+200-meeting synthetic library; the 1,000-meeting figure is reported as not measured (user decision). T and U stay unplaced.
 
 Each milestone ends with an independent validator and a qualification report using the existing
 `docs/qualification/*-validation-brief.md` format. Tests use synthetic/isolated libraries; no publishing real meeting

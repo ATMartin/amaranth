@@ -35,7 +35,7 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "T96 (delete lines, start/end here; user request 2026-11-02, before any more milestones) → Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
+    "milestone_order": "S (shared read model and portable export, T97–T100; spec 0009 accepted 2026-11-03, user picked S up ahead of T21) → T21 (trimmed) → Feedback round → F (trimmed). T and U (spec 0009) stay proposed and unplaced. Earlier, superseded: T96 (delete lines, start/end here; user request 2026-11-02, before any more milestones) → Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md",
@@ -65,7 +65,7 @@
     "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
     "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit.",
     "R": "One notes field per meeting (personal/private notes removed; editable notes; typing during the meeting feeds generation): T89–T95. Spec docs/decisions/0008 accepted 2026-10-30 with all recommendations (user lines always survive, Regenerate asks and keeps history, snapshot + 'Replace?' while generating, inline source chips, rich-text editor, typed-at times). Never-included scratchpads are deleted by the v6 migration (user, 2026-10-31). Placed next, before L; L's tasks are revised in T94.",
-    "S": "Proposed: shared external read model, citations, bounded retrieval and portable bulk export (T97–T100). Spec docs/decisions/0009-external-meeting-access-spec.md; not yet inserted into the approved milestone order.",
+    "S": "Shared external read model, citations, bounded retrieval and portable bulk export (T97–T100). Spec docs/decisions/0009-external-meeting-access-spec.md accepted 2026-11-03; placed next, before T21 (user decision 2026-11-03). Run decisions: commit per task; T98 scale measured on a 200-meeting synthetic library (the 1,000-meeting gate is reported as not measured, user decision); T100 reads the export with a parser script plus a throwaway Obsidian vault; after validation back up the real library and install locally (no publish).",
     "T": "Proposed: read-only local MCP with app-owned broker, scoped grants and packaged client setup (T101–T104). After S; spec docs/decisions/0009-external-meeting-access-spec.md.",
     "U": "Optional proposed follow-on: one-way managed Markdown/JSON vault mirror with safe reconciliation (T105–T108). After T; spec docs/decisions/0009-external-meeting-access-spec.md."
   },
@@ -2966,7 +2966,7 @@
       "id": "T97",
       "title": "Define current meeting snapshots and durable source citations",
       "milestone": "S",
-      "status": "proposed (2026-11-02): not started",
+      "status": "accepted (2026-11-03): not started",
       "optional": false,
       "depends_on": [
         "T93",
@@ -2986,12 +2986,12 @@
       "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
       "deliverables": [
         "Introduce a versioned transport-independent external read contract and per-meeting consistent snapshot, with current metadata, displayed transcript after speaker/text edits, deleted lines and trims, current notes, source revisions and content fingerprint. Represent notes-only, processing, failed, stale and audio-deleted states explicitly.",
-        "Fingerprint all relevant changes including title, people, folder, speakers and edit operations; separate external envelope versions from amaranth-export v2. Exclude hidden revisions, raw calendar payloads, audio, work checkpoints, prompts and local paths.",
+        "Fingerprint all relevant changes including title, people, folder, speakers and edit operations; separate external envelope versions from amaranth-export v2. Exclude hidden revisions, raw calendar payloads, audio, work checkpoints, prompts and local paths. The new external schema omits original generated-summary bodies and attendee emails; evidence payloads cannot expose hidden source text. Preserve displayed stale notes after transcript trims and document that removing a topic also requires editing/regenerating notes.",
         "Implement validated amaranth://meeting source URLs and app navigation for transcript segments and notes blocks. Include revision identity and readable title/date/time references; changed/deleted sources show unavailable/changed rather than a misleading jump.",
         "Document shared bounds, errors, source types, author/evidence semantics and schema compatibility fixtures in spec 0009; wire new modules into package and app project without loading inference."
       ],
       "acceptance": [
-        "Snapshot parity fixtures cover corrected/renamed speakers, line deletion, both trims, user/generated notes, gaps, uncertain/stale notes and notes-only meetings; hidden words never appear in serialized responses.",
+        "Snapshot parity fixtures cover corrected/renamed speakers, line deletion, both trims, user/generated notes, gaps, uncertain/stale notes and notes-only meetings; hidden original transcript/summary bodies never appear through raw revisions or evidence. Separately verify displayed stale notes remain, with the redaction limit disclosed.",
         "Concurrent edits yield one consistent meeting snapshot, fingerprints change for every relevant mutation, and deleted meetings cannot be fetched.",
         "URL tests cover current transcript/user-note navigation, changed revisions, deleted sources, invalid IDs and malicious parameters; source URLs never execute commands or reveal old content."
       ],
@@ -3002,7 +3002,7 @@
       "id": "T98",
       "title": "Expose bounded filtered search, listing and source retrieval",
       "milestone": "S",
-      "status": "proposed (2026-11-02): not started",
+      "status": "accepted (2026-11-03): not started",
       "optional": false,
       "depends_on": [
         "T97",
@@ -3036,7 +3036,7 @@
       "id": "T99",
       "title": "Export selected meetings, folders or the library as portable files",
       "milestone": "S",
-      "status": "proposed (2026-11-02): not started",
+      "status": "accepted (2026-11-03): not started",
       "optional": false,
       "depends_on": [
         "T97",
@@ -3056,7 +3056,7 @@
       "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
       "deliverables": [
         "Add bulk snapshot export with selected/folder/library scope, content-level preview and destination picker. Include available notes without requiring a transcript; exclude audio.",
-        "Render safe Markdown frontmatter and optional transcript plus versioned JSON using stable UUID paths and source citations, authorship, uncertainty, staleness, gaps, fingerprints and read times. Preserve existing single-meeting export behavior and version JSON changes explicitly.",
+        "Render safe Markdown frontmatter and optional transcript plus versioned JSON using stable UUID paths and source citations, authorship, uncertainty, staleness, gaps, fingerprints and read times. Preserve existing single-meeting export behavior and version JSON changes explicitly. Use the new external schema rather than embedding JSON v2's original generated summary.",
         "Write a versioned library/meeting manifest with file hashes and per-meeting errors; stage and atomically replace files, commit the manifest last, and make incomplete runs retryable. Preserve user-modified files on retry.",
         "Explain snapshot freshness and external deletion limits, including synced folders; provide light/dark and keyboard-accessible scope, progress, cancellation and error states."
       ],
@@ -3072,7 +3072,7 @@
       "id": "T100",
       "title": "Qualify portable history and the shared retrieval contract",
       "milestone": "S",
-      "status": "proposed (2026-11-02): not started",
+      "status": "accepted (2026-11-03): not started",
       "optional": false,
       "depends_on": [
         "T98",
