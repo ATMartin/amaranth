@@ -146,7 +146,9 @@ extension UpdateModel {
         p.executableURL = URL(filePath: "/bin/sh")
         p.arguments = [helper.path, "\(ProcessInfo.processInfo.processIdentifier)", newApp.path, Self.installedURL.path, "\(build)",
                        "\(running.build)", stagingURL.path, Self.logURL.path]
-        if !environment.isEmpty { p.environment = ProcessInfo.processInfo.environment.merging(environment) { $1 } }
+        // Never inherit the helper's test hooks (a relaunched app gets the helper's environment from `open`); only a
+        // self-test passes them on purpose.
+        p.environment = ProcessInfo.processInfo.environment.filter { !$0.key.hasPrefix("AMARANTH_HELPER_") }.merging(environment) { $1 }
         p.standardInput = FileHandle.nullDevice
         p.standardOutput = FileHandle.nullDevice
         p.standardError = FileHandle.nullDevice

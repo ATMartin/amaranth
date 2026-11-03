@@ -38,3 +38,25 @@ Software Update window's buttons, exactly as a click would.
   to date — Amaranth 0.1.0 (126) Debug is the newest build." (no rollback offered).
 - The Software Update window's buttons report an empty AXDescription to System Events even with
   `.accessibilityLabel` (c126); they're clickable by position. VoiceOver reading is left to checklist 88.
+
+## 3. Refusal while the app is open, a failed swap, and a local folder (Debug 126 → Release 127)
+
+- Release 127 (612fee0) published only into a local folder (`scripts/publish.sh --local-only --dest "<scratch>/Amaranth Updates"`).
+- With the app open, the headless `update-install` self-test refuses ("quit Amaranth first") and changes nothing.
+- Failed swap on the real install: app quit, then `/Applications/Amaranth.app/Contents/MacOS/Amaranth --self-test
+  update-install --update-folder … --fail-swap` downloaded and verified 127 and started the helper with
+  `AMARANTH_HELPER_FAIL_SWAP=1`. `update.log`: "couldn't move the new build into place; restoring the previous app",
+  "previous app restored". `/Applications/Amaranth.app` was still Debug 126 and reopened with `--update-failed 127`;
+  toolbar **Update Didn't Install**; its window: "The update didn't install — Build 127 couldn't be installed, so
+  Amaranth 0.1.0 (126) Debug was kept as it was. Details are in ~/Library/Logs/Amaranth/update.log."
+- **Bug found and fixed here:** the next Install and Relaunch from that window failed the same way. `open` hands the
+  helper's environment to the relaunched app, so the test hook `AMARANTH_HELPER_FAIL_SWAP=1` reached the app and from
+  there its next helper. Fix: the helper reads and unsets its `AMARANTH_HELPER_*` variables before relaunching, and the
+  app strips them from any helper it starts unless a self-test passes them explicitly; `scripts/test-update-helper.sh`
+  now fails if the relaunched app sees them. (A user can't set these variables through the app; the risk was a
+  validation run poisoning later updates.)
+- Settings → Updates → a local folder (set through defaults with a real bookmark), app reopened with a clean
+  environment: the launch check showed **Update Available**; Check Again / Install and Relaunch from the dialog:
+  `22:17:13 update 126 → 127: installed; relaunching`, 1 s; build 127, channel release; same leaf certificate; library
+  10 meetings, schema 6; toolbar "Updated to build 127".
+- Update preferences were then deleted again (GitHub source, Debug off, no folder), i.e. the defaults.

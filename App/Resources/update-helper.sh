@@ -9,6 +9,9 @@
 PID=$1 NEW=$2 DEST=$3 BUILD=$4 FROM=$5 STAGING=$6 LOG=$7
 OPEN=${AMARANTH_HELPER_OPEN:-/usr/bin/open}
 WAIT=${AMARANTH_HELPER_WAIT:-600}
+FAIL_SWAP=${AMARANTH_HELPER_FAIL_SWAP:-0}
+# `open` hands this environment to the relaunched app, which would pass it to its next helper: drop the test hooks.
+unset AMARANTH_HELPER_OPEN AMARANTH_HELPER_WAIT AMARANTH_HELPER_FAIL_SWAP
 mkdir -p "$(dirname "$LOG")" 2>/dev/null
 exec >>"$LOG" 2>&1
 say() { echo "$(date '+%Y-%m-%d %H:%M:%S') update $FROM → $BUILD: $*"; }
@@ -38,7 +41,7 @@ if ! mv "$DEST" "$OLD"; then
   "$OPEN" "$DEST" --args --update-failed "$BUILD"
   exit 1
 fi
-if [ "${AMARANTH_HELPER_FAIL_SWAP:-0}" = 1 ] || ! mv "$NEW" "$DEST"; then
+if [ "$FAIL_SWAP" = 1 ] || ! mv "$NEW" "$DEST"; then
   say "couldn't move the new build into place; restoring the previous app"
   if [ -e "$DEST" ]; then rm -rf "$DEST"; fi
   if mv "$OLD" "$DEST"; then say "previous app restored"; else say "RESTORE FAILED: the previous app is at $OLD"; exit 2; fi
