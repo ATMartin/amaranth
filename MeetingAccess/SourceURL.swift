@@ -27,7 +27,11 @@ public struct SourceURL: Hashable, Sendable {
     }
 
     /// The URL text. Every component is from the validated character set, so nothing needs escaping.
+    /// Empty when any part isn't a valid identifier (never a URL that could break out of a Markdown link or a query).
     public var string: String {
+        guard UUID(uuidString: meetingID.rawValue) != nil,
+              [ref, word, revision].allSatisfy({ $0.map(Self.isIdentifier) ?? true }),
+              hash.map({ $0.count == 16 && $0.allSatisfy(\.isHexDigit) }) ?? true else { return "" }
         var s = "\(Self.scheme)://meeting/\(meetingID.rawValue)"
         guard let source else { return s }
         var q = ["source=\(source.rawValue)"]
@@ -88,6 +92,7 @@ public struct SourceURL: Hashable, Sendable {
         } else {
             guard url.ref != nil, url.revision != nil else { return bad("source needs ref and revision") }
             if url.source != .transcript, url.word != nil { return bad("word is for transcript sources") }
+            if url.source == .transcript, url.word == nil { return bad("transcript sources need word") }
         }
         return .success(url)
     }

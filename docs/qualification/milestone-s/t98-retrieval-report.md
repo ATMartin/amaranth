@@ -14,7 +14,7 @@ a deleted meeting, 30 filler meetings with one prompt-injection line).
 |---|---|---|
 | Lexical/name/filter/notes Recall@10 | **100%** (33/33 questions, every labeled source in the top 10; each question has one at rank 1 or 2) | ≥ 85%: **pass** |
 | Paraphrase Recall@10 | **25%** (2/8) | reported separately |
-| Citation resolution (every returned line) | **1257/1257** resolve to current content | 100%: **pass** |
+| Citation resolution (every returned line) | **1314/1314** resolve to current content (1257/1257 before the M1 fix) | 100%: **pass** |
 | Unanswerable/adversarial checks | **12/12** | all |
 
 Paraphrase misses (lexical search matches words, not meaning): p01 retreat/attendee spend vs "offsite budget per person";
@@ -61,6 +61,29 @@ Extrapolation, not a measurement: FTS cost grows with the index, so 1,000 meetin
 
 Hardware/OS: Apple M2 Max, 96 GB, macOS 27.0.1 (26A434), Swift 6.4.2, system SQLite 3.54.0; machine load average ≈ 2.5
 during the runs (the user's Release app was running).
+
+## After the validator's fixes (verdict v1, 2026-11-03)
+
+M1: search pages were ranked from a candidate pool that grew with the page number, so deep pages repeated or reordered
+passages. Every request now ranks once with fixed parameters (k = 100 passages, 1,000 FTS candidates) and pages are
+slices of that list (test: 12 meetings × 20 matching lines paged to the end, no repeats, ranks 1…n). Re-run on the same
+library (206 meetings: the six recordings from T100's capture runs were added to it); recall unchanged, citations
+1314/1314:
+
+meetings 206; peak footprint MiB: cold max 33, warm 54; store open p50 1.3 ms
+| operation | cold n | cold p50 | cold p95 | warm n | warm p50 | warm p95 |
+|---|---|---|---|---|---|---|
+| list | 25 | 5.5 | 6.3 | 25 | 3.8 | 4.2 |
+| search | 25 | 191.6 | 197.8 | 25 | 199.0 | 313.3 |
+| getMetadata | 25 | 85.3 | 88.4 | 25 | 80.7 | 82.9 |
+| getTranscript | 25 | 83.6 | 86.2 | 25 | 81.2 | 84.6 |
+| all | 100 | 84.1 | 195.5 | 100 | 81.0 | 264.8 |
+max cold 201.6 ms, max warm 316.1 ms
+
+Search p95 rose from 201 to 313 ms warm (more candidates per request), still well inside the 1 s gate. M2: list and
+metadata projections cap titles (512 characters), names (100) and lists (50); list pages shrink to fit 64 KiB; search
+lines over 1,000 characters are shortened and marked. Every operation is tested at ≤ 64 KiB with 100,000-character
+titles, 3,000 people and a 140 KB notes line.
 
 ## Behaviour covered by tests (`Tests/DataLifecycle/RetrievalTests.swift`)
 

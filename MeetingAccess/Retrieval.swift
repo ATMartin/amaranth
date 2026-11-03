@@ -76,6 +76,8 @@ public struct MeetingListing: Codable, Sendable, Equatable {
     /// present, deleted
     public var audio: String
     public var citation: String
+    /// Set when the title, a name or the people list was shortened for this listing (get_meeting/export have them whole).
+    public var shortened: Bool?
 }
 
 public struct ListMeetingsResponse: Codable, Sendable, Equatable {
@@ -125,6 +127,8 @@ public struct SearchPassage: Codable, Sendable, Equatable {
         /// This line matched the query; the others are context.
         public var matched: Bool
         public var citation: String
+        /// Set when `text` was shortened to fit the response (get_meeting returns the line in full).
+        public var shortened: Bool?
     }
 }
 
@@ -175,11 +179,22 @@ public struct MeetingMetadata: Codable, Sendable, Equatable {
     public var limitations: [String]
     public var citation: String
 
+    /// Set when the title, names or lists were shortened to keep the response within the budget.
+    public var shortened: Bool?
+
+    /// Metadata within fixed caps (`ProjectionCaps`), so the envelope always leaves room for content.
     public init(_ s: MeetingSnapshot) {
-        libraryID = s.libraryID; meetingID = s.meetingID; fingerprint = s.fingerprint; readAt = s.readAt; title = s.title; start = s.start
-        timeZone = s.timeZone; durationNs = s.durationNs; folder = s.folder; people = s.people; state = s.state; revisions = s.revisions
-        generatedNotes = s.generatedNotes; speakers = s.speakers; transcriptLineCount = s.transcript.count; notesLineCount = s.notes.count
+        var cut = false
+        libraryID = s.libraryID; meetingID = s.meetingID; fingerprint = s.fingerprint; readAt = s.readAt; start = s.start
+        title = ProjectionCaps.text(s.title, ProjectionCaps.title, &cut)
+        timeZone = s.timeZone; durationNs = s.durationNs; state = s.state; revisions = s.revisions
+        folder = s.folder.map { .init(id: $0.id, name: ProjectionCaps.text($0.name, ProjectionCaps.name, &cut)) }
+        people = ProjectionCaps.names(s.people, &cut)
+        if s.speakers.count > ProjectionCaps.listItems { cut = true }
+        speakers = s.speakers.prefix(ProjectionCaps.listItems).map { .init(id: $0.id, name: ProjectionCaps.text($0.name, ProjectionCaps.name, &cut)) }
+        generatedNotes = s.generatedNotes; transcriptLineCount = s.transcript.count; notesLineCount = s.notes.count
         gapCount = s.gaps.count; limitations = s.limitations; citation = s.citation
+        if cut { shortened = true; limitations.append(ProjectionCaps.note) }
     }
 }
 
@@ -205,6 +220,28 @@ public struct GetMeetingResponse: Codable, Sendable, Equatable {
     }
 }
 
+/// Caps for metadata in list and get responses (spec 0009 §2): a title of 100,000 characters or 3,000 attendees must not
+/// push a response past 64 KiB. Exports and snapshots keep everything.
+public enum ProjectionCaps {
+    public static let title = 512
+    public static let name = 100
+    public static let listItems = 50
+    /// Longest line text in a search passage.
+    public static let searchLine = 1_000
+    public static let note = "Some titles, names or lists are shortened here (marked shortened); export the meeting for the full text."
+
+    static func text(_ s: String, _ max: Int, _ cut: inout Bool) -> String {
+        guard s.count > max else { return s }
+        cut = true
+        return String(s.prefix(max - 1)) + "…"
+    }
+
+    static func names(_ list: [String], _ cut: inout Bool) -> [String] {
+        if list.count > listItems { cut = true }
+        return list.prefix(listItems).map { text($0, name, &cut) }
+    }
+}
+
 // MARK: Operations
 
 extension MeetingReader {
@@ -215,15 +252,17 @@ extension MeetingReader {
         try Self.validate(r.filter)
         try context.check()
         let (generation, entries) = try store.meetingCatalog()
-        let key = Self.requestKey("list", r.filter, nil)
+        let key = Self.requestKey("list", r.filter, nil, scope: scope)
         let offset = try r.cursor.map { try Cursor.decode($0, op: "list", key: key, generation: generation).offset } ?? 0
         let rows = Self.matching(entries, r.filter, scope: scope)
-        let page = rows.dropFirst(offset).prefix(limit)
-        var out = ListMeetingsResponse(meetings: page.map(Self.listing), limitations: [])
-        if offset + page.count < rows.count {
-            out.nextCursor = Cursor(op: "list", key: key, generation: generation, offset: offset + page.count).encoded
-        }
+        var out = ListMeetingsResponse(meetings: rows.dropFirst(offset).prefix(limit).map(Self.listing), limitations: [])
         if r.filter.participant != nil { out.limitations.append(Self.participantNote) }
+        if out.meetings.contains(where: { $0.shortened == true }) { out.limitations.append(ProjectionCaps.note) }
+        // Fewer rows when long metadata would pass the budget; the cursor continues after the last row sent.
+        while out.meetings.count > 1, try Self.size(out) > AccessLimits.maxResponseBytes - 512 { out.meetings.removeLast() }
+        if offset + out.meetings.count < rows.count {
+            out.nextCursor = Cursor(op: "list", key: key, generation: generation, offset: offset + out.meetings.count).encoded
+        }
         try context.check()
         return out
     }
@@ -244,17 +283,17 @@ extension MeetingReader {
         guard !terms.isEmpty else { throw AccessError.badQuery("no searchable words in the query") }
         try context.check()
         let (generation, entries) = try store.meetingCatalog()
-        let key = Self.requestKey("search", r.filter, query + "\u{1F}" + (r.meetingIDs ?? []).sorted().joined(separator: ","))
+        let key = Self.requestKey("search", r.filter, query + "\u{1F}" + (r.meetingIDs ?? []).sorted().joined(separator: ","), scope: scope)
         let offset = try r.cursor.map { try Cursor.decode($0, op: "search", key: key, generation: generation).offset } ?? 0
         var allowed = Set(Self.matching(entries, r.filter, scope: scope).map(\.meeting.id))
         if let ids = r.meetingIDs { allowed.formIntersection(ids.map { MeetingID($0) }) }
         var out = SearchMeetingsResponse(terms: terms, passages: [], limitations: Self.searchNotes(r.filter))
         guard !allowed.isEmpty, offset < Self.maxRankedPassages else { return out }
 
-        // One more than the page tells whether another page exists. Deep pages stop at `maxRankedPassages`.
-        let want = min(offset + limit + 1, Self.maxRankedPassages)
-        var retriever = Retriever(store: store, k: want)
-        retriever.candidates = max(200, want * 10)
+        // One ranking per request with fixed parameters, so every page is a slice of the same list (a candidate pool that
+        // grew with the page number ranked later pages differently). Deep pages stop at `maxRankedPassages`.
+        var retriever = Retriever(store: store, k: Self.maxRankedPassages)
+        retriever.candidates = Self.searchCandidates
         let ranked = try retriever.search(query, meetings: allowed)
         try context.check()
         let starts = Dictionary(entries.map { ($0.meeting.id, Self.start($0.meeting)) }, uniquingKeysWith: { a, _ in a })
@@ -271,6 +310,9 @@ extension MeetingReader {
             next = dropped.rank - 1
         }
         out.nextCursor = next.map { Cursor(op: "search", key: key, generation: generation, offset: $0).encoded }
+        if out.passages.contains(where: { $0.lines.contains { $0.shortened == true } }) {
+            out.limitations.append("Lines longer than \(ProjectionCaps.searchLine) characters are shortened here (marked shortened); get_meeting returns them in full.")
+        }
         if ranked.count >= Self.maxRankedPassages, next == nil { out.limitations.append("Only the first \(Self.maxRankedPassages) ranked passages can be paged; narrow the query or filters for more.") }
         return out
     }
@@ -286,7 +328,7 @@ extension MeetingReader {
         let id = MeetingID(r.meetingID)
         guard let snap = try snapshot(id), scope.allows(id, folder: snap.folder.map { FolderID($0.id) }) else { throw AccessError.unavailable }
         if let f = r.expectedFingerprint, f != snap.fingerprint { throw AccessError.changed(currentFingerprint: snap.fingerprint) }
-        let key = Self.requestKey("get", nil, "\(r.meetingID)|\(r.section.rawValue)|\(r.startNs ?? -1)|\(r.endNs ?? -1)")
+        let key = Self.requestKey("get", nil, "\(r.meetingID)|\(r.section.rawValue)|\(r.startNs ?? -1)|\(r.endNs ?? -1)", scope: scope)
         var position = (item: 0, character: 0)
         if let c = r.cursor {
             let cur = try Cursor.decode(c, op: "get", key: key, generation: snap.fingerprint)
@@ -318,6 +360,8 @@ extension MeetingReader {
 
 extension MeetingReader {
     static let maxRankedPassages = 100
+    /// FTS rows read before windowing and ranking; constant so pages agree.
+    static let searchCandidates = 1_000
     static let participantNote = "Participant filters meetings by who was listed for them; it does not mean that person said a given passage."
 
     static func searchNotes(_ f: MeetingFilter) -> [String] {
@@ -377,10 +421,14 @@ extension MeetingReader {
             else if [.prepare, .transcribe].contains(where: { e.jobStates[$0].map { !$0.isTerminal } ?? false })
                         || [.preparing, .recording, .paused, .stopping].contains(m.captureState) { "processing" }
             else { "none" }
-        return MeetingListing(meetingID: m.id.rawValue, title: m.title, start: SnapshotBuilder.ms(start(m)), durationNs: m.duration.nanoseconds,
-                              folder: m.folderID.flatMap { id in e.folderName.map { .init(id: id.rawValue, name: $0) } }, people: m.people.map(\.name),
-                              transcript: transcript, notes: e.hasNotesDocument ? "present" : "none",
-                              audio: m.audio == .deletedByUser ? "deleted" : "present", citation: SourceURL(meetingID: m.id).string)
+        var cut = false
+        let title = ProjectionCaps.text(m.title, ProjectionCaps.title, &cut)
+        let folder: MeetingSnapshot.FolderRef? = m.folderID.flatMap { id in e.folderName.map { .init(id: id.rawValue, name: ProjectionCaps.text($0, ProjectionCaps.name, &cut)) } }
+        let people = ProjectionCaps.names(m.people.map(\.name), &cut)
+        return MeetingListing(meetingID: m.id.rawValue, title: title, start: SnapshotBuilder.ms(start(m)), durationNs: m.duration.nanoseconds,
+                              folder: folder, people: people, transcript: transcript, notes: e.hasNotesDocument ? "present" : "none",
+                              audio: m.audio == .deletedByUser ? "deleted" : "present", citation: SourceURL(meetingID: m.id).string,
+                              shortened: cut ? true : nil)
     }
 
     /// A retriever passage with citations. Everything comes from the search index, which holds the displayed content
@@ -392,17 +440,24 @@ extension MeetingReader {
                 guard let seg = l.segmentID, let rev = l.revisionID, let word = l.firstWord else { return nil }
                 let url = SourceURL(meetingID: p.meetingID, source: .transcript, ref: seg.rawValue, word: word.rawValue, revision: rev.rawValue,
                                     hash: SourceURL.lineHash(l.text))
-                return .init(segmentID: seg.rawValue, wordID: word.rawValue, blockID: nil, startNs: l.start?.nanoseconds, speaker: l.speaker,
-                             text: l.text, matched: l.matched, citation: url.string)
+                var cut = false
+                let text = ProjectionCaps.text(l.text, ProjectionCaps.searchLine, &cut)
+                return .init(segmentID: seg.rawValue, wordID: word.rawValue, blockID: nil, startNs: l.start?.nanoseconds,
+                             speaker: l.speaker.map { ProjectionCaps.text($0, ProjectionCaps.title, &cut) },
+                             text: text, matched: l.matched, citation: url.string, shortened: cut ? true : nil)
             case .notes, .userNote:
                 guard let rev = l.revisionID else { return nil }
                 let url = SourceURL(meetingID: p.meetingID, source: p.source == .userNote ? .userNote : .notes, ref: p.ref, revision: rev.rawValue,
                                     hash: SourceURL.lineHash(l.text))
-                return .init(segmentID: nil, wordID: nil, blockID: p.ref, startNs: nil, speaker: nil, text: l.text, matched: true, citation: url.string)
+                var cut = false
+                let text = ProjectionCaps.text(l.text, ProjectionCaps.searchLine, &cut)
+                return .init(segmentID: nil, wordID: nil, blockID: p.ref, startNs: nil, speaker: nil, text: text, matched: true, citation: url.string,
+                             shortened: cut ? true : nil)
             }
         }
         guard let first = lines.first(where: \.matched) ?? lines.first else { return nil }
-        return SearchPassage(rank: rank, meetingID: p.meetingID.rawValue, meetingTitle: p.meetingTitle, meetingStart: SnapshotBuilder.ms(start),
+        var cut = false
+        return SearchPassage(rank: rank, meetingID: p.meetingID.rawValue, meetingTitle: ProjectionCaps.text(p.meetingTitle, ProjectionCaps.title, &cut), meetingStart: SnapshotBuilder.ms(start),
                              revision: p.lines.first?.revisionID?.rawValue, source: p.source.rawValue, ref: p.ref,
                              score: (p.score * 1000).rounded() / 1000, lines: lines, citation: first.citation)
     }
@@ -412,7 +467,12 @@ extension MeetingReader {
     static func size<T: Encodable>(_ v: T) throws -> Int { try sizer.encode(v).count }
 
     /// Bytes left for items once the envelope is encoded (with a margin for the cursor and fragment fields).
-    static func itemBudget(_ envelope: GetMeetingResponse) throws -> Int { AccessLimits.maxResponseBytes - (try size(envelope)) - 1024 }
+    static func itemBudget(_ envelope: GetMeetingResponse) throws -> Int {
+        let budget = AccessLimits.maxResponseBytes - (try size(envelope)) - 1024
+        // The capped metadata leaves well over this; anything less would page a character at a time.
+        guard budget >= 4096 else { throw AccessError.internal("metadata too large for one response") }
+        return budget
+    }
 
     /// Items from `from` that fit in `budget` bytes. When the first item alone is too large, its text is split on a
     /// character boundary into the largest part that fits, and the cursor continues inside it.
@@ -460,10 +520,16 @@ extension MeetingReader {
     }
 
     /// A stable digest of what a cursor is bound to: the operation, filters and query.
-    static func requestKey(_ op: String, _ f: MeetingFilter?, _ extra: String?) -> String {
+    /// The scope is part of it: a cursor made under one grant can't continue under another.
+    static func requestKey(_ op: String, _ f: MeetingFilter?, _ extra: String?, scope: AccessScope) -> String {
         let data = (try? ExternalCoding.encoder(pretty: false).encode(f)) ?? Data()
+        let scopeText: String = switch scope {
+        case .all: "all"
+        case .meetings(let ids): "m:" + ids.map(\.rawValue).sorted().joined(separator: ",")
+        case .folders(let ids): "f:" + ids.map(\.rawValue).sorted().joined(separator: ",")
+        }
         var h = SHA256()
-        h.update(data: Data(op.utf8)); h.update(data: data); h.update(data: Data((extra ?? "").utf8))
+        h.update(data: Data(op.utf8)); h.update(data: data); h.update(data: Data((extra ?? "").utf8)); h.update(data: Data(scopeText.utf8))
         return h.finalize().prefix(12).map { String(format: "%02x", $0) }.joined()
     }
 }

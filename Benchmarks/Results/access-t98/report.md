@@ -2,7 +2,7 @@
 
 - Lexical/name/filter/notes Recall@10: **100.0%** over 33 questions (target ≥ 85%)
 - Paraphrase Recall@10: **25.0%** over 8 questions (reported separately; lexical search does not match meaning)
-- Citation resolution: 1257/1257 returned lines resolve to current content
+- Citation resolution: 1314/1314 returned lines resolve to current content
 - Unanswerable/adversarial checks passed: 12/12
 
 | id | kind | recall / pass | ranks | passages | top match |
@@ -44,7 +44,7 @@
 | p02 | paraphrase | 0% | f02#0=– | 10 | transcript: the hiring plan might slip a little and the hiring plan might slip a little |
 | p03 | paraphrase | 0% | f10#0=– | 0 |  |
 | p04 | paraphrase | 0% | f03#1=– | 10 | transcript: I'll write that down |
-| p05 | paraphrase | 100% | f03#0=6 | 10 | transcript: the data migration might slip a little and the data migration needs another pass |
+| p05 | paraphrase | 100% | f03#0=10 | 10 | transcript: the data migration might slip a little and the data migration needs another pass |
 | p06 | paraphrase | 100% | f07#1=2 | 3 | notes: Quarantine flaky tests automatically |
 | p07 | paraphrase | 0% | f04#1=– | 0 |  |
 | p08 | paraphrase | 0% | f05#0=– | 1 | transcript: net revenue retention is one hundred eighteen percent |

@@ -255,7 +255,7 @@ struct CitationURLTests {
         #expect(f.reader.resolve(note.citation) == .changed(meetingID: f.meeting, title: "Kestrel launch"))
         // A citation of an old revision without a hash can't be checked: changed.
         let id = f.meeting.rawValue
-        #expect(f.reader.resolve("amaranth://meeting/\(id)?source=transcript&ref=n-s3&revision=tr-1") == .changed(meetingID: f.meeting, title: "Kestrel launch"))
+        #expect(f.reader.resolve("amaranth://meeting/\(id)?source=transcript&ref=n-s3&word=e0&revision=tr-1") == .changed(meetingID: f.meeting, title: "Kestrel launch"))
     }
 
     @Test func invalidAndMaliciousURLsAreRejectedBeforeAnyLookup() throws {
@@ -269,7 +269,7 @@ struct CitationURLTests {
             "amaranth://meeting/\(id)?source=transcript&source=notes&ref=s1&revision=r",
             "amaranth://meeting/\(id)?source=transcript&ref=s1%20OR%201&revision=r", "amaranth://meeting/\(id)?source=transcript&ref=&revision=r",
             "amaranth://meeting/\(id)?source=transcript&ref='; DROP TABLE meetings;--&revision=r",
-            "amaranth://meeting/\(id)?source=transcript&ref=s1&revision=r&h=xyz", "amaranth://meeting/\(id)?source=notes&ref=b&word=w&revision=r",
+            "amaranth://meeting/\(id)?source=transcript&ref=s1&revision=r&h=xyz", "amaranth://meeting/\(id)?source=transcript&ref=s1&revision=r", "amaranth://meeting/\(id)?source=notes&ref=b&word=w&revision=r",
             "amaranth://meeting/\(id)?source=transcript&ref=\(String(repeating: "a", count: 129))&revision=r",
             "amaranth://meeting/\(id)?source=transcript&ref=s1&revision=\(String(repeating: "r", count: 2100))",
             "amaranth://meeting/\(id)?source=transcript&ref=%2e%2e%2f&revision=r", "amaranth://meeting/\(id)?source=transcript&ref=s\u{202E}1&revision=r",

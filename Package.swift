@@ -81,7 +81,7 @@ let package = Package(
                           path: "Benchmarks/Harness"),
         .testTarget(name: "ScoringTests", dependencies: ["Scoring"], path: "Tests/Benchmarks", swiftSettings: strict),
         // Spec 0009: the external read model on an isolated library (seeding, snapshots, links; T98 adds measurements).
-        .executableTarget(name: "amaranth-access", dependencies: ["MeetingAccess", "Storage", "Domain"], path: "Benchmarks/Access"),
+        .executableTarget(name: "amaranth-access", dependencies: ["MeetingAccess", "Storage", "Domain", "Capture"], path: "Benchmarks/Access"),
         .executableTarget(name: "amaranth-recorder-child", dependencies: ["Capture", "Domain", "Storage"], path: "Tests/RecoveryChild"),
         .testTarget(name: "CaptureTests", dependencies: ["Capture", "Domain", "CaptureRT", "Storage", "amaranth-recorder-child"], path: "Tests/Capture",
                     swiftSettings: strict),

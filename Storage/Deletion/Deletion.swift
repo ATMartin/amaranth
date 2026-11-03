@@ -67,6 +67,7 @@ extension MeetingStore {
         precondition(m.deletedAt != nil, "tombstone the meeting (JobScheduler.delete) before purging")
         try withDB { db in
             try db.transaction {
+                db.contentGeneration &+= 1
                 for table in ["search_index", "capture_epochs", "audio_segments", "capture_events", "processing_jobs", "transcript_revisions",
                               "diarization_results", "user_edits", "summary_revisions", "scratchpad_revisions", "manual_notes_revisions",
                               "notes_document_revisions"] {

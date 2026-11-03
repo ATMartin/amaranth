@@ -65,7 +65,7 @@
     "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
     "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit.",
     "R": "One notes field per meeting (personal/private notes removed; editable notes; typing during the meeting feeds generation): T89–T95. Spec docs/decisions/0008 accepted 2026-10-30 with all recommendations (user lines always survive, Regenerate asks and keeps history, snapshot + 'Replace?' while generating, inline source chips, rich-text editor, typed-at times). Never-included scratchpads are deleted by the v6 migration (user, 2026-10-31). Placed next, before L; L's tasks are revised in T94.",
-    "S": "Shared external read model, citations, bounded retrieval and portable bulk export (T97–T100). Spec docs/decisions/0009-external-meeting-access-spec.md accepted 2026-11-03; placed next, before T21 (user decision 2026-11-03). Run decisions: commit per task; T98 scale measured on a 200-meeting synthetic library (the 1,000-meeting gate is reported as not measured, user decision); T100 reads the export with a parser script plus a throwaway Obsidian vault; after validation back up the real library and install locally (no publish).",
+    "S": "Shared external read model, citations, bounded retrieval and portable bulk export (T97–T100). Spec docs/decisions/0009-external-meeting-access-spec.md accepted 2026-11-03; placed next, before T21 (user decision 2026-11-03). Run decisions: commit per task; T98 scale measured on a 200-meeting synthetic library (the 1,000-meeting gate is reported as not measured, user decision); T100 reads the export with a parser script plus a throwaway Obsidian vault; after validation back up the real library and install locally (no publish). Done and validated 2026-11-03 (T97 39c541d, T98 e9c72f3, T99 f9cc506, T100 + validator fixes; verdict v1 PASS WITH FIXES, v2 PASS).",
     "T": "Proposed: read-only local MCP with app-owned broker, scoped grants and packaged client setup (T101–T104). After S; spec docs/decisions/0009-external-meeting-access-spec.md.",
     "U": "Optional proposed follow-on: one-way managed Markdown/JSON vault mirror with safe reconciliation (T105–T108). After T; spec docs/decisions/0009-external-meeting-access-spec.md."
   },
@@ -3072,7 +3072,7 @@
       "id": "T100",
       "title": "Qualify portable history and the shared retrieval contract",
       "milestone": "S",
-      "status": "accepted (2026-11-03): not started",
+      "status": "done (2026-11-03): qualification evidence docs/qualification/milestone-s/t100-qualification.md; Sonnet verdict v1 PASS WITH FIXES (fixes applied), v2 PASS; hands-on checklist items 89-90",
       "optional": false,
       "depends_on": [
         "T98",

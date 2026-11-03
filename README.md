@@ -18,7 +18,8 @@ Amaranth records your meetings on your Mac, capturing both your microphone and t
 ends, it writes a transcript that shows who said what, plus short notes: what you decided, what happens next, and
 what's still open. You can then ask questions across all your meetings.
 
-It all happens on your Mac. Nothing is uploaded, and there's no account.
+It all happens on your Mac. Amaranth uploads nothing, and there's no account. Files you export go wherever you put
+them: if that's a synced folder or a notes app, those apps handle their own copies.
 
 ## What it does
 
@@ -33,7 +34,9 @@ It all happens on your Mac. Nothing is uploaded, and there's no account.
 - **Answers questions** like "what did we decide about the launch?" across one meeting, one folder, or all of them,
   with links to the moments it's quoting.
 - **Organizes and exports.** Sort meetings into folders, add attendees, link a calendar event, and export to
-  Markdown, plain text or JSON (or get the original audio back).
+  Markdown, plain text or JSON (or get the original audio back). Export a folder or your whole library at once as
+  Markdown and JSON files that any notes app can read, with links back to the lines in Amaranth
+  ([how exports work](docs/release/EXPORTS.md)).
 
 <p align="center">
   <picture>

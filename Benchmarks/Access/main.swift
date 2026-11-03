@@ -8,6 +8,7 @@ import MeetingAccess
 ///   amaranth-access snapshot <library-root> <meeting> the meeting's external snapshot (JSON)
 ///   amaranth-access resolve <library-root> <url>      what a source link resolves to now
 ///   amaranth-access export <library-root> <destination> [--notes]  bulk snapshot export of every meeting (T99)
+///   amaranth-access record-under-load <library-root> <seconds> <export-dest> [--no-load]   T100 capture health
 ///   amaranth-access seed-eval <library-root>          the labeled T98 retrieval library (+ eval-map.json)
 ///   amaranth-access eval <library-root> <questions.json> <out-dir>
 ///   amaranth-access seed-scale <library-root> <meetings> <lines>
@@ -46,6 +47,21 @@ case "export" where args.count >= 4:
     print("status=\(r.status.rawValue) written=\(r.written) unchanged=\(r.unchanged) kept=\(r.kept.count) errors=\(r.errors.count) incomplete=\(BulkExport.isIncomplete(URL(filePath: args[3])))")
     for e in r.errors.prefix(5) { print("error: \(e.meetingID ?? "-") \(e.message)") }
     exit(r.status == .complete ? 0 : 1)
+case "record-under-load" where args.count >= 5:
+    try await RecordUnderLoad.run(root: URL(filePath: args[2], directoryHint: .isDirectory), seconds: Double(args[3])!,
+                                  exportDest: URL(filePath: args[4], directoryHint: .isDirectory), load: !args.contains("--no-load"))
+case "seed-hostile" where args.count >= 3:
+    // Metadata and text built to break YAML, Markdown, HTML and paths (T99/T100 inertness checks).
+    let store = try MeetingStore(root: URL(filePath: args[2], directoryHint: .isDirectory))
+    let hostile = ["Q4: \"plan\"\n---\ntitle: pwned", "&anchor *alias !!python/object:os.system ['rm -rf /']", "<script>alert(1)</script>",
+                   "[click](javascript:alert(1)) ![x](file:///etc/passwd)", "../../../etc/passwd", "\u{2028}line\u{2029}sep\u{85}nel\u{FEFF}bom",
+                   "\u{202E}gnp.exe", "# heading\n## another", "- [ ] task | table | `code` ~~strike~~", "日本語の会議 — café ñ 🚀", "key: value\n  nested: true",
+                   "see https://evil.example/x or www.evil.test, mail me@evil.example %%hidden%% ==hl== $$x$$ ^blockid"]
+    let folder = try store.createFolder(name: "Clients: \"A\" & <B>").id
+    for (i, t) in hostile.enumerated() {
+        try Synthetic.meeting(store, key: "h\(i)", title: t, start: Date(timeIntervalSince1970: 1_788_220_800 + Double(i) * 3600), lines: hostile.map { $0.replacingOccurrences(of: "\n", with: " ") },
+                              people: [t, "Ana: \"the\" boss"], folder: i % 2 == 0 ? folder : nil, notes: hostile)
+    }
 case "seed-eval" where args.count >= 3:
     let root = URL(filePath: args[2], directoryHint: .isDirectory)
     try EvalLibrary.seed(try MeetingStore(root: root), root: root)

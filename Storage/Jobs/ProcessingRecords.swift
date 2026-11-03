@@ -18,6 +18,7 @@ extension MeetingStore {
         try withDB { db in
             try db.transaction {
             guard try !Self.isTombstoned(db, j.key.meetingID) else { return }
+            db.contentGeneration &+= 1   // job state shows in external listings (spec 0009 §2)
             try db.run("""
                 INSERT INTO processing_jobs (id, meeting_id, stage, input_hash, config_hash, state, lease_owner, lease_expires_at, updated_at, json)
                 VALUES (?,?,?,?,?,?,?,?,?,?)
@@ -129,6 +130,7 @@ extension MeetingStore {
                 guard let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(r.meetingID.rawValue)]).first?["json"]?.blob else { return false }
                 var m = try ContractCoding.decode(Meeting.self, from: row)
                 guard m.deletedAt == nil else { return false }
+                db.contentGeneration &+= 1
                 try db.run("INSERT OR IGNORE INTO transcript_revisions (id, meeting_id, kind, stage, created_at, json) VALUES (?,?,?,?,?,?)",
                            [.text(r.id.rawValue), .text(r.meetingID.rawValue), .text(r.kind.rawValue), .text(r.stage.rawValue),
                             .double(r.createdAt.timeIntervalSince1970), .blob(try ContractCoding.encode(r))])

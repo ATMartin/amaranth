@@ -490,8 +490,8 @@
     "recall" : 0,
     "top" : [
       "transcript: the hiring plan might slip a little and the hiring plan might slip a little",
-      "transcript: Chloe said the hiring plan was discussed briefly",
-      "transcript: the hiring plan is a bit behind and the budget should wrap up soon"
+      "transcript: Hana will follow up on the hiring plan next week",
+      "transcript: Chloe said the hiring plan was discussed briefly"
     ]
   },
   {
@@ -524,7 +524,7 @@
   },
   {
     "found" : {
-      "f03#0" : 6
+      "f03#0" : 10
     },
     "id" : "p05",
     "kind" : "paraphrase",
@@ -533,8 +533,8 @@
     "recall" : 1,
     "top" : [
       "transcript: the data migration might slip a little and the data migration needs another pass",
-      "transcript: the data migration might slip a little and the documentation looks fine for now",
-      "transcript: the budget was discussed briefly and the data migration is a bit behind"
+      "transcript: Dev said the data migration came up again",
+      "transcript: the data migration might slip a little and the documentation looks fine for now"
     ]
   },
   {
@@ -618,7 +618,7 @@
     "top" : [
       "transcript: we will raise the starter plan to twenty nine dollars",
       "transcript: we confirmed the starter plan increase with finance",
-      "transcript: Jun said the hiring plan needs an owner"
+      "transcript: the support queue has a few open questions and the hiring plan needs an owner"
     ]
   },
   {

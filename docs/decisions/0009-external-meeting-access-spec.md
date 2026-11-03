@@ -123,7 +123,7 @@ milliseconds (dates are rounded to milliseconds so a decoded snapshot equals the
 
 **Source links.** `amaranth://meeting/<uuid>` with optional `source` (transcript, notes, userNote), `ref`, `word`
 (transcript only), `revision` and `h` (16 hex digits of SHA-256 of the line text as shown; notes hash text and
-detail). Parsing rejects other schemes and hosts, credentials, ports, fragments, extra path segments, non-UUID
+detail). Transcript links need `word`. Parsing rejects other schemes and hosts, credentials, ports, fragments, extra path segments, non-UUID
 meeting IDs, unknown or repeated parameters, any value outside `[A-Za-z0-9-_.:]{1,128}` (so percent-escapes,
 spaces and quotes fail), a passage without `ref` and `revision`, and URLs over 2,048 bytes, all before any lookup.
 A passage resolves when it is shown now and either its revision is current or its hash still matches (an unchanged
@@ -185,8 +185,12 @@ model size and reindex/deletion costs. Embeddings are not a prerequisite to conn
   recording start). Scope and filters reduce the meeting set first; search passes it into the FTS query
   (`Retriever.search(…, meetings:)`), so ranking, ±2-line context windows and the cross-meeting spread never touch an
   out-of-scope line. An out-of-scope or deleted ID is `unavailable`, exactly like a missing one.
-- **Listing** returns metadata and state only (never text), newest first with ties by ID, at most 50 rows.
+- **Listing** returns metadata and state only (never text), newest first with ties by ID, at most 50 rows, fewer when
+  the rows wouldn't fit in 64 KiB. List and get metadata cap titles at 512 characters, names at 100 and lists at 50,
+  marked `shortened` with a limitation (snapshots and exports keep everything).
 - **Search** returns at most 20 passages per page, 100 ranked passages in all, with the matched terms and limitations.
+  Each request ranks once with fixed parameters (100 passages from 1,000 FTS candidates), so pages are slices of one
+  list. Lines over 1,000 characters are shortened and marked `shortened` (get_meeting has them whole).
   Passages and their citations come from the search index (displayed content, rewritten in the same transaction as
   every edit), not from decoded transcripts; ties rank by meeting and ref. Each passage carries its source revision; the
   meeting fingerprint comes from get_meeting. Empty query → `bad_query` (use listing); a query with no searchable words
@@ -194,7 +198,7 @@ model size and reindex/deletion costs. Embeddings are not a prerequisite to conn
 - **get_meeting** returns one section (metadata, notes, or transcript optionally limited to [startNs, endNs)) of the
   current snapshot, paged to 64 KiB; an item too large for one response comes in character-boundary parts with
   `fragment` {item, fromCharacter, toCharacter, complete}. `expectedFingerprint` mismatch → `changed` with the current one.
-- **Cursors** are opaque base64url, bound to the operation and a digest of the request; list/search cursors carry the
+- **Cursors** are opaque base64url, bound to the operation, a digest of the request and the access scope; list/search cursors carry the
   library's content generation (a counter the store bumps on every write that changes content or scope, plus a
   per-opening nonce), get cursors the meeting fingerprint. A different request → `invalid_request`; a changed
   generation/fingerprint → `restart_required`.
@@ -280,8 +284,11 @@ only from the meeting UUID (validated), so renames update the same folder and eq
   leave the marker (`BulkExport.isIncomplete`) and the journal.
 - **Safety:** a destination file is replaced only if its current bytes hash to something Amaranth wrote (manifest or
   journal); otherwise it is kept and reported. A meeting whose fingerprint and files are unchanged is not rewritten.
-  Refused destinations: an `amaranth` folder that is a link, holds another library's manifest or an unreadable one, or
-  holds files without a manifest or journal. Files are never written through links. Snapshot export never deletes:
+  Refused destinations: an `amaranth` folder that is a link; one that holds another library's manifest, another
+  library's marker (an unfinished export) or an unreadable manifest; or one that holds files without a manifest or journal. Files are synced to disk
+  before their rename. README.md's hash is in the manifest (`otherFiles`). After a failed meeting, the manifest keeps
+  the new hashes of files already written. In the Markdown body, meeting text is also made inert for notes apps: `%`,
+  `=`, `$` and `^` are escaped, and a zero-width space in `://`, in `www.` and before `@` stops autolinking. Files are never written through links. Snapshot export never deletes:
   meetings deleted or moved out of scope keep their earlier files, and the README says a snapshot is a copy.
 - CLI: `amaranth-access export <library-root> <destination> [--notes]` exports every meeting of an isolated library.
 

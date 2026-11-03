@@ -64,6 +64,8 @@ public enum BulkExport {
         public var content: Content
         /// Every meeting this folder holds, including ones from earlier runs (their `exportedAt` is older).
         public var meetings: [Entry]
+        /// Other files Amaranth wrote here (README.md).
+        public var otherFiles: [File]? = nil
 
         public struct Entry: Codable, Sendable, Equatable {
             public var meetingID: String
@@ -111,6 +113,17 @@ public enum BulkExport {
         // The folder must be ours (or new): never write into someone else's directory or follow a link out of it.
         if isSymlink(root) { return fail("“\(folderName)” in that folder is a link. Choose a folder where Amaranth can create its own “\(folderName)” folder.") }
         var previous: Manifest?
+        // A journal with neither a marker nor a manifest can't be attributed to a library (the marker was removed by hand).
+        if fm.fileExists(atPath: root.appending(path: journalName).path), !fm.fileExists(atPath: root.appending(path: markerName).path),
+           !fm.fileExists(atPath: root.appending(path: manifestName).path) {
+            return fail("The “\(folderName)” folder there holds an unfinished export Amaranth can't identify. Choose another folder.")
+        }
+        // An unfinished run (no manifest yet) is only ours to continue if its marker names this library.
+        if let data = try? Data(contentsOf: root.appending(path: markerName)) {
+            guard let marker = try? JSONDecoder().decode([String: String].self, from: data), marker["libraryID"] == libraryID else {
+                return fail("The “\(folderName)” folder there holds an unfinished export from another Amaranth library. Choose another folder.")
+            }
+        }
         if fm.fileExists(atPath: root.path) {
             if let data = try? Data(contentsOf: root.appending(path: manifestName)) {
                 guard let m = try? ExternalCoding.decoder().decode(Manifest.self, from: data), m.format == "amaranth-export-manifest" else {
@@ -134,7 +147,7 @@ public enum BulkExport {
             return fail("Couldn't write to that folder: \(error.localizedDescription)")
         }
         // Hashes of files Amaranth wrote here: the last manifest plus every run's journal (an unfinished run's files).
-        var known = Set(previous?.meetings.flatMap { $0.files.map(\.sha256) } ?? [])
+        var known = Set((previous?.meetings.flatMap { $0.files.map(\.sha256) } ?? []) + (previous?.otherFiles ?? []).map(\.sha256))
         let journalURL = root.appending(path: journalName)
         if let j = try? String(contentsOf: journalURL, encoding: .utf8) {
             for line in j.split(separator: "\n") {
@@ -159,7 +172,14 @@ public enum BulkExport {
             }
             try fm.createDirectory(at: dest.deletingLastPathComponent(), withIntermediateDirectories: true)
             let temp = staging.appending(path: UUID().uuidString)
-            try data.write(to: temp)
+            do {
+                try data.write(to: temp)
+                let h = try FileHandle(forUpdating: temp)   // on disk before the rename, so a power loss can't leave an empty file
+                try h.synchronize(); try h.close()
+            } catch {
+                try? fm.removeItem(at: temp)
+                throw ExportError.write(relative, (error as NSError).localizedFailureReason ?? (error as NSError).underlyingErrors.first?.localizedDescription ?? error.localizedDescription)
+            }
             guard rename(temp.path, dest.path) == 0 else { throw ExportError.posix(errno, relative) }
             known.insert(hash)
             try? journal?.write(contentsOf: Data((String(decoding: try JSONEncoder().encode(["path": relative, "sha256": hash]), as: UTF8.self) + "\n").utf8))
@@ -168,8 +188,9 @@ public enum BulkExport {
 
         var entries: [String: Manifest.Entry] = Dictionary((previous?.meetings ?? []).map { ($0.meetingID, $0) }, uniquingKeysWith: { a, _ in a })
         var cancelled = false
+        var otherFiles = previous?.otherFiles ?? []
         do {
-            _ = try publish(Data(readme.utf8), at: "README.md")
+            if let (record, _) = try publish(Data(readme.utf8), at: "README.md") { otherFiles = [record] }
         } catch {
             result.errors.append(.init(meetingID: nil, title: nil, message: "README.md: \(error.localizedDescription)"))
         }
@@ -213,7 +234,9 @@ public enum BulkExport {
                 if anyWritten { result.written += 1 } else if !anyKept { result.unchanged += 1 }
             } catch {
                 entry.status = "error"; entry.error = error.localizedDescription
-                if let old = entries[id.rawValue] { entry.files = old.files }
+                // Files written before the error keep their new hashes; the others keep what Amaranth wrote last.
+                let written = Set(entry.files.map(\.path))
+                entry.files += (entries[id.rawValue]?.files ?? []).filter { !written.contains($0.path) }
                 result.errors.append(.init(meetingID: id.rawValue, title: entry.title.isEmpty ? nil : entry.title, message: error.localizedDescription))
             }
             entries[id.rawValue] = entry
@@ -225,7 +248,7 @@ public enum BulkExport {
         // Commit: the manifest, last. Only then is the run complete.
         let manifest = Manifest(libraryID: libraryID, exportID: exportID, startedAt: started, finishedAt: now(),
                                 status: result.errors.isEmpty && result.kept.isEmpty ? "complete" : "partial", content: content,
-                                meetings: entries.values.sorted { $0.meetingID < $1.meetingID })
+                                meetings: entries.values.sorted { $0.meetingID < $1.meetingID }, otherFiles: otherFiles)
         do {
             let temp = staging.appending(path: manifestName)
             try ExternalCoding.encoder().encode(manifest).write(to: temp)
@@ -250,10 +273,12 @@ public enum BulkExport {
     enum ExportError: LocalizedError {
         case posix(Int32, String)
         case link(String)
+        case write(String, String)
         var errorDescription: String? {
             switch self {
             case .posix(let e, let path): "\(path): \(String(cString: strerror(e)))"
             case .link(let path): "\(path) is a link; Amaranth doesn't write through links."
+            case .write(let path, let why): "\(path) couldn't be written: \(why)"
             }
         }
     }
@@ -299,7 +324,7 @@ public enum MeetingFiles {
     /// never become YAML structure, links, HTML or headings. Links in the body are only Amaranth's own citation URLs.
     public static func markdown(_ s: MeetingSnapshot, content: BulkExport.Content) -> String {
         func q(_ v: String) -> String { yamlString(v) }
-        func line(_ v: String) -> String { Exporter.escapeMarkdown(v.replacingOccurrences(of: "\r\n", with: " ").replacingOccurrences(of: "\n", with: " ").replacingOccurrences(of: "\r", with: " ")) }
+        func line(_ v: String) -> String { inert(v.replacingOccurrences(of: "\r\n", with: " ").replacingOccurrences(of: "\n", with: " ").replacingOccurrences(of: "\r", with: " ")) }
         var out = ["---",
                   "schema: \"amaranth-meeting-md\"",
                   "version: 1",
@@ -329,7 +354,7 @@ public enum MeetingFiles {
         meta.append("Duration \(clock(s.durationNs))")
         if !s.people.isEmpty { meta.append("People: " + s.people.joined(separator: ", ")) }
         if let f = s.folder { meta.append("Folder: \(f.name)") }
-        out.append("_" + line(meta.joined(separator: " · ")) + "_ · [Open in Amaranth](\(s.citation))")
+        out.append("_" + line(meta.joined(separator: " · ")) + "_ · " + link("Open in Amaranth", s.citation))
         out.append("")
         var limits = s.limitations
         if content == .notes { limits.append("The transcript is not included in this export (notes only).") }
@@ -348,7 +373,7 @@ public enum MeetingFiles {
             if n.uncertain { extras.append("uncertain") }
             let cites = n.evidence.prefix(3).compactMap { e -> String? in
                 switch e.status {
-                case "current": e.citation.map { c in "[\(e.type == "userNote" ? "your note" : clock(e.startNs ?? starts[c] ?? 0))](\(c))" }
+                case "current": e.citation.map { c in link(e.type == "userNote" ? "your note" : clock(e.startNs ?? starts[c] ?? 0), c) }
                 case "removed": "source removed"
                 default: "source in an earlier transcript"
                 }
@@ -366,12 +391,26 @@ public enum MeetingFiles {
         for l in s.transcript {
             while let g = gaps.first, g.startNs <= l.startNs { out.append(gapLine(g)); gaps.removeFirst() }
             let flags = l.flags.filter { $0 != "corrected" }
-            out.append("[\(clock(l.startNs))](\(l.citation)) **\(line(l.speaker))** _(\(l.source == "microphone" ? "mic" : "system audio"))_: \(line(l.text))"
+            out.append(link(clock(l.startNs), l.citation) + " **\(line(l.speaker))** _(\(l.source == "microphone" ? "mic" : "system audio"))_: \(line(l.text))"
                        + (flags.isEmpty ? "" : " _[\(flags.joined(separator: ", "))]_") + "  ")
         }
         out += gaps.map(gapLine)
         return out.joined(separator: "\n") + "\n"
     }
+
+    /// Meeting text for the Markdown body: the shared escaping, plus what notes apps add on top of CommonMark. `%`, `=`,
+    /// `$` and `^` are escaped (Obsidian comments, highlights, math, block IDs), and a zero-width space breaks bare
+    /// URLs, `www.` and e-mail addresses so GFM/Obsidian don't turn spoken text into clickable links.
+    static func inert(_ v: String) -> String {
+        var s = Exporter.escapeMarkdown(v)
+        for ch in ["%", "=", "$", "^"] { s = s.replacingOccurrences(of: ch, with: "\\" + ch) }
+        s = s.replacingOccurrences(of: "\\\\" + "=", with: "\\=")   // a leading "=" was already escaped once
+        return s.replacingOccurrences(of: "://", with: ":\u{200B}//").replacingOccurrences(of: "www.", with: "www\u{200B}.", options: .caseInsensitive)
+            .replacingOccurrences(of: "@", with: "\u{200B}@")
+    }
+
+    /// A link to an Amaranth citation, or the bare label when there is none (`SourceURL.string` is empty for odd IDs).
+    static func link(_ label: String, _ url: String) -> String { url.hasPrefix("amaranth://") ? "[\(label)](\(url))" : label }
 
     static func gapLine(_ g: MeetingSnapshot.Gap) -> String {
         "_[\(clock(g.startNs))–\(clock(g.endNs))] \(g.source == "microphone" ? "mic" : "system audio"): no transcript, \(g.reason)_  "
