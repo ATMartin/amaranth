@@ -2270,7 +2270,7 @@
       "id": "T71",
       "title": "Check for Updates… (menu, launch check, Settings → Updates)",
       "milestone": "Q",
-      "status": "planned (un-parked 2026-11-02, user decision)",
+      "status": "done (2026-11-02): Presentation/Updates.swift (UpdateCatalog, GitHubReleasesSource, LocalFolderSource), App/Updates (UpdateModel, Software Update window, toolbar note, Settings → Updates), self-tests ui-render-updates and update-check",
       "optional": false,
       "depends_on": [
         "T70"

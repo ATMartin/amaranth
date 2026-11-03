@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// The running build's identity (T70), stamped into Info.plist by scripts/stamp-build.sh: the build number is the git
 /// commit count, shared by Release and Debug, so a higher number is always a later commit.

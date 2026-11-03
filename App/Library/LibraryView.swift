@@ -7,6 +7,8 @@ struct MainView: View {
     @Environment(LibraryModel.self) private var library
     @Environment(RecorderModel.self) private var recorder
     @Environment(PlaybackModel.self) private var playback
+    /// Optional so renders and probes that don't set it still build the window (T71).
+    @Environment(UpdateModel.self) private var updates: UpdateModel?
     @State private var newTitle = ""
     @State private var folderName = ""
     @AppStorage("onboarded") private var onboarded = false
@@ -69,6 +71,8 @@ struct MainView: View {
                     .toolbar {
                         ToolbarSpacer(.flexible)
                         ToolbarItemGroup(placement: .primaryAction) {
+                            // T71: the launch check's quiet note, before the sun/moon and Ask toggles that end the toolbar.
+                            if let updates { UpdateToolbarNote(updates: updates) }
                             AppearanceToggle(compact: true)
                             Button { askShown.toggle() } label: { Label(askShown ? "Hide Ask" : "Show Ask", systemImage: "bubble.left") }
                                 .help(askShown ? "Hide the Ask pane" : "Ask about your meetings (⌘K)")

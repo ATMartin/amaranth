@@ -1,0 +1,123 @@
+import Foundation
+import AppKit
+import Security
+import Presentation
+
+/// Code signing facts read with the Security framework (no codesign process).
+enum CodeIdentity {
+    /// The team identifier a bundle is signed with, or nil (ad-hoc, unsigned or unreadable).
+    static func teamID(of bundle: URL) -> String? {
+        var code: SecStaticCode?
+        guard SecStaticCodeCreateWithPath(bundle as CFURL, [], &code) == errSecSuccess, let code else { return nil }
+        var info: CFDictionary?
+        guard SecCodeCopySigningInformation(code, SecCSFlags(rawValue: kSecCSSigningInformation), &info) == errSecSuccess,
+              let dict = info as? [String: Any] else { return nil }
+        return dict[kSecCodeInfoTeamIdentifier as String] as? String
+    }
+
+    static let runningTeamID: String? = teamID(of: Bundle.main.bundleURL)
+}
+
+/// Check for Updates… (T71): the menu command, the launch check and its toolbar note, and the dialog. Checks happen at
+/// launch (Settings → Updates → Check at launch) and when asked, never on a timer; a failed launch check stays quiet.
+@MainActor @Observable
+final class UpdateModel {
+    enum Phase: Equatable {
+        case idle
+        case checking
+        case upToDate
+        case available(UpdateCandidate)
+        case failed(String)
+    }
+
+    var phase: Phase = .idle
+    private(set) var lastChecked: Date?
+    /// Later hides the toolbar note until the next launch.
+    var noteDismissed = false
+    let running: BuildInfo
+    let teamID: String?
+    weak var recorder: RecorderModel?
+    /// Replaces the source from Settings (self-tests and renders).
+    var sourceOverride: (any UpdateSource)?
+    private var checkTask: Task<Void, Never>?
+
+    init(running: BuildInfo = .running, teamID: String? = CodeIdentity.runningTeamID) {
+        self.running = running; self.teamID = teamID
+    }
+
+    var available: UpdateCandidate? { if case .available(let c) = phase { c } else { nil } }
+
+    /// The toolbar note: a newer build, not dismissed with Later, and never while recording.
+    var noteVisible: Bool { available != nil && !noteDismissed && recorder?.inSession != true }
+
+    func launchCheck() {
+        guard UpdateSettings.checkAtLaunch(), UpdateSettings.source() != .off else { return }
+        check(userInitiated: false)
+    }
+
+    /// Starts a check unless one is running. A launch check that fails leaves the phase idle: nothing to show.
+    func check(userInitiated: Bool) {
+        guard checkTask == nil else { return }
+        if userInitiated || available == nil { phase = .checking }
+        checkTask = Task { [weak self] in
+            guard let self else { return }
+            let result = await self.fetch()
+            self.checkTask = nil
+            self.lastChecked = Date()
+            switch result {
+            case .success(let c?): self.phase = .available(c)
+            case .success(nil): self.phase = .upToDate
+            case .failure(let e): self.phase = userInitiated ? .failed(e.message) : (self.available.map(Phase.available) ?? .idle)
+            }
+        }
+    }
+
+    func later() { noteDismissed = true }
+
+    /// Until T72: opens the release page (or folder) so the build can be installed by hand.
+    func install(_ c: UpdateCandidate) {
+        NSWorkspace.shared.open(c.page ?? c.download)
+    }
+
+    private func fetch() async -> Result<UpdateCandidate?, UpdateCheckError> {
+        let source: any UpdateSource
+        switch makeSource() {
+        case .success(nil): return .success(nil)   // updates are off
+        case .success(let s?): source = s
+        case .failure(let e): return .failure(e)
+        }
+        let includeDebug = UpdateSettings.includeDebug()
+        do {
+            let found = try await source.candidates(above: running.build, includeDebug: includeDebug)
+            return .success(UpdateCatalog.newest(found, running: running, bundleID: Bundle.main.bundleIdentifier ?? "",
+                                                 teamID: teamID, includeDebug: includeDebug,
+                                                 systemVersion: ProcessInfo.processInfo.operatingSystemVersion))
+        } catch { return .failure(error) }
+    }
+
+    func makeSource() -> Result<(any UpdateSource)?, UpdateCheckError> {
+        if let sourceOverride { return .success(sourceOverride) }
+        switch UpdateSettings.source() {
+        case .off: return .success(nil)
+        case .github: return .success(GitHubReleasesSource())
+        case .folder:
+            guard let folder = Self.chosenFolder() else { return .failure(.noFolderChosen) }
+            return .success(LocalFolderSource(folder: folder))
+        }
+    }
+
+    /// Settings → Updates → Local folder, stored as a bookmark so a moved or renamed folder is still found.
+    static func chosenFolder(_ d: UserDefaults = .standard) -> URL? {
+        guard let data = d.data(forKey: UpdateSettings.folderBookmarkKey) else { return nil }
+        var stale = false
+        guard let url = try? URL(resolvingBookmarkData: data, options: [.withoutUI], relativeTo: nil, bookmarkDataIsStale: &stale) else { return nil }
+        if stale, let fresh = try? url.bookmarkData() { d.set(fresh, forKey: UpdateSettings.folderBookmarkKey) }
+        return url
+    }
+
+    static func choose(folder url: URL, _ d: UserDefaults = .standard) {
+        guard let data = try? url.bookmarkData() else { return }
+        d.set(data, forKey: UpdateSettings.folderBookmarkKey)
+        d.set(url.path, forKey: UpdateSettings.folderPathKey)
+    }
+}

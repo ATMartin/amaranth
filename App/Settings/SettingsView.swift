@@ -4,7 +4,7 @@ import Presentation
 
 /// Settings tabs, persisted so a control elsewhere can open Settings on a given tab (T77: the sidebar footer opens Models).
 enum SettingsTab: String {
-    case models, recording, appearance, calendar, notices
+    case models, recording, appearance, calendar, updates, notices
     static let key = "settingsTab"
 }
 
@@ -24,6 +24,7 @@ struct SettingsView: View {
     var calendar: CalendarModel
     var reminders: ReminderController?
     var library: LibraryModel?
+    var updates: UpdateModel?
     @AppStorage(SettingsTab.key) private var tab = SettingsTab.models.rawValue
 
     var body: some View {
@@ -38,6 +39,10 @@ struct SettingsView: View {
                 .tabItem { Label("Appearance", systemImage: "textformat.size") }.tag(SettingsTab.appearance.rawValue)
             CalendarSettingsView(calendar: calendar, recorder: recorder, reminders: reminders, library: library)
                 .tabItem { Label("Calendar", systemImage: "calendar") }.tag(SettingsTab.calendar.rawValue)
+            if let updates {
+                UpdateSettingsView(updates: updates)
+                    .tabItem { Label("Updates", systemImage: "arrow.down.circle") }.tag(SettingsTab.updates.rawValue)
+            }
             ScrollView {
                 Text(Self.notices).font(.caption.monospaced()).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).padding()
             }

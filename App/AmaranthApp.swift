@@ -38,6 +38,8 @@ struct AmaranthApp: App {
     /// Calendar access (T56): created without asking; the first prompt comes from a user action.
     @State private var calendar: CalendarModel
     @State private var reminders: ReminderController
+    /// Check for Updates… (T71).
+    @State private var updates: UpdateModel
 
     init() {
         let worker = WorkerClient()
@@ -102,6 +104,10 @@ struct AmaranthApp: App {
         reminders.recorder = recorder
         if !SelfTest.isRequested && !Self.probing { reminders.start() }
         _reminders = State(initialValue: reminders)
+        let updates = UpdateModel()
+        updates.recorder = recorder
+        AppDelegate.updates = updates
+        _updates = State(initialValue: updates)
         _worker = State(initialValue: worker)
         _recorder = State(initialValue: recorder)
         _processing = State(initialValue: processing)
@@ -134,6 +140,7 @@ struct AmaranthApp: App {
             .environment(playback)
             .environment(live)
             .environment(calendar)
+            .environment(updates)
             .modifier(AppearanceRoot())
             .modifier(ReminderWindowOpener(reminders: reminders))
             .windowFitsScreen()
@@ -144,7 +151,15 @@ struct AmaranthApp: App {
             // View ▸ Show/Hide Sidebar (⌃⌘S): with the toolbar's own toggle removed (T75), declared so the shortcut never
             // depends on the system adding it. It toggles the split view, which updates MainView's column visibility.
             SidebarCommands()
+            UpdateCommands(updates: updates)
         }
+
+        // Check for Updates… (T71): current vs available build, what changed, Install and Relaunch / Later.
+        Window("Software Update", id: UpdateWindow.id) {
+            UpdateWindow(updates: updates).modifier(AppearanceRoot())
+        }
+        .windowResizability(.contentSize)
+        .defaultPosition(.center)
 
         MenuBarExtra {
             MenuBarContent(recorder: recorder)
@@ -155,7 +170,7 @@ struct AmaranthApp: App {
         }
 
         Settings {
-            SettingsView(models: models, recorder: recorder, calendar: calendar, reminders: reminders, library: library)
+            SettingsView(models: models, recorder: recorder, calendar: calendar, reminders: reminders, library: library, updates: updates)
         }
     }
 }
@@ -205,6 +220,7 @@ struct MenuBarContent: View {
 /// Quitting while recording asks first and saves; closing the window keeps recording (the menu bar shows it).
 final class AppDelegate: NSObject, NSApplicationDelegate {
     @MainActor static weak var recorder: RecorderModel?
+    @MainActor static weak var updates: UpdateModel?
 
     private var appearanceObservation: NSKeyValueObservation?
 
@@ -216,6 +232,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appearanceObservation = UserDefaults.standard.observe(\.appearance, options: [.new]) { _, _ in
             Task { @MainActor in AppAppearance.apply(UserDefaults.standard.appearance) }
         }
+    }
+
+    /// T71: one check at launch (Settings → Updates → Check when Amaranth opens); never on a timer.
+    @MainActor func applicationDidFinishLaunching(_ notification: Notification) {
+        if !SelfTest.isRequested && !AmaranthApp.probing { Self.updates?.launchCheck() }
     }
 
     @MainActor func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {

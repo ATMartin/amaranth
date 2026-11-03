@@ -51,6 +51,8 @@ enum SelfTest {
                 let out = args.firstIndex(of: "--self-test-output").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
                 let size = TextSize(stored: args.firstIndex(of: "--text-size").flatMap { $0 + 1 < args.count ? args[$0 + 1] : nil })
                 ok = await UIRenderSelfTest.run(outputDirectory: out, textSize: size)
+            case "ui-render-updates": ok = await UpdateSelfTest.render()
+            case "update-check": ok = await UpdateSelfTest.check()
             case "ui-density": ok = await UIDensitySelfTest.run(args: args)
             case "ask-worker": ok = await AskWorkerSelfTest.run()
             case "calendar-access": ok = await CalendarSelfTest.run()
