@@ -60,3 +60,21 @@ Software Update window's buttons, exactly as a click would.
   `22:17:13 update 126 → 127: installed; relaunching`, 1 s; build 127, channel release; same leaf certificate; library
   10 meetings, schema 6; toolbar "Updated to build 127".
 - Update preferences were then deleted again (GitHub source, Debug off, no folder), i.e. the defaults.
+
+## 4. GitHub again (127 → 128), rejections, offline
+
+- Release 128 (79e74fb) published to GitHub; its manifest lists the three commits since build-125 (the previous
+  published Release). On 127 (GitHub source again): Amaranth ▸ Check for Updates… → Available 0.1.0 (128); Install and
+  Relaunch: `22:18:51 update 127 → 128: installed; relaunching`, 2 s; build 128; same leaf certificate; library 10
+  meetings, schema 6; "Updated to build 128". The app is left on Release 128 with default update settings; the only
+  defaults change since the backup is the Software Update window's saved frame.
+- `scripts/test-update-verify.sh` against Release 127's folder: checksum mismatch, a truncated zip (half the bytes), a
+  manifest whose build differs from the bundle's, and an ad-hoc re-signed copy (no team) are each rejected with a plain
+  reason before anything is replaced; the untouched build verifies. A release without manifest.json, a still-uploading
+  manifest, drafts and other teams are covered by `GitHubReleasesSourceTests`/`UpdateCatalogTests` against recorded
+  API responses.
+- Offline (network denied with sandbox-exec, Release 128 binary): "Couldn't reach GitHub (network error 1). Check the
+  connection and try again." A real Wi-Fi-off run reports `URLError.notConnectedToInternet` → "This Mac is offline…"
+  (unit-tested; hands-on in checklist 88).
+- Not run hands-off: refusal while recording in the real app (it would record the room; covered by code and the
+  `not-in-applications`/blocker renders) and VoiceOver on the dialog.

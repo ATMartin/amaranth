@@ -34,7 +34,7 @@ field() { plutil -extract "$1" raw -o - - <<<"$2"; }
 SHA=$(git rev-parse HEAD)
 if [ $LOCAL = 0 ]; then
   git fetch -q origin
-  git branch -r --contains "$SHA" | grep -q 'origin/' || fail "HEAD ($(git rev-parse --short HEAD)) isn't on origin; push it first (this script never pushes). Nothing was published."
+  [ -n "$(git branch -r --contains "$SHA" | grep 'origin/' || true)" ] || fail "HEAD ($(git rev-parse --short HEAD)) isn't on origin; push it first (this script never pushes). Nothing was published."
 fi
 N=$(git rev-list --count HEAD)
 if [ "$CHANNEL" = debug ]; then TAG=build-$N-debug; else TAG=build-$N; fi

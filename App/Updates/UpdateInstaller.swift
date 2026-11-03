@@ -27,6 +27,7 @@ extension UpdateModel {
     func install(_ c: UpdateCandidate) {
         guard installTask == nil else { return }
         if let blocker = installBlocker { installPhase = .failed(blocker); return }
+        stopHelper()
         installPhase = .downloading(nil)
         installTask = Task { [weak self] in
             guard let self else { return }
@@ -34,11 +35,20 @@ extension UpdateModel {
                 let app = try await self.prepare(c)
                 // Recording might have started during the download.
                 if let blocker = self.installBlocker { throw InstallError(blocker) }
+                try Task.checkCancellation()   // Cancel while "Checking the download…" must stop here
                 try self.startHelper(newApp: app, build: c.manifest.build)
                 self.installPhase = .relaunching
                 self.installTask = nil
                 // The notes editor saves on willTerminate (NotesPane); the recorder's quit guard doesn't apply (not recording).
                 NSApp.terminate(nil)
+                // Still here a few seconds later: quitting was cancelled (a recording started and "Keep Recording" was
+                // chosen). The helper gives up on its own after 60 s and changes nothing; let the dialog say so.
+                try? await Task.sleep(for: .seconds(5))
+                if self.installPhase == .relaunching {
+                    self.stopHelper()
+                    self.cleanUpStaging()
+                    self.installPhase = .failed("Amaranth didn't quit, so the update wasn't installed. Nothing was changed; try again later.")
+                }
             } catch is CancellationError {
                 self.cleanUpStaging()
                 self.installPhase = .idle
@@ -72,6 +82,7 @@ extension UpdateModel {
         let size = (try? fm.attributesOfItem(atPath: zip.path)[.size] as? Int64) ?? -1
         guard size == m.size else { throw InstallError("The download is incomplete (\(size) of \(m.size) bytes). Nothing was changed; try again.") }
         let sum = try await Task.detached { try FileDigest.sha256(of: zip) }.value
+        try Task.checkCancellation()
         guard sum == m.sha256.lowercased() else {
             throw InstallError("The download doesn't match the published checksum, so it wasn't installed. Nothing was changed.")
         }
@@ -79,10 +90,12 @@ extension UpdateModel {
         guard try await Self.run("/usr/bin/ditto", ["-x", "-k", zip.path, unzipped.path]) == 0 else {
             throw InstallError("The download couldn't be unzipped. Nothing was changed.")
         }
+        try Task.checkCancellation()
         try? fm.removeItem(at: zip)
         let app = unzipped.appending(path: "Amaranth.app")
         guard fm.fileExists(atPath: app.path) else { throw InstallError("The download doesn't contain Amaranth.app. Nothing was changed.") }
         let facts = await Task.detached { Self.facts(of: app) }.value
+        try Task.checkCancellation()
         let problems = UpdateBundleCheck.problems(facts, manifest: m, runningBundleID: Bundle.main.bundleIdentifier ?? "",
                                                   runningTeamID: teamID, systemVersion: ProcessInfo.processInfo.operatingSystemVersion)
         guard problems.isEmpty else {
@@ -101,6 +114,7 @@ extension UpdateModel {
             return
         }
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 60)
+        defer { downloadTask = nil }
         try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, any Error>) in
                 let task = GitHubReleasesSource.session.downloadTask(with: request) { tmp, response, error in
@@ -117,6 +131,7 @@ extension UpdateModel {
                     do { try FileManager.default.moveItem(at: tmp, to: dest); cont.resume() } catch { cont.resume(throwing: error) }
                 }
                 downloadTask = task
+                if Task.isCancelled { task.cancel() }   // Cancel arrived before the task existed
                 task.resume()
                 // Progress for the dialog, polled (no delegate needed).
                 Task { @MainActor [weak self, weak task] in
@@ -131,7 +146,6 @@ extension UpdateModel {
         } onCancel: {
             Task { @MainActor in self.downloadTask?.cancel() }
         }
-        downloadTask = nil
     }
 
     /// Copies the embedded helper next to the staged build and starts it; it outlives this process.
@@ -152,7 +166,14 @@ extension UpdateModel {
         p.standardInput = FileHandle.nullDevice
         p.standardOutput = FileHandle.nullDevice
         p.standardError = FileHandle.nullDevice
-        do { try p.run() } catch { throw InstallError("The update helper couldn't start (\(error.localizedDescription)). Nothing was changed.") }
+        helperProcess = p
+        do { try p.run() } catch { helperProcess = nil; throw InstallError("The update helper couldn't start (\(error.localizedDescription)). Nothing was changed.") }
+    }
+
+    /// Stops a helper still waiting for this process to quit (a vetoed quit), before anything reuses the staging folder.
+    func stopHelper() {
+        if let p = helperProcess, p.isRunning { p.terminate(); p.waitUntilExit() }
+        helperProcess = nil
     }
 
     func cleanUpStaging() {

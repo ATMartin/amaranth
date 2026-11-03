@@ -15,6 +15,8 @@ Every build is stamped by `scripts/stamp-build.sh` (an Xcode build phase on the 
 | `AmaranthChannel` | `release` or `debug` |
 
 `Amaranth.app/Contents/MacOS/Amaranth --build-info` prints these plus the library schema version as JSON.
+Because the number is the commit count, never rewrite published history or publish from a shallow clone: either
+would give numbers lower than (or equal to) builds already out, and those would never be offered.
 `scripts/build-app.sh` (used by `build-release.sh`, `install-local.sh` and `publish.sh`) refuses a stale stamp.
 
 ## Publishing (only when asked)

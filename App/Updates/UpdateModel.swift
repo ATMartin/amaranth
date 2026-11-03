@@ -56,6 +56,8 @@ final class UpdateModel {
     var allowAnyLocation = false
     var installTask: Task<Void, Never>?
     var downloadTask: URLSessionDownloadTask?
+    /// The helper started for this install; stopped if quitting was vetoed, so a retry can't race its cleanup.
+    var helperProcess: Process?
     /// Processing is queued or running (it picks up again after the relaunch; the step in progress starts over).
     var processingPending: () -> Bool = { false }
     /// This launch follows an in-app update from this build (`--updated-from`): the toolbar says so once.
@@ -81,9 +83,9 @@ final class UpdateModel {
     /// What the toolbar shows: "Updated to build N" (once, after an update) or "Update Didn't Install" take precedence.
     enum Note: Equatable { case updated(Int), failed(Int), available(UpdateCandidate) }
     var note: Note? {
-        if updatedFrom != nil { return .updated(running.build) }
         if let failedBuild, !noteDismissed { return .failed(failedBuild) }
-        if noteVisible, let available { return .available(available) }
+        if noteVisible, let available { return .available(available) }   // a newer build matters more than "Updated"
+        if updatedFrom != nil { return .updated(running.build) }
         return nil
     }
 
@@ -94,8 +96,18 @@ final class UpdateModel {
     }
 
     /// Starts a check unless one is running. A launch check that fails leaves the phase idle: nothing to show.
+    /// The check in flight reports its failure (rather than staying quiet) once the user asks too.
+    private var reportFailure = false
+
     func check(userInitiated: Bool) {
-        guard checkTask == nil else { return }
+        // An install in progress owns the dialog; a new check would hide its progress and Cancel.
+        guard installPhase == .idle || { if case .failed = installPhase { true } else { false } }() else { return }
+        if userInitiated { reportFailure = true }
+        guard checkTask == nil else {
+            if userInitiated { phase = .checking }   // the launch check in flight now answers the user
+            return
+        }
+        reportFailure = userInitiated
         if userInitiated || available == nil { phase = .checking }
         checkTask = Task { [weak self] in
             guard let self else { return }
@@ -105,7 +117,7 @@ final class UpdateModel {
             switch result {
             case .success(let c?): self.phase = .available(c)
             case .success(nil): self.phase = .upToDate
-            case .failure(let e): self.phase = userInitiated ? .failed(e.message) : (self.available.map(Phase.available) ?? .idle)
+            case .failure(let e): self.phase = self.reportFailure ? .failed(e.message) : (self.available.map(Phase.available) ?? .idle)
             }
         }
     }

@@ -2332,7 +2332,7 @@
       "id": "T73",
       "title": "Milestone Q validation",
       "milestone": "Q",
-      "status": "planned (un-parked 2026-11-02, user decision)",
+      "status": "done (2026-11-02): Sonnet verdict v1 PASS WITH FIXES (2 must-fix), fixes applied, v2 PASS; end-to-end in the real app 124→125→Debug 126→(failed swap)→127 (folder)→128 (GitHub); docs/qualification/milestone-q-e2e.md, milestone-q-verdict-v1/v2.md; hands-on checklist 88",
       "optional": false,
       "depends_on": [
         "T72"

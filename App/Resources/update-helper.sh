@@ -44,7 +44,11 @@ fi
 if [ "$FAIL_SWAP" = 1 ] || ! mv "$NEW" "$DEST"; then
   say "couldn't move the new build into place; restoring the previous app"
   if [ -e "$DEST" ]; then rm -rf "$DEST"; fi
-  if mv "$OLD" "$DEST"; then say "previous app restored"; else say "RESTORE FAILED: the previous app is at $OLD"; exit 2; fi
+  if mv "$OLD" "$DEST"; then say "previous app restored"; else
+    say "RESTORE FAILED: the previous app is at $OLD"
+    "$OPEN" -R "$OLD" 2>/dev/null   # show it in Finder rather than leave it hidden
+    exit 2
+  fi
   rm -rf "$STAGING"
   "$OPEN" "$DEST" --args --update-failed "$BUILD"
   exit 1
