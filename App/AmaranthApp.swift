@@ -1,10 +1,21 @@
 import SwiftUI
 import AppKit
 import Presentation
+import Storage
 
 @main
 struct AmaranthEntry {
     @MainActor static func main() {
+        // T70: `Amaranth --build-info` prints this build's identity as JSON (scripts/publish.sh writes it into manifests).
+        if CommandLine.arguments.contains("--build-info") {
+            let b = BuildInfo.running
+            let info: [String: Any] = ["version": b.version, "build": b.build, "commit": b.commit, "dirty": b.dirty, "date": b.date,
+                                       "channel": b.channel.rawValue, "schemaVersion": MeetingStore.schemaVersion,
+                                       "minimumSystemVersion": Bundle.main.object(forInfoDictionaryKey: "LSMinimumSystemVersion") as? String ?? ""]
+            let data = (try? JSONSerialization.data(withJSONObject: info, options: [.sortedKeys])) ?? Data()
+            FileHandle.standardOutput.write(data + Data("\n".utf8))
+            exit(0)
+        }
         if SelfTest.runIfRequested() {
             // Headless: keep the main run loop alive until the self-test exits the process.
             RunLoop.main.run()

@@ -2241,7 +2241,7 @@
       "id": "T70",
       "title": "Build numbers and the publish step (GitHub Releases)",
       "milestone": "Q",
-      "status": "planned (un-parked 2026-11-02, user decision)",
+      "status": "done (2026-11-02): scripts/stamp-build.sh build phase (app + worker), scripts/build-app.sh shared by build-release/install-local/publish, scripts/publish.sh, Amaranth --build-info",
       "optional": false,
       "depends_on": [
         "T69"

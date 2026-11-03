@@ -4,6 +4,8 @@ public import Domain
 /// Single controlled writer for the meeting database (plan §9). All access is serialized on one queue; callers on
 /// realtime/audio threads must never call in directly — the capture path batches through `SegmentIndexer`.
 public final class MeetingStore: @unchecked Sendable {
+    /// The library schema this build writes (`PRAGMA user_version` after migrating); in update manifests (T70).
+    public static let schemaVersion = Schema.migrations.count
     public let root: URL
     private let db: SQLiteDB
     private let queue = DispatchQueue(label: "amaranth.storage.writer")

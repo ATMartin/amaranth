@@ -18,30 +18,14 @@ for arg in "$@"; do
     *) echo "unknown option: $arg" >&2; exit 2 ;;
   esac
 done
-if [ "$CONFIG" = Release ]; then DERIVED=build/ReleaseDerivedData; else DERIVED=build/DerivedData; fi
-APP=$DERIVED/Build/Products/$CONFIG/Amaranth.app
 DEST=/Applications/Amaranth.app
 BUNDLE_ID=com.alexmartin.amaranth
-COMMIT="$(git rev-parse --short HEAD)$(git diff --quiet HEAD 2>/dev/null || echo "-dirty")"
 
-if [ $BUILD = 1 ]; then
-  echo "== build ($CONFIG, $COMMIT)"
-  [ "$CONFIG" = Release ] && scripts/generate-notices.sh
-  xcodegen generate --quiet
-  LOG=$(mktemp -t amaranth-install-build)
-  if ! xcodebuild -project Amaranth.xcodeproj -scheme Amaranth -configuration "$CONFIG" -derivedDataPath "$DERIVED" build \
-      >"$LOG" 2>&1; then
-    grep -E "error:" "$LOG" | sort -u | head -20
-    echo "BUILD FAILED (full log: $LOG)" >&2; exit 1
-  fi
-  /bin/rm -f "$LOG"
-fi
-test -d "$APP" || { echo "no build at $APP (run without --no-build)" >&2; exit 1; }
-
-echo "== verify"
-codesign --verify --deep --strict "$APP" || { echo "signature invalid or build incomplete: $APP" >&2; exit 1; }
-id=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP/Contents/Info.plist")
-[ "$id" = "$BUNDLE_ID" ] || { echo "unexpected bundle ID: $id" >&2; exit 1; }
+# T70: build + verification (bundle, signature, build stamp) shared with build-release.sh and publish.sh.
+ARGS=(); [ "$CONFIG" = Debug ] && ARGS+=(--debug); [ $BUILD = 0 ] && ARGS+=(--no-build)
+APP=$(scripts/build-app.sh ${ARGS[@]+"${ARGS[@]}"} | tee /dev/stderr | sed -n 's/^APP=//p')
+test -n "$APP"
+COMMIT="build $(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$APP/Contents/Info.plist") ($(/usr/libexec/PlistBuddy -c "Print :AmaranthCommit" "$APP/Contents/Info.plist"))"
 team() { codesign -dv "$1" 2>&1 | sed -n 's/^TeamIdentifier=//p'; }
 NEW_TEAM=$(team "$APP")
 echo "build: $CONFIG $COMMIT, team ${NEW_TEAM:-none}"
