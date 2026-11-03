@@ -27,7 +27,7 @@ fail() { echo "build-app: $*" >&2; exit 1; }
 
 if [ $BUILD = 1 ]; then
   say "== build ($CONFIG)"
-  [ "$CONFIG" = Release ] && scripts/generate-notices.sh >/dev/null
+  [ "$CONFIG" = Release ] && { scripts/generate-notices.sh >&2 || fail "generate-notices.sh failed (set SCRATCH to a resolved .build-check)"; }
   xcodegen generate --quiet
   LOG=$(mktemp -t amaranth-build)
   if ! xcodebuild -project Amaranth.xcodeproj -scheme Amaranth -configuration "$CONFIG" -derivedDataPath "$DERIVED" build \
