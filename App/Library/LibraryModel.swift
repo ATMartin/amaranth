@@ -5,6 +5,7 @@ import Capture
 import Storage
 import ProcessingCore
 import Presentation
+import MeetingAccess
 
 /// Library, search and the selected meeting's detail. Reloads (throttled) when processing changes state; all user
 /// actions go through the store and scheduler, never around them.
@@ -41,7 +42,7 @@ final class LibraryModel {
     var askSelection: Int?
     /// A hit or citation opened in a meeting that is still loading: applied once its detail arrives.
     private var pendingJump: Jump?
-    private enum Jump { case hit(SearchHit), evidence(MeetingID, TranscriptEvidence?, notes: Bool) }
+    private enum Jump { case hit(SearchHit), evidence(MeetingID, TranscriptEvidence?, notes: Bool), citation(CitationTarget) }
     /// T54: answers from the local model, shown above the matches. Nil in contexts without a worker (ui-render).
     var answers: AnswerModel?
     private(set) var error: String?
@@ -123,6 +124,7 @@ final class LibraryModel {
         switch pendingJump {
         case .hit(let hit) where hit.meetingID == id: pendingJump = nil; jump(to: hit, in: d)
         case .evidence(let m, let e, let notes) where m == id: pendingJump = nil; jump(to: e, notes: notes, in: d)
+        case .citation(let t) where t.meetingID == id: pendingJump = nil; jump(to: t, in: d)
         default: break
         }
     }
@@ -291,6 +293,56 @@ final class LibraryModel {
     }
 
     func dismissError() { error = nil }
+
+    // MARK: Source links (T97, spec 0009 §1): amaranth://meeting/… opened from an export or another app.
+
+    /// What a source link that can't be followed exactly says. `meeting`: offered with Open Meeting (a changed source).
+    struct SourceNotice: Identifiable {
+        let id = UUID()
+        let title: String
+        let message: String
+        let meeting: MeetingID?
+    }
+    var sourceNotice: SourceNotice?
+
+    /// Opens a source link: the cited transcript line or the Notes tab when it still resolves; otherwise says the source
+    /// changed (offering the meeting as it is now) or that the meeting isn't available. Never points at a different line,
+    /// never starts anything, never reveals removed text. Resolved off the main thread.
+    func openSourceLink(_ url: URL) {
+        guard let store else { return }
+        let reader = MeetingReader(store: store), text = url.absoluteString
+        Task.detached(priority: .userInitiated) {
+            let r = reader.resolve(text)
+            await MainActor.run { self.follow(r) }
+        }
+    }
+
+    func follow(_ r: CitationResolution) {
+        switch r {
+        case .current(let t):
+            if selection == t.meetingID, let d = detail, d.meeting.id == t.meetingID { jump(to: t, in: d) } else { pendingJump = .citation(t); selection = t.meetingID }
+        case .changed(let id, let title):
+            sourceNotice = SourceNotice(title: "This source has changed",
+                                        message: "The cited passage in “\(title)” was edited, removed or reprocessed after the link was made. Open the meeting to see it as it is now.",
+                                        meeting: id)
+        case .unavailable:
+            sourceNotice = SourceNotice(title: "Meeting not available", message: "This meeting isn't in Amaranth. It may have been deleted.", meeting: nil)
+        case .invalid:
+            sourceNotice = SourceNotice(title: "This link can't be opened", message: "It isn't a valid Amaranth meeting link.", meeting: nil)
+        }
+    }
+
+    func openNoticeMeeting(_ id: MeetingID) { sourceNotice = nil; selection = id }
+
+    private func jump(to t: CitationTarget, in d: MeetingDetail) {
+        switch t.source {
+        case .transcript?:
+            let rowID = "\(t.ref ?? "")/\(t.word ?? "")"
+            if d.rows.contains(where: { $0.id == rowID }) { detailTab = .transcript; focusRowID = rowID } else { follow(.changed(meetingID: t.meetingID, title: t.title)) }
+        case .notes?, .userNote?: detailTab = .notes
+        case nil: break
+        }
+    }
 
     // MARK: Folders (T40): New Folder…, Rename… and Delete Folder… are asked for here and presented once by MainView.
 

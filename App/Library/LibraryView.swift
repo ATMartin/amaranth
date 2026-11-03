@@ -142,6 +142,16 @@ struct MainView: View {
         .alert("Something went wrong", isPresented: Binding(get: { library.error != nil }, set: { _ in })) {
             Button("OK") { library.dismissError() }
         } message: { Text(library.error ?? "") }
+        .alert(library.sourceNotice?.title ?? "", isPresented: Binding(get: { library.sourceNotice != nil }, set: { if !$0 { library.sourceNotice = nil } }),
+               presenting: library.sourceNotice) { n in
+            if let m = n.meeting {
+                Button("Open Meeting") { library.openNoticeMeeting(m) }
+                Button("Cancel", role: .cancel) {}
+            } else {
+                Button("OK", role: .cancel) {}
+            }
+        } message: { n in Text(n.message) }
+        .onOpenURL { library.openSourceLink($0) }
     }
 }
 

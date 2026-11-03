@@ -117,7 +117,7 @@ extension MeetingStore {
     }
 
     /// Each speaker's shown name, with renames the user made since this revision was reconciled applied on top.
-    static func speakerNames(_ speakers: [Speaker], _ edits: [UserEdit]) -> [SpeakerID: String] {
+    public static func speakerNames(_ speakers: [Speaker], _ edits: [UserEdit]) -> [SpeakerID: String] {
         var names = Dictionary(speakers.map { ($0.id, $0.shownName) }, uniquingKeysWith: { a, _ in a })
         for e in edits where e.conflict == .applied {
             if case .renameSpeaker(let id, let name) = e.operation, let sp = speakers.first(where: { $0.id == id }) { names[id] = name ?? sp.label }

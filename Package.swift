@@ -23,6 +23,7 @@ let package = Package(
         .library(name: "ProcessingRuntime", targets: ["ProcessingRuntime"]),
         .library(name: "Notes", targets: ["Notes"]),
         .library(name: "Export", targets: ["Export"]),
+        .library(name: "MeetingAccess", targets: ["MeetingAccess"]),
         .library(name: "Presentation", targets: ["Presentation"]),
     ],
     dependencies: [
@@ -51,10 +52,12 @@ let package = Package(
                     path: "Tests/Diarization", swiftSettings: strict),
         .target(name: "Notes", dependencies: ["Domain", "llama"], path: "Notes", swiftSettings: strict),
         .target(name: "Export", dependencies: ["Domain"], path: "Export", swiftSettings: strict),
+        // Spec 0009: the external read model (snapshots, citations, retrieval) shared by bulk export and future adapters.
+        .target(name: "MeetingAccess", dependencies: ["Domain", "Storage"], path: "MeetingAccess", swiftSettings: strict),
         .target(name: "Presentation", dependencies: ["Domain", "Storage"], path: "Presentation", swiftSettings: strict),
         .testTarget(name: "PresentationTests", dependencies: ["Presentation", "Storage", "Domain", "DomainFixtures", "ProcessingCore", "Export"],
                     path: "Tests/UI", exclude: ["Fixtures"], swiftSettings: strict),
-        .testTarget(name: "DataLifecycleTests", dependencies: ["Export", "Storage", "ProcessingCore", "Domain", "Presentation"], path: "Tests/DataLifecycle", swiftSettings: strict),
+        .testTarget(name: "DataLifecycleTests", dependencies: ["Export", "Storage", "ProcessingCore", "Domain", "Presentation", "MeetingAccess"], path: "Tests/DataLifecycle", swiftSettings: strict),
         .testTarget(name: "NotesTests", dependencies: ["Notes", "Domain", "DomainFixtures", "Scoring"], path: "Tests/Notes", swiftSettings: strict),
         .target(name: "ProcessingCore", dependencies: ["Domain", "Storage"], path: "InferenceWorker/Core", swiftSettings: strict),
         .target(name: "ProcessingRuntime", dependencies: ["Domain", "ProcessingCore", "ASR", "Diarization", "Models", "Notes"],
@@ -77,13 +80,16 @@ let package = Package(
                                                          "Storage", "Presentation"],
                           path: "Benchmarks/Harness"),
         .testTarget(name: "ScoringTests", dependencies: ["Scoring"], path: "Tests/Benchmarks", swiftSettings: strict),
+        // Spec 0009: the external read model on an isolated library (seeding, snapshots, links; T98 adds measurements).
+        .executableTarget(name: "amaranth-access", dependencies: ["MeetingAccess", "Storage", "Domain"], path: "Benchmarks/Access"),
         .executableTarget(name: "amaranth-recorder-child", dependencies: ["Capture", "Domain", "Storage"], path: "Tests/RecoveryChild"),
         .testTarget(name: "CaptureTests", dependencies: ["Capture", "Domain", "CaptureRT", "Storage", "amaranth-recorder-child"], path: "Tests/Capture",
                     swiftSettings: strict),
         .testTarget(
             name: "ContractTests",
-            dependencies: ["Domain", "DomainFixtures"],
+            dependencies: ["Domain", "DomainFixtures", "MeetingAccess", "Storage"],
             path: "Tests/Contract",
+            exclude: ["Fixtures"],
             swiftSettings: strict
         ),
     ]

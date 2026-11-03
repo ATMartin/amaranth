@@ -1,0 +1,196 @@
+{
+  "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11",
+  "durationNs" : 60000000000,
+  "fingerprint" : "aa8055a5697e168f272a2d02c66817dc54ad6581df7494dcc5b78d419baaf891",
+  "folder" : {
+    "id" : "folder-1",
+    "name" : "Clients"
+  },
+  "format" : "amaranth-meeting",
+  "gaps" : [
+    {
+      "endNs" : 55000000000,
+      "reason" : "audio not recorded",
+      "source" : "systemOutput",
+      "startNs" : 40000000000
+    }
+  ],
+  "generatedNotes" : {
+    "fromTranscriptRevision" : "rev-final-1",
+    "generatedAt" : "2027-01-15T08:03:20.000Z",
+    "promptVersion" : "notes-v9",
+    "revisionID" : "sum-1",
+    "stale" : true
+  },
+  "libraryID" : "6f1d6a10-3a4e-4d8e-8f0e-9a7c5b4e3d21",
+  "limitations" : [
+    "Transcript lines were deleted or trimmed. The notes are shown as they are and may still mention removed discussion; removing a topic also needs the notes edited or regenerated.",
+    "The generated notes were made from an earlier version of the transcript.",
+    "Notes lines by \"user\" were written or edited by a person; they are not something said in the meeting.",
+    "Lines marked uncertain could not be fully checked against the transcript.",
+    "Generated notes and transcription can contain errors; check important items against the cited lines.",
+    "Some stretches have no transcript; they are listed under gaps.",
+    "People lists who was in the meeting, not who said a given line."
+  ],
+  "meetingID" : "0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11",
+  "notes" : [
+    {
+      "author" : "model",
+      "blockID" : "h-dec",
+      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=notes&ref=h-dec&revision=notes-rev-2&h=cfa6a08af3ed5871",
+      "evidence" : [
+
+      ],
+      "kind" : "heading",
+      "section" : "decisions",
+      "text" : "Decisions",
+      "uncertain" : false
+    },
+    {
+      "author" : "model",
+      "blockID" : "item-1",
+      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=notes&ref=item-1&revision=notes-rev-2&h=306d9ffa4367ad11",
+      "evidence" : [
+        {
+          "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=transcript&ref=seg-b&word=b1&revision=rev-final-1&h=bc3ab803de54d807",
+          "firstWordID" : "b1",
+          "lastWordID" : "b3",
+          "revisionID" : "rev-final-1",
+          "segmentID" : "seg-b",
+          "startNs" : 10000000000,
+          "status" : "current",
+          "type" : "transcript"
+        }
+      ],
+      "kind" : "paragraph",
+      "text" : "Ship the build on Friday",
+      "uncertain" : false
+    },
+    {
+      "author" : "model",
+      "blockID" : "item-2",
+      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=notes&ref=item-2&revision=notes-rev-2&h=389d7e55f1e9c26b",
+      "detail" : "Rae  ·  no date stated",
+      "evidence" : [
+        {
+          "firstWordID" : "c1",
+          "lastWordID" : "c2",
+          "revisionID" : "rev-final-1",
+          "segmentID" : "seg-c",
+          "status" : "removed",
+          "type" : "transcript"
+        },
+        {
+          "blockID" : "blk-user",
+          "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=userNote&ref=blk-user&revision=notes-rev-2&h=e66db192333f186f",
+          "revisionID" : "notes-rev-1",
+          "status" : "current",
+          "type" : "userNote"
+        }
+      ],
+      "kind" : "bullet",
+      "text" : "Drop the old plan",
+      "uncertain" : true
+    },
+    {
+      "author" : "model",
+      "blockID" : "item-3",
+      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=notes&ref=item-3&revision=notes-rev-2&h=f01c36c8b510c05b",
+      "evidence" : [
+        {
+          "firstWordID" : "x1",
+          "lastWordID" : "x2",
+          "revisionID" : "rev-old",
+          "segmentID" : "seg-x",
+          "status" : "otherRevision",
+          "type" : "transcript"
+        }
+      ],
+      "kind" : "bullet",
+      "text" : "Older idea",
+      "uncertain" : false
+    },
+    {
+      "author" : "user",
+      "blockID" : "blk-user",
+      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=userNote&ref=blk-user&revision=notes-rev-2&h=e66db192333f186f",
+      "evidence" : [
+
+      ],
+      "kind" : "paragraph",
+      "text" : "Ask Rae about the venue",
+      "typedAtSeconds" : 31.5,
+      "uncertain" : false
+    }
+  ],
+  "people" : [
+    "Dana",
+    "Rae"
+  ],
+  "readAt" : "2027-01-15T08:16:40.000Z",
+  "revisions" : {
+    "editSequence" : 4,
+    "notes" : "notes-rev-2",
+    "transcript" : "rev-final-1",
+    "transcriptKind" : "final"
+  },
+  "speakers" : [
+    {
+      "id" : "spk-1",
+      "name" : "Dana"
+    },
+    {
+      "id" : "spk-2",
+      "name" : "Rae"
+    }
+  ],
+  "start" : "2027-01-15T08:00:00.250Z",
+  "state" : {
+    "audio" : "present",
+    "capture" : "saved",
+    "editsNeedingReview" : 0,
+    "newerNotesPending" : false,
+    "notes" : "ready",
+    "notesStale" : true,
+    "transcript" : "final",
+    "transcriptLinesRemoved" : true
+  },
+  "timeZone" : "Europe/Berlin",
+  "title" : "Q4 \"launch\": plan\nweek 2 — café",
+  "transcript" : [
+    {
+      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=transcript&ref=seg-b&word=b1&revision=rev-final-1&h=bc3ab803de54d807",
+      "endNs" : 11400000000,
+      "flags" : [
+        "corrected"
+      ],
+      "segmentID" : "seg-b",
+      "source" : "systemOutput",
+      "speaker" : "Dana",
+      "speakerIDs" : [
+        "spk-1"
+      ],
+      "startNs" : 10000000000,
+      "text" : "ship the build friday",
+      "wordID" : "b1"
+    },
+    {
+      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=transcript&ref=seg-d&word=d1&revision=rev-final-1&h=bb36f57782ca24e8",
+      "endNs" : 31400000000,
+      "flags" : [
+        "overlap"
+      ],
+      "segmentID" : "seg-d",
+      "source" : "microphone",
+      "speaker" : "Dana + Rae (overlapping)",
+      "speakerIDs" : [
+        "spk-1",
+        "spk-2"
+      ],
+      "startNs" : 30000000000,
+      "text" : "sounds good",
+      "wordID" : "d1"
+    }
+  ],
+  "version" : 1
+}

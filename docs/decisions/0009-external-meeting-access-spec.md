@@ -83,6 +83,68 @@ attribute the old quote to a new line. Deleted meetings show unavailable. URLs g
 and never reveal hidden text or restore a deleted meeting. Exports also retain readable title/date/time references
 for tools that cannot open app URLs.
 
+### 1a. As implemented (T97, 2026-11-03)
+
+Module `MeetingAccess/` (SwiftPM target and app dependency; Domain + Storage only, no inference). Storage adds
+`MeetingStore.readMeetingSource(_:)`: one pass on the store's single queue (meeting, folder, shown machine revision,
+edits, current notes document, the generated notes it was composed from, jobs, events), so a snapshot is one state of
+the meeting. `MeetingReader.snapshot(_:)` returns nil for a missing or deleted meeting.
+
+**Envelope `amaranth-meeting` v1** (`MeetingSnapshot`, golden fixture `Tests/Contract/Fixtures/meeting-snapshot-v1.json`):
+`libraryID` (random UUID in `library-id` beside the database, 0600, made on first read; no migration), `meetingID`,
+`fingerprint`, `readAt`, `title`, `start` (UTC; recording start or creation), `timeZone`, `durationNs`, `folder`
+{id, name}, `people` (names only), `state`, `revisions` {transcript, transcriptKind, notes, editSequence},
+`generatedNotes` (provenance only: revision, prompt version, time, source transcript revision, stale), `speakers`,
+`transcript` lines, `gaps`, `notes` lines, `limitations`, `citation`. JSON: sorted keys, ISO-8601 UTC dates with
+milliseconds (dates are rounded to milliseconds so a decoded snapshot equals the original).
+
+- **Transcript lines** are the app's rows: one per speaker run within a segment, after corrections, deleted lines and
+  trims (`TranscriptRevision.applyingTextEdits`), with speaker names including renames not yet reconciled (as search
+  shows them). Fields: segment and first-word IDs, start/end ns, source, shown speaker label and IDs, text, flags
+  (`overlap`, `uncertainSpeaker`, `questionableText`, `probableEcho`, `corrected`), citation.
+- **States:** capture (notStarted, recording, paused, saving, saved, savedWithGaps, interrupted); audio (present,
+  deleted); transcript (none, processing, failed, provisional, final); notes (none, generating, failed, ready);
+  notesStale; newerNotesPending; editsNeedingReview; transcriptLinesRemoved. A notes-only meeting is a valid snapshot
+  with transcript `none` and an explicit limitation.
+- **Notes lines** are the notes document's non-empty blocks: block ID, kind, section, text, detail, author (`user`
+  or `model`; a user line is never presented as spoken), typed-at seconds, uncertain, evidence, citation.
+- **Evidence** carries IDs and times only, never text: `type` transcript or userNote, `status` current (resolves in
+  this snapshot, with its citation and start time), removed (the cited words or line are no longer shown), or
+  otherRevision (cites an earlier transcript; the notes are stale).
+- **Fingerprint:** SHA-256 over the compact canonical encoding with `readAt` zeroed and the fingerprint blank. Because
+  the payload includes the title, people, folder name, speaker names, every displayed line, notes, revision IDs and
+  the highest edit sequence, any relevant mutation changes it (test: title, people, folder move and rename, speaker
+  rename, correction, deletion, trim, other edits, notes save, new transcript revision).
+- **Never included:** hidden/original revisions or words, the generated summary's body, attendee emails, raw
+  calendar event data, audio, work files, prompts, local paths. Planted markers for each are checked by tests.
+- **Redaction limit (disclosed):** notes are exported as shown even after transcript lines are deleted or trimmed;
+  the snapshot says so in `limitations` and marks the affected evidence `removed`. Removing a topic from what tools
+  can read also needs the notes edited or regenerated.
+
+**Source links.** `amaranth://meeting/<uuid>` with optional `source` (transcript, notes, userNote), `ref`, `word`
+(transcript only), `revision` and `h` (16 hex digits of SHA-256 of the line text as shown; notes hash text and
+detail). Parsing rejects other schemes and hosts, credentials, ports, fragments, extra path segments, non-UUID
+meeting IDs, unknown or repeated parameters, any value outside `[A-Za-z0-9-_.:]{1,128}` (so percent-escapes,
+spaces and quotes fail), a passage without `ref` and `revision`, and URLs over 2,048 bytes, all before any lookup.
+A passage resolves when it is shown now and either its revision is current or its hash still matches (an unchanged
+notes line stays citable across later notes revisions). Otherwise the result is *changed* (the meeting is offered,
+never a nearby line); a missing or deleted meeting is *unavailable*. The app registers the scheme and only navigates:
+a current transcript link opens the meeting on Transcript with the row highlighted, a notes link opens Notes, and
+changed/unavailable/invalid links show an alert ("This source has changed" with Open Meeting). Evidence:
+`docs/qualification/milestone-s/t97-link-*.png` (synthetic library, Debug build).
+
+**Shared bounds and errors** (`AccessLimits`, `AccessError`): 2,000 query characters, 50 meeting IDs, 50 list rows,
+20 search passages, 64 KiB response, 30 s deadline, 128-character identifiers. Error codes: `invalid_request`,
+`unavailable` (missing, deleted or out of scope; indistinguishable on purpose), `changed`, `bad_query`,
+`restart_required`, `cancelled`, `deadline_exceeded`, `internal`.
+
+**Compatibility:** `ExternalSchema.version` changes with any change to the payload's shape; every fixture
+`meeting-snapshot-v*.json` must keep decoding and its fingerprint must verify. The `amaranth-export` v2 single-meeting
+export is unchanged.
+
+**Tools:** `amaranth-access seed-demo|snapshot|resolve <library-root>` (an isolated library only), and Debug builds
+accept `--library-root <folder>` to run the app on a synthetic library (no reminders or update check then).
+
 ## 2. Retrieval API
 
 Use the same operations for MCP and future scripting adapters:

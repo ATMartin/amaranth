@@ -2966,7 +2966,7 @@
       "id": "T97",
       "title": "Define current meeting snapshots and durable source citations",
       "milestone": "S",
-      "status": "accepted (2026-11-03): not started",
+      "status": "done (2026-11-03): MeetingAccess module, amaranth-meeting v1 snapshot + golden fixture, amaranth:// source links with app navigation, spec 0009 §1a",
       "optional": false,
       "depends_on": [
         "T93",

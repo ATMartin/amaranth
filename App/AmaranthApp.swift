@@ -44,7 +44,8 @@ struct AmaranthApp: App {
     init() {
         let worker = WorkerClient()
         #if DEBUG
-        let recorder = StopLayoutProbe.isRequested ? RecorderModel(store: StopLayoutProbe.store, recover: false) : RecorderModel()
+        let recorder = StopLayoutProbe.isRequested ? RecorderModel(store: StopLayoutProbe.store, recover: false)
+            : Self.libraryRootOverride.map { RecorderModel(store: try? MeetingStore(root: $0)) } ?? RecorderModel()
         #else
         let recorder = RecorderModel()
         #endif
@@ -119,7 +120,14 @@ struct AmaranthApp: App {
     }
 
     #if DEBUG
-    static var probing: Bool { StopLayoutProbe.isRequested }
+    static var probing: Bool { StopLayoutProbe.isRequested || libraryRootOverride != nil }
+    /// Debug builds only: `--library-root <folder>` opens a synthetic library there instead of the real one (spec 0009
+    /// evidence uses isolated libraries). No reminders or update check run in that mode.
+    static var libraryRootOverride: URL? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "--library-root"), args.indices.contains(i + 1) else { return nil }
+        return URL(filePath: args[i + 1], directoryHint: .isDirectory)
+    }
     #else
     static let probing = false
     #endif
