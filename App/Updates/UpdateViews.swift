@@ -88,7 +88,7 @@ struct UpdateWindow: View {
             Text("Amaranth \(updates.running.label) is the newest build\(UpdateSettings.includeDebug() ? ", debug builds included" : "").")
                 .foregroundStyle(Color.brandSecondary)
             sourceLine
-            buttons { Button("OK") { dismiss() }.keyboardShortcut(.defaultAction) }
+            buttons { Button("OK") { dismiss() }.keyboardShortcut(.defaultAction).accessibilityLabel("OK") }
         case .failed(let message):
             Label { Text(message).fixedSize(horizontal: false, vertical: true) } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(Color.statusAttention) }
             sourceLine
@@ -155,10 +155,10 @@ struct UpdateWindow: View {
                 if let fraction { ProgressView(value: fraction) } else { ProgressView().progressViewStyle(.linear) }
                 Text("Downloading…").appFont(.caption).foregroundStyle(Color.brandSecondary)
             }
-            buttons { Button("Cancel") { updates.cancelInstall() }.keyboardShortcut(.cancelAction) }
+            buttons { Button("Cancel") { updates.cancelInstall() }.keyboardShortcut(.cancelAction).accessibilityLabel("Cancel") }
         case .verifying:
             HStack(spacing: 8) { ProgressView().controlSize(.small); Text("Checking the download…").foregroundStyle(Color.brandSecondary) }
-            buttons { Button("Cancel") { updates.cancelInstall() }.keyboardShortcut(.cancelAction) }
+            buttons { Button("Cancel") { updates.cancelInstall() }.keyboardShortcut(.cancelAction).accessibilityLabel("Cancel") }
         case .relaunching:
             HStack(spacing: 8) { ProgressView().controlSize(.small); Text("Relaunching…").foregroundStyle(Color.brandSecondary) }
         case .idle, .failed:
@@ -174,7 +174,9 @@ struct UpdateWindow: View {
             }
             buttons {
                 Button("Later") { updates.later(); updates.installPhase = .idle; dismiss() }.keyboardShortcut(.cancelAction)
+                    .accessibilityLabel("Later")
                 Button("Install and Relaunch") { updates.install(c) }.keyboardShortcut(.defaultAction)
+                    .accessibilityLabel("Install and Relaunch")
                     .disabled(updates.installBlocker != nil)
             }
         }
