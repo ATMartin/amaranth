@@ -61,7 +61,8 @@ CHANNEL=$(plist "$APP" AmaranthChannel)
 [ "$(plist "$WORKER" CFBundleVersion)" = "$BUILD_NO" ] || fail "worker build $(plist "$WORKER" CFBundleVersion) differs from the app's $BUILD_NO"
 if [ "$CONFIG" = Release ]; then
   [ "$CHANNEL" = release ] || fail "Release build stamped channel $CHANNEL"
-  strings "$WORKER/Contents/MacOS/com.alexmartin.amaranth.InferenceWorker" | grep -q "faultInjection.disabled" \
+  # grep the binary directly: `strings | grep -q` dies of SIGPIPE under pipefail.
+  LC_ALL=C grep -qa "faultInjection.disabled" "$WORKER/Contents/MacOS/com.alexmartin.amaranth.InferenceWorker" \
     || fail "fault injection not compiled out of Release"
 fi
 say "verified: $CONFIG build $BUILD_NO ($COMMIT$( [ "$DIRTY" = true ] && echo -dirty ), channel $CHANNEL), team ${TEAM:-none}," \
