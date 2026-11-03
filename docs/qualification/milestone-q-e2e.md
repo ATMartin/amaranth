@@ -23,3 +23,18 @@ Software Update window's buttons, exactly as a click would.
   leaf certificate), so the microphone/system-audio grants carry over; library 10 meetings, 0 folders, schema 6
   (unchanged). Toolbar: **Updated to build 125**; clicking it removed it.
 - Amaranth ▸ Check for Updates… on 125: "You're up to date — Amaranth 0.1.0 (125) is the newest build."
+
+## 2. GitHub, Debug with the opt-in (125 → Debug 126), and an older Release
+
+- Debug 126 (e815250) published as prerelease `build-126-debug` (`scripts/publish.sh --debug`; GitHub shows it as a
+  pre-release with the zip and manifest.json).
+- On Release 125 with Include Debug builds off: Check for Updates… → "You're up to date — Amaranth 0.1.0 (125) is the
+  newest build." With it on (`defaults write com.alexmartin.amaranth updates.includeDebug -bool true`, read live):
+  "A new build is available", Available 0.1.0 (126) Debug e815250, 25.1 MB.
+- Install and Relaunch: `22:13:51 update 125 → 126: waiting … installed; relaunching`, new process 2 s after the click;
+  `--build-info` build 126, channel debug; same leaf certificate; library 10 meetings, schema 6; toolbar "Updated to
+  build 126".
+- Older build: on Debug 126 with the opt-in off, GitHub's newest Release is 125, and Check for Updates… says "You're up
+  to date — Amaranth 0.1.0 (126) Debug is the newest build." (no rollback offered).
+- The Software Update window's buttons report an empty AXDescription to System Events even with
+  `.accessibilityLabel` (c126); they're clickable by position. VoiceOver reading is left to checklist 88.
