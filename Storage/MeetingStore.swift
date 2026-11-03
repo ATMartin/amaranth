@@ -71,6 +71,7 @@ public final class MeetingStore: @unchecked Sendable {
     /// updates keep a title renamed while recording (by the user, or an approved calendar suggestion, T59).
     public func upsertMeeting(_ meeting: Meeting, keepingStoredTitle: Bool = false) throws {
         try sync {
+            db.contentGeneration &+= 1
             var m = meeting
             if let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(m.id.rawValue)]).first?["json"]?.blob {
                 let stored = try ContractCoding.decode(Meeting.self, from: row)
@@ -157,6 +158,7 @@ public final class MeetingStore: @unchecked Sendable {
                 guard let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(id.rawValue)]).first?["json"]?.blob else { return }
                 var m = try ContractCoding.decode(Meeting.self, from: row)
                 guard m.deletedAt == nil else { return }
+                db.contentGeneration &+= 1
                 change(&m)
                 try db.run("UPDATE meetings SET linked_event_id=?, folder_id=?, json=? WHERE id=?",
                            [m.linkedEvent.map { .text($0.identifier) } ?? .null, m.folderID.map { .text($0.rawValue) } ?? .null,
@@ -250,6 +252,7 @@ public final class MeetingStore: @unchecked Sendable {
                             replacingEvents clipped: [CaptureEvent] = [], duration: SessionDuration, captureState: CaptureState? = nil) throws {
         try sync {
             try db.transaction {
+                db.contentGeneration &+= 1
                 for id in segments { try db.run("DELETE FROM audio_segments WHERE id = ? AND meeting_id = ?", [.text(id.rawValue), .text(meeting.rawValue)]) }
                 for id in events { try db.run("DELETE FROM capture_events WHERE id = ? AND meeting_id = ?", [.text(id.rawValue), .text(meeting.rawValue)]) }
                 for e in clipped where e.meetingID == meeting {

@@ -174,7 +174,7 @@ public enum SnapshotBuilder {
     }
 
     /// Dates go out with millisecond precision (what ISO-8601 carries), so a decoded snapshot equals the original.
-    static func ms(_ d: Date) -> Date { Date(timeIntervalSince1970: (d.timeIntervalSince1970 * 1000).rounded() / 1000) }
+    public static func ms(_ d: Date) -> Date { Date(timeIntervalSince1970: (d.timeIntervalSince1970 * 1000).rounded() / 1000) }
 
     static func noteURL(_ id: MeetingID, _ d: NotesDocumentRevision, _ b: NoteBlock) -> String {
         SourceURL(meetingID: id, source: b.isUser ? .userNote : .notes, ref: b.id.rawValue, revision: d.id.rawValue,

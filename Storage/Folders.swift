@@ -52,6 +52,7 @@ extension MeetingStore {
                 guard let row = try db.run("SELECT json FROM folders WHERE id=?", [.text(id.rawValue)]).first?["json"]?.blob else {
                     throw FolderError.missingFolder
                 }
+                db.contentGeneration &+= 1
                 try Self.checkUnique(db, name, except: id)
                 var folder = try ContractCoding.decode(Folder.self, from: row)
                 folder.name = name
@@ -64,6 +65,7 @@ extension MeetingStore {
     public func deleteFolder(_ id: FolderID) throws {
         try withDB { db in
             try db.transaction {
+                db.contentGeneration &+= 1
                 for row in try db.run("SELECT id, json FROM meetings WHERE folder_id=?", [.text(id.rawValue)]) {
                     guard let mid = row["id"]?.text, let blob = row["json"]?.blob else { continue }
                     var m = try ContractCoding.decode(Meeting.self, from: blob)
@@ -81,6 +83,7 @@ extension MeetingStore {
         // One transaction: a deleteFolder can't land between the check and the write and leave a dangling folder_id.
         try withDB { db in
             try db.transaction {
+                db.contentGeneration &+= 1
                 if let folder, try db.run("SELECT 1 FROM folders WHERE id=?", [.text(folder.rawValue)]).isEmpty { throw FolderError.missingFolder }
                 guard let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(id.rawValue)]).first?["json"]?.blob else { return }
                 var m = try ContractCoding.decode(Meeting.self, from: row)

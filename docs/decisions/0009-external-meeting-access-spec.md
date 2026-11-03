@@ -174,6 +174,35 @@ blocks a claim of adequate retrieval; document failures and improve lexical beha
 If paraphrase misses materially affect real use, propose local hybrid FTS + embeddings with measured recall/latency,
 model size and reindex/deletion costs. Embeddings are not a prerequisite to connect an assistant.
 
+### 2a. As implemented (T98, 2026-11-03)
+
+`MeetingAccess/Retrieval.swift`: `MeetingReader.listMeetings`, `searchMeetings`, `getMeeting`, each taking an
+`AccessScope` (all, fixed meetings, folders; the policy hook Milestone T maps grants onto) and an `AccessContext`
+(cancellation, 30 s deadline, checked between bounded steps).
+
+- **Filters** (`MeetingFilter`): title substring and participant (both case- and accent-insensitive; participant matches
+  a listed person's full name or one word of it), folder ID, `startFrom` inclusive / `startBefore` exclusive (UTC
+  recording start). Scope and filters reduce the meeting set first; search passes it into the FTS query
+  (`Retriever.search(…, meetings:)`), so ranking, ±2-line context windows and the cross-meeting spread never touch an
+  out-of-scope line. An out-of-scope or deleted ID is `unavailable`, exactly like a missing one.
+- **Listing** returns metadata and state only (never text), newest first with ties by ID, at most 50 rows.
+- **Search** returns at most 20 passages per page, 100 ranked passages in all, with the matched terms and limitations.
+  Passages and their citations come from the search index (displayed content, rewritten in the same transaction as
+  every edit), not from decoded transcripts; ties rank by meeting and ref. Each passage carries its source revision; the
+  meeting fingerprint comes from get_meeting. Empty query → `bad_query` (use listing); a query with no searchable words
+  → `bad_query`; FTS syntax in queries is quoted away. Words keep simple forms only (lexical, not semantic).
+- **get_meeting** returns one section (metadata, notes, or transcript optionally limited to [startNs, endNs)) of the
+  current snapshot, paged to 64 KiB; an item too large for one response comes in character-boundary parts with
+  `fragment` {item, fromCharacter, toCharacter, complete}. `expectedFingerprint` mismatch → `changed` with the current one.
+- **Cursors** are opaque base64url, bound to the operation and a digest of the request; list/search cursors carry the
+  library's content generation (a counter the store bumps on every write that changes content or scope, plus a
+  per-opening nonce), get cursors the meeting fingerprint. A different request → `invalid_request`; a changed
+  generation/fingerprint → `restart_required`.
+- **Measured** (report `docs/qualification/milestone-s/t98-retrieval-report.md`): lexical Recall@10 100% (33), paraphrase
+  25% (8, misses listed), citation resolution 1257/1257, adversarial 12/12; 200 meetings × 1,000 lines: warm p95 201 ms
+  for search, ≈ 85 ms for get, cold p95 ≤ 100 ms; 1,000 meetings not measured (user decision). Hybrid search is not
+  proposed: the paraphrase gap is recorded for a later, separate proposal if real use shows it matters.
+
 ## 3. Local MCP and access boundary
 
 Bundle a small signed `amaranth-mcp` executable. The host launches it over **stdio**; it delegates to an authenticated,

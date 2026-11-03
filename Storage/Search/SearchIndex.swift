@@ -75,6 +75,7 @@ extension MeetingStore {
     /// Transcript rows are inserted in transcript order, so a segment's neighbours are the adjacent rowids (the
     /// retriever's ±2-line windows rely on this).
     static func reindex(_ db: SQLiteDB, _ meeting: MeetingID) throws {
+        db.contentGeneration &+= 1
         try db.run("DELETE FROM search_index WHERE meeting_id=?", [.text(meeting.rawValue)])
         guard let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(meeting.rawValue)]).first?["json"]?.blob else { return }
         let m = try ContractCoding.decode(Meeting.self, from: row)

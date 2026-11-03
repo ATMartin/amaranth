@@ -129,8 +129,10 @@ extension MeetingSnapshot {
         }
         switch source {
         case .transcript:
+            // A search citation names a segment by its first word and hashes the whole segment; usually that is one line.
+            let segment = transcript.filter { $0.segmentID == ref }.map(\.text).joined(separator: " ")
             guard let line = transcript.first(where: { $0.segmentID == ref && (url.word == nil || $0.wordID == url.word) }),
-                  check(currentRevision: revisions.transcript, text: line.text)
+                  check(currentRevision: revisions.transcript, text: line.text) || check(currentRevision: revisions.transcript, text: segment)
             else { return .changed(meetingID: id, title: title) }
             return .current(CitationTarget(meetingID: id, title: title, source: .transcript, ref: ref, word: line.wordID, startNs: line.startNs))
         case .notes, .userNote:
@@ -143,6 +145,7 @@ extension MeetingSnapshot {
 }
 
 enum NoteLineText {
-    /// The text a notes citation hashes: the line, and its detail line when it has one.
-    static func hashed(_ text: String, _ detail: String?) -> String { detail.map { text + "\n" + $0 } ?? text }
+    /// The text a notes citation hashes: the line, and its detail line when it has one, joined as the search index
+    /// stores them (so search can cite without reading the document).
+    static func hashed(_ text: String, _ detail: String?) -> String { detail.map { text + " — " + $0 } ?? text }
 }

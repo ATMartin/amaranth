@@ -10,6 +10,11 @@ final class SQLiteDB {
     }
 
     private(set) var handle: OpaquePointer?
+    /// Spec 0009 §2: bumped by every write that changes meeting content or scope (search index, metadata, folders,
+    /// edits, deletion), so external cursors from an earlier state can ask for a restart. `instance` tells apart two
+    /// openings of the library (a counter restarts at 0).
+    var contentGeneration: Int64 = 0
+    let instance = UUID().uuidString.prefix(8).lowercased()
     private var statements: [String: OpaquePointer] = [:]
 
     init(path: String) throws {

@@ -14,8 +14,14 @@ public struct Passage: Hashable, Sendable {
         public var text: String
         /// This line matched the question (the others are context).
         public var matched: Bool
-        public init(segmentID: TranscriptSegmentID?, start: SessionTime?, speaker: String?, text: String, matched: Bool) {
+        /// Spec 0009 citations: the transcript revision and first shown word of the line, or the notes document revision
+        /// the line belongs to. Read from the same index rows, so they match `text`.
+        public var revisionID: RevisionID?
+        public var firstWord: WordID?
+        public init(segmentID: TranscriptSegmentID?, start: SessionTime?, speaker: String?, text: String, matched: Bool,
+                    revisionID: RevisionID? = nil, firstWord: WordID? = nil) {
             self.segmentID = segmentID; self.start = start; self.speaker = speaker; self.text = text; self.matched = matched
+            self.revisionID = revisionID; self.firstWord = firstWord
         }
     }
     public var meetingID: MeetingID
@@ -47,7 +53,7 @@ public struct Retriever: Sendable {
     /// Most rows between the first and last matching line of one passage.
     public var maxSpan = 6
     /// Candidate rows read from FTS before windowing.
-    var candidates = 200
+    public var candidates = 200
 
     public init(store: MeetingStore, k: Int = 12) {
         self.store = store
@@ -57,21 +63,31 @@ public struct Retriever: Sendable {
     /// `meeting`: search only that meeting (“This meeting”); nil searches all meetings. `folder` (T42): only meetings
     /// filed there (“This folder”), spread across them like all meetings.
     public func search(_ question: String, in meeting: MeetingID? = nil, folder: FolderID? = nil) throws -> [Passage] {
+        try search(question, in: meeting, folder: folder, meetings: nil)
+    }
+
+    /// `meetings` (spec 0009 §2): only these meetings, applied in the FTS query itself, so ranking, context windows and
+    /// the cross-meeting spread never see a line outside them. An empty set finds nothing.
+    public func search(_ question: String, in meeting: MeetingID? = nil, folder: FolderID? = nil, meetings: Set<MeetingID>?) throws -> [Passage] {
         let terms = Self.terms(question)
         guard !terms.isEmpty else { return [] }
+        if let meetings, meetings.isEmpty { return [] }
+        let scoped = meetings.map { $0.map(\.rawValue).sorted() } ?? []
         // Every user term is a quoted prefix phrase, so user input can never inject FTS syntax.
         let match = "{text speaker} : (" + terms.map { "\"\($0)\"*" }.joined(separator: " OR ") + ")"
         var bindings: [SQLiteDB.Value] = [.text(match)]
         if let meeting { bindings.append(.text(meeting.rawValue)) }
         if let folder { bindings.append(.text(folder.rawValue)) }
+        bindings += scoped.map { .text($0) }
         bindings.append(.int(Int64(candidates)))
+        let inScope = scoped.isEmpty ? "" : " AND s.meeting_id IN (" + Array(repeating: "?", count: scoped.count).joined(separator: ",") + ")"
         return try store.withDB { db in
             let rows = try db.run("""
                 SELECT s.rowid AS rid, s.meeting_id, s.kind, s.ref, s.start_ns, s.text, s.speaker, s.evidence,
                        bm25(search_index, 0, 0, 0, 0, 1.0, 0.6, 0) AS score, m.title, m.created_at
                 FROM search_index s JOIN meetings m ON m.id = s.meeting_id
-                WHERE search_index MATCH ? AND m.deleted_at IS NULL\(meeting == nil ? "" : " AND s.meeting_id = ?")\(folder == nil ? "" : " AND m.folder_id = ?")
-                ORDER BY score LIMIT ?
+                WHERE search_index MATCH ? AND m.deleted_at IS NULL\(meeting == nil ? "" : " AND s.meeting_id = ?")\(folder == nil ? "" : " AND m.folder_id = ?")\(inScope)
+                ORDER BY score, s.rowid LIMIT ?
                 """, bindings)
             // Meetings whose title or people match get a small boost (“the Leesa 1:1”, “with Andrew”).
             var meetingBoost: [String: Double] = [:]
@@ -121,16 +137,20 @@ public struct Retriever: Sendable {
                                         score: (best.score + extra) * (1 + meetingBoost[w.meeting, default: 0])))
             }
             // Who wrote each notes line: the current document of its meeting (read once per meeting).
-            var userLines: [String: Set<String>] = [:]
+            var userLines: [String: (doc: RevisionID?, users: Set<String>)] = [:]
             for h in hits where h.kind == "notes" {
                 if userLines[h.meetingID] == nil {
-                    userLines[h.meetingID] = Set(try MeetingStore.currentNotesDocument(db, MeetingID(h.meetingID))?.blocks.filter(\.isUser).map(\.id.rawValue) ?? [])
+                    let doc = try MeetingStore.currentNotesDocument(db, MeetingID(h.meetingID))
+                    userLines[h.meetingID] = (doc?.id, Set(doc?.blocks.filter(\.isUser).map(\.id.rawValue) ?? []))
                 }
-                let source: Passage.Source = userLines[h.meetingID]?.contains(h.ref) == true ? .userNote : .notes
+                let source: Passage.Source = userLines[h.meetingID]?.users.contains(h.ref) == true ? .userNote : .notes
+                var line = h.line
+                line.revisionID = userLines[h.meetingID]?.doc
                 passages.append(Passage(meetingID: MeetingID(h.meetingID), meetingTitle: h.title, meetingDate: h.date, source: source, ref: h.ref,
-                                        lines: [h.line], evidence: h.evidence, score: h.score * (1 + meetingBoost[h.meetingID, default: 0])))
+                                        lines: [line], evidence: h.evidence, score: h.score * (1 + meetingBoost[h.meetingID, default: 0])))
             }
-            let ranked = passages.sorted { $0.score > $1.score }
+            // Ties break by meeting and ref, so the same index state always ranks the same way (stable external pages).
+            let ranked = passages.sorted { $0.score != $1.score ? $0.score > $1.score : ($0.meetingID.rawValue, $0.ref, $0.source.rawValue) < ($1.meetingID.rawValue, $1.ref, $1.source.rawValue) }
             return meeting == nil ? Self.spread(ranked, k: k) : Array(ranked.prefix(k))
         }
     }
@@ -167,9 +187,11 @@ public struct Retriever: Sendable {
 
     static func line(_ r: [String: SQLiteDB.Value], matched: Bool) -> Passage.Line {
         let transcript = r["kind"]?.text == "transcript"
+        let first = transcript ? evidence(r).first : nil
         return Passage.Line(segmentID: transcript ? r["ref"]?.text.map(TranscriptSegmentID.init) : nil,
                             start: r["start_ns"]?.int.map { SessionTime(nanoseconds: $0) },
-                            speaker: r["speaker"]?.text, text: r["text"]?.text ?? "", matched: matched)
+                            speaker: r["speaker"]?.text, text: r["text"]?.text ?? "", matched: matched,
+                            revisionID: first?.revisionID, firstWord: first?.firstWord)
     }
 
     static func evidence(_ r: [String: SQLiteDB.Value]) -> [TranscriptEvidence] {
@@ -183,7 +205,7 @@ public struct Retriever: Sendable {
     /// “deciding” → “decid”) so the prefix match also finds the other forms. If every word is a stop word, all are kept.
     public static func terms(_ question: String) -> [String] {
         let words = question.lowercased().split { !$0.isLetter && !$0.isNumber && $0 != "'" }
-            .map { String($0).replacingOccurrences(of: "\"", with: "") }
+            .map { String($0).replacingOccurrences(of: "\"", with: "").trimmingCharacters(in: CharacterSet(charactersIn: "'")) }
             .map { $0.hasSuffix("'s") ? String($0.dropLast(2)) : $0 }
             .filter { !$0.isEmpty }
         let content = words.filter { !stopWords.contains($0) && !$0.contains("'") }

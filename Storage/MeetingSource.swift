@@ -58,6 +58,34 @@ extension MeetingStore {
         }
     }
 
+    /// The content generation (spec 0009 §2): changes with every write that changes meeting content or scope.
+    public func contentGeneration() throws -> String { try withDB { db in "\(db.instance)-\(db.contentGeneration)" } }
+
+    /// One row per live meeting for listing and scope checks: metadata, folder name, whether it has notes, and the
+    /// state of its latest processing jobs, with the content generation, all from one pass. No transcript is decoded.
+    public func meetingCatalog() throws -> (generation: String, entries: [MeetingCatalogEntry]) {
+        try withDB { db in
+            var folders: [String: String] = [:]
+            for r in try db.run("SELECT id, name FROM folders") { if let id = r["id"]?.text { folders[id] = r["name"]?.text } }
+            let withNotes = Set(try db.run("SELECT DISTINCT meeting_id FROM notes_document_revisions").compactMap { $0["meeting_id"]?.text })
+            var jobs: [String: [ProcessingStage: (Double, ProcessingState)]] = [:]
+            for r in try db.run("SELECT meeting_id, stage, state, updated_at FROM processing_jobs") {
+                guard let m = r["meeting_id"]?.text, let st = r["stage"]?.text.flatMap(ProcessingStage.init(rawValue:)),
+                      let s = r["state"]?.text.flatMap(ProcessingState.init(rawValue:)) else { continue }
+                let at = r["updated_at"]?.double ?? 0
+                if let cur = jobs[m]?[st], cur.0 > at { continue }
+                jobs[m, default: [:]][st] = (at, s)
+            }
+            let entries = try db.run("SELECT id, json FROM meetings WHERE deleted_at IS NULL").compactMap { r -> MeetingCatalogEntry? in
+                guard let id = r["id"]?.text, let blob = r["json"]?.blob else { return nil }
+                let m = try ContractCoding.decode(Meeting.self, from: blob)
+                return MeetingCatalogEntry(meeting: m, folderName: m.folderID.flatMap { folders[$0.rawValue] }, hasNotesDocument: withNotes.contains(id),
+                                           jobStates: (jobs[id] ?? [:]).mapValues(\.1))
+            }
+            return ("\(db.instance)-\(db.contentGeneration)", entries)
+        }
+    }
+
     /// IDs of live meetings, newest first (what an external listing may page through).
     public func liveMeetingIDs() throws -> [MeetingID] {
         try withDB { db in
@@ -79,4 +107,13 @@ extension MeetingStore {
             return id
         }
     }
+}
+
+/// A live meeting as listing sees it (spec 0009 §2).
+public struct MeetingCatalogEntry: Sendable {
+    public var meeting: Meeting
+    public var folderName: String?
+    public var hasNotesDocument: Bool
+    /// The latest job's state per stage.
+    public var jobStates: [ProcessingStage: ProcessingState]
 }

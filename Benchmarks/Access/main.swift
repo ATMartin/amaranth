@@ -7,6 +7,10 @@ import MeetingAccess
 ///   amaranth-access seed-demo <library-root>          one synthetic meeting with edits, stale notes and a user line
 ///   amaranth-access snapshot <library-root> <meeting> the meeting's external snapshot (JSON)
 ///   amaranth-access resolve <library-root> <url>      what a source link resolves to now
+///   amaranth-access seed-eval <library-root>          the labeled T98 retrieval library (+ eval-map.json)
+///   amaranth-access eval <library-root> <questions.json> <out-dir>
+///   amaranth-access seed-scale <library-root> <meetings> <lines>
+///   amaranth-access scale <library-root> <ops> <label> one JSON line of timings (ms) and peak memory
 /// Never point it at the real library while the app runs: the app owns the library.
 let args = CommandLine.arguments
 
@@ -23,6 +27,25 @@ case "snapshot" where args.count >= 4:
 case "resolve" where args.count >= 4:
     let reader = MeetingReader(store: try MeetingStore(root: URL(filePath: args[2], directoryHint: .isDirectory)))
     print(reader.resolve(args[3]))
+case "profile" where args.count >= 3:
+    let store = try MeetingStore(root: URL(filePath: args[2], directoryHint: .isDirectory))
+    let id = try store.liveMeetingIDs()[0]
+    var t = Date(); func lap(_ s: String) { print(s, String(format: "%.1f ms", Date().timeIntervalSince(t) * 1000)); t = Date() }
+    let lib = try store.libraryID(); lap("libraryID")
+    let rec = try store.readMeetingSource(id)!; lap("read")
+    let d = rec.transcript!.applyingTextEdits(rec.edits); lap("applyEdits \(d.segments.count)")
+    var snap = SnapshotBuilder.build(rec, libraryID: lib, readAt: Date()); lap("build (incl fingerprint)")
+    _ = SnapshotBuilder.fingerprint(snap); lap("fingerprint alone")
+    snap.fingerprint = ""; _ = try ExternalCoding.encoder(pretty: false).encode(snap); lap("encode")
+case "seed-eval" where args.count >= 3:
+    let root = URL(filePath: args[2], directoryHint: .isDirectory)
+    try EvalLibrary.seed(try MeetingStore(root: root), root: root)
+case "eval" where args.count >= 5:
+    try AccessEvalRun.run(root: URL(filePath: args[2], directoryHint: .isDirectory), questions: URL(filePath: args[3]), out: URL(filePath: args[4], directoryHint: .isDirectory))
+case "seed-scale" where args.count >= 5:
+    try Scale.seed(root: URL(filePath: args[2], directoryHint: .isDirectory), meetings: Int(args[3])!, lines: Int(args[4])!)
+case "scale" where args.count >= 5:
+    try Scale.run(root: URL(filePath: args[2], directoryHint: .isDirectory), ops: Int(args[3])!, label: args[4])
 default:
     fail("usage: amaranth-access seed-demo|snapshot|resolve <library-root> …")
 }

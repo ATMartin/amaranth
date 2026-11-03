@@ -3002,7 +3002,7 @@
       "id": "T98",
       "title": "Expose bounded filtered search, listing and source retrieval",
       "milestone": "S",
-      "status": "accepted (2026-11-03): not started",
+      "status": "done (2026-11-03): list/search/get with scope, filters, cursors, fragments; lexical Recall@10 100%, paraphrase 25%, citations 100%; 200-meeting scale warm p95 ≤ 0.21 s (1,000 meetings not measured, user decision)",
       "optional": false,
       "depends_on": [
         "T97",

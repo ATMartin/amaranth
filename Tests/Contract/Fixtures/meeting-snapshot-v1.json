@@ -1,7 +1,7 @@
 {
   "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11",
   "durationNs" : 60000000000,
-  "fingerprint" : "aa8055a5697e168f272a2d02c66817dc54ad6581df7494dcc5b78d419baaf891",
+  "fingerprint" : "d175f6e421f2b498c94e67a783347013bf4b12cdc33dda5b557f92a992a6b34d",
   "folder" : {
     "id" : "folder-1",
     "name" : "Clients"
@@ -69,7 +69,7 @@
     {
       "author" : "model",
       "blockID" : "item-2",
-      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=notes&ref=item-2&revision=notes-rev-2&h=389d7e55f1e9c26b",
+      "citation" : "amaranth://meeting/0e7c1a52-6f0b-4f43-9a51-4b8f1f0c2d11?source=notes&ref=item-2&revision=notes-rev-2&h=06acd33944845152",
       "detail" : "Rae  ·  no date stated",
       "evidence" : [
         {
