@@ -48,6 +48,10 @@ struct MeetingCommands: Commands {
                 .disabled(library.filteredFolder == nil)
             Button("Delete Folder…") { if !sheetOpen, let f = library.filteredFolder { library.folderRequest = .delete(f) } }
                 .disabled(library.filteredFolder == nil)
+            Divider()
+            // T99: the open meeting, the folder shown, or all meetings; the sheet lets the user change it.
+            Button("Export Meetings…") { if !sheetOpen { library.requestBulkExport() } }
+                .keyboardShortcut("e", modifiers: [.command, .shift])
         }
         CommandGroup(after: .sidebar) {
             Picker("Show Folder", selection: Binding(get: { library.folderFilter }, set: { library.folderFilter = $0 })) {
@@ -97,8 +101,11 @@ struct MeetingActionsMenu: View {
             .disabled(!meeting.hasTranscript)
             Divider()
             Button("Original Audio…") { library.exportAudio(meeting.id) }.disabled(!meeting.hasAudio)
+            Divider()
+            // T99: notes and transcript as Markdown + JSON in a folder (works without a transcript too).
+            Button("To a Folder (Markdown and JSON)…") { library.requestBulkExport(meeting: meeting.id, title: meeting.title) }
         }
-        .disabled(!meeting.hasTranscript && !meeting.hasAudio)
+
         Toggle("Show Details", isOn: $showDetails)   // ⌘D: View ▸ Show Details
         Divider()
         // T40: file the meeting. The current folder is checked; New Folder… creates one and files the meeting there.

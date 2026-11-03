@@ -252,6 +252,39 @@ atomically replace files, committing the manifest last; cancellation/disk failur
 generation, with clear per-meeting errors and a safe retry. A missing transcript must not prevent notes export.
 Snapshot retry cannot overwrite a user-changed file silently. Existing single-meeting exports keep their behavior.
 
+### 4a. Snapshot export as implemented (T99, 2026-11-03)
+
+`MeetingAccess/BulkExport.swift`; app: File ▸ Export Meetings… (⇧⌘E; the open meeting, else the folder shown, else all),
+a folder's right-click Export Folder…, and the meeting menu's Export ▸ To a Folder (Markdown and JSON)…. The sheet picks
+the scope (this meeting, any folder, all meetings) and content (notes and transcript, or notes only), previews counts
+(transcripts, notes, notes-only, nothing yet), explains snapshot semantics and synced/indexed destinations, then asks
+for the destination, shows progress with Stop, and reports written/unchanged/kept/failed meetings with Show in Finder.
+The existing single-meeting TXT/Markdown/JSON v2 exports are unchanged (their Markdown escaping is now shared).
+
+Layout: `<destination>/amaranth/README.md`, `manifest.json`, and `<meeting-uuid>/meeting.md` + `meeting.json`. Paths come
+only from the meeting UUID (validated), so renames update the same folder and equal titles never collide.
+
+- `meeting.json` is the `amaranth-meeting` v1 snapshot (T97); with notes only, transcript and gaps are empty and a
+  limitation says so. The fingerprint is the meeting's, not the file's.
+- `meeting.md`: YAML front matter (`schema: "amaranth-meeting-md"`, version 1, IDs, title, UTC start, time zone,
+  duration, folder, people, states, revisions, fingerprint, read time, citation). Every meeting-derived value is a
+  double-quoted scalar using JSON escaping (plus U+2028/2029/0085/FEFF), which YAML 1.2 accepts, so no title can add
+  keys or end the front matter. Body: title, a readable date/duration/people/folder line, limitations as a quote, notes
+  (headings, bullets; "your note", "uncertain", "see <time>" links, "source removed"), then the transcript with linked
+  timestamps, speaker, source and flags, gaps in place. Meeting text is Markdown-escaped; the only links are Amaranth's
+  own `amaranth://` citations. No vault plugin, wikilinks or Obsidian syntax.
+- **Publication:** `.export-in-progress.json` marks a run; each file is written into `.staging/<run>/` and renamed over
+  its destination; each published file's hash is appended to `.export-journal.jsonl`; the manifest (every meeting in the
+  folder, with per-file SHA-256, status written/unchanged/kept/error, error text, fingerprint, read and export times)
+  is renamed into place last, then the marker, journal and staging are removed. Cancelled, interrupted or failed runs
+  leave the marker (`BulkExport.isIncomplete`) and the journal.
+- **Safety:** a destination file is replaced only if its current bytes hash to something Amaranth wrote (manifest or
+  journal); otherwise it is kept and reported. A meeting whose fingerprint and files are unchanged is not rewritten.
+  Refused destinations: an `amaranth` folder that is a link, holds another library's manifest or an unreadable one, or
+  holds files without a manifest or journal. Files are never written through links. Snapshot export never deletes:
+  meetings deleted or moved out of scope keep their earlier files, and the README says a snapshot is a copy.
+- CLI: `amaranth-access export <library-root> <destination> [--notes]` exports every meeting of an isolated library.
+
 **Mirror (Milestone U, optional).** User explicitly selects a dedicated managed subdirectory, scope and content level.
 One-way output only: vault edits do not modify Amaranth. Maintain a durable change sequence (including metadata,
 speaker changes, notes publication/edits, transcript corrections/deletions/trims, folder membership and deletion)

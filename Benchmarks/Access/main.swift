@@ -7,6 +7,7 @@ import MeetingAccess
 ///   amaranth-access seed-demo <library-root>          one synthetic meeting with edits, stale notes and a user line
 ///   amaranth-access snapshot <library-root> <meeting> the meeting's external snapshot (JSON)
 ///   amaranth-access resolve <library-root> <url>      what a source link resolves to now
+///   amaranth-access export <library-root> <destination> [--notes]  bulk snapshot export of every meeting (T99)
 ///   amaranth-access seed-eval <library-root>          the labeled T98 retrieval library (+ eval-map.json)
 ///   amaranth-access eval <library-root> <questions.json> <out-dir>
 ///   amaranth-access seed-scale <library-root> <meetings> <lines>
@@ -37,6 +38,14 @@ case "profile" where args.count >= 3:
     var snap = SnapshotBuilder.build(rec, libraryID: lib, readAt: Date()); lap("build (incl fingerprint)")
     _ = SnapshotBuilder.fingerprint(snap); lap("fingerprint alone")
     snap.fingerprint = ""; _ = try ExternalCoding.encoder(pretty: false).encode(snap); lap("encode")
+case "export" where args.count >= 4:
+    let reader = MeetingReader(store: try MeetingStore(root: URL(filePath: args[2], directoryHint: .isDirectory)))
+    let ids = try BulkExport.preview(reader, scope: .all).meetingIDs
+    let r = BulkExport.run(reader, meetings: ids, content: args.contains("--notes") ? .notes : .notesAndTranscript,
+                           destination: URL(filePath: args[3], directoryHint: .isDirectory))
+    print("status=\(r.status.rawValue) written=\(r.written) unchanged=\(r.unchanged) kept=\(r.kept.count) errors=\(r.errors.count) incomplete=\(BulkExport.isIncomplete(URL(filePath: args[3])))")
+    for e in r.errors.prefix(5) { print("error: \(e.meetingID ?? "-") \(e.message)") }
+    exit(r.status == .complete ? 0 : 1)
 case "seed-eval" where args.count >= 3:
     let root = URL(filePath: args[2], directoryHint: .isDirectory)
     try EvalLibrary.seed(try MeetingStore(root: root), root: root)

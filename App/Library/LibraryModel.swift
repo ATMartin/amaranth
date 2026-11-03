@@ -305,6 +305,21 @@ final class LibraryModel {
     }
     var sourceNotice: SourceNotice?
 
+    /// Export Meetings… (T99): the scope it opens with; nil when the sheet is closed.
+    var bulkExportRequest: BulkExportRequest?
+    struct BulkExportRequest: Identifiable {
+        let id = UUID()
+        let scope: BulkExportModel.Scope
+        let meetingTitle: String?
+    }
+    /// The open meeting, else the folder the sidebar shows, else the whole library.
+    func requestBulkExport(meeting: MeetingID? = nil, title: String? = nil, folder: FolderID? = nil) {
+        if let meeting { bulkExportRequest = .init(scope: .meeting(meeting), meetingTitle: title); return }
+        if let folder { bulkExportRequest = .init(scope: .folder(folder), meetingTitle: nil); return }
+        if let d = detail { bulkExportRequest = .init(scope: .meeting(d.meeting.id), meetingTitle: d.meeting.title); return }
+        bulkExportRequest = .init(scope: folderFilter.folderID.map { .folder($0) } ?? .all, meetingTitle: nil)
+    }
+
     /// Opens a source link: the cited transcript line or the Notes tab when it still resolves; otherwise says the source
     /// changed (offering the meeting as it is now) or that the meeting isn't available. Never points at a different line,
     /// never starts anything, never reveals removed text. Resolved off the main thread.

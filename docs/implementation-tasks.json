@@ -3036,7 +3036,7 @@
       "id": "T99",
       "title": "Export selected meetings, folders or the library as portable files",
       "milestone": "S",
-      "status": "accepted (2026-11-03): not started",
+      "status": "done (2026-11-03): BulkExport (Markdown + amaranth-meeting JSON, manifest last, journal, safe retry, kept user edits), Export Meetings sheet + menus, spec 0009 §4a",
       "optional": false,
       "depends_on": [
         "T97",

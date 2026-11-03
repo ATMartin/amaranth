@@ -53,7 +53,7 @@ let package = Package(
         .target(name: "Notes", dependencies: ["Domain", "llama"], path: "Notes", swiftSettings: strict),
         .target(name: "Export", dependencies: ["Domain"], path: "Export", swiftSettings: strict),
         // Spec 0009: the external read model (snapshots, citations, retrieval) shared by bulk export and future adapters.
-        .target(name: "MeetingAccess", dependencies: ["Domain", "Storage"], path: "MeetingAccess", swiftSettings: strict),
+        .target(name: "MeetingAccess", dependencies: ["Domain", "Storage", "Export"], path: "MeetingAccess", swiftSettings: strict),
         .target(name: "Presentation", dependencies: ["Domain", "Storage"], path: "Presentation", swiftSettings: strict),
         .testTarget(name: "PresentationTests", dependencies: ["Presentation", "Storage", "Domain", "DomainFixtures", "ProcessingCore", "Export"],
                     path: "Tests/UI", exclude: ["Fixtures"], swiftSettings: strict),

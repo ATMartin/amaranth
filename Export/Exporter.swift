@@ -198,26 +198,28 @@ public enum Exporter {
         return out.joined(separator: "\n") + "\n"
     }
 
+    /// Spoken or generated text is data: escape Markdown syntax so it can't become links, images, HTML or headings.
+    public static func escapeMarkdown(_ s: String) -> String {
+        var out = ""
+        for ch in s {
+            switch ch {
+            case "<": out += "&lt;"
+            case ">": out += "&gt;"
+            case "\\", "[", "]", "(", ")", "!", "*", "_", "`", "#", "|", "~": out += "\\" + String(ch)
+            default: out.append(ch)
+            }
+        }
+        // A line that would start a list, rule or setext heading ("+ ", "- ", "---", "===", "1. ") stays text.
+        if let first = out.first, "+-=".contains(first) { out = "\\" + out }
+        if let dot = out.firstIndex(where: { !$0.isNumber }), dot != out.startIndex, ".)".contains(out[dot]) {
+            out.insert("\\", at: dot)
+        }
+        return out
+    }
+
     public static func markdown(_ input: ExportInput, options: ExportOptions = ExportOptions()) -> String {
         let t = input.transcript, m = input.meeting
-        /// Spoken or generated text is data: escape Markdown syntax so it can't become links, images, HTML or headings.
-        func esc(_ s: String) -> String {
-            var out = ""
-            for ch in s {
-                switch ch {
-                case "<": out += "&lt;"
-                case ">": out += "&gt;"
-                case "\\", "[", "]", "(", ")", "!", "*", "_", "`", "#", "|", "~": out += "\\" + String(ch)
-                default: out.append(ch)
-                }
-            }
-            // A line that would start a list, rule or setext heading ("+ ", "- ", "---", "===", "1. ") stays text.
-            if let first = out.first, "+-=".contains(first) { out = "\\" + out }
-            if let dot = out.firstIndex(where: { !$0.isNumber }), dot != out.startIndex, ".)".contains(out[dot]) {
-                out.insert("\\", at: dot)
-            }
-            return out
-        }
+        let esc = escapeMarkdown
         var out = ["# \(esc(m.title.isEmpty ? "Meeting" : m.title))", ""]
         if let p = peopleLine(m) { out += [esc(p), ""] }
         var meta: [String] = []

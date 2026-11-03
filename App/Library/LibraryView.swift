@@ -152,6 +152,11 @@ struct MainView: View {
             }
         } message: { n in Text(n.message) }
         .onOpenURL { library.openSourceLink($0) }
+        .sheet(item: Binding(get: { library.bulkExportRequest }, set: { library.bulkExportRequest = $0 })) { r in
+            if let store = library.store {
+                BulkExportSheet(model: BulkExportModel(store: store, scope: r.scope), meetingTitle: r.meetingTitle, folders: library.folders)
+            }
+        }
     }
 }
 
@@ -259,6 +264,7 @@ struct FolderFilterList: View {
                     .contextMenu {
                         if let f = library.folders.first(where: { $0.id == r.folderID }) {
                             Button("Rename…") { library.folderRequest = .rename(f) }
+                            Button("Export Folder…") { library.requestBulkExport(folder: f.id) }
                             Button("Delete Folder…", role: .destructive) { library.folderRequest = .delete(f) }
                         }
                     }
