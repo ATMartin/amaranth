@@ -46,6 +46,9 @@ final class ProcessingModel {
     /// as notes do).
     var transcriptWorkActive: Bool { (try? store?.jobs().contains(where: JobScheduler.blocksNotes)) == true }
 
+    /// Any job is queued or running (T72: the update dialog says it picks up again after the relaunch).
+    var workPending: Bool { (try? store?.jobs(states: [.queued, .running]).isEmpty == false) == true }
+
     init(store: MeetingStore?, worker: WorkerClient) {
         self.store = store
         guard let store else { return }

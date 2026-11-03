@@ -2,6 +2,15 @@ Local meeting transcription for macOS
 Research and prototype development plan
 15 October 2026 • Revision 1 • Implementation handoff
 
+Planning addendum, 2 November 2026: exposing meeting history to external tools
+
+See docs/decisions/0009-external-meeting-access-spec.md for the proposed architecture and gates, and
+implementation-tasks.json for Milestones S–U (T97–T108): shared current-content retrieval and citations plus bulk
+Markdown/JSON export (S), local read-only MCP with scoped grants (T), and an optional managed vault mirror (U).
+MCP serves live queries; exports serve file ingestion. Both reuse the corrected/trimmed transcript and current notes.
+The local core remains offline; enabling an external assistant or a synced export destination may disclose content
+outside this Mac. The proposal does not change the existing approved milestone order; placement remains undecided.
+
 1. Recommended direction
 
 Build a native SwiftUI macOS app that records microphone input and system output into separate local tracks, produces a timestamped transcript with editable acoustic speaker labels, and generates evidence-linked meeting notes using local models. The recording must remain usable even if every AI stage fails.

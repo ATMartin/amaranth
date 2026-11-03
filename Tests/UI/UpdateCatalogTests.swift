@@ -262,3 +262,44 @@ struct GitHubRecordedResponseTests {
         #expect(try await gh.source.candidates(above: 122, includeDebug: true).isEmpty)
     }
 }
+
+@Suite("Install-time checks (T72)")
+struct UpdateBundleCheckTests {
+    static let good = UpdateBundleFacts(signatureValid: true, bundleID: bundle, teamID: team, build: 124, channel: "release",
+                                        minimumSystemVersion: "26.5.2", architectures: ["arm64"])
+
+    func problems(_ f: UpdateBundleFacts, runningTeam: String? = team) -> [String] {
+        UpdateBundleCheck.problems(f, manifest: manifest(124), runningBundleID: bundle, runningTeamID: runningTeam, systemVersion: macOS)
+    }
+
+    @Test func aMatchingBuildPasses() { #expect(problems(Self.good).isEmpty) }
+
+    @Test func eachMismatchIsNamed() {
+        var f = Self.good; f.signatureValid = false
+        #expect(problems(f).first?.contains("signature") == true)
+        f = Self.good; f.teamID = "ZZZZZZZZZZ"
+        #expect(problems(f).first?.contains("team ZZZZZZZZZZ") == true)
+        f = Self.good; f.teamID = nil
+        #expect(problems(f).first?.contains("no team") == true)
+        #expect(!problems(Self.good, runningTeam: nil).isEmpty, "an ad-hoc running app accepts nothing")
+        f = Self.good; f.bundleID = "com.example.other"
+        #expect(problems(f).first?.contains("different app") == true)
+        f = Self.good; f.architectures = ["x86_64"]
+        #expect(problems(f).first?.contains("Apple silicon") == true)
+        f = Self.good; f.minimumSystemVersion = "27.0"
+        #expect(problems(f).first?.contains("macOS 27.0") == true)
+        f = Self.good; f.minimumSystemVersion = nil
+        #expect(!problems(f).isEmpty)
+        f = Self.good; f.build = 123
+        #expect(problems(f).first?.contains("build 123") == true)
+        f = Self.good; f.channel = "debug"
+        #expect(problems(f).first?.contains("debug build") == true)
+    }
+
+    @Test func sha256OfAFile() throws {
+        let url = FileManager.default.temporaryDirectory.appending(path: "digest-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("abc".utf8).write(to: url)
+        #expect(try FileDigest.sha256(of: url) == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
+    }
+}

@@ -24,12 +24,26 @@ struct UpdateToolbarNote: View {
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        if updates.noteVisible, let c = updates.available {
+        switch updates.note {
+        case .available(let c)?:
             Button { openWindow(id: UpdateWindow.id) } label: {
                 Label("Update Available", systemImage: "arrow.down.circle")
             }
             .help("Amaranth \(c.manifest.label) is available (you have \(updates.running.label)). Click for details.")
             .accessibilityLabel("Update available: build \(c.manifest.build)")
+        case .updated(let build)?:
+            // T72: once, after an in-app update; clicking it (or the next launch) clears it.
+            Button { updates.updatedFrom = nil } label: {
+                Label("Updated to build \(build)", systemImage: "checkmark.circle").labelStyle(.titleAndIcon)
+            }
+            .help("Amaranth was updated from build \(updates.updatedFrom ?? 0) to \(updates.running.label). Click to dismiss.")
+        case .failed(let build)?:
+            Button { openWindow(id: UpdateWindow.id) } label: {
+                Label("Update Didn't Install", systemImage: "exclamationmark.triangle")
+            }
+            .help("Build \(build) couldn't be installed; this build was kept. Click for details.")
+        case nil:
+            EmptyView()
         }
     }
 }
@@ -60,7 +74,7 @@ struct UpdateWindow: View {
         switch updates.phase {
         case .available: "A new build is available"
         case .upToDate: "You're up to date"
-        case .failed: "Couldn't check for updates"
+        case .failed: updates.failedBuild != nil ? "The update didn't install" : "Couldn't check for updates"
         case .checking, .idle: "Software Update"
         }
     }
@@ -76,11 +90,15 @@ struct UpdateWindow: View {
             sourceLine
             buttons { Button("OK") { dismiss() }.keyboardShortcut(.defaultAction) }
         case .failed(let message):
-            Label { Text(message) } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(Color.statusAttention) }
+            Label { Text(message).fixedSize(horizontal: false, vertical: true) } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(Color.statusAttention) }
             sourceLine
             buttons {
-                Button("Close") { dismiss() }.keyboardShortcut(.cancelAction)
-                Button("Try Again") { updates.check(userInitiated: true) }.keyboardShortcut(.defaultAction)
+                Button("Close") { updates.later(); dismiss() }.keyboardShortcut(.cancelAction)
+                Button(updates.failedBuild != nil ? "Check Again" : "Try Again") {
+                    updates.failedBuild = nil
+                    updates.check(userInitiated: true)
+                }
+                .keyboardShortcut(.defaultAction)
             }
         case .available(let c):
             available(c)
@@ -127,9 +145,38 @@ struct UpdateWindow: View {
         }
         Text("Amaranth quits, replaces itself with this build and opens again. Your meetings, settings and permissions stay as they are. \(Self.sizeText(m.size)) download.")
             .appFont(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
-        buttons {
-            Button("Later") { updates.later(); dismiss() }.keyboardShortcut(.cancelAction)
-            Button("Install and Relaunch") { updates.install(c) }.keyboardShortcut(.defaultAction)
+        if updates.processingPending() {
+            Text("Processing in progress picks up again after the relaunch; the step it's on starts over.")
+                .appFont(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
+        }
+        switch updates.installPhase {
+        case .downloading(let fraction):
+            HStack(spacing: 10) {
+                if let fraction { ProgressView(value: fraction) } else { ProgressView().progressViewStyle(.linear) }
+                Text("Downloading…").appFont(.caption).foregroundStyle(Color.brandSecondary)
+            }
+            buttons { Button("Cancel") { updates.cancelInstall() }.keyboardShortcut(.cancelAction) }
+        case .verifying:
+            HStack(spacing: 8) { ProgressView().controlSize(.small); Text("Checking the download…").foregroundStyle(Color.brandSecondary) }
+            buttons { Button("Cancel") { updates.cancelInstall() }.keyboardShortcut(.cancelAction) }
+        case .relaunching:
+            HStack(spacing: 8) { ProgressView().controlSize(.small); Text("Relaunching…").foregroundStyle(Color.brandSecondary) }
+        case .idle, .failed:
+            if case .failed(let message) = updates.installPhase {
+                Label { Text(message).fixedSize(horizontal: false, vertical: true) } icon: {
+                    Image(systemName: "exclamationmark.triangle").foregroundStyle(Color.statusAttention)
+                }
+            } else if let blocker = updates.installBlocker {
+                Label { Text(blocker).fixedSize(horizontal: false, vertical: true) } icon: {
+                    Image(systemName: "info.circle").foregroundStyle(Color.brandSecondary)
+                }
+                .appFont(.callout)
+            }
+            buttons {
+                Button("Later") { updates.later(); updates.installPhase = .idle; dismiss() }.keyboardShortcut(.cancelAction)
+                Button("Install and Relaunch") { updates.install(c) }.keyboardShortcut(.defaultAction)
+                    .disabled(updates.installBlocker != nil)
+            }
         }
     }
 

@@ -53,6 +53,8 @@ enum SelfTest {
                 ok = await UIRenderSelfTest.run(outputDirectory: out, textSize: size)
             case "ui-render-updates": ok = await UpdateSelfTest.render()
             case "update-check": ok = await UpdateSelfTest.check()
+            case "update-verify": ok = await UpdateSelfTest.verify()
+            case "update-install": ok = await UpdateSelfTest.install()
             case "ui-density": ok = await UIDensitySelfTest.run(args: args)
             case "ask-worker": ok = await AskWorkerSelfTest.run()
             case "calendar-access": ok = await CalendarSelfTest.run()

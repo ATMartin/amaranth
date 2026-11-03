@@ -17,6 +17,9 @@ if grep -q "✘ Test run with" /tmp/amaranth-swift-test.log; then
   exit 1
 fi
 
+echo "== update helper (T72: swap, failed swap, missing build, app that doesn't quit)"
+scripts/test-update-helper.sh | tail -1
+
 echo "== xcodegen + xcodebuild (app + XPC worker)"
 xcodegen generate --quiet
 xcodebuild -project Amaranth.xcodeproj -scheme Amaranth -configuration Debug -derivedDataPath "$DERIVED" build \

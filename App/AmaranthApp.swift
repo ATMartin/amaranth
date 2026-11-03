@@ -106,6 +106,7 @@ struct AmaranthApp: App {
         _reminders = State(initialValue: reminders)
         let updates = UpdateModel()
         updates.recorder = recorder
+        updates.processingPending = { [weak processing] in processing?.workPending == true }
         AppDelegate.updates = updates
         _updates = State(initialValue: updates)
         _worker = State(initialValue: worker)

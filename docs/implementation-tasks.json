@@ -39,7 +39,8 @@
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md",
-    "milestone_order_2026_10_30": "Superseded by milestone_order (2026-10-31). R → L → T21 → F → P → Q (user decision 2026-10-30: Milestone R before L; J, Polish and Polish 2 are done). Earlier: K → M → N → O → Fixes → J → L → T21 → F → P → Q (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; Q (local updates) placed after P on 2026-10-27 as “for later”; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful."
+    "milestone_order_2026_10_30": "Superseded by milestone_order (2026-10-31). R → L → T21 → F → P → Q (user decision 2026-10-30: Milestone R before L; J, Polish and Polish 2 are done). Earlier: K → M → N → O → Fixes → J → L → T21 → F → P → Q (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; Q (local updates) placed after P on 2026-10-27 as “for later”; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
+    "external_access_proposal_2026_11_02": "User requested a plan for exposing meeting history to external AI tools/vaults. Proposed S → T → U (optional), spec docs/decisions/0009-external-meeting-access-spec.md. Suggested after Q if prioritized; placement relative to T21/feedback/F remains undecided. Existing approved milestone_order is unchanged. First client/vault preference is still to be selected; default supports local MCP clients and portable Markdown equally."
   },
   "milestones": {
     "A": "Prove feasibility: T01-T04 (validated)",
@@ -63,7 +64,10 @@
     "Q": "Updates (“Check for Updates…” from GitHub Releases, plus a local folder): T70–T73. Planned 2026-10-27 as local-only; parked 2026-10-31; un-parked and extended 2026-11-02 (user: stop copying DMGs between Macs). User decisions 2026-10-27 still hold: Release and Debug builds are both published, Debug offered only with a Settings opt-in; a quiet note when a newer build exists (never install on its own); no rollbacks. 2026-11-02: remote source = GitHub Releases on the public repo ATMartin/amaranth (zipped app + manifest.json per release; Debug as prerelease; downloads need no token, so builds are public); publishing happens only when the user asks (scripts/publish.sh; install-local.sh stays local); checks at launch and from the menu only, no periodic timer. Not notarized (free personal team): trust rests on the same bundle ID + team ID codesign check. The update check is the app's only network call besides model downloads; Settings → Updates → Off disables it, and F's offline qualification must account for it.",
     "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
     "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit.",
-    "R": "One notes field per meeting (personal/private notes removed; editable notes; typing during the meeting feeds generation): T89–T95. Spec docs/decisions/0008 accepted 2026-10-30 with all recommendations (user lines always survive, Regenerate asks and keeps history, snapshot + 'Replace?' while generating, inline source chips, rich-text editor, typed-at times). Never-included scratchpads are deleted by the v6 migration (user, 2026-10-31). Placed next, before L; L's tasks are revised in T94."
+    "R": "One notes field per meeting (personal/private notes removed; editable notes; typing during the meeting feeds generation): T89–T95. Spec docs/decisions/0008 accepted 2026-10-30 with all recommendations (user lines always survive, Regenerate asks and keeps history, snapshot + 'Replace?' while generating, inline source chips, rich-text editor, typed-at times). Never-included scratchpads are deleted by the v6 migration (user, 2026-10-31). Placed next, before L; L's tasks are revised in T94.",
+    "S": "Proposed: shared external read model, citations, bounded retrieval and portable bulk export (T97–T100). Spec docs/decisions/0009-external-meeting-access-spec.md; not yet inserted into the approved milestone order.",
+    "T": "Proposed: read-only local MCP with app-owned broker, scoped grants and packaged client setup (T101–T104). After S; spec docs/decisions/0009-external-meeting-access-spec.md.",
+    "U": "Optional proposed follow-on: one-way managed Markdown/JSON vault mirror with safe reconciliation (T105–T108). After T; spec docs/decisions/0009-external-meeting-access-spec.md."
   },
   "tasks": [
     {
@@ -2300,7 +2304,7 @@
       "id": "T72",
       "title": "Install and relaunch from inside the app",
       "milestone": "Q",
-      "status": "planned (un-parked 2026-11-02, user decision)",
+      "status": "done (2026-11-02): App/Updates/UpdateInstaller.swift, App/Resources/update-helper.sh, Presentation/UpdateInstall.swift (UpdateBundleCheck, FileDigest), scripts/test-update-helper.sh, scripts/test-update-verify.sh, docs/release/UPDATES.md",
       "optional": false,
       "depends_on": [
         "T71"
@@ -2956,6 +2960,401 @@
         "TranscriptTrimTests, CaptureTrimTests (head plan, trimStored), ReconcilerTests (deletions and trims re-apply); full check.sh passes; checklist 86 for the hands-on run."
       ],
       "fallback": "None needed.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T97",
+      "title": "Define current meeting snapshots and durable source citations",
+      "milestone": "S",
+      "status": "proposed (2026-11-02): not started",
+      "optional": false,
+      "depends_on": [
+        "T93",
+        "T96"
+      ],
+      "owner_role": "Data contracts",
+      "module_scope": [
+        "Domain/",
+        "Storage/",
+        "MeetingAccess/",
+        "App/",
+        "project.yml",
+        "Package.swift",
+        "Tests/Contract/",
+        "Tests/DataLifecycle/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Introduce a versioned transport-independent external read contract and per-meeting consistent snapshot, with current metadata, displayed transcript after speaker/text edits, deleted lines and trims, current notes, source revisions and content fingerprint. Represent notes-only, processing, failed, stale and audio-deleted states explicitly.",
+        "Fingerprint all relevant changes including title, people, folder, speakers and edit operations; separate external envelope versions from amaranth-export v2. Exclude hidden revisions, raw calendar payloads, audio, work checkpoints, prompts and local paths.",
+        "Implement validated amaranth://meeting source URLs and app navigation for transcript segments and notes blocks. Include revision identity and readable title/date/time references; changed/deleted sources show unavailable/changed rather than a misleading jump.",
+        "Document shared bounds, errors, source types, author/evidence semantics and schema compatibility fixtures in spec 0009; wire new modules into package and app project without loading inference."
+      ],
+      "acceptance": [
+        "Snapshot parity fixtures cover corrected/renamed speakers, line deletion, both trims, user/generated notes, gaps, uncertain/stale notes and notes-only meetings; hidden words never appear in serialized responses.",
+        "Concurrent edits yield one consistent meeting snapshot, fingerprints change for every relevant mutation, and deleted meetings cannot be fetched.",
+        "URL tests cover current transcript/user-note navigation, changed revisions, deleted sources, invalid IDs and malicious parameters; source URLs never execute commands or reveal old content."
+      ],
+      "fallback": "Resolve contract differences before adapters ship. Show current meeting with an explicit source-changed state when exact historical citations cannot resolve.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T98",
+      "title": "Expose bounded filtered search, listing and source retrieval",
+      "milestone": "S",
+      "status": "proposed (2026-11-02): not started",
+      "optional": false,
+      "depends_on": [
+        "T97",
+        "T55"
+      ],
+      "owner_role": "Retrieval",
+      "module_scope": [
+        "MeetingAccess/",
+        "Storage/Search/",
+        "Storage/",
+        "Tests/Storage/",
+        "Tests/DataLifecycle/",
+        "Benchmarks/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Implement list_meetings, search_meetings and get_meeting against the shared snapshot contract. Reuse FTS5 and Retriever, with explicit meeting/folder/participant/date filters applied before ranking and context expansion.",
+        "Add opaque query-bound cursors, stable ordering, generation invalidation and expected-fingerprint reads; structured errors distinguish unavailable, changed, bad query and restart-required pagination.",
+        "Enforce the spec input/output/time ceilings, cancellation, bounded context and fragment continuation; list empty queries and never implicitly dump the library. Clarify participant metadata versus speaker attribution.",
+        "Create at least 30 labeled answerable and 10 unanswerable/adversarial questions, including cross-meeting and paraphrase cases. Measure lexical Recall@10, paraphrase recall, citation resolution and scale latency before deciding whether hybrid search is justified."
+      ],
+      "acceptance": [
+        "At least 85% lexical/name Recall@10 and 100% unchanged citation resolution on fixtures; report paraphrase misses and unsupported completeness claims explicitly.",
+        "Filter intersections, guessed IDs via the policy hook, stale cursors, tied rankings, oversized records and malicious FTS inputs are covered; no out-of-scope line can enter a passage window.",
+        "On a 1,000-meeting/~1-million-line synthetic library, report p50/p95 and memory for at least 100 cold/warm operations; target warm p95 <= 1 s and cold <= 3 s on the supported M2 Max profile, no model loads."
+      ],
+      "fallback": "Keep lexical retrieval with documented limitations; improve measured misses or propose local hybrid search separately. Do not add a vector database just to expose tools.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T99",
+      "title": "Export selected meetings, folders or the library as portable files",
+      "milestone": "S",
+      "status": "proposed (2026-11-02): not started",
+      "optional": false,
+      "depends_on": [
+        "T97",
+        "T98",
+        "T11"
+      ],
+      "owner_role": "Data portability",
+      "module_scope": [
+        "Export/",
+        "MeetingAccess/",
+        "Presentation/",
+        "App/Shared/",
+        "App/Library/",
+        "Tests/DataLifecycle/",
+        "Tests/UI/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Add bulk snapshot export with selected/folder/library scope, content-level preview and destination picker. Include available notes without requiring a transcript; exclude audio.",
+        "Render safe Markdown frontmatter and optional transcript plus versioned JSON using stable UUID paths and source citations, authorship, uncertainty, staleness, gaps, fingerprints and read times. Preserve existing single-meeting export behavior and version JSON changes explicitly.",
+        "Write a versioned library/meeting manifest with file hashes and per-meeting errors; stage and atomically replace files, commit the manifest last, and make incomplete runs retryable. Preserve user-modified files on retry.",
+        "Explain snapshot freshness and external deletion limits, including synced folders; provide light/dark and keyboard-accessible scope, progress, cancellation and error states."
+      ],
+      "acceptance": [
+        "Golden/round-trip checks prove parity with current content for multi-meeting, notes-only, partially processed, stale and trimmed fixtures; no hidden text or audio paths leak.",
+        "Two meetings with the same title and title renames keep unique UUID paths; quotes/newlines/Unicode/Markdown/HTML/YAML/path payloads remain inert and valid.",
+        "Disk-full, cancellation, permission failure and interrupted publication preserve a detectable incomplete export, accurate errors and safe retry; no silent clobber of modified destination files."
+      ],
+      "fallback": "Ship explicit snapshots first, with truthful per-meeting failures. Do not add automatic syncing before export correctness is established.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T100",
+      "title": "Qualify portable history and the shared retrieval contract",
+      "milestone": "S",
+      "status": "proposed (2026-11-02): not started",
+      "optional": false,
+      "depends_on": [
+        "T98",
+        "T99"
+      ],
+      "owner_role": "Qualification",
+      "module_scope": [
+        "Tests/",
+        "Benchmarks/",
+        "docs/qualification/",
+        "docs/release/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Write a Milestone S validation brief and obtain an independent validator pass using the existing qualification format; record source parity, citation navigation, recall, scale measurements and remaining limitations.",
+        "Exercise the packaged bulk export on an isolated library and import the files into a generic Markdown directory reader; verify no special vault plugin is required.",
+        "Verify concurrent recording with bounded retrieval/export does not create silent capture loss or block capture callbacks; test audio-only/full deletion and late snapshot publication races.",
+        "Publish setup/export semantics, schemas, commands/results, hardware/OS and unverified configurations. Keep real meeting content out of evidence."
+      ],
+      "acceptance": [
+        "Milestone S gates in spec 0009 pass with actual evidence; failures remain open rather than being relabeled passing.",
+        "A tester can export multiple meetings, read Markdown/JSON and follow an unchanged citation back to the app; snapshot deletion limits are clear.",
+        "Existing data-lifecycle checks and appropriate scripts/check.sh checks pass; recording health under export/query load is measured."
+      ],
+      "fallback": "Fix the owning task and rerun affected checks; ship neither parity nor performance claims without evidence.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T101",
+      "title": "Build app-owned local access with scoped revocable grants",
+      "milestone": "T",
+      "status": "proposed (2026-11-02): not started",
+      "optional": false,
+      "depends_on": [
+        "T100"
+      ],
+      "owner_role": "Local integration security",
+      "module_scope": [
+        "MeetingAccess/",
+        "App/Integrations/",
+        "Presentation/",
+        "Config/",
+        "project.yml",
+        "Package.swift",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Prove a signed bundled helper can reach an app-owned local broker (prefer XPC with peer code-identity validation) in the installed build; record service registration, lifecycle and threat model before freezing the implementation.",
+        "Keep the app as the only live database writer/migration owner; helper requests fail with app_unavailable while the app is quit. No network listener, implicit recording, UI launch or new daemon.",
+        "Implement library-bound per-client credentials and grants for fixed meeting IDs, dynamic folder membership or all meetings; store credentials in Keychain and prove signed-helper access.",
+        "Enforce grants for every list/search/fetch/page and just before response delivery; revoke pending responses on disable, scope reduction or deletion. Record bounded operation-only audit metadata and suppress content/queries/secrets in logs."
+      ],
+      "acceptance": [
+        "Packaged app/helper identity, credential retrieval, app quit/restart, wrong helper identity and wrong/expired/revoked grant paths are tested on an isolated library.",
+        "Guessed meeting IDs, pagination and context expansion cannot bypass scope; revocation/deletion during an in-flight read produces no subsequent content response.",
+        "Document same-user credential-copy limitations; diagnostics contain no secrets or meeting text; no second store migration or network port is opened."
+      ],
+      "fallback": "If packaged XPC discovery/identity is infeasible, document and validate an authenticated local IPC alternative before proceeding. Never fall back to unrestricted live-database access.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T102",
+      "title": "Bundle a read-only stdio MCP server",
+      "milestone": "T",
+      "status": "proposed (2026-11-02): not started",
+      "optional": false,
+      "depends_on": [
+        "T101"
+      ],
+      "owner_role": "MCP adapter",
+      "module_scope": [
+        "Integrations/MCP/",
+        "MeetingAccess/",
+        "Package.swift",
+        "project.yml",
+        "Config/",
+        "Tests/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Add the signed amaranth-mcp helper with stdio transport and exactly list_meetings, search_meetings and get_meeting tools. Delegate content and authorization to the broker; no separate model or index.",
+        "Select and pin an MCP SDK/protocol version supported by intended desktop clients, record license/version, and expose schemas, source provenance, limits, pagination, cancellation and structured errors.",
+        "Keep stdout protocol-only and stderr content-free. Treat source text as untrusted data, instruct consumers to cite sources and ignore embedded instructions, and never fetch transcript URLs or run transcript commands.",
+        "Handle disconnects, malformed/oversized requests, invalid initialization/version, timeouts, stale fingerprints and app_unavailable without crashing the app or retaining meeting caches."
+      ],
+      "acceptance": [
+        "Protocol/inspector and subprocess tests cover initialization, discovery, all three calls, pagination, cancellation, error paths and shutdown under the pinned version.",
+        "All request/response limits and grant checks survive hostile inputs and embedded prompt-injection fixtures; stdout contains only valid protocol frames.",
+        "No write, audio, arbitrary SQL, file path or shell execution tool exists; a local server can serve data without loading ASR/LLM models."
+      ],
+      "fallback": "Use a well-supported pinned protocol instead of assuming latest support. Unsupported clients remain documented; do not add public hosting or a tunnel.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T103",
+      "title": "Add integration settings and installable client configuration",
+      "milestone": "T",
+      "status": "proposed (2026-11-02): not started",
+      "optional": false,
+      "depends_on": [
+        "T102"
+      ],
+      "owner_role": "App integration",
+      "module_scope": [
+        "App/Settings/",
+        "App/Integrations/",
+        "Presentation/",
+        "scripts/",
+        "docs/release/",
+        "README.md",
+        "Tests/UI/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Settings -> Integrations: disabled initially; create/name connection, select scope, explain future folder/all membership, show status/audit metadata, and provide Disable/Revoke.",
+        "Disclose that the external assistant may upload/retain retrieved content despite local transport. Update local-only documentation to distinguish core processing from optional external tools and synced exports.",
+        "Generate validated configuration/instructions for the first selected local MCP client using the installed bundled helper path and protected credential delivery; prove behavior across app updates and paths with spaces. Never overwrite client settings automatically.",
+        "Render disabled/enabled, unavailable app, revoked grant and setup-error states in light/dark mode; ensure keyboard accessibility and plain-language setup without a developer runtime."
+      ],
+      "acceptance": [
+        "A tester can enable one scoped connection from a packaged app, configure the documented client, and revoke it without using developer tools or exposing credentials in logs/screenshots.",
+        "Enablement makes scope and external-model disclosure clear; ordinary recording and Ask work with integrations off.",
+        "Installed paths/configuration survive a normal app update; unsupported client transport is identified with an actionable explanation."
+      ],
+      "fallback": "Offer manual configuration with exact installed paths if automatic discovery is unreliable. Keep supported-client claims limited to configurations actually tested.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T104",
+      "title": "Qualify live AI querying in packaged desktop clients",
+      "milestone": "T",
+      "status": "proposed (2026-11-02): not started",
+      "optional": false,
+      "depends_on": [
+        "T103"
+      ],
+      "owner_role": "Integration qualification",
+      "module_scope": [
+        "Tests/",
+        "docs/qualification/",
+        "docs/release/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Write the Milestone T validation brief and obtain an independent validator pass; record app/helper signing, client/SDK/protocol versions and exact setup.",
+        "In the primary chosen desktop client, demonstrate cross-meeting question -> search -> filtered fetch -> cited answer -> app source navigation using synthetic history. Attempt a second compatible client and explicitly mark it unverified if unavailable.",
+        "Exercise source edit/trim/deletion, notes-only data, grant reduction/revocation in flight, app quit/restart, wrong credentials, missing models, oversized requests and prompt-injection source text.",
+        "Verify no new outbound content traffic from Amaranth; separately document the client model destination and retention boundary. Capture only synthetic data in any client evidence."
+      ],
+      "acceptance": [
+        "At least one actual packaged client passes the end-to-end flow and all scope/revocation/source-freshness gates; inspector-only evidence is insufficient.",
+        "Tests prove no original trimmed/deleted content, unauthorized context or secret appears in responses/logs; unchanged citations open the expected source and changed ones are labeled.",
+        "Milestone T report includes compatibility limits, failures and external client behavior without claiming control over that client's uploads or caches."
+      ],
+      "fallback": "Fix broker/adapter/setup issues in the owning task; defer unsupported clients rather than weakening the access boundary.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T105",
+      "title": "Reconcile a one-way managed meeting directory",
+      "milestone": "U",
+      "status": "proposed (2026-11-02): not started",
+      "optional": true,
+      "depends_on": [
+        "T104"
+      ],
+      "owner_role": "Export lifecycle",
+      "module_scope": [
+        "Export/",
+        "Storage/",
+        "MeetingAccess/",
+        "Tests/DataLifecycle/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Define a versioned mirror manifest with library/destination identity, checkpoint, stable UUID paths, source fingerprints and last-written hashes; implement desired-state planning for additions, edits and removals.",
+        "Add a durable change sequence for transcript publication/edits/deletions/trims, notes, metadata, speakers, people, folder/scope membership and meeting deletion. Full reconciliation handles initial/resume and expired/missing cursors.",
+        "Use manifest-last publication, single-writer coordination and idempotent crash recovery. Recheck current scope/tombstones before commit so late work never recreates excluded content.",
+        "Only replace/remove unchanged owned files. Detect local modifications as conflicts, refuse foreign manifests and prevent symlink/path escape. Do not create automatic stale side copies or import vault edits."
+      ],
+      "acceptance": [
+        "Replay fixtures for every content/scope mutation yield exactly the expected files; rename/move keeps UUID paths, repeated reconciliation has no extra writes and full/incremental paths agree.",
+        "Deletion racing publication, crash at each publication step, tampered/foreign manifest, concurrent writer and symlink escape cannot resurrect source content or modify outside files.",
+        "User-edited files are preserved as explicit conflicts and no unowned file is deleted; source disappearance removes unchanged owned content on reconciliation."
+      ],
+      "fallback": "Retain manual snapshots if reliable ownership/recovery cannot be demonstrated. Never infer ownership from a filename alone.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T106",
+      "title": "Schedule bounded mirror updates while Amaranth runs",
+      "milestone": "U",
+      "status": "proposed (2026-11-02): not started",
+      "optional": true,
+      "depends_on": [
+        "T105"
+      ],
+      "owner_role": "Background coordination",
+      "module_scope": [
+        "App/Integrations/",
+        "Export/",
+        "Presentation/",
+        "Storage/",
+        "Tests/Jobs/",
+        "Tests/DataLifecycle/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Queue and debounce durable change notifications, persist progress and reconcile on launch/resume. Run bounded file work off capture callbacks and the database writer; pause under capture pressure.",
+        "Default to stopped meetings and available finalized content, exclude provisional/live text, and refresh exports when later transcript/notes work finishes.",
+        "Support Sync Now, Pause, Stop, retry and backoff for missing volumes, permission loss, disk-full and destination relocation; expose pending/conflict/error counts and last successful sync.",
+        "Document that the app must run for sync, external ingesters may lag, and revoking an MCP connection does not silently disable a separately configured mirror."
+      ],
+      "acceptance": [
+        "Restart/missed-event/pressure fixtures catch up from durable state without duplicates; cancellation and retries are bounded and do not stall recording.",
+        "Partial processing, late notes, edits and deletions are reflected after resume; no provisional text is exported by default.",
+        "Measured recording-plus-sync load preserves capture health; a missing volume pauses safely and reconnect resumes idempotently."
+      ],
+      "fallback": "Use explicit Sync Now and full reconciliation if scheduling is unreliable; do not add a daemon or weaken capture priority.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T107",
+      "title": "Add managed vault setup, conflict resolution and safe stop",
+      "milestone": "U",
+      "status": "proposed (2026-11-02): not started",
+      "optional": true,
+      "depends_on": [
+        "T106"
+      ],
+      "owner_role": "Vault experience",
+      "module_scope": [
+        "App/Settings/",
+        "App/Integrations/",
+        "Presentation/",
+        "docs/release/",
+        "Tests/UI/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Add optional mirror setup with folder picker, dedicated managed subdirectory, selected/folder/library scope, content-level preview and disclosure of synced destinations/downstream ingestion.",
+        "Show last success, pending/errors/conflicts, retry, pause and stop; explain one-way behavior and provide explicit conflict resolution that preserves modified files until the user chooses.",
+        "Stop offers leave files or remove unchanged managed files with counts; conflicts need explicit handling. Source deletion/scope removal applies on next sync, and external copies/backups/indexes cannot be recalled.",
+        "Provide light/dark renders and keyboard-accessible setup, active, paused, unavailable destination, conflict and stopping states; document how to keep personal annotations outside managed files."
+      ],
+      "acceptance": [
+        "A tester can configure a dedicated vault directory, observe updates, resolve a conflict and stop with accurate file counts; unrelated files remain untouched.",
+        "UI clearly separates mirror pause/stop from MCP revoke and source deletion, and never promises downstream erasure.",
+        "No runtime dependency on a particular vault plugin or cloud account; all mirror work can be disabled while core meeting features continue."
+      ],
+      "fallback": "Keep setup as a generic managed folder if vault-specific UX adds dependencies; retain explicit manual exports as the fallback.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T108",
+      "title": "Qualify managed export in a real vault and under failure",
+      "milestone": "U",
+      "status": "proposed (2026-11-02): not started",
+      "optional": true,
+      "depends_on": [
+        "T107"
+      ],
+      "owner_role": "Vault qualification",
+      "module_scope": [
+        "Tests/",
+        "docs/qualification/",
+        "docs/release/"
+      ],
+      "context": "Spec: docs/decisions/0009-external-meeting-access-spec.md (proposed implementation plan, 2026-11-02). Read it first. Native SwiftUI macOS app: App/ owns UI and the live library, Domain/ contracts, Storage/ SQLite and FTS5, Presentation/ shared view models, Export/ individual exports. Reuse current corrected/trimmed transcript and the single notes document from spec 0008; never expose hidden revisions, audio or work files. Preserve the app-owned single writer/migration owner. Use synthetic isolated libraries for evidence. These tasks plan future implementation; existing milestone scheduling remains unchanged.",
+      "deliverables": [
+        "Write the Milestone U brief and obtain an independent validator pass; exercise a scratch vault in the chosen tool (Obsidian by default if no other preference), with synthetic source content only.",
+        "Verify initial sync, title/people/speaker/notes changes, transcript correction/deletion/trim, folder movement, source deletion, notes-only meetings and later processing completion; follow citations from vault files.",
+        "Test app quit/relaunch, missing volume, full disk, permission loss, concurrent writer, user edits, manifest corruption, cancellation and crash publication points. Verify no stale recreation, unowned deletion or silent modified-file overwrite.",
+        "Report sync lag, full/incremental work and peak memory on the 1,000-meeting fixture; measure capture while syncing and document downstream ingestion/deletion limits and unverified targets."
+      ],
+      "acceptance": [
+        "One real vault refreshes source edits and removals in managed files; separate downstream index behavior is observed and documented, not assumed.",
+        "All ownership, recovery, deletion and capture-health gates pass with commands/results and versioned evidence; UI renders and accessible setup checks pass.",
+        "Stopping/removing managed files behaves as previewed; user modifications and unrelated files survive, and no real meeting text or credentials are committed."
+      ],
+      "fallback": "Leave U optional until lifecycle and recovery gates pass; Milestones S and T remain usable independently.",
       "review_timestamps": []
     }
   ]

@@ -214,7 +214,7 @@ public struct GitHubReleasesSource: UpdateSource {
         }
     }
 
-    static func map(_ error: any Error) -> UpdateCheckError {
+    public static func map(_ error: any Error) -> UpdateCheckError {
         // A blocked connection (a firewall, a sandbox) arrives as a POSIX error rather than a URLError.
         guard let e = error as? URLError else { return .unreachable(code: (error as NSError).code) }
         switch e.code {

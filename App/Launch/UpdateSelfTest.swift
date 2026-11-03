@@ -8,6 +8,9 @@ import Presentation
 /// toolbar note in the real (bridged) main toolbar at 900 and 1100 pt, and Settings → Updates, in light and dark.
 /// `Amaranth --self-test update-check [--update-folder <dir>] [--include-debug] [--running-build <N>]`: one real check
 /// against GitHub (or the folder) as the given build, logging what would be offered. Reads nothing of the user's.
+/// `Amaranth --self-test update-verify [same options] [--expect-reject]`: T72's download and checks (size, sha256, unzip,
+/// signature, bundle ID, team, arm64, macOS, build, channel) for the offered build, into a temporary folder. Never
+/// replaces or launches anything.
 enum UpdateSelfTest {
     static func arg(_ k: String) -> String? {
         let a = CommandLine.arguments
@@ -38,6 +41,74 @@ enum UpdateSelfTest {
         }
     }
 
+    @MainActor static func verify() async -> Bool {
+        let running = BuildInfo.running
+        let build = arg("--running-build").flatMap(Int.init) ?? running.build
+        let model = UpdateModel(running: BuildInfo(version: running.version, build: build, commit: running.commit, channel: running.channel))
+        let includeDebug = CommandLine.arguments.contains("--include-debug")
+        let source: any UpdateSource = arg("--update-folder").map { LocalFolderSource(folder: URL(filePath: $0)) } ?? GitHubReleasesSource()
+        let expectReject = CommandLine.arguments.contains("--expect-reject")
+        // The catalog normally hides other-team or malformed builds; --any-candidate takes the newest manifest as is, so a
+        // bad build reaches the install-time checks.
+        let found: [UpdateCandidate]
+        do { found = try await source.candidates(above: build, includeDebug: includeDebug) }
+        catch { SelfTest.log(["step": "check", "error": error.message]); return false }
+        let pick = CommandLine.arguments.contains("--any-candidate") ? found.max { $0.manifest.build < $1.manifest.build }
+            : UpdateCatalog.newest(found, running: model.running, bundleID: Bundle.main.bundleIdentifier ?? "", teamID: model.teamID,
+                                   includeDebug: includeDebug, systemVersion: ProcessInfo.processInfo.operatingSystemVersion)
+        guard let pick else { SelfTest.log(["step": "offer", "build": "none"]); return false }
+        model.stagingURL = FileManager.default.temporaryDirectory.appending(path: "amaranth-update-verify-\(UUID())")
+        defer { model.cleanUpStaging() }
+        SelfTest.log(["step": "offer", "build": "\(pick.manifest.build)", "channel": pick.manifest.channel, "download": pick.download.absoluteString])
+        let t0 = ContinuousClock.now
+        do {
+            let app = try await model.prepare(pick)
+            let facts = UpdateModel.facts(of: app)
+            SelfTest.log(["step": "verified", "build": "\(facts.build ?? 0)", "team": facts.teamID ?? "none", "archs": facts.architectures.joined(separator: ","),
+                          "seconds": String(format: "%.1f", (ContinuousClock.now - t0) / .seconds(1))])
+            return !expectReject
+        } catch {
+            SelfTest.log(["step": "rejected", "reason": (error as? UpdateModel.InstallError)?.message ?? "\(error)"])
+            return expectReject
+        }
+    }
+
+    /// `Amaranth --self-test update-install [same options] [--fail-swap]`, run as /Applications/Amaranth.app's binary while
+    /// the app is NOT open: the whole in-app update except the button (download, checks, helper), then this process exits
+    /// and the helper swaps the bundles and opens the app with --updated-from (or, with --fail-swap, makes the swap fail so
+    /// the old app must come back and open with --update-failed). Validation only (Milestone Q).
+    @MainActor static func install() async -> Bool {
+        guard Bundle.main.bundleURL.standardizedFileURL.path == UpdateModel.installedURL.path else {
+            SelfTest.log(["step": "location", "error": "run /Applications/Amaranth.app/Contents/MacOS/Amaranth"]); return false
+        }
+        let others = NSRunningApplication.runningApplications(withBundleIdentifier: Bundle.main.bundleIdentifier ?? "")
+            .filter { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }
+        guard others.isEmpty else { SelfTest.log(["step": "running", "error": "quit Amaranth first"]); return false }
+        let running = BuildInfo.running
+        let model = UpdateModel(running: running)
+        let includeDebug = CommandLine.arguments.contains("--include-debug")
+        let source: any UpdateSource = arg("--update-folder").map { LocalFolderSource(folder: URL(filePath: $0)) } ?? GitHubReleasesSource()
+        let found: [UpdateCandidate]
+        do { found = try await source.candidates(above: running.build, includeDebug: includeDebug) }
+        catch { SelfTest.log(["step": "check", "error": error.message]); return false }
+        guard let pick = UpdateCatalog.newest(found, running: running, bundleID: Bundle.main.bundleIdentifier ?? "", teamID: model.teamID,
+                                              includeDebug: includeDebug, systemVersion: ProcessInfo.processInfo.operatingSystemVersion) else {
+            SelfTest.log(["step": "offer", "build": "none", "running": "\(running.build)"]); return false
+        }
+        SelfTest.log(["step": "offer", "build": "\(pick.manifest.build)", "channel": pick.manifest.channel, "running": "\(running.build)"])
+        do {
+            let app = try await model.prepare(pick)
+            let env = CommandLine.arguments.contains("--fail-swap") ? ["AMARANTH_HELPER_FAIL_SWAP": "1"] : [:]
+            try model.startHelper(newApp: app, build: pick.manifest.build, environment: env)
+            SelfTest.log(["step": "helper-started", "log": UpdateModel.logURL.path])
+            return true
+        } catch {
+            model.cleanUpStaging()
+            SelfTest.log(["step": "rejected", "reason": (error as? UpdateModel.InstallError)?.message ?? "\(error)"])
+            return false
+        }
+    }
+
     @MainActor static func render() async -> Bool {
         _ = NSApplication.shared
         let temp = FileManager.default.temporaryDirectory.appending(path: "amaranth-update-ui-\(UUID())")
@@ -51,7 +122,8 @@ enum UpdateSelfTest {
         defaults.set(true, forKey: "onboarded")
 
         let running = BuildInfo(version: "0.1.0", build: 122, commit: "42d7068", channel: .release)
-        let updates = UpdateModel(running: running, teamID: "WLKNK4P84Z")
+        let updates = UpdateModel(running: running, teamID: "WLKNK4P84Z", arguments: [])
+        updates.allowAnyLocation = true
         let m = UpdateManifest(bundleID: "com.alexmartin.amaranth", version: "0.1.0", build: 125, commit: "9f3e2a1", channel: "release",
                                asset: "Amaranth-0.1.0-125.zip", size: 41_500_000, sha256: String(repeating: "0", count: 64), teamID: "WLKNK4P84Z",
                                minimumSystemVersion: "26.5.2", schemaVersion: 6,
@@ -96,6 +168,22 @@ enum UpdateSelfTest {
                 updates.phase = phase
                 await shoot(UpdateWindow(updates: updates), "update-\(file)", size: nil)
             }
+            // T72: installing, and the reasons it won't.
+            updates.phase = .available(candidate)
+            let installs: [(String, UpdateModel.InstallPhase, Bool)] = [
+                ("downloading", .downloading(0.42), true), ("verifying", .verifying, true),
+                ("rejected", .failed("Build 125 wasn't installed: It's signed by team ZZZZZZZZZZ, not this app's team (WLKNK4P84Z). Nothing was changed."), true),
+                ("not-in-applications", .idle, false),
+            ]
+            for (file, phase, anywhere) in installs {
+                updates.installPhase = phase
+                updates.allowAnyLocation = anywhere
+                await shoot(UpdateWindow(updates: updates), "update-install-\(file)", size: nil)
+            }
+            updates.installPhase = .idle
+            updates.allowAnyLocation = true
+            let failedAfter = UpdateModel(running: running, teamID: "WLKNK4P84Z", arguments: ["--update-failed", "125"])
+            await shoot(UpdateWindow(updates: failedAfter), "update-install-failed-relaunch", size: nil)
             for (file, source) in [("github", UpdateSettings.Source.github), ("folder", .folder), ("off", .off)] {
                 defaults.set(source.rawValue, forKey: UpdateSettings.sourceKey)
                 if source == .folder { defaults.set("/Volumes/Shared/Amaranth Updates", forKey: UpdateSettings.folderPathKey) }
@@ -108,7 +196,8 @@ enum UpdateSelfTest {
             for width in [900.0, 1100.0] {
                 for (state, setup) in [("available", { updates.phase = .available(candidate); updates.noteDismissed = false }),
                                        ("later", { updates.noteDismissed = true }),
-                                       ("none", { updates.phase = .upToDate; updates.noteDismissed = false })] as [(String, () -> Void)] {
+                                       ("none", { updates.phase = .upToDate; updates.noteDismissed = false }),
+                                       ("updated", { updates.updatedFrom = 122 })] as [(String, () -> Void)] {
                     setup()
                     let size = CGSize(width: width, height: 640)
                     let view = NSHostingView(rootView: MainView().defaultAppStorage(defaults).environment(worker).environment(models)
@@ -124,10 +213,11 @@ enum UpdateSelfTest {
                     try? await Task.sleep(for: .milliseconds(700))
                     let items = window.toolbar?.items ?? [], visible = window.toolbar?.visibleItems ?? []
                     let labels = items.map { $0.label.isEmpty ? $0.itemIdentifier.rawValue : $0.label }
-                    let note = items.first { $0.label == "Update Available" }
+                    let expected = state == "available" ? "Update Available" : state == "updated" ? "Updated to build 122" : nil
+                    let note = items.first { $0.label.hasPrefix("Update") }
                     let noteVisible = note.map { n in visible.contains { $0 === n } } ?? false
                     let endsRight = labels.suffix(2).first?.hasPrefix("Switch to") == true && labels.last?.hasSuffix("Ask") == true
-                    let pass = endsRight && (state == "available" ? noteVisible : note == nil)
+                    let pass = endsRight && (expected.map { note?.label == $0 && noteVisible } ?? (note == nil))
                     SelfTest.log(["step": "toolbar-note", "appearance": name, "width": "\(Int(width))", "state": state,
                                   "items": labels.joined(separator: " | "), "noteVisible": "\(noteVisible)", "ok": "\(pass)"])
                     if !pass { ok = false }
@@ -139,6 +229,7 @@ enum UpdateSelfTest {
                     window.orderOut(nil)
                     window.contentView = nil
                 }
+                updates.updatedFrom = nil
             }
         }
         SelfTest.log(["step": "output", "directory": out.path])

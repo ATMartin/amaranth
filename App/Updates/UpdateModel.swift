@@ -41,8 +41,36 @@ final class UpdateModel {
     var sourceOverride: (any UpdateSource)?
     private var checkTask: Task<Void, Never>?
 
-    init(running: BuildInfo = .running, teamID: String? = CodeIdentity.runningTeamID) {
+    // T72: Install and Relaunch (UpdateInstaller.swift).
+    enum InstallPhase: Equatable {
+        case idle
+        case downloading(Double?)
+        case verifying
+        case relaunching
+        case failed(String)
+    }
+    var installPhase: InstallPhase = .idle
+    /// Where downloads are staged; self-tests point it at a temporary folder.
+    var stagingURL = UpdateModel.defaultStagingURL
+    /// Renders and self-tests only: skip the "runs from /Applications" rule.
+    var allowAnyLocation = false
+    var installTask: Task<Void, Never>?
+    var downloadTask: URLSessionDownloadTask?
+    /// Processing is queued or running (it picks up again after the relaunch; the step in progress starts over).
+    var processingPending: () -> Bool = { false }
+    /// This launch follows an in-app update from this build (`--updated-from`): the toolbar says so once.
+    var updatedFrom: Int?
+    /// The helper couldn't install this build (`--update-failed`); the old app was kept.
+    var failedBuild: Int?
+
+    init(running: BuildInfo = .running, teamID: String? = CodeIdentity.runningTeamID, arguments: [String] = CommandLine.arguments) {
         self.running = running; self.teamID = teamID
+        func value(_ flag: String) -> Int? { arguments.firstIndex(of: flag).flatMap { $0 + 1 < arguments.count ? Int(arguments[$0 + 1]) : nil } }
+        updatedFrom = value("--updated-from")
+        failedBuild = value("--update-failed")
+        if let failedBuild {
+            phase = .failed("Build \(failedBuild) couldn't be installed, so Amaranth \(running.label) was kept as it was. Details are in ~/Library/Logs/Amaranth/update.log.")
+        }
     }
 
     var available: UpdateCandidate? { if case .available(let c) = phase { c } else { nil } }
@@ -50,8 +78,18 @@ final class UpdateModel {
     /// The toolbar note: a newer build, not dismissed with Later, and never while recording.
     var noteVisible: Bool { available != nil && !noteDismissed && recorder?.inSession != true }
 
+    /// What the toolbar shows: "Updated to build N" (once, after an update) or "Update Didn't Install" take precedence.
+    enum Note: Equatable { case updated(Int), failed(Int), available(UpdateCandidate) }
+    var note: Note? {
+        if updatedFrom != nil { return .updated(running.build) }
+        if let failedBuild, !noteDismissed { return .failed(failedBuild) }
+        if noteVisible, let available { return .available(available) }
+        return nil
+    }
+
     func launchCheck() {
-        guard UpdateSettings.checkAtLaunch(), UpdateSettings.source() != .off else { return }
+        // After a failed update, keep its message for the dialog rather than replacing it with a fresh check.
+        guard UpdateSettings.checkAtLaunch(), UpdateSettings.source() != .off, failedBuild == nil else { return }
         check(userInitiated: false)
     }
 
@@ -72,12 +110,8 @@ final class UpdateModel {
         }
     }
 
-    func later() { noteDismissed = true }
+    func later() { noteDismissed = true; failedBuild = nil }
 
-    /// Until T72: opens the release page (or folder) so the build can be installed by hand.
-    func install(_ c: UpdateCandidate) {
-        NSWorkspace.shared.open(c.page ?? c.download)
-    }
 
     private func fetch() async -> Result<UpdateCandidate?, UpdateCheckError> {
         let source: any UpdateSource
