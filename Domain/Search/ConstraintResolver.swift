@@ -19,6 +19,8 @@ public struct ResolvedConstraints: Hashable, Sendable, Codable {
     public var people: [ResolvedPerson]
     /// Meetings where the user is a known speaker (“Me”), with that speaker's shown name.
     public var selfSpeakers: [MeetingID: String]
+    /// Meetings in scope where the question asks about the user but no speaker is theirs (their lines can't be told apart).
+    public var selfUnmappedMeetings: Int = 0
     public init(dateRange: MeetingDateRange? = nil, dateInherited: Bool = false, people: [ResolvedPerson] = [], selfSpeakers: [MeetingID: String] = [:]) {
         self.dateRange = dateRange; self.dateInherited = dateInherited; self.people = people; self.selfSpeakers = selfSpeakers
     }
@@ -56,9 +58,10 @@ public enum ConstraintResolver {
         var seen = Set<String>()
         for p in plan.people where seen.insert(p.name.lowercased()).inserted {
             if p.role == .selfUser {
+                // Mapped where a meeting has the user's own speaker; other meetings stay unattributable (counted, stated).
                 let mapped = directory.meetingsInScope.filter { out.selfSpeakers[$0] != nil }
-                out.people.append(ResolvedPerson(name: "I", role: .selfUser,
-                                                 resolution: !mapped.isEmpty && mapped.count == directory.meetingsInScope.count ? .selfMapped : (mapped.isEmpty ? .selfUnmapped : .selfUnmapped),
+                out.selfUnmappedMeetings = directory.meetingsInScope.count - mapped.count
+                out.people.append(ResolvedPerson(name: "I", role: .selfUser, resolution: mapped.isEmpty ? .selfUnmapped : .selfMapped,
                                                  speakerNames: Array(Set(mapped.compactMap { out.selfSpeakers[$0] })).sorted()))
                 continue
             }

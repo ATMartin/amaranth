@@ -39,6 +39,7 @@ struct AskPane: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
+                        SearchModelNotice()
                         if library.askPanelOpen {
                             if let answers = library.answers, answers.phase != .idle {
                                 AnswerSection(answers: answers)
@@ -86,7 +87,8 @@ struct AskPane: View {
         } else {
             VStack(alignment: .leading, spacing: 0) {   // at most 50 hits: no need for lazy rows
                 if library.answers.map({ $0.phase != .idle }) ?? false {
-                    Eyebrow(text: "Matches").padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid)
+                    // T115: the keyword lookup stays available, labeled for what it is (not the answer's evidence).
+                    Eyebrow(text: "Exact word matches").padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid)
                 }
                 let offsets = groupOffsets(groups)
                 ForEach(Array(groups.enumerated()), id: \.offset) { gi, group in
@@ -265,21 +267,39 @@ struct AnswerSection: View {
                 Spacer(minLength: 0)
             }
             switch answers.phase {
-            case .thinking:
-                HStack(spacing: AppStyle.grid) { ProgressView().controlSize(.small); Text("Reading the meetings…").foregroundStyle(Color.brandSecondary) }
-                    .appFont(.callout)
-            case .waiting(let reason), .unavailable(let reason), .failed(let reason):
-                Label(reason, systemImage: answers.phase == .unavailable(reason) ? "info.circle" : "hourglass")
-                    .appFont(.callout).foregroundStyle(Color.brandSecondary)
-            case .streaming, .done:
+            case .working(let stage):
+                AskLoadingView(stage: stage, waitingReason: nil, started: answers.submittedAt) { answers.cancel() }
+            case .waiting(let reason):
+                AskLoadingView(stage: .preparing, waitingReason: reason, started: answers.submittedAt) { answers.cancel() }
+            case .streaming:
+                Text(answers.text).appFont(.callout).fixedSize(horizontal: false, vertical: true).foregroundStyle(Color.brandText)
+                HStack(spacing: AppStyle.half) {
+                    SeedRing(phase: 0, pulse: 0.5).frame(width: 12, height: 12).accessibilityHidden(true)
+                    Text("Still writing — checking it against the sources next").appFont(.caption2).foregroundStyle(Color.brandSecondary)
+                }
+            case .done:
                 Text(answers.text).appFont(.callout).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(answers.response?.refused == true ? Color.brandSecondary : Color.brandText)
                 if !answers.citedPassages.isEmpty {
                     FlowChips(passages: answers.citedPassages, acrossMeetings: answers.acrossMeetings) { library.open(citation: $0) }
                 }
-                if answers.phase == .done, answers.response?.refused == false {
+                AnswerNotes(notes: answers.notes)
+                if answers.response?.refused == false {
                     Text(caption).appFont(.caption2).foregroundStyle(Color.brandSecondary)
                 }
+                if !answers.passages.isEmpty { PassagesRead(passages: answers.passages, cited: Set(answers.response?.citations ?? [])) { library.open(citation: $0) } }
+            case .clarification(let t):
+                Label { Text(t).fixedSize(horizontal: false, vertical: true) } icon: { Image(systemName: "questionmark.bubble").foregroundStyle(Color.brandAccent) }
+                    .appFont(.callout)
+                AnswerNotes(notes: answers.notes)
+            case .noEvidence(let t):
+                Text(t).appFont(.callout).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
+                AnswerNotes(notes: answers.notes)
+                Text("Not finding it in the meetings searched doesn't mean it was never said.").appFont(.caption2).foregroundStyle(Color.brandSecondary)
+            case .timedOut, .stale, .unavailable, .failed:
+                Label { Text(terminalText).fixedSize(horizontal: false, vertical: true) } icon: { Image(systemName: terminalIcon) }
+                    .appFont(.callout).foregroundStyle(Color.brandSecondary)
+                if answers.canRetry { Button("Retry") { answers.retry() }.buttonStyle(.brandLink).appFont(.callout) }
             case .idle: EmptyView()
             }
         }
@@ -287,6 +307,19 @@ struct AnswerSection: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Answer")
+    }
+
+    var terminalText: String {
+        switch answers.phase {
+        case .timedOut: "That took longer than 15 seconds, so it stopped rather than show an unchecked answer."
+        case .stale: "The meetings this answer used changed while it was being written, so it was withheld. Ask again for an answer from the current text."
+        case .unavailable(let r), .failed(let r): r
+        default: ""
+        }
+    }
+
+    var terminalIcon: String {
+        switch answers.phase { case .timedOut: "clock"; case .stale: "arrow.triangle.2.circlepath"; case .unavailable: "info.circle"; default: "exclamationmark.triangle" }
     }
 
     var caption: String {
@@ -327,5 +360,91 @@ struct CitationChip: View {
             .buttonStyle(SourceLinkStyle())
             .help(notes ? "Open the note this came from" : "Show this line in the transcript")
             .accessibilityLabel("Source: \(label)")
+    }
+}
+
+/// What was searched and its limits, under an answer (T115).
+struct AnswerNotes: View {
+    let notes: [String]
+    var body: some View {
+        if !notes.isEmpty {
+            VStack(alignment: .leading, spacing: 2) {
+                ForEach(Array(notes.enumerated()), id: \.offset) { _, n in
+                    Label { Text(n).fixedSize(horizontal: false, vertical: true) } icon: { Image(systemName: "info.circle") }
+                        .labelStyle(.titleAndIcon).appFont(.caption2).foregroundStyle(Color.brandSecondary)
+                }
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("About this search: " + notes.joined(separator: " "))
+        }
+    }
+}
+
+/// The passages the answer was written from (T115), collapsed: meeting · time and the lines that matched. Cited ones
+/// are marked. Click opens the line.
+struct PassagesRead: View {
+    let passages: [Passage]
+    let cited: Set<Int>
+    let open: (Passage) -> Void
+    @State private var expanded = false
+
+    var body: some View {
+        DisclosureGroup(isExpanded: $expanded) {
+            VStack(alignment: .leading, spacing: AppStyle.half + 2) {
+                ForEach(Array(passages.enumerated()), id: \.offset) { i, p in
+                    Button { open(p) } label: {
+                        VStack(alignment: .leading, spacing: 1) {
+                            HStack(spacing: AppStyle.half) {
+                                Text(AskPassages.label(p, acrossMeetings: true, withDate: true)).appFont(.caption2, monospacedDigit: true).foregroundStyle(Color.link)
+                                if cited.contains(i + 1) { Text("cited").appFont(.caption2, weight: .semibold).foregroundStyle(Color.sage) }
+                            }
+                            Text((p.lines.filter(\.matched).isEmpty ? p.lines : p.lines.filter(\.matched)).prefix(2)
+                                .map { ($0.speaker.map { "\($0): " } ?? "") + $0.text }.joined(separator: " "))
+                                .appFont(.caption).foregroundStyle(Color.brandText).lineLimit(3).frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Opens the meeting at this passage")
+                }
+            }
+            .padding(.top, AppStyle.half)
+        } label: {
+            Text("Passages read (\(passages.count))").appFont(.caption, weight: .medium).foregroundStyle(Color.brandSecondary)
+        }
+    }
+}
+
+/// Contextual search readiness in the Ask pane (T115): the search model to download (explicit, verified install) or the
+/// meetings still being indexed. Nothing when ready.
+struct SearchModelNotice: View {
+    @Environment(LibraryModel.self) private var library
+    @Environment(ModelSetupModel.self) private var models
+
+    var body: some View {
+        if models.searchModelMissing {
+            notice(icon: "arrow.down.circle", text: "Answers that understand meaning, not just words, need the search model (\(ByteCountFormatter.string(fromByteCount: models.searchModelBytes, countStyle: .file)) download). Until then, Ask matches words.") {
+                Button("Download") { models.install() }.buttonStyle(.brandLink)
+            }
+        } else if case .installing(let p) = models.status {
+            notice(icon: "arrow.down.circle", text: "Downloading the search model… \(Int(100 * Double(p.bytesDone) / Double(max(1, p.bytesTotal))))%") { EmptyView() }
+        } else if let i = library.indexer, i.coverage.encoderAvailable || i.state == .indexing, i.coverage.meetingsInScope > 0, !i.coverage.complete {
+            notice(icon: "circle.dashed", text: "Getting meetings ready for contextual search: \(i.coverage.meetingsIndexed) of \(i.coverage.meetingsInScope)\(pauseText(i.state)).") { EmptyView() }
+        }
+    }
+
+    func pauseText(_ s: ContextIndexer.State) -> String {
+        if case .paused(let r) = s { return " (\(r.lowercased()))" }
+        return ""
+    }
+
+    func notice<A: View>(icon: String, text: String, @ViewBuilder action: () -> A) -> some View {
+        VStack(alignment: .leading, spacing: AppStyle.half) {
+            Label { Text(text).fixedSize(horizontal: false, vertical: true) } icon: { Image(systemName: icon).foregroundStyle(Color.sage) }
+                .appFont(.caption).foregroundStyle(Color.brandSecondary)
+            action().appFont(.caption)
+        }
+        .padding(.horizontal, AppStyle.double).padding(.vertical, AppStyle.grid)
+        .accessibilityElement(children: .combine)
     }
 }

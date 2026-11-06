@@ -25,6 +25,11 @@ public struct ContextualEvidence: Sendable {
     public var generations: [MeetingID: Int64]
     public var timings: [String: Double]
     public var scopeMeetings: Int
+    public init(passages: [RankedPassage], plan: QueryPlan, planFallback: Bool, constraints: ResolvedConstraints, coverage: IndexCoverage, semantic: Bool,
+                generations: [MeetingID: Int64], timings: [String: Double], scopeMeetings: Int) {
+        self.passages = passages; self.plan = plan; self.planFallback = planFallback; self.constraints = constraints; self.coverage = coverage
+        self.semantic = semantic; self.generations = generations; self.timings = timings; self.scopeMeetings = scopeMeetings
+    }
 }
 
 public struct RankedPassage: Sendable, Hashable {
@@ -32,6 +37,7 @@ public struct RankedPassage: Sendable, Hashable {
     public var rank: Int
     /// Lines in it spoken by a person the question asks about (shown speaker match).
     public var askedSpeakerLines: Int
+    public init(passage: Passage, rank: Int, askedSpeakerLines: Int) { self.passage = passage; self.rank = rank; self.askedSpeakerLines = askedSpeakerLines }
 }
 
 /// Spec 0010 contextual retrieval (T114): a fixed, bounded workflow — not an agent.
@@ -97,11 +103,15 @@ public final class ContextualRetriever: Sendable {
         // Constraints → filter (dates before candidates).
         let tr = ContinuousClock.now
         var filter = base
-        let scopeDir = try store.nameDirectory(base)
+        // Dates first (deterministic), then people against the meetings actually searched.
+        let dated = ConstraintResolver.resolve(question: request.question, plan: plan, now: request.requestTime, timeZone: tz, previous: previous,
+                                               directory: NameDirectory(speakers: [:], attendees: [:], meetingsInScope: []), accountName: accountName, mentioned: { _ in false })
+        if let r = dated.dateRange { filter.start = r.start; filter.end = r.end }
+        let scopeDir = try store.nameDirectory(filter)
+        let peopleFilter = filter
         let constraints = ConstraintResolver.resolve(question: request.question, plan: plan, now: request.requestTime, timeZone: tz, previous: previous,
                                                      directory: scopeDir, accountName: accountName,
-                                                     mentioned: { [store] in (try? store.mentions($0, filter: base)) ?? false })
-        if let r = constraints.dateRange { filter.start = r.start; filter.end = r.end }
+                                                     mentioned: { [store] in (try? store.mentions($0, filter: peopleFilter)) ?? false })
         let meetings = try store.contextMeetings(filter)
         let generations = try store.contextGenerations(meetings)
         let coverage = try store.contextCoverage(filter, producer: producer?.id)

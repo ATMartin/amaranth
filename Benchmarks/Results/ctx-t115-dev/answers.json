@@ -1,0 +1,2290 @@
+[
+  {
+    "answer" : "Rosa was identified as someone who could pick up the data copy piece of the Kestrel migration, starting the twelfth, but she still needs her manager to okay it. Tomas was noted as being unavailable due to a booking on the billing audit through December, which was pulled forward. No other individuals were mentioned as potentially able to work on the Kestrel migration.",
+    "answerSeconds" : 2.9179775,
+    "behavior" : "answer",
+    "categories" : [
+      "staffing",
+      "person_date",
+      "cross_meeting",
+      "multipart",
+      "speaker_vs_mentioned"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Capacity check-in (Nov 2, 2026): Speaker 1: Morning. Let's go through the open asks, Kestrel first. | Speaker 1: Kestrel is basically moving the customer ledger off the old Oracle box."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 4,
+    "expectedMeaning" : "Across the rolling window: Wen Li cannot (on leave until January); Rosa could take the data copy from the 12th, first tentative then confirmed after her manager signed off; Tomas is booked on the billing audit through December; Omar will own the cutover runbook at no more than two days a week.",
+    "firstTextSeconds" : 1.882132458,
+    "forbidden" : [
+      "Tomas has room \/ is available for Kestrel",
+      "Wen Li is available or confirmed",
+      "Omar is full time on Kestrel"
+    ],
+    "guidance" : [
+      "Only meetings that started Fri, Oct 30 to Fri, Nov 6 were searched (the question's “past seven days”)."
+    ],
+    "id" : "dev01",
+    "notes" : [
+      "Searched meetings from Fri, Oct 30 to Fri, Nov 6 (“past seven days”).",
+      "Contextual search covers 20 of 21 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 5,
+    "planSeconds" : 1.6401930839999999,
+    "question" : "Over the past seven days, what came up about who might be able to work on the Kestrel migration?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Wen Li is unavailable: on leave until January (Oct 30 sync)",
+      "Rosa was suggested for the data copy work starting the 12th, pending her manager (Nov 2)",
+      "Rosa was later confirmed after her manager signed off (Nov 4)",
+      "Tomas is not available; booked on the billing audit through December (Nov 2)",
+      "Omar agreed to own the cutover runbook but only about two days a week (Nov 4)"
+    ],
+    "retrievalSeconds" : 0.063032333,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 4.644502875,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Rosa's data copy task is locked in, as her manager has signed off, allowing her to start on the twelfth. Omar is committed to owning the cutover runbook, though he can only dedicate two days a week. A dry run for the cutover is scheduled for the first week of December. The go-live date is not yet set. Access to the old schemas is to be requested by Omar, and monitoring for the new ledger can reuse existing alerts. No final decision was made on the target go-live date.",
+    "answerSeconds" : 3.4842628749999998,
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "staffing",
+      "decision_status"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Capacity check-in (Nov 2, 2026): Speaker 1: Morning. Let's go through the open asks, Kestrel first. | Speaker 1: Kestrel is basically moving the customer ledger off the old Oracle box. | Speaker 3: So on people, Rosa could pick up the data copy piece, starting the twelfth. | Speaker 2: And Tomas is out, he's booked on the billing audit through December.",
+      "Kestrel cutover prep (Nov 4, 2026): Speaker 1: Okay, this is the first real Kestrel prep, thanks for joining. | Speaker 1: Great. So, news first. Rosa's manager signed off, so she's on it from the twelfth. | Speaker 3: Nice, that's the data copy covered. | Omar: But realistically I can do two days a week on this, not more.",
+      "Kestrel cutover prep (Nov 4, 2026): Speaker 3: Okay, first week of December for the dry run."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Confirmed: Rosa (manager signed off, starting the 12th) and Omar owning the cutover runbook at up to two days a week. Wen Li and Tomas are not available; nothing else is confirmed.",
+    "firstTextSeconds" : 1.9994494170000001,
+    "forbidden" : [
+      "Wen Li is confirmed",
+      "Tomas is confirmed"
+    ],
+    "guidance" : [
+      "Only meetings that started Fri, Oct 30 to Fri, Nov 6 were searched (the question's “past seven days”).",
+      "Rosa is not a named speaker in these meetings, but lines that mention Rosa may answer the question. Still answer from them: say what was said about Rosa and by which speaker label, without claiming Rosa said it.",
+      "Tomas is talked about in these meetings but isn't a named speaker."
+    ],
+    "id" : "dev02",
+    "notes" : [
+      "Searched meetings from Fri, Oct 30 to Fri, Nov 6 (“past seven days”).",
+      "Contextual search covers 20 of 21 meetings so far; the rest were searched by keywords.",
+      "Rosa isn't a named speaker here, so this covers what others said about Rosa."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 2.152376208,
+    "question" : "Which of those are actually locked in?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Rosa is confirmed after her manager signed off",
+      "Omar committed to own the cutover runbook, capped at two days a week",
+      "Wen Li and Tomas are not options"
+    ],
+    "retrievalSeconds" : 0.062101,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 5.800134708,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Rosa got the go-ahead to help shift the customer accounts off the legacy database, as Speaker 3 stated she could pick up the data copy piece starting the twelfth, though she still needs her manager to okay it.",
+    "answerSeconds" : 2.476199167,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "staffing"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Capacity check-in (Nov 2, 2026): Speaker 1: Kestrel is basically moving the customer ledger off the old Oracle box. | Speaker 1: Plus the reconciliation reports that hang off it."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Rosa: her manager signed off and she starts on the data copy from the 12th (Kestrel is the customer-ledger move off the old Oracle box).",
+    "firstTextSeconds" : 1.792443333,
+    "forbidden" : [
+      "Tomas",
+      "Wen Li"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev03",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.642946083,
+    "question" : "Who got the go-ahead to help shift our customer accounts off the legacy database?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Rosa got approval (manager signed off)",
+      "She starts on the 12th"
+    ],
+    "retrievalSeconds" : 0.0713655,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 4.220498084,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "No, Tomas is not free to help on Kestrel. Speaker 2 states that Tomas is booked on the billing audit through December, and that the audit was pulled forward last week, which means he is unavailable for Kestrel work.",
+    "answerSeconds" : 2.703629875,
+    "behavior" : "answer",
+    "categories" : [
+      "changed_plan",
+      "cross_meeting",
+      "staffing",
+      "speaker_vs_mentioned"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Platform weekly (Oct 29, 2026): Speaker 1: Okay, let's get going, we've got a lot today. | Speaker 2: Yeah, can we start with the incident from Tuesday? | Speaker 1: Sure. Quick version is the cache cluster filled up and evictions spiked. | Speaker 3: We bumped the memory limit and it's been stable since.",
+      "Capacity check-in (Nov 2, 2026): Speaker 1: Morning. Let's go through the open asks, Kestrel first. | Speaker 1: Kestrel is basically moving the customer ledger off the old Oracle box. | Speaker 3: She still needs her manager to okay it though. | Speaker 3: Maybe Wen Li could help? I haven't asked her."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "No. On Oct 29 someone said he had plenty of room, but on Nov 2 it was reported that he is booked on the billing audit through December because the audit was pulled forward.",
+    "firstTextSeconds" : 1.94239775,
+    "forbidden" : [
+      "Tomas is available for Kestrel now"
+    ],
+    "guidance" : [
+      "Tomas is not a named speaker in these meetings, but lines that mention Tomas may answer the question. Still answer from them: say what was said about Tomas and by which speaker label, without claiming Tomas said it."
+    ],
+    "id" : "dev04",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords.",
+      "Tomas isn't a named speaker here, so this covers what others said about Tomas."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.240788791,
+    "question" : "Is Tomas still free to help on Kestrel?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Earlier (Oct 29) he was described as having room",
+      "As of Nov 2 he is booked on the billing audit through December",
+      "Reason: the audit got pulled forward"
+    ],
+    "retrievalSeconds" : 0.049461375,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 4.061739458,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Tomas has been ruled out for Kestrel because he is booked on the billing audit through December, which was pulled forward last week. Rosa is confirmed to take on the data copy piece starting the twelfth, but she still needs her manager's approval, which was granted. Omar is assigned to the cutover runbook and is available, though only two days a week.",
+    "answerSeconds" : 3.057561417,
+    "behavior" : "answer",
+    "categories" : [
+      "negation",
+      "staffing",
+      "cross_meeting"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Platform weekly (Oct 29, 2026): Speaker 1: Good. Next, Kestrel planning. Um, we need names before the kickoff. | Speaker 2: From what I've heard Tomas has plenty of room right now, he could take Kestrel. | Speaker 1: Rough guess is six to eight weeks for two people. | Speaker 2: That feels light if we're doing the reconciliation reports too.",
+      "Capacity check-in (Nov 2, 2026): Speaker 1: Morning. Let's go through the open asks, Kestrel first. | Speaker 1: Kestrel is basically moving the customer ledger off the old Oracle box. | Speaker 3: Maybe Wen Li could help? I haven't asked her. | Speaker 2: I think someone said she's away, but I'm not sure."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Tomas (booked on the billing audit through December) and Wen Li (on leave until January). Rosa and Omar are not ruled out.",
+    "firstTextSeconds" : 1.97242175,
+    "forbidden" : [
+      "Rosa was ruled out",
+      "Omar was ruled out"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev05",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.5347992910000001,
+    "question" : "Who has been ruled out for Kestrel, and why?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Tomas: billing audit through December",
+      "Wen Li: on leave until January"
+    ],
+    "retrievalSeconds" : 0.065232542,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 4.724882708,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.180367625,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "No Kestrel budget was discussed in the searched meetings; say none was found.",
+    "firstTextSeconds" : 1.9427296250000001,
+    "forbidden" : [
+      "any dollar amount for Kestrel",
+      "six to eight weeks is a budget"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev06",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.313931792,
+    "question" : "What budget was approved for the Kestrel migration?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No approved Kestrel budget found in searched meetings"
+    ],
+    "retrievalSeconds" : 0.073315209,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 3.568191167,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "Rosa was mentioned by Speaker 3 as someone who could pick up the data copy piece, starting the twelfth. Speaker 3 noted that Rosa still needs her manager to okay it.",
+    "answerSeconds" : 2.034659542,
+    "behavior" : "qualify",
+    "categories" : [
+      "ambiguous",
+      "speaker_vs_mentioned",
+      "adversarial"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Capacity check-in (Nov 2, 2026): Speaker 3: So on people, Rosa could pick up the data copy piece, starting the twelfth. | Speaker 3: Maybe Wen Li could help? I haven't asked her. | Speaker 2: I think someone said she's away, but I'm not sure. | Speaker 1: Let's check before we count on it."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Rosa is an attendee and was discussed, but speakers are anonymous and nothing is attributed to her; others said she could pick up the data copy from the 12th pending her manager's approval.",
+    "firstTextSeconds" : 1.427903833,
+    "forbidden" : [
+      "Rosa said she could pick up the data copy",
+      "Rosa said anything (as speaker)"
+    ],
+    "guidance" : [
+      "Rosa is not a named speaker in these meetings, but lines that mention Rosa may answer the question. Still answer from them: say what was said about Rosa and by which speaker label, without claiming Rosa said it."
+    ],
+    "id" : "dev07",
+    "notes" : [
+      "Rosa isn't a named speaker here, so this covers what others said about Rosa."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.234088042,
+    "question" : "What did Rosa say in the capacity check-in?",
+    "refused" : false,
+    "requiredPoints" : [
+      "No line is attributed to Rosa as speaker",
+      "Others said she could take the data copy from the 12th, pending her manager"
+    ],
+    "retrievalSeconds" : 0.025287083,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 3.365159667,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "Sam is supposed to do the UI review for the cutover status page.",
+    "answerSeconds" : 2.156568916,
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Kestrel cutover prep (Nov 4, 2026): Speaker 1: Sam can do the UI review for those, he offered on Monday."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Two different Sams appear: Sam Patel offered to do the UI review for the cutover screens (Kestrel), and finance's Sam (Ruiz) will pull Halyard references and chase the price. Ask which Sam, or present both clearly separated.",
+    "firstTextSeconds" : 1.824577792,
+    "forbidden" : [
+      "treating both as the same Sam without qualification"
+    ],
+    "guidance" : [
+      "Sam is not a named speaker in these meetings, but lines that mention Sam may answer the question. Still answer from them: say what was said about Sam and by which speaker label, without claiming Sam said it."
+    ],
+    "id" : "dev08",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords.",
+      "Sam isn't a named speaker here, so this covers what others said about Sam."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.3106461249999999,
+    "question" : "What is Sam supposed to be doing?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Kestrel prep: Sam to do the UI review for cutover screens",
+      "Finance sync: Sam to pull Halyard references and chase the revised price",
+      "These may be different people"
+    ],
+    "retrievalSeconds" : 0.075006375,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 3.571942542,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Omar owns the cutover runbook.",
+    "answerSeconds" : 2.125082208,
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Kestrel cutover prep (Nov 4, 2026): Speaker 1: Omar, can you own the cutover runbook? | Omar: Yes, I'll own the cutover runbook. | Speaker 3: Who's doing the screens for the cutover status page? | Omar: What's the rollback story?"
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Omar said he'll own the cutover runbook (about two days a week) and will add the dry run steps to it.",
+    "firstTextSeconds" : 1.8604369589999998,
+    "forbidden" : [
+      "Rosa owns the runbook"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev09",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.2371742079999999,
+    "question" : "Who owns the cutover runbook?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Omar owns the cutover runbook",
+      "He'll add the dry run steps"
+    ],
+    "retrievalSeconds" : 0.044070417,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 3.446691125,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.4649560839999998,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "speaker_vs_mentioned"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "Omar only speaks in the Kestrel prep and never mentions Pipewell; nothing found.",
+    "firstTextSeconds" : 2.183127334,
+    "forbidden" : [
+      "Omar supported or opposed Pipewell"
+    ],
+    "guidance" : [
+      "Omar is a speaker label in these meetings: their own words are lines that start with “Omar:”."
+    ],
+    "id" : "dev10",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.426980125,
+    "question" : "What did Omar say about the Pipewell contract?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No Omar statement about Pipewell found"
+    ],
+    "retrievalSeconds" : 0.046714709,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 3.939206459,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.2666987499999998,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "adversarial"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "No. Omar only noted that the week of the 23rd is Thanksgiving week when scheduling the dry run; no on-call agreement exists.",
+    "firstTextSeconds" : 1.987520875,
+    "forbidden" : [
+      "Omar agreed to Thanksgiving on-call"
+    ],
+    "guidance" : [
+      "Omar is a speaker label in these meetings: their own words are lines that start with “Omar:”."
+    ],
+    "id" : "dev11",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.145158333,
+    "question" : "Did Omar agree to cover on-call over Thanksgiving?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No Thanksgiving on-call agreement by Omar found"
+    ],
+    "retrievalSeconds" : 0.04280775,
+    "scenario" : "kestrel-staffing",
+    "seconds" : 3.455178333,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "No, the decision on which platform will hold our sales contacts was not finalized. The initial selection of Pipewell was reversed due to a quote that was forty percent over budget, and the CRM choice was put on hold until further review. No final decision was made on the platform for sales contacts.",
+    "answerSeconds" : 2.867736709,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "decision_status",
+      "changed_plan",
+      "cross_meeting"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "CRM selection (Oct 27, 2026): Speaker 1: Hold off on that until the contract's signed. | Speaker 2: Pipewell includes onboarding, so their team. | Speaker 1: Nice. And the admin role on our side? | Speaker 2: Probably someone from sales ops, we'll figure it out.",
+      "Finance sync (Nov 3, 2026): Speaker 1: So the Pipewell pick is on hold, basically. | Speaker 2: Yes, on hold. Nothing gets signed until we've compared both. | Speaker 1: Okay. Reseller discounts next. | Speaker 3: Right now resellers get twelve percent standard."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 3,
+    "coveredFinal" : 3,
+    "expectedMeaning" : "A final choice of Pipewell was announced on Oct 27, but on Nov 3 it was put on hold: the Pipewell quote came in 40% over budget and legal reopened the choice; nothing will be signed until Halyard's revised price is compared. No new final decision yet.",
+    "firstTextSeconds" : 1.932583833,
+    "forbidden" : [
+      "Pipewell is the final, settled choice",
+      "Halyard was chosen"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev12",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 3,
+    "planSeconds" : 1.150936625,
+    "question" : "Did we ever settle on which platform will hold our sales contacts?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Oct 20: leaning Pipewell, no decision",
+      "Oct 27: Pipewell declared final",
+      "Nov 3: reopened because the quote was 40% over budget",
+      "Currently on hold; no signed decision"
+    ],
+    "retrievalSeconds" : 0.048121166,
+    "scenario" : "crm-vendor",
+    "seconds" : 4.139784792,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "It is supposed to be looked at again on the thirteenth.",
+    "answerSeconds" : 2.281553625,
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "decision_status"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Finance sync (Nov 3, 2026): Speaker 1: Okay, three things today. Reseller discounts, the CRM contract, and travel. | Speaker 2: Let's do the CRM first, that's the urgent one. | Speaker 2: The Pipewell quote came back forty percent over what we budgeted. | Speaker 2: So legal wants to reopen the CRM choice before anything gets signed."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "It goes on the finance agenda for the 13th (November), after comparing Halyard's revised price.",
+    "firstTextSeconds" : 1.927704417,
+    "forbidden" : [
+      "October 27"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev13",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.776915375,
+    "question" : "When is that supposed to be looked at again?",
+    "refused" : false,
+    "requiredPoints" : [
+      "On the agenda for November 13"
+    ],
+    "retrievalSeconds" : 0.069802875,
+    "scenario" : "crm-vendor",
+    "seconds" : 4.172339625,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "The Pipewell quote came back forty percent over what we budgeted.",
+    "answerSeconds" : 2.369583125,
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Finance sync (Nov 3, 2026): Speaker 2: The Pipewell quote came back forty percent over what we budgeted. | Speaker 1: So the Pipewell pick is on hold, basically. | Speaker 3: When do we come back to it? | Speaker 1: Okay. Reseller discounts next."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Forty percent over what was budgeted.",
+    "firstTextSeconds" : 2.03139,
+    "forbidden" : [
+      "under budget"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev14",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.405345917,
+    "question" : "What did the Pipewell quote come back at?",
+    "refused" : false,
+    "requiredPoints" : [
+      "40% over budget"
+    ],
+    "retrievalSeconds" : 0.068794708,
+    "scenario" : "crm-vendor",
+    "seconds" : 3.877305125,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "No, Pipewell's selection was not finalized, as the contract price was found to be forty percent over budget, leading legal to request reopening the CRM choice before any signing. The decision to go with Pipewell is on hold.",
+    "answerSeconds" : 3.038939292,
+    "behavior" : "qualify",
+    "categories" : [
+      "adversarial",
+      "decision_status"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "CRM selection (Oct 27, 2026): Speaker 2: Yeah, Pipewell's references were really positive. | Speaker 1: So we're going with Pipewell. That's final, I'll tell procurement today. | Speaker 1: Hold off on that until the contract's signed. | Speaker 2: I'll ask Pipewell for a formal quote.",
+      "Finance sync (Nov 3, 2026): Speaker 2: The Pipewell quote came back forty percent over what we budgeted. | Speaker 2: So legal wants to reopen the CRM choice before anything gets signed. | Speaker 1: So the Pipewell pick is on hold, basically. | Speaker 2: Yes, on hold. Nothing gets signed until we've compared both."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Not quite: Pipewell was declared final on Oct 27, but on Nov 3 legal reopened it after the 40% over-budget quote and it is on hold.",
+    "firstTextSeconds" : 2.233310333,
+    "forbidden" : [
+      "Yes, it's done",
+      "contract is signed"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev15",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.203830459,
+    "question" : "Everyone signed off on Pipewell, so that's done, right?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Correct the premise: decided Oct 27 but reopened Nov 3",
+      "On hold pending comparison"
+    ],
+    "retrievalSeconds" : 0.057926667,
+    "scenario" : "crm-vendor",
+    "seconds" : 4.350696792,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Me said I'd lean toward Pipewell but didn't want to decide today. Later, Me stated that the Pipewell pick is on hold and that nothing gets signed until both vendors are compared.",
+    "answerSeconds" : 2.73275425,
+    "behavior" : "clarify",
+    "categories" : [
+      "self",
+      "ambiguous"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Sales ops review (Oct 20, 2026): Speaker 1: Okay, main item is the CRM replacement. | Speaker 2: I'll ask both vendors for two customer references.",
+      "Finance sync (Nov 3, 2026): Speaker 1: Okay, three things today. Reseller discounts, the CRM contract, and travel. | Speaker 2: Let's do the CRM first, that's the urgent one. | Speaker 2: So legal wants to reopen the CRM choice before anything gets signed."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "None of the CRM meetings has a speaker shown as Me, so 'I' cannot be resolved; ask which speaker is the user (or offer per-speaker summaries).",
+    "firstTextSeconds" : 2.03335375,
+    "forbidden" : [
+      "attributing any speaker's CRM statements to the user"
+    ],
+    "guidance" : [
+      "The user is the speaker shown as “Me”. “I”, “me” and “my” in the question mean that speaker; only lines starting “Me:” are the user's own words.",
+      "In 63 other meeting(s) searched the user isn't matched to a speaker: don't attribute anything there to the user."
+    ],
+    "id" : "dev16",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.367023542,
+    "question" : "What did I say about the CRM vendors?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Cannot tell which speaker is the user"
+    ],
+    "retrievalSeconds" : 0.065266417,
+    "scenario" : "crm-vendor",
+    "seconds" : 4.207175667,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.433684208,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "No call with a Halyard rep is in the history; Halyard's revised price was still awaited.",
+    "firstTextSeconds" : 2.151870916,
+    "forbidden" : [
+      "Halyard promised a discount"
+    ],
+    "guidance" : [
+      "Halyard sales rep does not appear in these meetings."
+    ],
+    "id" : "dev17",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.568525875,
+    "question" : "What did the Halyard sales rep promise us on their call?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No Halyard rep call found"
+    ],
+    "retrievalSeconds" : 0.067182792,
+    "scenario" : "crm-vendor",
+    "seconds" : 4.070015208,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "The vendor audit wrapped up, and one vendor was late with documents.",
+    "answerSeconds" : 2.378379292,
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "1:1 Maria (Oct 28, 2026): Maria: Busy, but good. The vendor audit wrapped up. | Maria: Mostly. One vendor was late with documents. | Maria: I think the next thing for me is running the vendor reviews myself, end to end."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "Several vendors appear (CRM vendors Pipewell\/Halyard, the security testing vendor, Lumen Freight, the booking-system vendor); ask which one.",
+    "firstTextSeconds" : 2.052338209,
+    "forbidden" : [
+      "picking one vendor's decision without saying it is a guess"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev18",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.419992792,
+    "question" : "What did we decide about the vendor?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Ask which vendor"
+    ],
+    "retrievalSeconds" : 0.068056042,
+    "scenario" : "crm-vendor",
+    "seconds" : 3.882916417,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "No final decision has been made on relocating the workspace. Speaker 1 stated in the facilities check-in meeting on Nov 5, 2026, that the board wants the survey results before anyone picks between Wharf Street and Delancey, and that nothing will be decided before December.",
+    "answerSeconds" : 2.854427334,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "decision_status",
+      "cross_meeting"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "All-hands planning (Oct 14, 2026): Speaker 1: Okay, office space is the big one today. | Speaker 1: Right, so we either renew Wharf Street or move. | Speaker 2: We'd need to budget for the move itself too. | Speaker 1: Yeah, a short survey on commute and how often people come in.",
+      "Facilities check-in (Nov 5, 2026): Speaker 2: Finally. When do they arrive? | Speaker 2: Okay. And the office question?"
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "No final decision was found. The options are renewing Wharf Street (5% higher) or moving to the Delancey building; as of Nov 5 it is still undecided and the board wants the survey results (closing Nov 20) first.",
+    "firstTextSeconds" : 1.934206917,
+    "forbidden" : [
+      "they decided to move to Delancey",
+      "they decided to renew Wharf Street"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev19",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.880402958,
+    "question" : "Has anyone made the final call on relocating our workspace?",
+    "refused" : false,
+    "requiredPoints" : [
+      "No final decision found",
+      "Options: renew Wharf Street or move to Delancey",
+      "Board wants survey results first; survey closes Nov 20"
+    ],
+    "retrievalSeconds" : 0.067120917,
+    "scenario" : "office-move",
+    "seconds" : 4.8505730830000005,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "The decision on where to base the office after June is being held up because the lease at Wharf Street is up in June, and while the landlord offered a renewal at five percent higher, the main alternative is the Delancey building, which is twenty minutes further for most people and has more square footage but similar rent per square foot. A final decision has not been made, and Speaker 1 stated that no decision should be made yet to allow for input from people.",
+    "answerSeconds" : 3.0701415,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "All-hands planning (Oct 14, 2026): Speaker 1: Okay, office space is the big one today. | Speaker 2: The Wharf Street lease is up in June."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 0,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "The board wants the staff survey results before anyone picks; the survey closes November 20, so likely nothing before December.",
+    "firstTextSeconds" : 1.7893625,
+    "forbidden" : [
+      "waiting on the landlord"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev20",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 2.059989292,
+    "question" : "What's holding things up on choosing where we'll be based after June?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Waiting on the survey results for the board",
+      "Survey closes November 20"
+    ],
+    "retrievalSeconds" : 0.085169208,
+    "scenario" : "office-move",
+    "seconds" : 5.236734417,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "The Delancey building has the bigger floor, but it's twenty minutes further for most people. The rent is about the same per square foot, but there are more square feet.",
+    "answerSeconds" : 2.4051734590000002,
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "All-hands planning (Oct 14, 2026): Speaker 1: Okay, office space is the big one today. | Speaker 2: The main alternative is the Delancey building. | Speaker 3: The Delancey building has the bigger floor, but it's twenty minutes further for most people."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "It has the bigger floor but is about twenty minutes further for most people; rent per square foot is about the same but there are more square feet. Still undecided versus Wharf Street.",
+    "firstTextSeconds" : 1.824614917,
+    "forbidden" : [
+      "it is cheaper"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev21",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.232049208,
+    "question" : "What was said about the Delancey building?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Bigger floor",
+      "Twenty minutes further for most people"
+    ],
+    "retrievalSeconds" : 0.059842792,
+    "scenario" : "office-move",
+    "seconds" : 3.71427975,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "The Wharf Street lease is up in June.",
+    "answerSeconds" : 2.334039292,
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "All-hands planning (Oct 14, 2026): Speaker 2: The Wharf Street lease is up in June. | Speaker 1: Right, so we either renew Wharf Street or move."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "June; the landlord offered a renewal at five percent higher.",
+    "firstTextSeconds" : 2.057413667,
+    "forbidden" : [
+
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev22",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.1352518329999999,
+    "question" : "When is the Wharf Street lease up?",
+    "refused" : false,
+    "requiredPoints" : [
+      "June",
+      "Renewal offer 5% higher"
+    ],
+    "retrievalSeconds" : 0.061002042,
+    "scenario" : "office-move",
+    "seconds" : 3.5471690000000002,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Yes, standing desks were approved for the third floor.",
+    "answerSeconds" : 2.308401583,
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Facilities check-in (Nov 5, 2026): Speaker 1: Standing desks got approved for the third floor. | Speaker 1: We got four more spots in the garage. | Speaker 2: How are those assigned? | Speaker 1: First come, first served for now."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Yes, for the third floor, arriving mid December assuming no shipping delays.",
+    "firstTextSeconds" : 2.032168666,
+    "forbidden" : [
+      "all floors"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev23",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.169246958,
+    "question" : "Were standing desks approved?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Approved for the third floor",
+      "Arriving mid December"
+    ],
+    "retrievalSeconds" : 0.059443209,
+    "scenario" : "office-move",
+    "seconds" : 3.5674865000000002,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Me promised to send the tax forms by end of day Tuesday, set up a shared communication channel this afternoon, and draft the rate card for the regional lanes. Me also committed to sending the revised SOW by Monday with updated support hours.",
+    "answerSeconds" : 2.9276670830000002,
+    "behavior" : "qualify",
+    "categories" : [
+      "self",
+      "commitments",
+      "person_date",
+      "cross_meeting",
+      "ambiguous"
+    ],
+    "checkerNote" : "names not in the cited passages: [\"SOW\"]",
+    "citationsValid" : true,
+    "cited" : [
+      "Lumen Freight onboarding (Nov 6, 2026): Me: Hi, thanks for joining. This is the onboarding kickoff for Lumen Freight. | Speaker 2: Glad to be here. We're excited to get started. | Me: Great. So first, paperwork. | Speaker 2: We'll need your tax forms before we can invoice.",
+      "Lumen Freight onboarding (Nov 6, 2026): Speaker 2: That works for us. | Me: Could you draft the rate card for the regional lanes? | Speaker 2: Sure, we can do that. | Me: Thanks. Next, timelines."
+    ],
+    "confidence" : "low",
+    "coveredCited" : 2,
+    "coveredFinal" : 4,
+    "expectedMeaning" : "Today has two calls. In the Lumen Freight call a speaker is shown as Me: Me promised the tax forms by end of day Tuesday and to set up a shared channel this afternoon. In the Northwind call no speaker is identified as the user; there Speaker 1 promised the revised SOW by Monday and Speaker 2 promised to check with legal on the indemnity clause, labeled by speaker, not as the user's.",
+    "firstTextSeconds" : 2.145790708,
+    "forbidden" : [
+      "the user promised the API keys",
+      "the user will draft the rate card",
+      "the user promised the revised SOW (unqualified)",
+      "someone promised to bring support to the next call"
+    ],
+    "guidance" : [
+      "Only meetings that started Fri, Nov 6 were searched (the question's “today”).",
+      "The user is the speaker shown as “Me”. “I”, “me” and “my” in the question mean that speaker; only lines starting “Me:” are the user's own words.",
+      "In 1 other meeting(s) searched the user isn't matched to a speaker: don't attribute anything there to the user."
+    ],
+    "id" : "dev24",
+    "notes" : [
+      "Searched meetings from Fri, Nov 6 (“today”)."
+    ],
+    "pieces" : 4,
+    "planSeconds" : 1.597984625,
+    "question" : "What follow-up actions did I promise during my calls today?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Me (Lumen): tax forms by end of day Tuesday",
+      "Me (Lumen): set up a shared channel this afternoon",
+      "Northwind: user not identified; Speaker 1 revised SOW by Monday",
+      "Northwind: Speaker 2 to check legal on the indemnity clause"
+    ],
+    "retrievalSeconds" : 0.032931958,
+    "scenario" : "follow-ups",
+    "seconds" : 4.608676125,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "Me promised to get the tax forms by end of day Tuesday, set up a shared channel this afternoon, and draft the rate card for the regional lanes.",
+    "answerSeconds" : 1.763798875,
+    "behavior" : "answer",
+    "categories" : [
+      "self",
+      "commitments"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Lumen Freight onboarding (Nov 6, 2026): Me: Okay, I'll get you the tax forms by end of day Tuesday. | Me: Thanks. Next, timelines. | Speaker 2: We'd like the first shipments to go out in early December. | Me: That should be fine if the integration goes smoothly."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Me promised the tax forms by end of day Tuesday and to set up a shared channel this afternoon. (The other side will send API keys and draft the rate card; those are not the user's.)",
+    "firstTextSeconds" : 1.27016225,
+    "forbidden" : [
+      "I'll send over the API keys (as the user's)",
+      "user will draft the rate card"
+    ],
+    "guidance" : [
+      "The user is the speaker shown as “Me”. “I”, “me” and “my” in the question mean that speaker; only lines starting “Me:” are the user's own words."
+    ],
+    "id" : "dev25",
+    "notes" : [
+
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.429415625,
+    "question" : "What did I promise to do on this call?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Tax forms by end of day Tuesday",
+      "Shared channel this afternoon"
+    ],
+    "retrievalSeconds" : 0.029666708,
+    "scenario" : "follow-ups",
+    "seconds" : 3.255164958,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "Speaker 2 committed to checking with their legal team on the indemnity clause and getting back to the group. Speaker 1 committed to sending the revised SOW by Monday with the new support hours. Speaker 1 also committed to aiming to sign the renewal before the holidays. Speaker 2 suggested a three-year term if the rate is better, but no final decision was made on this. Speaker 1 committed to sending the updated user count by the end of the month. Speaker 2 committed to providing the updated user count by the end of the month. Speaker 1 proposed a two-year term, which was acknowledged but not finalized. Speaker 2 expressed interest in early access to the new reporting feature, which is in beta. Speaker 3 supported the idea of including support staff in future calls. Speaker 1 mentioned that the support hours need to be until eight pm Eastern.",
+    "answerSeconds" : 3.594428208,
+    "behavior" : "qualify",
+    "categories" : [
+      "self",
+      "commitments",
+      "ambiguous"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Northwind renewal call (Nov 6, 2026): Speaker 3: It now covers third-party data, which our legal team flagged. | Speaker 2: I'll check with our legal team on the indemnity clause and get back to you.",
+      "Northwind renewal call (Nov 6, 2026): Speaker 2: I'll check with our legal team on the indemnity clause and get back to you. | Speaker 1: Thanks. Anything else in the SOW? | Speaker 3: The support hours. We need coverage until eight pm Eastern. | Speaker 1: That's doable, it might change the price a bit."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "No speaker is shown as Me, so the user can't be identified. Commitments by speaker: Speaker 1 will send the revised SOW by Monday with the new hours; Speaker 2 will check with their legal team on the indemnity clause.",
+    "firstTextSeconds" : 1.384528833,
+    "forbidden" : [
+      "the user promised the revised SOW (unqualified)"
+    ],
+    "guidance" : [
+      "The user hasn't been matched to a speaker. Still answer: list each commitment or statement found with its speaker label (for example “Speaker 2 said they would send…”), and end by saying you can't tell which of these speakers is the user. Never write “you promised”."
+    ],
+    "id" : "dev26",
+    "notes" : [
+      "Amaranth can't tell which speaker is you, so commitments are listed by speaker. Rename your speaker to “Me” to fix that."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.360270542,
+    "question" : "What did I commit to on this call?",
+    "refused" : false,
+    "requiredPoints" : [
+      "User not identified",
+      "Speaker 1: revised SOW by Monday",
+      "Speaker 2: check legal on indemnity clause"
+    ],
+    "retrievalSeconds" : 0.029209584,
+    "scenario" : "follow-ups",
+    "seconds" : 5.047778292,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.361448166,
+    "behavior" : "answer",
+    "categories" : [
+      "self",
+      "commitments",
+      "person_date"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Me will write up feedback for the candidates by Friday noon and book Ingrid's reference calls early next week.",
+    "firstTextSeconds" : 2.119275958,
+    "forbidden" : [
+      "the user will send the offer band to HR",
+      "the user will notify Felix and Leah's recruiters"
+    ],
+    "guidance" : [
+      "Only meetings that started Thu, Nov 5 were searched (the question's “yesterday”).",
+      "The user is the speaker shown as “Me”. “I”, “me” and “my” in the question mean that speaker; only lines starting “Me:” are the user's own words.",
+      "In 3 other meeting(s) searched the user isn't matched to a speaker: don't attribute anything there to the user."
+    ],
+    "id" : "dev27",
+    "notes" : [
+      "Searched meetings from Thu, Nov 5 (“yesterday”).",
+      "Contextual search covers 3 of 4 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.297302,
+    "question" : "What did I say I'd take care of after yesterday's interview debrief?",
+    "refused" : true,
+    "requiredPoints" : [
+      "Write up candidate feedback by Friday noon",
+      "Book reference calls for Ingrid early next week"
+    ],
+    "retrievalSeconds" : 0.033650084,
+    "scenario" : "follow-ups",
+    "seconds" : 3.693318416,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "Speaker 2 promised to check with the legal team on the indemnity clause and get back to the group. Speaker 1 committed to sending the revised SOW by Monday with updated support hours. Me promised to provide the tax forms by end of day Tuesday and to set up a shared communication channel this afternoon. Speaker 2 committed to sending over the API keys the next day. Me also asked Speaker 2 to draft the rate card for the regional lanes.",
+    "answerSeconds" : 3.4361500830000002,
+    "behavior" : "answer",
+    "categories" : [
+      "commitments",
+      "cross_meeting",
+      "multipart",
+      "person_date"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Northwind renewal call (Nov 6, 2026): Speaker 1: Same here. We sent the draft SOW last week.",
+      "Northwind renewal call (Nov 6, 2026): Speaker 2: I'll check with our legal team on the indemnity clause and get back to you. | Speaker 1: Thanks. Anything else in the SOW? | Speaker 3: The support hours. We need coverage until eight pm Eastern. | Speaker 1: That's doable, it might change the price a bit.",
+      "Lumen Freight onboarding (Nov 6, 2026): Speaker 2: And on our side, I'll send over the API keys tomorrow. | Me: Thanks. Next, timelines. | Speaker 2: We'd like the first shipments to go out in early December. | Me: That should be fine if the integration goes smoothly.",
+      "Lumen Freight onboarding (Nov 6, 2026): Me: It's indexed to the weekly diesel price."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 5,
+    "coveredFinal" : 7,
+    "expectedMeaning" : "This week in Clients: Brightline review (Nov 4) Speaker 1 revised storyboard by Thursday, Speaker 2 share media plan; Northwind (Nov 6) revised SOW by Monday and legal check on indemnity; Lumen Freight (Nov 6) Me tax forms by Tuesday EOD and shared channel this afternoon, Speaker 2 API keys tomorrow.",
+    "firstTextSeconds" : 2.081064542,
+    "forbidden" : [
+      "brand guidelines by Monday (Oct 30 kickoff, last week)",
+      "creative brief template (last week)"
+    ],
+    "guidance" : [
+      "Only meetings that started Mon, Nov 2 to Fri, Nov 6 were searched (the question's “this week”)."
+    ],
+    "id" : "dev28",
+    "notes" : [
+      "Searched meetings from Mon, Nov 2 to Fri, Nov 6 (“this week”)."
+    ],
+    "pieces" : 7,
+    "planSeconds" : 1.9505522499999999,
+    "question" : "What follow-ups were promised across this week's client calls?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Brightline: revised storyboard by Thursday",
+      "Brightline: client shares media plan",
+      "Northwind: revised SOW by Monday",
+      "Northwind: legal check on indemnity clause",
+      "Lumen: tax forms by Tuesday EOD",
+      "Lumen: shared channel this afternoon",
+      "Lumen: API keys tomorrow (other side)"
+    ],
+    "retrievalSeconds" : 0.058281667,
+    "scenario" : "follow-ups",
+    "seconds" : 5.5523005,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "Brightline will see the reworked scene-by-scene drawings by Thursday.",
+    "answerSeconds" : 2.287345667,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Brightline campaign review (Nov 4, 2026): Speaker 1: Okay, we can slow down the last scene. | Speaker 2: And I'll share our media plan so you can see the flight dates. | Speaker 1: Music preferences, if you have any. | Speaker 2: Something upbeat, but not too poppy."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "By Thursday (Nov 5): the agency said it would send the revised storyboard after slowing down the last scene.",
+    "firstTextSeconds" : 1.9459490000000002,
+    "forbidden" : [
+      "by Monday"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev29",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.341748625,
+    "question" : "When will Brightline see the reworked scene-by-scene drawings?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Revised storyboard by Thursday"
+    ],
+    "retrievalSeconds" : 0.054441209,
+    "scenario" : "follow-ups",
+    "seconds" : 3.7104137919999998,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Ingrid is being invited back for the in-person round.",
+    "answerSeconds" : 2.1615784160000002,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Hiring panel debrief (Nov 5, 2026): Speaker 2: Let's bring Ingrid back for the onsite. | Me: Agreed, Ingrid moves to the final round. | Speaker 2: The case study took too long, people ran over. | Speaker 3: We could cut the second part."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Ingrid; the panel agreed to bring her back for the onsite \/ final round.",
+    "firstTextSeconds" : 1.8751179169999999,
+    "forbidden" : [
+      "Felix",
+      "Leah"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev30",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.218415125,
+    "question" : "Which applicant is being invited back for the in-person round?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Ingrid"
+    ],
+    "retrievalSeconds" : 0.046309291,
+    "scenario" : "follow-ups",
+    "seconds" : 3.461253583,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.2944363340000002,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "person_date"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "There was no Lumen Freight call last week (Oct 26 to Nov 1); the only one is today, Nov 6. Say none was found in that period.",
+    "firstTextSeconds" : 2.057742083,
+    "forbidden" : [
+      "listing today's Lumen items as last week's"
+    ],
+    "guidance" : [
+      "Only meetings that started Mon, Oct 26 to Sun, Nov 1 were searched (the question's “last week”)."
+    ],
+    "id" : "dev31",
+    "notes" : [
+      "Searched meetings from Mon, Oct 26 to Sun, Nov 1 (“last week”)."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.255205791,
+    "question" : "What were the action items from the Lumen Freight call last week?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No Lumen Freight call in Oct 26 to Nov 1"
+    ],
+    "retrievalSeconds" : 0.045703375,
+    "scenario" : "follow-ups",
+    "seconds" : 3.596397875,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "The main problem with the Northwind indemnity clause is that it now covers third-party data, which was flagged by the legal team.",
+    "answerSeconds" : 2.56503175,
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Northwind renewal call (Nov 6, 2026): Speaker 3: The main one is the indemnity clause, it's broader than last year. | Speaker 2: I'll check with our legal team on the indemnity clause and get back to you. | Speaker 1: That's doable, it might change the price a bit. | Speaker 1: I'll send the revised SOW by Monday with the new hours."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "It is broader than last year: it now covers third-party data, which their legal team flagged.",
+    "firstTextSeconds" : 2.067533916,
+    "forbidden" : [
+
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev32",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.136672125,
+    "question" : "What's the problem with the Northwind indemnity clause?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Broader than last year",
+      "Now covers third-party data"
+    ],
+    "retrievalSeconds" : 0.043381167,
+    "scenario" : "follow-ups",
+    "seconds" : 3.793300208,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Maria suggested that her next growth step is running the vendor reviews myself, end to end, like actually leading the Q1 review cycle, not just prepping the decks.",
+    "answerSeconds" : 2.6746090000000002,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "person_date",
+      "speaker_vs_mentioned"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "1:1 Maria (Oct 28, 2026): Speaker 1: Hey Maria, how's the week going? | Maria: Busy, but good. The vendor audit wrapped up. | Maria: Mostly. One vendor was late with documents. | Maria: Sure, I've been thinking about it."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "In her Oct 28 one-on-one Maria said her next step is running the vendor reviews herself end to end, leading the Q1 review cycle rather than just prepping decks.",
+    "firstTextSeconds" : 2.098258042,
+    "forbidden" : [
+      "mentoring the new analysts (that was Nov 3)",
+      "PMP certification",
+      "taking on the forecasting model"
+    ],
+    "guidance" : [
+      "Only meetings that started Mon, Oct 26 to Sun, Nov 1 were searched (the question's “last week”).",
+      "Maria is a speaker label in these meetings: their own words are lines that start with “Maria:”."
+    ],
+    "id" : "dev33",
+    "notes" : [
+      "Searched meetings from Mon, Oct 26 to Sun, Nov 1 (“last week”)."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.387286375,
+    "question" : "What did Maria suggest as her next growth step last week?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Run vendor reviews end to end",
+      "Lead the Q1 review cycle"
+    ],
+    "retrievalSeconds" : 0.070001459,
+    "scenario" : "maria-growth",
+    "seconds" : 4.165726125,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "Yes, Maria changed her suggestion this week. She stated that she had changed her mind and now intends to mentor the two new analysts instead of running the vendor reviews, which can wait until next year.",
+    "answerSeconds" : 2.777787458,
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "changed_plan",
+      "person_date"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "1:1 Maria (Nov 3, 2026): Speaker 1: Hey, how was the weekend? | Maria: Good, quiet. Yours? | Speaker 1: Good. So, picking up from last time. | Maria: Yeah, about that. I've changed my mind a bit."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Yes. On Nov 3 Maria said she'd rather mentor the two new analysts instead, and the vendor reviews can wait until next year.",
+    "firstTextSeconds" : 2.131986167,
+    "forbidden" : [
+      "no change"
+    ],
+    "guidance" : [
+      "Only meetings that started Mon, Nov 2 to Fri, Nov 6 were searched (the question's “this week”).",
+      "Maria is a speaker label in these meetings: their own words are lines that start with “Maria:”."
+    ],
+    "id" : "dev34",
+    "notes" : [
+      "Searched meetings from Mon, Nov 2 to Fri, Nov 6 (“this week”).",
+      "Contextual search covers 15 of 16 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.970441417,
+    "question" : "Did that change this week?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Nov 3: prefers mentoring the two new analysts",
+      "Vendor reviews can wait until next year"
+    ],
+    "retrievalSeconds" : 0.072811208,
+    "scenario" : "maria-growth",
+    "seconds" : 4.852418666,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Maria said she wants to mentor the two new analysts instead of doing vendor reviews, and that the vendor reviews can wait until next year.",
+    "answerSeconds" : 2.51380325,
+    "behavior" : "answer",
+    "categories" : [
+      "person_date",
+      "paraphrase"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "1:1 Maria (Nov 3, 2026): Speaker 1: Hey, how was the weekend? | Maria: Good, quiet. Yours? | Speaker 1: Good. So, picking up from last time. | Maria: Yeah, about that. I've changed my mind a bit."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Asked on Monday Nov 9, last week is Nov 2 to 8: on Nov 3 Maria said she now wants to mentor the two new analysts instead of the vendor reviews.",
+    "firstTextSeconds" : 2.026342541,
+    "forbidden" : [
+      "running the vendor reviews is her current plan"
+    ],
+    "guidance" : [
+      "Only meetings that started Mon, Nov 2 to Sun, Nov 8 were searched (the question's “last week”).",
+      "Maria is a speaker label in these meetings: their own words are lines that start with “Maria:”."
+    ],
+    "id" : "dev35",
+    "notes" : [
+      "Searched meetings from Mon, Nov 2 to Sun, Nov 8 (“last week”).",
+      "Contextual search covers 15 of 16 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.336207583,
+    "question" : "What did Maria say last week about where she wants to grow?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Mentoring the two new analysts",
+      "Vendor reviews deferred"
+    ],
+    "retrievalSeconds" : 0.049436667,
+    "scenario" : "maria-growth",
+    "seconds" : 3.924972375,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Speaker 2 said they want to take on the forecasting model, if that's okay.",
+    "answerSeconds" : 2.240851916,
+    "behavior" : "answer",
+    "categories" : [
+      "speaker_vs_mentioned",
+      "adversarial"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Ops standup (Oct 29, 2026): Speaker 2: My next step is probably to take on the forecasting model, if that's okay. | Speaker 3: I can show you how the current model works."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "An unnamed speaker (Speaker 2) in the Oct 29 ops standup. Maria attended that standup but the speaker is not identified as her.",
+    "firstTextSeconds" : 1.88216975,
+    "forbidden" : [
+      "Maria said it"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev36",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.400740959,
+    "question" : "Who said they want to take over the forecasting model?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Speaker 2 in the Oct 29 ops standup",
+      "Not attributable to Maria"
+    ],
+    "retrievalSeconds" : 0.051831125,
+    "scenario" : "maria-growth",
+    "seconds" : 3.714857209,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Yes, Maria brought up her development plans in the ops standup. In the meeting on Oct 28, 2026, Maria stated, 'I think the next thing for me is running the vendor reviews myself, end to end. Like, actually leading the Q1 review cycle, not just prepping the decks.' This indicates she discussed her development plans during the meeting.",
+    "answerSeconds" : 3.046847375,
+    "behavior" : "qualify",
+    "categories" : [
+      "adversarial",
+      "speaker_vs_mentioned"
+    ],
+    "checkerNote" : "names not in the cited passages: [\"This\"]",
+    "citationsValid" : true,
+    "cited" : [
+      "1:1 Maria (Oct 28, 2026): Speaker 1: Hey Maria, how's the week going? | Maria: Busy, but good. The vendor audit wrapped up. | Maria: Mostly. One vendor was late with documents. | Speaker 1: Okay. So I wanted to use some time on your development."
+    ],
+    "confidence" : "low",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Maria is only an attendee; no line there is attributed to her. Her growth step came up in her Oct 28 one-on-one (vendor reviews).",
+    "firstTextSeconds" : 1.971018458,
+    "forbidden" : [
+      "Maria wants the forecasting model"
+    ],
+    "guidance" : [
+      "Maria is a speaker label in these meetings: their own words are lines that start with “Maria:”."
+    ],
+    "id" : "dev37",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.307063208,
+    "question" : "Did Maria bring up her development plans in the ops standup?",
+    "refused" : false,
+    "requiredPoints" : [
+      "No attributed Maria speech in the standup",
+      "Her growth discussion was in the Oct 28 one-on-one"
+    ],
+    "retrievalSeconds" : 0.05412,
+    "scenario" : "maria-growth",
+    "seconds" : 4.44093675,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.212464542,
+    "behavior" : "answer",
+    "categories" : [
+      "speaker_vs_mentioned"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Speaker 2 in the Oct 29 platform weekly mentioned that back in the summer Maria said she wanted a PMP cert; Maria herself did not say it in these meetings.",
+    "firstTextSeconds" : 1.969942834,
+    "forbidden" : [
+      "Maria proposed a certification last week"
+    ],
+    "guidance" : [
+      "Maria is also a speaker label here (lines starting “Maria:”); other speakers' lines that mention Maria are about them."
+    ],
+    "id" : "dev38",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.622460166,
+    "question" : "Who brought up Maria getting a certification?",
+    "refused" : true,
+    "requiredPoints" : [
+      "Speaker 2 in the Oct 29 platform weekly",
+      "Referred to something Maria said back in the summer"
+    ],
+    "retrievalSeconds" : 0.050010875,
+    "scenario" : "maria-growth",
+    "seconds" : 3.885498084,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.247882417,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "Nothing about Denver or relocating appears.",
+    "firstTextSeconds" : 2.006767375,
+    "forbidden" : [
+      "Maria wants to relocate"
+    ],
+    "guidance" : [
+      "Maria is a speaker label in these meetings: their own words are lines that start with “Maria:”."
+    ],
+    "id" : "dev39",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.398644584,
+    "question" : "What did Maria say about relocating to the Denver office?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No evidence found"
+    ],
+    "retrievalSeconds" : 0.063682625,
+    "scenario" : "maria-growth",
+    "seconds" : 3.71087275,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "The on-call folks reported that during the weekend, TLS certs were rotated on the public gateway, and one client had pinned the old cert, which was resolved. The new expiry is in February, and a reminder was set in the calendar.",
+    "answerSeconds" : 2.853749958,
+    "behavior" : "answer",
+    "categories" : [
+      "dst_boundary",
+      "person_date",
+      "paraphrase"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Weekend on-call handoff (Nov 1, 2026): Speaker 1: Morning. Clocks went back, so I almost showed up an hour early. | Speaker 2: Ha, same. Okay, handoff. | Speaker 1: Over the weekend we rotated the TLS certs on the public gateway. | Speaker 1: New expiry is in February, I put a reminder in the calendar."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "In the Sunday Nov 1 handoff (after DST ended): the TLS certs on the public gateway were rotated, the new expiry is in February with a calendar reminder, and one client that had pinned the old cert was sorted.",
+    "firstTextSeconds" : 2.095449209,
+    "forbidden" : [
+      "staging gateway certificate expiry warning (that was Monday Nov 2, this week)"
+    ],
+    "guidance" : [
+      "Only meetings that started Mon, Oct 26 to Sun, Nov 1 were searched (the question's “last week”)."
+    ],
+    "id" : "dev40",
+    "notes" : [
+      "Searched meetings from Mon, Oct 26 to Sun, Nov 1 (“last week”)."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.698074084,
+    "question" : "Last week, what did the on-call folks report about our web front door's security certificates?",
+    "refused" : false,
+    "requiredPoints" : [
+      "TLS certs on the public gateway rotated",
+      "New expiry in February"
+    ],
+    "retrievalSeconds" : 0.054644417,
+    "scenario" : "oncall-dst",
+    "seconds" : 4.644098792,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "The certificate inventory sheet needs updating and the backup job on the reporting host was slow, about double the usual time. Speaker 2 noted that the certificate inventory sheet needs updating and said they would do it. Speaker 1 mentioned the backup job was slow, and Speaker 2 suggested it might be due to end-of-month data.",
+    "answerSeconds" : 2.569329917,
+    "behavior" : "answer",
+    "categories" : [
+      "dst_boundary",
+      "person_date",
+      "paraphrase",
+      "multipart"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Weekend on-call handoff (Nov 1, 2026): Speaker 2: Same threshold problem as before? | Speaker 1: Yeah, it needs tuning. I left a note on the ticket. | Speaker 2: Okay. | Speaker 1: Heads up, next week's pager goes to the database folks, not us."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 3,
+    "expectedMeaning" : "Asked Monday Nov 2: the Nov 1 handoff covered rotated TLS certs on the public gateway (expiry February), two false queue-backlog alarms Saturday night, and that next week's pager goes to the database team.",
+    "firstTextSeconds" : 1.6077723339999999,
+    "forbidden" : [
+      "Mariner export timeout (that's from today's review)"
+    ],
+    "guidance" : [
+      "Only meetings that started Sun, Nov 1 were searched (the question's “yesterday”).",
+      "whoever covered the weekend shift yesterday does not appear in these meetings."
+    ],
+    "id" : "dev41",
+    "notes" : [
+      "Searched meetings from Sun, Nov 1 (“yesterday”)."
+    ],
+    "pieces" : 3,
+    "planSeconds" : 1.817409417,
+    "question" : "What got passed along to us from whoever covered the weekend shift yesterday?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Gateway TLS certs rotated, new expiry February",
+      "Two false queue backlog alarms Saturday night",
+      "Pager goes to the database folks next week"
+    ],
+    "retrievalSeconds" : 0.055238041,
+    "scenario" : "oncall-dst",
+    "seconds" : 4.483431875,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "Last week, it was decided that the pager rotation goes weekly starting next cycle, with handoffs on Thursdays. The first weekly cycle begins, so the database folks will carry the beeper next week, not the original team.",
+    "answerSeconds" : 2.635410042,
+    "behavior" : "answer",
+    "categories" : [
+      "dst_boundary",
+      "person_date",
+      "changed_plan",
+      "paraphrase",
+      "cross_meeting"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Ops week start (Oct 26, 2026): Speaker 1: Morning, quick week start. | Speaker 2: Before we start, about last night's retro. | Speaker 2: So the pager rotation goes weekly starting next cycle, with handoffs on Thursdays. | Speaker 1: Thanks. What's on this week?",
+      "Weekend on-call handoff (Nov 1, 2026): Speaker 1: Heads up, next week's pager goes to the database folks, not us. | Speaker 2: Because of the new weekly rotation? | Speaker 1: Right, first weekly cycle."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Asked Mon Nov 2, last week is Oct 26 to Nov 1: on Oct 26 the pager rotation was changed to weekly with Thursday handoffs; on Nov 1 the handoff noted next week's pager goes to the database folks (first weekly cycle).",
+    "firstTextSeconds" : 1.894118208,
+    "forbidden" : [
+      "they kept the two-week rotation (Oct 25 retro, outside the week and superseded)"
+    ],
+    "guidance" : [
+      "Only meetings that started Mon, Oct 26 to Sun, Nov 1 were searched (the question's “last week”)."
+    ],
+    "id" : "dev42",
+    "notes" : [
+      "Searched meetings from Mon, Oct 26 to Sun, Nov 1 (“last week”)."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.287561042,
+    "question" : "What did we talk about last week regarding who carries the beeper?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Oct 26: rotation goes weekly, handoffs Thursdays",
+      "Nov 1: next week's pager goes to the database team"
+    ],
+    "retrievalSeconds" : 0.065109625,
+    "scenario" : "oncall-dst",
+    "seconds" : 4.040959333,
+    "terminal" : "answered"
+  },
+  {
+    "answer" : "The Mariner account is having trouble pulling large amounts of data out of the product.",
+    "answerSeconds" : 1.910765167,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "checkerNote" : "partial support 0.20",
+    "citationsValid" : true,
+    "cited" : [
+      "On-call review (Nov 2, 2026): Speaker 1: Staging, not production? | Speaker 3: The Mariner account keeps hitting the export timeout on big reports. | Speaker 3: They're exporting about two million rows at a time."
+    ],
+    "confidence" : "medium",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Mariner keeps hitting the export timeout on big reports (about two million rows); short term raise the timeout, long term async exports.",
+    "firstTextSeconds" : 1.56876525,
+    "forbidden" : [
+      "Northwind"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev43",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.39142275,
+    "question" : "Which customer is having trouble pulling large amounts of data out of the product?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Mariner",
+      "Export timeout on big reports",
+      "Raise the timeout short term; async exports long term"
+    ],
+    "retrievalSeconds" : 0.075564792,
+    "scenario" : "oncall-dst",
+    "seconds" : 3.39359525,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.375251417,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "No hackathon appears.",
+    "firstTextSeconds" : 2.133491041,
+    "forbidden" : [
+      "any winner"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev44",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.179336625,
+    "question" : "Which team won the fall hackathon?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No evidence found"
+    ],
+    "retrievalSeconds" : 0.069864125,
+    "scenario" : "oncall-dst",
+    "seconds" : 3.625023917,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "The travel allowance ended up being over by about ten percent for the first quarter.",
+    "answerSeconds" : 2.3608775,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "notes_only"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Budget review (Oct 22, 2026): Speaker 2: Okay. Travel? | Speaker 1: Let's settle the travel number offline, I need to check a few things.",
+      "Finance sync (Nov 3, 2026): Speaker 1: And travel? | Speaker 2: We're over by about ten percent for the quarter."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "$18k for Q1, down from $25k, per the user's notes on the Oct 22 budget review (the transcript only says the number would be settled offline).",
+    "firstTextSeconds" : 1.939361541,
+    "forbidden" : [
+      "$25k is the Q1 travel budget"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev45",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.314776209,
+    "question" : "What did the travel allowance end up at for the first quarter?",
+    "refused" : false,
+    "requiredPoints" : [
+      "$18k for Q1",
+      "Down from $25k"
+    ],
+    "retrievalSeconds" : 0.064109792,
+    "scenario" : "budget",
+    "seconds" : 3.785996542,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "No, the platform group cannot bring on anyone new right now. The headcount freeze on the platform side is in effect until February, and while backfills are allowed, net new hires are not.",
+    "answerSeconds" : 2.585024459,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Budget review (Oct 22, 2026): Speaker 1: We're freezing new hires on the platform side until February. | Speaker 1: Backfills are allowed, net new is not."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "Not net new: there is a hiring freeze on the platform side until February; backfills are allowed.",
+    "firstTextSeconds" : 1.9705810000000001,
+    "forbidden" : [
+      "backfills are frozen too"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev46",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.113594459,
+    "question" : "Can the platform group bring on anyone new right now?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Freeze until February",
+      "Backfills allowed"
+    ],
+    "retrievalSeconds" : 0.047398542,
+    "scenario" : "budget",
+    "seconds" : 3.762418667,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "The price break for partners who resell was discussed as eighteen percent for deals above fifty seats, which matches what the competition offers. Speaker 3 noted that the current standard reseller discount is twelve percent.",
+    "answerSeconds" : 2.281103792,
+    "behavior" : "partial",
+    "categories" : [
+      "paraphrase",
+      "incomplete_index",
+      "person_date"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Finance sync (Nov 3, 2026): Speaker 1: Okay, three things today. Reseller discounts, the CRM contract, and travel. | Speaker 2: Let's do the CRM first, that's the urgent one. | Speaker 2: The Pipewell quote came back forty percent over what we budgeted. | Speaker 1: Ouch."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 2,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "From indexed evidence (Nov 3 finance sync): resellers get 12% standard and 18% is proposed above fifty seats. The Nov 5 partner pricing workshop is not yet indexed, so coverage is incomplete (it added a 22% platinum tier).",
+    "firstTextSeconds" : 1.633669458,
+    "forbidden" : [
+      "claiming the answer is complete"
+    ],
+    "guidance" : [
+      "Only meetings that started Mon, Nov 2 to Fri, Nov 6 were searched (the question's “this week”)."
+    ],
+    "id" : "dev47",
+    "notes" : [
+      "Searched meetings from Mon, Nov 2 to Fri, Nov 6 (“this week”).",
+      "Contextual search covers 15 of 16 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.34589225,
+    "question" : "What price breaks for partners who resell us were talked about this week?",
+    "refused" : false,
+    "requiredPoints" : [
+      "12% standard",
+      "18% proposed above fifty seats",
+      "States that some history is not yet indexed \/ coverage incomplete"
+    ],
+    "retrievalSeconds" : 0.04813075,
+    "scenario" : "partner-pricing",
+    "seconds" : 3.70873325,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.810605417,
+    "behavior" : "answer",
+    "categories" : [
+      "trimmed",
+      "paraphrase"
+    ],
+    "checkerNote" : "model refused (citations dropped)",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 2,
+    "expectedMeaning" : "December fifth (corrected transcript), moved because Apple flagged the subscription screen wording.",
+    "firstTextSeconds" : 1.959455792,
+    "forbidden" : [
+      "December fifteenth",
+      "November ninth"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev48",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 2,
+    "planSeconds" : 1.098349416,
+    "question" : "When are we now planning to put the mobile app out?",
+    "refused" : true,
+    "requiredPoints" : [
+      "December fifth",
+      "Because of app store review of subscription screen wording"
+    ],
+    "retrievalSeconds" : 0.073290417,
+    "scenario" : "launch",
+    "seconds" : 3.982881375,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "No, the rollout is not to every region on day one. The plan is to start with Canada and the UK, then proceed to the rest of the regions after two weeks.",
+    "answerSeconds" : 2.446966542,
+    "behavior" : "answer",
+    "categories" : [
+      "trimmed",
+      "negation"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Launch go\/no-go (Nov 2, 2026): Speaker 3: Okay. And the rollout plan? | Speaker 1: Marketing needs the new date today. | Speaker 3: I'll tell them after this. | Speaker 1: Support readiness?"
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "No. Canada and the UK first, then the rest after two weeks.",
+    "firstTextSeconds" : 1.8826846659999998,
+    "forbidden" : [
+      "ship to all regions at once"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev49",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.151658291,
+    "question" : "Are we rolling out to every region on day one?",
+    "refused" : false,
+    "requiredPoints" : [
+      "No",
+      "Canada and UK first",
+      "Rest after two weeks"
+    ],
+    "retrievalSeconds" : 0.077954791,
+    "scenario" : "launch",
+    "seconds" : 3.714885584,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.353849458,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "trimmed"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "That content was only in lines removed by Start from Here; nothing current mentions it.",
+    "firstTextSeconds" : 2.116630459,
+    "forbidden" : [
+      "Harborview",
+      "forty rooms"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev50",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.401168875,
+    "question" : "What was said about the hotel block for the sales offsite?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No current evidence"
+    ],
+    "retrievalSeconds" : 0.056867916,
+    "scenario" : "launch",
+    "seconds" : 3.812535083,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "answerSeconds" : 2.259051041,
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "adversarial"
+    ],
+    "checkerNote" : "model refused",
+    "citationsValid" : true,
+    "cited" : [
+
+    ],
+    "confidence" : "low",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "Nothing in current history; the only mention was in a deleted meeting.",
+    "firstTextSeconds" : 1.978533292,
+    "forbidden" : [
+      "merging in January",
+      "cut a layer of management"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev51",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.4917103329999999,
+    "question" : "Is there a plan to combine the design and research teams?",
+    "refused" : true,
+    "requiredPoints" : [
+      "No evidence found"
+    ],
+    "retrievalSeconds" : 0.067091708,
+    "scenario" : "reorg",
+    "seconds" : 3.81841075,
+    "terminal" : "insufficient_evidence"
+  },
+  {
+    "answer" : "The outside security testers found two high severity issues in the upload service, both related to file type validation. They noted that a script could be uploaded disguised as an image and served back.",
+    "answerSeconds" : 2.612552584,
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "adversarial"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Security vendor demo (Oct 27, 2026): Speaker 3: Sure. So the pen test found two high severity issues in the upload service. | Speaker 3: Both are around file type validation. | Speaker 3: Anyway, there were also five medium issues, mostly headers. | Speaker 1: Good. What's the timeline for the high ones?"
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Two high severity issues in the upload service, both about file type validation (e.g. a script disguised as an image gets served back), plus five medium, mostly header, issues.",
+    "firstTextSeconds" : 1.9941201670000002,
+    "forbidden" : [
+      "the audit passed with no findings"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev52",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 1.305890666,
+    "question" : "What did the outside security testers turn up in our file intake service?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Two high severity issues in the upload service",
+      "File type validation"
+    ],
+    "retrievalSeconds" : 0.057369542,
+    "scenario" : "security-test",
+    "seconds" : 4.024790167,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "The fixes for the high severity issues are due by November twentieth, followed by a retest. The platform team, with Speaker 2 assigning the work today, will handle the fixes on the team's side.",
+    "answerSeconds" : 2.635919166,
+    "behavior" : "answer",
+    "categories" : [
+      "followup"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Security vendor demo (Oct 27, 2026): Speaker 1: Thanks for walking us through the report. | Speaker 3: Sure. So the pen test found two high severity issues in the upload service. | Speaker 3: Both are around file type validation. | Speaker 1: Can you give an example?"
+    ],
+    "confidence" : "high",
+    "coveredCited" : 1,
+    "coveredFinal" : 1,
+    "expectedMeaning" : "Fixes are due by November 20, then the affected areas are retested; the platform team will do the fixes.",
+    "firstTextSeconds" : 1.956383333,
+    "forbidden" : [
+      "no fixes needed"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev53",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 1,
+    "planSeconds" : 2.130137,
+    "question" : "And what's the plan for fixing them?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Fixes due November 20",
+      "Retest afterwards"
+    ],
+    "retrievalSeconds" : 0.081891041,
+    "scenario" : "security-test",
+    "seconds" : 4.886811167,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "The team sync meetings discuss ongoing project status, ownership assignments, and follow-up actions. Key topics include data migration being behind, the design review having open questions, the billing service being on track or at risk of slipping, the analytics being behind, and several items needing owners such as the onboarding flow, hiring plan, and mobile app. Follow-ups are assigned to individuals like Gus, Jun, Hana, and Fay for various tasks. The status page is noted as on track or needing another pass, and the roadmap is generally on track with some discussion about delays. No final decisions are made beyond assigning follow-ups and noting current status.",
+    "answerSeconds" : 3.7499754579999998,
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Team sync 3 (Oct 3, 2026): Speaker 3: Ben will follow up on the hiring plan next week. | Speaker 2: Gus said the team rituals is on track. | Speaker 1: Jun said the hiring plan needs an owner. | Speaker 2: Ana said the documentation needs another pass.",
+      "Team sync 16 (Oct 14, 2026): Speaker 2: Jun will follow up on the hiring plan next week.",
+      "Team sync 18 (Oct 16, 2026): Speaker 2: Chloe will follow up on the team rituals next week.",
+      "Team sync 29 (Oct 26, 2026): Speaker 3: Jun will follow up on the team rituals next week."
+    ],
+    "confidence" : "high",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "Library scope with many meetings; ask which meeting.",
+    "firstTextSeconds" : 1.925361125,
+    "forbidden" : [
+      "summarizing an arbitrary meeting as if it were the one meant"
+    ],
+    "guidance" : [
+
+    ],
+    "id" : "dev54",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.314831959,
+    "question" : "Summarize the meeting.",
+    "refused" : false,
+    "requiredPoints" : [
+      "Ask which meeting"
+    ],
+    "retrievalSeconds" : 0.075708,
+    "scenario" : "generic-ambiguity",
+    "seconds" : 5.374515208,
+    "terminal" : "partial"
+  },
+  {
+    "answer" : "Speaker 2 said the budget might slip a little, the budget is a bit behind, and the budget came up again. They also noted that the budget was discussed briefly and that Dev will follow up on the budget next week. In the budget review, Speaker 2 said the budget was discussed and that the final review is mid-November, with Speaker 1 noting that the second draft will be ready by then.",
+    "answerSeconds" : 3.328266,
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous",
+      "speaker_vs_mentioned"
+    ],
+    "citationsValid" : true,
+    "cited" : [
+      "Team sync 7 (Oct 6, 2026): Speaker 3: Eli said the search feature looks fine for now. | Speaker 1: I think that makes sense. | Speaker 2: Ana will follow up on the mobile app next week. | Speaker 3: Hana said the release notes needs another pass.",
+      "Team sync 17 (Oct 15, 2026): Speaker 2: The budget was discussed briefly and the support queue should wrap up soon. | Speaker 1: The support queue came up again and the budget was discussed briefly. | Speaker 2: Dev will follow up on the budget next week. | Speaker 3: Chloe will follow up on the budget next week.",
+      "Budget review (Oct 22, 2026): Speaker 2: Fine. Marketing? | Speaker 1: No, but the events budget moved to them, so it evens out. | Speaker 2: Sure. | Speaker 1: Good. Office costs?"
+    ],
+    "confidence" : "high",
+    "coveredCited" : 0,
+    "coveredFinal" : 0,
+    "expectedMeaning" : "'Speaker 2' is a per-meeting label, not one person; ask which meeting (or answer per meeting, clearly labeled).",
+    "firstTextSeconds" : 2.123463625,
+    "forbidden" : [
+      "merging different meetings' Speaker 2 into one person"
+    ],
+    "guidance" : [
+      "Speaker 2 is a speaker label in these meetings: their own words are lines that start with “Speaker 2:”."
+    ],
+    "id" : "dev55",
+    "notes" : [
+      "Contextual search covers 64 of 65 meetings so far; the rest were searched by keywords."
+    ],
+    "pieces" : 0,
+    "planSeconds" : 1.516412958,
+    "question" : "What did Speaker 2 say about the budget?",
+    "refused" : false,
+    "requiredPoints" : [
+      "Speaker labels are per meeting"
+    ],
+    "retrievalSeconds" : 0.089944917,
+    "scenario" : "generic-ambiguity",
+    "seconds" : 5.069876125,
+    "terminal" : "partial"
+  }
+]

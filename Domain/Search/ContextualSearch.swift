@@ -140,6 +140,8 @@ public struct QueryPlan: Hashable, Sendable, Codable {
             guard let n = clean(person.name) else { return nil }
             let lower = n.lowercased()
             if person.role == .selfUser || selfWords.contains(lower) {
+                // The user only when the question itself says I/me/my (a model can't make the question about them).
+                guard !questionWords.isDisjoint(with: selfWords) else { return nil }
                 return seenPeople.insert("\u{0}self").inserted ? Person(name: "I", role: .selfUser) : nil
             }
             if groupWords.contains(lower) { return nil }

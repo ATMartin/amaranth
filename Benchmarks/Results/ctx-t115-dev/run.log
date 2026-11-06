@@ -1,0 +1,55 @@
+[ctx-ans] dev01 partial 4.6 s (plan 1.6, retr 0.06, ans 2.9) spans 4/5 | Rosa was identified as someone who could pick up the data copy piece of the Kestrel migration, starting the twelfth, but she still needs her manager to okay it.
+[ctx-ans] dev02 partial 5.8 s (plan 2.2, retr 0.06, ans 3.5) spans 2/2 | Rosa's data copy task is locked in, as her manager has signed off, allowing her to start on the twelfth. Omar is committed to owning the cutover runbook, though
+[ctx-ans] dev03 partial 4.2 s (plan 1.6, retr 0.07, ans 2.5) spans 1/2 | Rosa got the go-ahead to help shift the customer accounts off the legacy database, as Speaker 3 stated she could pick up the data copy piece starting the twelft
+[ctx-ans] dev04 partial 4.1 s (plan 1.2, retr 0.05, ans 2.7) spans 2/2 | No, Tomas is not free to help on Kestrel. Speaker 2 states that Tomas is booked on the billing audit through December, and that the audit was pulled forward las
+[ctx-ans] dev05 partial 4.7 s (plan 1.5, retr 0.07, ans 3.1) spans 1/2 | Tomas has been ruled out for Kestrel because he is booked on the billing audit through December, which was pulled forward last week. Rosa is confirmed to take o
+[ctx-ans] dev06 insufficient_evidence 3.6 s (plan 1.3, retr 0.07, ans 2.2) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev07 answered 3.4 s (plan 1.2, retr 0.03, ans 2.0) spans 1/1 | Rosa was mentioned by Speaker 3 as someone who could pick up the data copy piece, starting the twelfth. Speaker 3 noted that Rosa still needs her manager to oka
+[ctx-ans] dev08 partial 3.6 s (plan 1.3, retr 0.08, ans 2.2) spans 2/2 | Sam is supposed to do the UI review for the cutover status page.
+[ctx-ans] dev09 partial 3.4 s (plan 1.2, retr 0.04, ans 2.1) spans 2/2 | Omar owns the cutover runbook.
+[ctx-ans] dev10 insufficient_evidence 3.9 s (plan 1.4, retr 0.05, ans 2.5) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev11 insufficient_evidence 3.5 s (plan 1.1, retr 0.04, ans 2.3) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev12 partial 4.1 s (plan 1.2, retr 0.05, ans 2.9) spans 3/3 | No, the decision on which platform will hold our sales contacts was not finalized. The initial selection of Pipewell was reversed due to a quote that was forty 
+[ctx-ans] dev13 partial 4.2 s (plan 1.8, retr 0.07, ans 2.3) spans 1/1 | It is supposed to be looked at again on the thirteenth.
+[ctx-ans] dev14 partial 3.9 s (plan 1.4, retr 0.07, ans 2.4) spans 1/1 | The Pipewell quote came back forty percent over what we budgeted.
+[ctx-ans] dev15 partial 4.4 s (plan 1.2, retr 0.06, ans 3.0) spans 2/2 | No, Pipewell's selection was not finalized, as the contract price was found to be forty percent over budget, leading legal to request reopening the CRM choice b
+[ctx-ans] dev16 partial 4.2 s (plan 1.4, retr 0.07, ans 2.7) spans 0/0 | Me said I'd lean toward Pipewell but didn't want to decide today. Later, Me stated that the Pipewell pick is on hold and that nothing gets signed until both ven
+[ctx-ans] dev17 insufficient_evidence 4.1 s (plan 1.6, retr 0.07, ans 2.4) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev18 partial 3.9 s (plan 1.4, retr 0.07, ans 2.4) spans 0/0 | The vendor audit wrapped up, and one vendor was late with documents.
+[ctx-ans] dev19 partial 4.9 s (plan 1.9, retr 0.07, ans 2.9) spans 2/2 | No final decision has been made on relocating the workspace. Speaker 1 stated in the facilities check-in meeting on Nov 5, 2026, that the board wants the survey
+[ctx-ans] dev20 partial 5.2 s (plan 2.1, retr 0.09, ans 3.1) spans 2/2 | The decision on where to base the office after June is being held up because the lease at Wharf Street is up in June, and while the landlord offered a renewal a
+[ctx-ans] dev21 partial 3.7 s (plan 1.2, retr 0.06, ans 2.4) spans 1/1 | The Delancey building has the bigger floor, but it's twenty minutes further for most people. The rent is about the same per square foot, but there are more squa
+[ctx-ans] dev22 partial 3.5 s (plan 1.1, retr 0.06, ans 2.3) spans 1/1 | The Wharf Street lease is up in June.
+[ctx-ans] dev23 partial 3.6 s (plan 1.2, retr 0.06, ans 2.3) spans 1/1 | Yes, standing desks were approved for the third floor.
+[ctx-ans] dev24 answered 4.6 s (plan 1.6, retr 0.03, ans 2.9) spans 4/4 | Me promised to send the tax forms by end of day Tuesday, set up a shared communication channel this afternoon, and draft the rate card for the regional lanes. M
+[ctx-ans] dev25 answered 3.3 s (plan 1.4, retr 0.03, ans 1.8) spans 2/2 | Me promised to get the tax forms by end of day Tuesday, set up a shared channel this afternoon, and draft the rate card for the regional lanes.
+[ctx-ans] dev26 answered 5.0 s (plan 1.4, retr 0.03, ans 3.6) spans 2/2 | Speaker 2 committed to checking with their legal team on the indemnity clause and getting back to the group. Speaker 1 committed to sending the revised SOW by M
+[ctx-ans] dev27 insufficient_evidence 3.7 s (plan 1.3, retr 0.03, ans 2.4) spans 2/2 | I couldn't find that in these meetings.
+[ctx-ans] dev28 answered 5.6 s (plan 2.0, retr 0.06, ans 3.4) spans 7/7 | Speaker 2 promised to check with the legal team on the indemnity clause and get back to the group. Speaker 1 committed to sending the revised SOW by Monday with
+[ctx-ans] dev29 partial 3.7 s (plan 1.3, retr 0.05, ans 2.3) spans 1/1 | Brightline will see the reworked scene-by-scene drawings by Thursday.
+[ctx-ans] dev30 partial 3.5 s (plan 1.2, retr 0.05, ans 2.2) spans 1/1 | Ingrid is being invited back for the in-person round.
+[ctx-ans] dev31 insufficient_evidence 3.6 s (plan 1.3, retr 0.05, ans 2.3) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev32 partial 3.8 s (plan 1.1, retr 0.04, ans 2.6) spans 1/1 | The main problem with the Northwind indemnity clause is that it now covers third-party data, which was flagged by the legal team.
+[ctx-ans] dev33 answered 4.2 s (plan 1.4, retr 0.07, ans 2.7) spans 1/1 | Maria suggested that her next growth step is running the vendor reviews myself, end to end, like actually leading the Q1 review cycle, not just prepping the dec
+[ctx-ans] dev34 partial 4.9 s (plan 2.0, retr 0.07, ans 2.8) spans 2/2 | Yes, Maria changed her suggestion this week. She stated that she had changed her mind and now intends to mentor the two new analysts instead of running the vend
+[ctx-ans] dev35 partial 3.9 s (plan 1.3, retr 0.05, ans 2.5) spans 1/1 | Maria said she wants to mentor the two new analysts instead of doing vendor reviews, and that the vendor reviews can wait until next year.
+[ctx-ans] dev36 partial 3.7 s (plan 1.4, retr 0.05, ans 2.2) spans 1/1 | Speaker 2 said they want to take on the forecasting model, if that's okay.
+[ctx-ans] dev37 partial 4.4 s (plan 1.3, retr 0.05, ans 3.0) spans 1/1 | Yes, Maria brought up her development plans in the ops standup. In the meeting on Oct 28, 2026, Maria stated, 'I think the next thing for me is running the vend
+[ctx-ans] dev38 insufficient_evidence 3.9 s (plan 1.6, retr 0.05, ans 2.2) spans 1/1 | I couldn't find that in these meetings.
+[ctx-ans] dev39 insufficient_evidence 3.7 s (plan 1.4, retr 0.06, ans 2.2) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev40 answered 4.6 s (plan 1.7, retr 0.05, ans 2.9) spans 2/2 | The on-call folks reported that during the weekend, TLS certs were rotated on the public gateway, and one client had pinned the old cert, which was resolved. Th
+[ctx-ans] dev41 answered 4.5 s (plan 1.8, retr 0.06, ans 2.6) spans 3/3 | The certificate inventory sheet needs updating and the backup job on the reporting host was slow, about double the usual time. Speaker 2 noted that the certific
+[ctx-ans] dev42 answered 4.0 s (plan 1.3, retr 0.07, ans 2.6) spans 2/2 | Last week, it was decided that the pager rotation goes weekly starting next cycle, with handoffs on Thursdays. The first weekly cycle begins, so the database fo
+[ctx-ans] dev43 partial 3.4 s (plan 1.4, retr 0.08, ans 1.9) spans 2/2 | The Mariner account is having trouble pulling large amounts of data out of the product.
+[ctx-ans] dev44 insufficient_evidence 3.6 s (plan 1.2, retr 0.07, ans 2.4) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev45 partial 3.8 s (plan 1.3, retr 0.06, ans 2.4) spans 0/1 | The travel allowance ended up being over by about ten percent for the first quarter.
+[ctx-ans] dev46 partial 3.8 s (plan 1.1, retr 0.05, ans 2.6) spans 2/2 | No, the platform group cannot bring on anyone new right now. The headcount freeze on the platform side is in effect until February, and while backfills are allo
+[ctx-ans] dev47 partial 3.7 s (plan 1.3, retr 0.05, ans 2.3) spans 2/2 | The price break for partners who resell was discussed as eighteen percent for deals above fifty seats, which matches what the competition offers. Speaker 3 note
+[ctx-ans] dev48 insufficient_evidence 4.0 s (plan 1.1, retr 0.07, ans 2.8) spans 2/2 | I couldn't find that in these meetings.
+[ctx-ans] dev49 partial 3.7 s (plan 1.2, retr 0.08, ans 2.4) spans 1/1 | No, the rollout is not to every region on day one. The plan is to start with Canada and the UK, then proceed to the rest of the regions after two weeks.
+[ctx-ans] dev50 insufficient_evidence 3.8 s (plan 1.4, retr 0.06, ans 2.4) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev51 insufficient_evidence 3.8 s (plan 1.5, retr 0.07, ans 2.3) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] dev52 partial 4.0 s (plan 1.3, retr 0.06, ans 2.6) spans 1/1 | The outside security testers found two high severity issues in the upload service, both related to file type validation. They noted that a script could be uploa
+[ctx-ans] dev53 partial 4.9 s (plan 2.1, retr 0.08, ans 2.6) spans 1/1 | The fixes for the high severity issues are due by November twentieth, followed by a retest. The platform team, with Speaker 2 assigning the work today, will han
+[ctx-ans] dev54 partial 5.4 s (plan 1.3, retr 0.08, ans 3.7) spans 0/0 | The team sync meetings discuss ongoing project status, ownership assignments, and follow-up actions. Key topics include data migration being behind, the design 
+[ctx-ans] dev55 partial 5.1 s (plan 1.5, retr 0.09, ans 3.3) spans 0/0 | Speaker 2 said the budget might slip a little, the budget is a bit behind, and the budget came up again. They also noted that the budget was discussed briefly a

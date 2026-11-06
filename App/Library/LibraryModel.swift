@@ -80,6 +80,7 @@ final class LibraryModel {
     /// Reloads the list and the open meeting off the main thread (a two-hour transcript must not stall the UI).
     func reload() {
         indexer?.kick()   // T112: edits, deletions and new transcripts reach the contextual index promptly
+        answers?.sourcesChanged()   // T115: a finished answer whose sources were deleted is marked stale
         guard let store else { return }
         generation += 1
         let gen = generation, id = selection

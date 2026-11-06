@@ -133,7 +133,10 @@ public struct EmbedResponse: Hashable, Sendable, Codable {
 public struct AnswerPassage: Hashable, Sendable, Codable {
     public var label: String
     public var text: String
-    public init(label: String, text: String) { self.label = label; self.text = text }
+    /// Retrieval rank (0 = best) when passages are given in chronological order (contextual Ask, T115): prompt fitting
+    /// drops the worst-ranked first, never simply the latest. Nil: the order is the rank.
+    public var rank: Int?
+    public init(label: String, text: String, rank: Int? = nil) { self.label = label; self.text = text; self.rank = rank }
 }
 
 /// A previous question and its answer in the same session (T55 follow-ups).
@@ -149,8 +152,18 @@ public struct AnswerRequest: Hashable, Sendable, Codable {
     /// Numbered 1… in the prompt, in this order; citations refer to these numbers.
     public var passages: [AnswerPassage]
     public var history: [AnswerTurn]
-    public init(requestID: String, question: String, passages: [AnswerPassage], history: [AnswerTurn] = []) {
-        self.requestID = requestID; self.question = question; self.passages = passages; self.history = history
+    /// Contextual Ask (T115): deterministic facts about the search the answer must respect (the meeting dates searched,
+    /// who the asked person is as a speaker, that the user's own speaker is unknown…). Never meeting content.
+    public var guidance: [String]
+    public init(requestID: String, question: String, passages: [AnswerPassage], history: [AnswerTurn] = [], guidance: [String] = []) {
+        self.requestID = requestID; self.question = question; self.passages = passages; self.history = history; self.guidance = guidance
+    }
+    enum CodingKeys: String, CodingKey { case requestID, question, passages, history, guidance }
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        requestID = try c.decode(String.self, forKey: .requestID); question = try c.decode(String.self, forKey: .question)
+        passages = try c.decode([AnswerPassage].self, forKey: .passages); history = try c.decode([AnswerTurn].self, forKey: .history)
+        guidance = try c.decodeIfPresent([String].self, forKey: .guidance) ?? []
     }
 }
 

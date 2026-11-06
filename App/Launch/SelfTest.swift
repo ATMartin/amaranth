@@ -57,6 +57,13 @@ enum SelfTest {
             case "update-install": ok = await UpdateSelfTest.install()
             case "ui-density": ok = await UIDensitySelfTest.run(args: args)
             case "ask-worker": ok = await AskWorkerSelfTest.run()
+            case "ask-contextual":
+                let dir = args.firstIndex(of: "--model-dir").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
+                let mroot = args.firstIndex(of: "--models-root").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
+                ok = await AskContextualSelfTest.run(modelDirectory: dir, modelsRoot: mroot)
+            case "ui-render-ask":
+                let out = args.firstIndex(of: "--render-dir").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
+                ok = await AskRenderSelfTest.run(outputDirectory: out)
             case "embed-worker":
                 let dir = args.firstIndex(of: "--model-dir").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
                 ok = await EmbedWorkerSelfTest.run(modelDirectory: dir)

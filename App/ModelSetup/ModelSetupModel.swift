@@ -44,6 +44,14 @@ final class ModelSetupModel {
     }
 
     var downloadBytes: Int64 { pack?.manifests.reduce(0) { $0 + $1.totalBytes } ?? 0 }
+
+    /// T115: the installed pack works but predates the contextual search encoder the bundled pack has (an upgrade
+    /// downloads only the encoder: identical files are reused).
+    var searchModelMissing: Bool {
+        guard case .ready = status, pack?.manifests.contains(where: { $0.role == .textEmbedding }) == true else { return false }
+        return ContextIndexer.installedEncoder() == nil
+    }
+    var searchModelBytes: Int64 { pack?.manifests.first { $0.role == .textEmbedding }?.totalBytes ?? 0 }
     var requiredFreeBytes: Int64 { pack.map { ModelInstaller(store: store).requiredBytes(for: $0) } ?? 0 }
 
     func refresh() {

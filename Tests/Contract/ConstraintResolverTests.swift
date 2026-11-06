@@ -31,12 +31,12 @@ struct ConstraintResolverTests {
         #expect(full.people[0].resolution == .speaker && full.people[0].speakerNames == ["Andrew Kim"])
     }
 
-    @Test func selfNeedsAMeSpeakerInEveryMeeting() {
+    @Test func selfNeedsAMeSpeaker() {
         let q = "What did I promise today?"
         let none = resolve(q, [.init(name: "me", role: .selfUser)], speakers: ["Speaker 2": [a]])
         #expect(none.selfUnmapped && none.selfSpeakers.isEmpty)
         let some = resolve(q, [.init(name: "me", role: .selfUser)], speakers: ["Me": [a]])
-        #expect(some.selfUnmapped && some.selfSpeakers == [a: "Me"], "mapped in one meeting only: still qualified")
+        #expect(!some.selfUnmapped && some.selfSpeakers == [a: "Me"] && some.selfUnmappedMeetings == 2, "mapped where a Me speaker exists; the rest counted")
         let all = resolve(q, [.init(name: "me", role: .selfUser)], speakers: ["Me": [a, b], "Alex Martin": [c]])
         #expect(!all.selfUnmapped && all.people[0].resolution == .selfMapped && all.selfSpeakers.count == 3)
         #expect(resolve("What did Me say", [.init(name: "Me", role: .speaker)], speakers: ["Me": [a]]).people[0].resolution != .speaker)

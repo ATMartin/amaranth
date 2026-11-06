@@ -66,12 +66,13 @@ struct AmaranthApp: App {
         // T54: answers from the notes model, only while it can't push the speech models out (notes 0002, processing 0003).
         let answers = AnswerModel(store: recorder.store, worker: worker)
         answers.modelReady = ModelSetupModel.isReady
-        answers.busyReason = { [weak recorder, weak processing] in
-            if recorder?.inSession == true { return "Answers wait until the recording ends. The search matches are below." }
-            if processing?.transcriptWorkActive == true {
-                return "Waiting for transcription to finish… The search matches are below."
-            }
-            return nil
+        // T115: a recording ends the attempt at once with the reason (a later Retry is a new attempt); transcription is
+        // waited out inside the 15 s.
+        answers.recordingReason = { [weak recorder] in
+            recorder?.inSession == true ? "Answers are paused while recording, so the recording keeps the Mac's full attention. Ask again when it ends; exact word matches are below." : nil
+        }
+        answers.busyReason = { [weak processing] in
+            processing?.transcriptWorkActive == true ? "Waiting for transcription to finish…" : nil
         }
         library.answers = answers
         // T112: contextual-search indexing in the background; everything else goes first.
@@ -86,6 +87,7 @@ struct AmaranthApp: App {
             return nil
         }
         library.indexer = indexer
+        answers.producer = { [weak indexer] in indexer?.engine?.activeProducer }
         AppDelegate.recorder = recorder
         let live = LiveTextModel(client: worker)
         recorder.live = live

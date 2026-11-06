@@ -31,6 +31,11 @@ enum CtxEval {
             Task.detached { box.code = (try? await CtxRetrieveEval.scale(args)) ?? 1; sem.signal() }
             sem.wait(); return box.code
         }
+        if args.first == "answer", args.count >= 5 {
+            let box = ResultBox(); let sem = DispatchSemaphore(value: 0)
+            Task.detached { do { box.code = try await CtxAnswerEval.run(args) } catch { print("[ctx-ans] error \(error)"); box.code = 1 }; sem.signal() }
+            sem.wait(); return box.code
+        }
         if args.first == "retrieve", args.count >= 5 {
             let box = ResultBox()
             let sem = DispatchSemaphore(value: 0)

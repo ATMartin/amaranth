@@ -55,12 +55,12 @@ let package = Package(
         .target(name: "Export", dependencies: ["Domain"], path: "Export", swiftSettings: strict),
         // Spec 0009: the external read model (snapshots, citations, retrieval) shared by bulk export and future adapters.
         .target(name: "MeetingAccess", dependencies: ["Domain", "Storage", "Export"], path: "MeetingAccess", swiftSettings: strict),
-        .target(name: "Presentation", dependencies: ["Domain", "Storage"], path: "Presentation", swiftSettings: strict),
+        .target(name: "Presentation", dependencies: ["Domain", "Storage", "Contextual"], path: "Presentation", swiftSettings: strict),
         // Spec 0010: contextual retrieval orchestration (plans, hybrid FTS + vector search, context). Model calls are
         // injected (`ContextualModels`), so this module has no inference dependency and Storage/MeetingAccess stay model-free.
         .target(name: "Contextual", dependencies: ["Domain", "Storage"], path: "Contextual", swiftSettings: strict),
         .testTarget(name: "ContextualTests", dependencies: ["Contextual", "Storage", "Domain", "DomainFixtures"], path: "Tests/Contextual", swiftSettings: strict),
-        .testTarget(name: "PresentationTests", dependencies: ["Presentation", "Storage", "Domain", "DomainFixtures", "ProcessingCore", "Export"],
+        .testTarget(name: "PresentationTests", dependencies: ["Presentation", "Storage", "Domain", "DomainFixtures", "ProcessingCore", "Export", "Contextual"],
                     path: "Tests/UI", exclude: ["Fixtures"], swiftSettings: strict),
         .testTarget(name: "DataLifecycleTests", dependencies: ["Export", "Storage", "ProcessingCore", "Domain", "DomainFixtures", "Presentation", "MeetingAccess"], path: "Tests/DataLifecycle", swiftSettings: strict),
         .testTarget(name: "NotesTests", dependencies: ["Notes", "Domain", "DomainFixtures", "Scoring"], path: "Tests/Notes", swiftSettings: strict),

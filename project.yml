@@ -36,6 +36,8 @@ targets:
         product: Export
       - package: AmaranthKit
         product: MeetingAccess
+      - package: AmaranthKit
+        product: Contextual
       - target: InferenceWorker
         embed: true
         codeSign: true

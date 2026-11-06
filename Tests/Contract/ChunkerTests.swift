@@ -47,7 +47,7 @@ struct ChunkerTests {
     }
 
     @Test func planValidationClampsAndNeverInventsConstraints() {
-        let q = "What did Andrew propose last week?"
+        let q = "What did Andrew propose to me last week?"
         let plan = QueryPlan(semanticQueries: ["a", "b", "c", "d", q], literalTerms: Array(repeating: "x", count: 20) + ["Andrew"],
                              people: [.init(name: "Andrew", role: .speaker), .init(name: "Priya", role: .speaker), .init(name: "me", role: .selfUser)],
                              meetingTime: "yesterday", subquestions: ["1", "2", "3", "4"])
@@ -58,6 +58,8 @@ struct ChunkerTests {
         #expect(v.meetingTime == nil, "a time phrase that isn't in the question is dropped")
         #expect(QueryPlan(meetingTime: "Last Week").validated(question: q).meetingTime == "Last Week")
         #expect(v.subquestions.count == 3)
+        #expect(QueryPlan(people: [.init(name: "me", role: .selfUser)]).validated(question: "Who could take on the rollout?").people.isEmpty,
+                "no self person unless the question says I/me/my")
     }
 
     @Test func vectorsAndProducerIdentity() {

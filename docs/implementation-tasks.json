@@ -3589,7 +3589,7 @@
       "id": "T115",
       "title": "Integrate cited contextual answers, on-theme loading feedback and a 15-second deadline",
       "milestone": "V",
-      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "status": "done (2026-11-06): contextual Ask in the app with 15 s deadline, explicit terminal states, answer-v3 grounding, identity guards, freshness checks, seed-ring loader (Reduce Motion, VoiceOver), search-model notice; dev 55/55 terminal ≤ 15 s (max 5.8 s); docs/qualification/milestone-v/t115-answers.md",
       "optional": false,
       "depends_on": [
         "T114"
@@ -3624,7 +3624,9 @@
         "Light/dark, Reduce Motion, VoiceOver and keyboard checks cover the on-theme loading graphic across cold load, slow retrieval, waiting, timeout, cancellation, failure and streaming; no indefinite active loading graphic or stale prior-request update remains."
       ],
       "fallback": "Prefer supported partial answers/clarifications over invented completeness. Adjust checker/prompt/coverage using development evidence; do not weaken held-out factual gates or silently ship the old keyword list as contextual evidence.",
-      "review_timestamps": []
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     },
     {
       "id": "T116",
