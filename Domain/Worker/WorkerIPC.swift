@@ -63,6 +63,31 @@ public enum WorkerRequest: Hashable, Sendable, Codable {
     /// Contextual search (T110): vectors for document chunks or a query with the text encoder. Bounded: at most
     /// `EmbedRequest.maxTexts` texts per request. Cancel with `cancel(jobID: requestID)`. Replies `.embeddings`.
     case embed(EmbedRequest)
+    /// Contextual Ask (T113): a validated search plan for a question from the notes model. Cancel with
+    /// `cancel(jobID: requestID)`. Replies `.plan`.
+    case plan(PlanRequest)
+}
+
+public struct PlanRequest: Hashable, Sendable, Codable {
+    public var requestID: String
+    public var question: String
+    public var history: [AnswerTurn]
+    public init(requestID: String, question: String, history: [AnswerTurn]) {
+        self.requestID = requestID
+        self.question = String(question.prefix(ContextualLimits.maxQuestionCharacters))
+        self.history = Array(history.suffix(ContextualLimits.maxHistoryTurns))
+    }
+}
+
+public struct PlanResponse: Hashable, Sendable, Codable {
+    public var plan: QueryPlan
+    /// The model's output didn't parse: this is the constrained deterministic fallback (labeled to the user).
+    public var fallback: Bool
+    public var seconds: Double
+    public var generatedTokens: Int
+    public init(plan: QueryPlan, fallback: Bool, seconds: Double, generatedTokens: Int) {
+        self.plan = plan; self.fallback = fallback; self.seconds = seconds; self.generatedTokens = generatedTokens
+    }
 }
 
 public struct EmbedRequest: Hashable, Sendable, Codable {
@@ -266,6 +291,7 @@ public enum WorkerResponse: Hashable, Sendable, Codable {
     case incremental(IncrementalResponse)
     case answer(AnswerResponse)
     case embeddings(EmbedResponse)
+    case plan(PlanResponse)
 }
 
 public enum WorkerIPCCodec {

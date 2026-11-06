@@ -1,0 +1,332 @@
+[
+  {
+    "dateOK" : "true",
+    "id" : "dev01",
+    "plan" : "{\"semanticQueries\":[\"Who do you think could take on the Kestrel migration once their current work is done?\",\"Could someone from the dev team pick that up for the Kestrel migration?\"],\"people\":[],\"literalTerms\":[\"Kestrel\",\"migration\",\"dev team\",\"current work\"],\"intent\":\"staffing\",\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"over the past seven days\"}",
+    "seconds" : "1.314957667"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev02",
+    "plan" : "{\"semanticQueries\":[],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"other\",\"literalTerms\":[]}",
+    "seconds" : "2.312961792"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev03",
+    "plan" : "{\"semanticQueries\":[\"Sarah got the go-ahead to help shift the customer accounts off the legacy database.\",\"The team decided that Mark could take over and help shift the customer accounts off the old database.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"commitments\",\"literalTerms\":[\"customer accounts\",\"legacy database\",\"Sarah\",\"Mark\",\"shift\",\"go-ahead\"]}",
+    "seconds" : "1.29912675"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev04",
+    "plan" : "{\"semanticQueries\":[\"Tomas said he's still available to help on Kestrel if needed.\",\"He confirmed he's free to work on Kestrel this week.\"],\"people\":[{\"name\":\"Tomas\",\"role\":\"speaker\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Tomas\",\"Kestrel\"]}",
+    "seconds" : "0.980689584"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev05",
+    "plan" : "{\"semanticQueries\":[\"We ruled out Sarah because she's already committed to the Northwind project.\",\"Mark was excluded from Kestrel since he's handling the East Coast rollout now.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"staffing\",\"literalTerms\":[\"Kestrel\",\"Sarah\",\"Northwind\",\"Mark\",\"East Coast\",\"rollout\"]}",
+    "seconds" : "1.4072865"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev06",
+    "plan" : "{\"semanticQueries\":[\"We approved $1.2 million for the Kestrel migration last week.\",\"The budget for Kestrel migration was set at $1.2 million.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Kestrel\",\"1.2 million\",\"migration\"]}",
+    "seconds" : "0.991596709"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev07",
+    "plan" : "{\"semanticQueries\":[\"Rosa said she could take on the project once her current work wraps up.\",\"She mentioned she’d be available to help with the capacity check-in after her current tasks are done.\"],\"people\":[{\"name\":\"Rosa\",\"role\":\"speaker\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Rosa\",\"capacity\",\"check-in\",\"project\",\"current work\",\"available\"]}",
+    "seconds" : "1.241902417"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev08",
+    "plan" : "{\"semanticQueries\":[\"Sam was supposed to lead the client review meeting this week.\",\"She was on deck to present the Q3 report to the board.\"],\"people\":[{\"name\":\"Sam\",\"role\":\"speaker\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Sam\",\"client review\",\"Q3 report\",\"board\",\"this week\",\"present\"]}",
+    "seconds" : "1.15547525"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev09",
+    "plan" : "{\"semanticQueries\":[\"Who has ownership of the cutover runbook?\",\"Is the cutover runbook currently under someone's ownership?\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"cutover\",\"runbook\"]}",
+    "seconds" : "0.904027708"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev10",
+    "plan" : "{\"semanticQueries\":[\"Omar said the Pipewell contract is on track and should be ready by next month.\",\"Omar mentioned the Pipewell contract has a few delays but overall it's still viable.\"],\"people\":[{\"name\":\"Omar\",\"role\":\"speaker\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Omar\",\"Pipewell\",\"contract\",\"next month\"]}",
+    "seconds" : "1.2582304579999999"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev11",
+    "plan" : "{\"semanticQueries\":[\"Omar said he'd cover on-call over Thanksgiving\",\"He agreed to take on-call during Thanksgiving\"],\"people\":[{\"name\":\"Omar\",\"role\":\"speaker\"}],\"intent\":\"commitments\",\"literalTerms\":[\"Omar\",\"on-call\",\"Thanksgiving\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"Thanksgiving\"}",
+    "seconds" : "1.038092791"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev12",
+    "plan" : "{\"semanticQueries\":[\"We still haven't decided which platform to use for sales contacts.\",\"No, we didn't finalize the platform for holding sales contacts yet.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"sales contacts\",\"platform\"]}",
+    "seconds" : "0.884415"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev13",
+    "plan" : "{\"semanticQueries\":[\"When is the Halyard price comparison supposed to happen again?\",\"When will we reevaluate the Halyard quote?\"],\"people\":[{\"name\":\"legal\",\"role\":\"speaker\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Halyard\",\"Pipewell\",\"Oct 27\",\"Nov 3\",\"40%\",\"legal\"]}",
+    "seconds" : "1.3701965"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev14",
+    "plan" : "{\"semanticQueries\":[\"What did the Pipewell quote come back with?\",\"The Pipewell quote was rejected—what was the reason?\"],\"people\":[],\"subquestions\":[\"What was the response to the Pipewell quote?\",\"Why was the Pipewell quote rejected?\"],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Pipewell\",\"quote\",\"came back\",\"rejected\"]}",
+    "seconds" : "1.163889958"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev15",
+    "plan" : "{\"semanticQueries\":[\"Yeah, everyone checked off Pipewell, so we're good to go.\",\"We all signed off on Pipewell, so it's officially complete.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Pipewell\"]}",
+    "seconds" : "0.888539209"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev16",
+    "plan" : "{\"semanticQueries\":[\"I mentioned that we should evaluate HubSpot and Salesforce for the CRM vendors.\",\"I said we need to compare HubSpot and Salesforce to pick the best one for our needs.\"],\"people\":[{\"name\":\"I\",\"role\":\"self\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"CRM\",\"HubSpot\",\"Salesforce\",\"evaluate\",\"vendors\",\"compare\"]}",
+    "seconds" : "1.198095625"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev17",
+    "plan" : "{\"semanticQueries\":[\"They promised to send over the new pricing sheet by end of week.\",\"The Halyard rep said they’d follow up with a demo next week.\"],\"people\":[{\"name\":\"Halyard sales rep\",\"role\":\"speaker\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"commitments\",\"literalTerms\":[\"Halyard\",\"sales\",\"rep\",\"pricing\",\"sheet\",\"demo\"]}",
+    "seconds" : "1.239173375"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev18",
+    "plan" : "{\"semanticQueries\":[\"We decided to go with Vendor X for the project.\",\"Final decision was to pick Vendor X over the others.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"decision_status\",\"literalTerms\":[\"Vendor\",\"X\",\"project\"]}",
+    "seconds" : "0.807367541"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev19",
+    "plan" : "{\"semanticQueries\":[\"Has anyone actually made the final decision on moving our office?\",\"We still haven’t got a final call on relocating the workspace.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"relocating\",\"workspace\",\"final call\",\"office\"]}",
+    "seconds" : "1.08914975"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev20",
+    "plan" : "{\"semanticQueries\":[\"We're still waiting on final approval from the legal team for the new office location.\",\"The decision is on hold until we get feedback from the finance department about the lease costs.\"],\"people\":[],\"intent\":\"fact\",\"literalTerms\":[\"June\",\"legal team\",\"finance department\",\"office location\",\"lease costs\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"after June\"}",
+    "seconds" : "1.432055208"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev21",
+    "plan" : "{\"semanticQueries\":[\"We're looking at the Delancey building for the new office space.\",\"The Delancey building is on the list for potential relocation.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Delancey\",\"building\",\"office space\",\"new\",\"relocation\"]}",
+    "seconds" : "0.98465575"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev22",
+    "plan" : "{\"semanticQueries\":[\"When does the Wharf Street lease end?\",\"What's the expiry date for the Wharf Street lease?\"],\"people\":[],\"intent\":\"fact\",\"literalTerms\":[\"Wharf Street\",\"lease\",\"end\",\"expiry\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"when is the Wharf Street lease up\"}",
+    "seconds" : "0.926425416"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev23",
+    "plan" : "{\"semanticQueries\":[\"Yeah, we finally approved the standing desks for the new office.\",\"The standing desks were approved during the last meeting.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"standing desks\",\"new office\"]}",
+    "seconds" : "0.814295833"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev24",
+    "plan" : "{\"semanticQueries\":[\"I promised to follow up with the sales team by end of week.\",\"I committed to sending the report to the leadership team tomorrow.\"],\"people\":[{\"name\":\"I\",\"role\":\"self\"}],\"intent\":\"commitments\",\"literalTerms\":[\"sales team\",\"leadership team\",\"end of week\",\"tomorrow\",\"follow up\",\"report\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"today\"}",
+    "seconds" : "1.24313475"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev25",
+    "plan" : "{\"semanticQueries\":[\"I promised to follow up with the team by end of day tomorrow.\",\"I committed to sending over the updated timeline by Friday.\"],\"people\":[{\"name\":\"I\",\"role\":\"self\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"commitments\",\"literalTerms\":[\"call\",\"follow up\",\"team\",\"end of day\",\"tomorrow\",\"Friday\"]}",
+    "seconds" : "1.169717875"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev26",
+    "plan" : "{\"semanticQueries\":[\"I committed to following up with the team by Friday.\",\"I promised to send over the updated timeline by end of day.\"],\"people\":[{\"name\":\"I\",\"role\":\"self\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"commitments\",\"literalTerms\":[\"team\",\"Friday\",\"updated\",\"timeline\",\"follow\",\"up\"]}",
+    "seconds" : "1.1048095"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev27",
+    "plan" : "{\"semanticQueries\":[\"I said I'd follow up on the interview notes and get back to you by end of day.\",\"I promised to handle the next steps after the debrief and make sure everything is on track.\"],\"people\":[{\"name\":\"I\",\"role\":\"self\"}],\"intent\":\"commitments\",\"literalTerms\":[\"yesterday\",\"interview\",\"debrief\",\"follow up\",\"next steps\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"yesterday\"}",
+    "seconds" : "1.3194085"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev28",
+    "plan" : "{\"semanticQueries\":[\"We promised to follow up with the client by end of day tomorrow.\",\"They said they’d send a follow-up email by Friday afternoon.\"],\"people\":[],\"intent\":\"commitments\",\"literalTerms\":[\"client\",\"follow-up\",\"tomorrow\",\"Friday\",\"email\",\"calls\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"this week\"}",
+    "seconds" : "1.301863375"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev29",
+    "plan" : "{\"semanticQueries\":[\"When will Brightline get the updated scene-by-scene drawings?\",\"When do we expect the reworked scene-by-scene drawings for Brightline?\"],\"people\":[],\"intent\":\"fact\",\"literalTerms\":[\"Brightline\",\"reworked\",\"scene-by-scene\",\"drawings\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"when will Brightline see the reworked scene-by-scene drawings\"}",
+    "seconds" : "1.127249458"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev30",
+    "plan" : "{\"semanticQueries\":[\"We're inviting Maya back for the in-person interview next week.\",\"The team decided to bring back Alex for the in-person round.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"staffing\",\"literalTerms\":[\"Maya\",\"Alex\",\"in-person\",\"interview\",\"next week\"]}",
+    "seconds" : "1.327637333"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev31",
+    "plan" : "{\"semanticQueries\":[\"We need to follow up on the delivery timelines by Friday.\",\"Action items were to update the tracking system and send a report to the logistics team by end of week.\"],\"people\":[{\"name\":\"I\",\"role\":\"self\"}],\"intent\":\"fact\",\"literalTerms\":[\"Lumen Freight\",\"delivery timelines\",\"tracking system\",\"logistics team\",\"Friday\",\"end of week\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"last week\"}",
+    "seconds" : "1.298093709"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev32",
+    "plan" : "{\"semanticQueries\":[\"The issue with the Northwind indemnity clause is that it doesn't cover third-party liabilities.\",\"We're having trouble with the Northwind indemnity clause because it excludes claims from contractors.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Northwind\",\"indemnity\",\"clause\"]}",
+    "seconds" : "1.000241625"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev33",
+    "plan" : "{\"semanticQueries\":[\"Maria said her next growth step would be to lead the new client onboarding project.\",\"She suggested taking on the client onboarding initiative as her next growth step.\"],\"people\":[{\"name\":\"Maria\",\"role\":\"speaker\"}],\"intent\":\"proposal\",\"literalTerms\":[\"Maria\",\"growth step\",\"client onboarding project\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"last week\"}",
+    "seconds" : "1.147836125"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev34",
+    "plan" : "{\"semanticQueries\":[\"Did Maria say she'd take on the vendor reviews herself this week?\",\"She didn't mention changing her next step this week.\"],\"people\":[{\"name\":\"Maria\",\"role\":\"speaker\"}],\"subquestions\":[\"Did Maria make a change to her next growth step this week?\",\"Did she say she would lead the vendor reviews this week?\",\"Did she update her plan after last week?\"],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Maria\",\"vendor reviews\",\"Oct 28\",\"Q1 review cycle\",\"leading\",\"prepping\"]}",
+    "seconds" : "1.625984292"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev35",
+    "plan" : "{\"semanticQueries\":[\"Maria said she wants to grow in the customer experience area.\",\"She mentioned she’s focusing on expanding into customer support next.\"],\"people\":[{\"name\":\"Maria\",\"role\":\"speaker\"}],\"intent\":\"fact\",\"literalTerms\":[\"Maria\",\"customer experience\",\"customer support\",\"last week\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"last week\"}",
+    "seconds" : "1.1235543749999999"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev36",
+    "plan" : "{\"semanticQueries\":[\"Alex said they'd take over the forecasting model next week.\",\"Jamie mentioned they wanted to handle the forecasting model now.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"commitments\",\"literalTerms\":[\"forecasting model\",\"Alex\",\"Jamie\"]}",
+    "seconds" : "1.195813875"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev37",
+    "plan" : "{\"semanticQueries\":[\"Yeah, Maria mentioned her development plans during the ops standup.\",\"She brought up her development plans in the last ops standup.\"],\"people\":[{\"name\":\"Maria\",\"role\":\"speaker\"}],\"intent\":\"fact\",\"literalTerms\":[\"Maria\",\"development plans\",\"ops standup\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"ops standup\"}",
+    "seconds" : "1.137872291"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev38",
+    "plan" : "{\"semanticQueries\":[\"John mentioned Maria should get certified soon.\",\"Sarah said Maria was going to get her certification next month.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Maria\",\"certification\",\"John\",\"Sarah\",\"soon\",\"next month\"]}",
+    "seconds" : "1.132977208"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev39",
+    "plan" : "{\"semanticQueries\":[\"Maria said she'd consider moving to Denver if the commute is manageable.\",\"She mentioned she might relocate to Denver next year, depending on the schedule.\"],\"people\":[{\"name\":\"Maria\",\"role\":\"speaker\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"Maria\",\"Denver\",\"relocate\",\"commute\",\"next year\",\"schedule\"]}",
+    "seconds" : "1.223514209"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev40",
+    "plan" : "{\"semanticQueries\":[\"The on-call team reported that the web front door's security certificates were expiring in two weeks.\",\"Last week, the on-call folks said the certificates for the web front door were about to expire.\"],\"people\":[{\"name\":\"on-call\",\"role\":\"mentioned\"}],\"intent\":\"fact\",\"literalTerms\":[\"web\",\"front\",\"door\",\"security\",\"certificates\",\"last\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"last week\"}",
+    "seconds" : "1.286694875"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev41",
+    "plan" : "{\"semanticQueries\":[\"Who covered the weekend shift yesterday? They passed something along to us.\",\"The person who took over the weekend shift yesterday sent us an update.\"],\"people\":[{\"name\":\"whoever covered the weekend shift yesterday\",\"role\":\"mentioned\"}],\"intent\":\"fact\",\"literalTerms\":[\"weekend shift\",\"yesterday\",\"passed along\",\"covered\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"yesterday\"}",
+    "seconds" : "1.2612085419999999"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev42",
+    "plan" : "{\"semanticQueries\":[\"We decided last week that Sarah would carry the beeper since she’s in the field most days.\",\"Last week, we agreed that Mark would take the beeper because he’s the one who handles the field updates.\"],\"people\":[],\"intent\":\"commitments\",\"literalTerms\":[\"last week\",\"beeper\",\"Sarah\",\"Mark\",\"field\",\"updates\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"last week\"}",
+    "seconds" : "1.5766498329999998"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev43",
+    "plan" : "{\"semanticQueries\":[\"The customer in the healthcare sector is having trouble pulling big data sets from the product.\",\"We’ve been hearing from the insurance client that they can’t extract large data chunks efficiently.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"healthcare\",\"insurance\",\"data sets\",\"large data\",\"product\",\"client\"]}",
+    "seconds" : "1.138827167"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev44",
+    "plan" : "{\"semanticQueries\":[\"The BioTech team won the fall hackathon with their AI-powered health app.\",\"The Data Science squad took first place in the fall hackathon.\"],\"people\":[],\"intent\":\"fact\",\"literalTerms\":[\"fall hackathon\",\"BioTech\",\"AI-powered health app\",\"Data Science\",\"squad\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"fall\"}",
+    "seconds" : "1.038664292"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev45",
+    "plan" : "{\"semanticQueries\":[\"We ended up going with $1,200 for the travel allowance in Q1.\",\"The final number for the first quarter travel allowance was $1,200.\"],\"people\":[],\"intent\":\"fact\",\"literalTerms\":[\"travel allowance\",\"first quarter\",\"1200\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"first quarter\"}",
+    "seconds" : "1.10772775"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev46",
+    "plan" : "{\"semanticQueries\":[\"Can the platform group add anyone new right now?\",\"Is there anyone the platform group can bring on immediately?\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"staffing\",\"literalTerms\":[\"platform group\",\"bring on\",\"new\"]}",
+    "seconds" : "0.820485333"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev47",
+    "plan" : "{\"semanticQueries\":[\"We discussed the price breaks for partners who resell our products this week.\",\"The team talked about the resale pricing tiers for partner resellers this week.\"],\"people\":[],\"intent\":\"fact\",\"literalTerms\":[\"price breaks\",\"partners\",\"resell\",\"products\",\"this week\",\"resale\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"this week\"}",
+    "seconds" : "1.138880167"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev48",
+    "plan" : "{\"semanticQueries\":[\"We're targeting a launch in early Q3\",\"The mobile app is set for release in July\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"mobile app\",\"Q3\",\"July\"]}",
+    "seconds" : "0.911141334"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev49",
+    "plan" : "{\"semanticQueries\":[\"Yes, we're launching in all regions on day one.\",\"We're going full rollout across every region from day one.\"],\"people\":[],\"intent\":\"fact\",\"literalTerms\":[\"rollout\",\"regions\",\"day one\"],\"exhaustive\":false,\"subquestions\":[],\"meetingTime\":\"day one\"}",
+    "seconds" : "0.939498417"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev50",
+    "plan" : "{\"semanticQueries\":[\"We're still finalizing the hotel block for the sales offsite, but it should be confirmed by Friday.\",\"The hotel block for the sales offsite has been booked for next month, with rooms confirmed for 10 people.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"sales offsite\",\"hotel block\",\"Friday\",\"next month\",\"10 people\"]}",
+    "seconds" : "1.323376292"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev51",
+    "plan" : "{\"semanticQueries\":[\"We're thinking about merging the design and research teams to streamline things.\",\"There’s a proposal to combine the design and research teams for better collaboration.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"proposal\",\"literalTerms\":[\"design\",\"research\",\"teams\"]}",
+    "seconds" : "0.966553167"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev52",
+    "plan" : "{\"semanticQueries\":[\"The outside security testers found some vulnerabilities in the file intake service.\",\"They flagged a few security issues with how the file intake service handles data.\"],\"people\":[],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"outside\",\"security\",\"testers\",\"file\",\"intake\",\"service\"]}",
+    "seconds" : "1.092246541"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev53",
+    "plan" : "{\"semanticQueries\":[\"We're going to fix the two high-severity issues first, especially the file type validation one, and then tackle the medium ones over thenext\",\"The plan is to patch the file type validation right away and address the header issues in phases over the next two weeks\"],\"people\":[],\"subquestions\":[\"Who is responsible for fixing the high-severity issues?\",\"When will the file type validation fix be deployed?\",\"What is the timeline for addressing the medium issues?\"],\"exhaustive\":false,\"intent\":\"proposal\",\"literalTerms\":[\"file intake service\",\"upload service\",\"file type validation\",\"script disguised as image\",\"high severity\",\"medium\"]}",
+    "seconds" : "1.895649583"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev54",
+    "plan" : "{\"semanticQueries\":[\"We went over the project timeline and decided on the next steps.\",\"The team discussed the goals and agreed on who would handle each part.\"],\"people\":[{\"name\":\"I\",\"role\":\"self\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"summary\",\"literalTerms\":[\"project\",\"timeline\",\"next steps\",\"goals\",\"team\",\"handle\"]}",
+    "seconds" : "1.138451208"
+  },
+  {
+    "dateOK" : "true",
+    "id" : "dev55",
+    "plan" : "{\"semanticQueries\":[\"Speaker 2 said the budget needs to be adjusted to cover the new features.\",\"She mentioned we should reallocate $15k from marketing to the budget.\"],\"people\":[{\"name\":\"Speaker 2\",\"role\":\"speaker\"}],\"subquestions\":[],\"exhaustive\":false,\"intent\":\"fact\",\"literalTerms\":[\"budget\",\"new features\",\"reallocate\",\"15k\",\"marketing\",\"Speaker 2\"]}",
+    "seconds" : "1.367985209"
+  }
+]

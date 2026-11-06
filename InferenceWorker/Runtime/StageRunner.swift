@@ -257,6 +257,11 @@ public final class StageRunner: @unchecked Sendable {
     }
     let embedGate = ForegroundGate()
 
+    /// Contextual Ask (T113): a search plan from the notes model (answer context; Ask runs plan → retrieval → answer).
+    public func plan(_ r: PlanRequest, cancellation: CancellationToken) throws -> PlanResponse {
+        try QueryPlanner.plan(r.question, history: r.history, generator: try models.answers(), cancellation: cancellation)
+    }
+
     /// Loads (and so compiles, on first use on this Mac) the transcription and diarization models.
     public func warmUp() throws {
         _ = try Perf.measure("model.warmUp") { try models.transcriptionPool(); try models.diarization() }

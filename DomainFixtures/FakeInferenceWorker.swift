@@ -41,6 +41,9 @@ public actor FakeInferenceWorker {
             }
             return .answer(AnswerResponse(text: String(first.text.prefix(120)), citations: [1], confidence: .medium, refused: false, promptTokens: 0,
                                           generatedTokens: 0, firstTextSeconds: 0, totalSeconds: 0))
+        case .plan(let r):
+            // Fixture: no model; the question itself is the only query.
+            return .plan(PlanResponse(plan: QueryPlan().validated(question: r.question), fallback: true, seconds: 0, generatedTokens: 0))
         case .embed(let r):
             return .embeddings(EmbedResponse(producer: FakeEncoder.producer, vectors: EmbedResponse.pack(r.texts.map(FakeEncoder.vector)), seconds: 0, loaded: false))
         }

@@ -3510,7 +3510,7 @@
       "id": "T113",
       "title": "Interpret questions locally with validated people and date constraints",
       "milestone": "V",
-      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "status": "done (2026-11-06): grammar-constrained local planner plan-v1 (p95 1.63 s), validated plans, deterministic DateResolver/ConstraintResolver (dev dates 55/55), worker .plan; docs/qualification/milestone-v/t113-planning.md",
       "optional": false,
       "depends_on": [
         "T109",
@@ -3541,7 +3541,9 @@
         "Only allowlisted operations and bounded validated data reach retrieval; planner failure is surfaced or uses a clearly labeled constrained fallback without dropping explicit person/time constraints."
       ],
       "fallback": "Use validated literal/date behavior with an explicit clarification if planning fails. Do not silently broaden a specific question into unrestricted keyword search and present the answer as complete.",
-      "review_timestamps": []
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     },
     {
       "id": "T114",

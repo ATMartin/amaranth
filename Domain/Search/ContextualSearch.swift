@@ -130,9 +130,19 @@ public struct QueryPlan: Hashable, Sendable, Codable {
         p.semanticQueries = unique(semanticQueries.filter { $0.lowercased() != question.lowercased() }, ContextualLimits.maxSemanticQueries - 1)
         p.literalTerms = unique(literalTerms, ContextualLimits.maxLiteralTerms)
         var seenPeople = Set<String>()
+        let selfWords: Set<String> = ["i", "me", "my", "myself", "mine"]
+        let groupWords: Set<String> = ["we", "us", "our", "ours", "they", "them", "everyone", "someone", "anyone", "the team", "team"]
+        let questionWords = Set(question.lowercased().split { !$0.isLetter && $0 != "'" }.map(String.init))
+        var people = self.people
+        // I/me/my in the question always means the user, whatever the model said.
+        if !questionWords.isDisjoint(with: selfWords) { people.append(Person(name: "I", role: .selfUser)) }
         p.people = Array(people.compactMap { person -> Person? in
             guard let n = clean(person.name) else { return nil }
-            if person.role == .selfUser { return seenPeople.insert("\u{0}self").inserted ? Person(name: "I", role: .selfUser) : nil }
+            let lower = n.lowercased()
+            if person.role == .selfUser || selfWords.contains(lower) {
+                return seenPeople.insert("\u{0}self").inserted ? Person(name: "I", role: .selfUser) : nil
+            }
+            if groupWords.contains(lower) { return nil }
             guard haystack.contains(n.lowercased()), seenPeople.insert(n.lowercased()).inserted else { return nil }
             return Person(name: n, role: person.role)
         }.prefix(ContextualLimits.maxPeople))

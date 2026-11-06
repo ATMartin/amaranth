@@ -335,3 +335,39 @@ extension MeetingStore {
         }
     }
 }
+
+extension MeetingStore {
+    /// Current shown speaker names (renamed or reconciled, not anonymous labels) and attendees per meeting in scope (T113).
+    public func nameDirectory(_ filter: ContextFilter) throws -> NameDirectory {
+        try withDB { db in
+            let (where_, b) = Self.scopeSQL(filter)
+            var inScope = Set<MeetingID>()
+            try db.forEach("SELECT s.meeting_id FROM context_meeting_state s JOIN meetings m ON m.id = s.meeting_id WHERE \(where_)", b) { st in
+                if let m = SQLiteDB.columnText(st, 0) { inScope.insert(MeetingID(m)) }
+            }
+            var speakers: [String: Set<MeetingID>] = [:], attendees: [String: Set<MeetingID>] = [:]
+            try db.forEach("""
+                SELECT i.meeting_id, i.kind, i.text FROM search_index i JOIN context_meeting_state s ON s.meeting_id = i.meeting_id
+                JOIN meetings m ON m.id = i.meeting_id WHERE i.kind IN ('speaker', 'person') AND \(where_)
+                """, b) { st in
+                guard let m = SQLiteDB.columnText(st, 0), let k = SQLiteDB.columnText(st, 1), let t = SQLiteDB.columnText(st, 2) else { return }
+                if k == "speaker" { speakers[t, default: []].insert(MeetingID(m)) } else { attendees[t, default: []].insert(MeetingID(m)) }
+            }
+            return NameDirectory(speakers: speakers, attendees: attendees, meetingsInScope: inScope)
+        }
+    }
+
+    /// Whether current transcript or notes text in scope mentions `name` (a word match, FTS).
+    public func mentions(_ name: String, filter: ContextFilter) throws -> Bool {
+        let tokens = name.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init).filter { !$0.isEmpty }
+        guard !tokens.isEmpty else { return false }
+        let match = "text : (" + tokens.map { "\"\($0)\"" }.joined(separator: " ") + ")"
+        return try withDB { db in
+            let (where_, b) = Self.scopeSQL(filter)
+            return !(try db.run("""
+                SELECT 1 AS x FROM search_index i JOIN context_meeting_state s ON s.meeting_id = i.meeting_id JOIN meetings m ON m.id = i.meeting_id
+                WHERE search_index MATCH ? AND i.kind IN ('transcript', 'notes') AND \(where_) LIMIT 1
+                """, [.text(match)] + b).isEmpty)
+        }
+    }
+}

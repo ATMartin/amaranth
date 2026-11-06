@@ -23,6 +23,7 @@ enum CtxEval {
     }
 
     static func main(_ args: [String]) throws -> Int32 {
+        if args.first == "plan", args.count >= 4 { return try plan(args) }
         guard args.count >= 3, args[0] == "baseline" else {
             print("usage: ctx-eval baseline <set.json> <results-dir> [--answers <model.gguf>] [--only a,b]"); return 2
         }
@@ -90,6 +91,56 @@ enum CtxEval {
         try enc.encode(rows).write(to: results.appending(path: "rows.json"))
         try report(rows, set: set, gen: gen != nil).write(to: results.appending(path: "report.md"), atomically: true, encoding: .utf8)
         print(try String(contentsOf: results.appending(path: "report.md"), encoding: .utf8))
+        return 0
+    }
+
+    /// T113: `ctx-eval plan <set.json> <results-dir> <model.gguf>`: the local planner + deterministic constraints per
+    /// question; resolved meeting-date ranges are compared with the labeled ones (local inclusive dates).
+    static func plan(_ args: [String]) throws -> Int32 {
+        let set = try CtxFixtures.load(URL(filePath: args[1]))
+        let results = URL(filePath: args[2])
+        try FileManager.default.createDirectory(at: results, withIntermediateDirectories: true)
+        let root = FileManager.default.temporaryDirectory.appending(path: "amr-ctxplan-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let seeded = try CtxFixtures.seed(set, root: root)
+        let notes = try LlamaRunner(gguf: URL(filePath: args[3]), manifestID: ModelManifestID("qwen3-4b-instruct-2507-q4_k_m"), revision: "local")
+        var c = LlamaRunner.Configuration(); c.contextTokens = 3072; c.parallel = 1; c.kvTokens = 3072
+        let gen = try LlamaRunner(sharing: notes, configuration: c)
+        _ = try QueryPlanner.plan("warm up", history: [], generator: gen, cancellation: CancellationToken())
+        var cal = Calendar(identifier: .gregorian); cal.timeZone = seeded.timeZone
+        let df = DateFormatter(); df.calendar = cal; df.timeZone = seeded.timeZone; df.dateFormat = "yyyy-MM-dd"
+        var lines: [String] = ["| id | categories | plan s | fallback | date expected | date resolved | ok | people | queries |", "|---|---|---|---|---|---|---|---|---|"]
+        var dateOK = 0, dateN = 0, times: [Double] = [], fallbacks = 0
+        var constraints: [String: ResolvedConstraints] = [:]
+        var jsonRows: [[String: String]] = []
+        for q in set.questions {
+            var history: [AnswerTurn] = []
+            if let f = q.follows, let prev = set.questions.first(where: { $0.id == f }) { history = [AnswerTurn(question: prev.question, answer: prev.expected_meaning)] }
+            let now = q.request_time.flatMap(CtxFixtures.date) ?? seeded.referenceNow
+            let r = try QueryPlanner.plan(q.question, history: history, generator: gen, cancellation: CancellationToken())
+            times.append(r.seconds); if r.fallback { fallbacks += 1 }
+            let (meeting, folder) = CtxFixtures.scope(q, seeded)
+            let filter = ContextFilter(meetings: meeting.map { [$0] }, folder: folder)
+            let dir = try seeded.store.nameDirectory(filter)
+            let res = ConstraintResolver.resolve(question: q.question, plan: r.plan, now: now, timeZone: seeded.timeZone,
+                                                 previous: q.follows.flatMap { constraints[$0] }, directory: dir, accountName: nil,
+                                                 mentioned: { (try? seeded.store.mentions($0, filter: filter)) ?? false })
+            constraints[q.id] = res
+            let got = res.dateRange.map { "\(df.string(from: $0.start))…\(df.string(from: $0.end.addingTimeInterval(-1)))" } ?? "–"
+            let want = q.expected_date_range.map { "\($0.start)…\($0.end)" } ?? "–"
+            let ok = got == want
+            dateN += 1; if ok { dateOK += 1 }
+            let people = res.people.map { "\($0.name):\($0.role.rawValue)/\($0.resolution.rawValue)" }.joined(separator: ", ")
+            lines.append("| \(q.id) | \(q.categories.joined(separator: " ")) | \(String(format: "%.1f", r.seconds)) | \(r.fallback) | \(want) | \(got) | \(ok ? "✓" : "✗") | \(people) | \(r.plan.semanticQueries.joined(separator: " / ").replacingOccurrences(of: "|", with: "/")) |")
+            jsonRows.append(["id": q.id, "plan": String(decoding: try JSONEncoder().encode(r.plan), as: UTF8.self), "seconds": String(r.seconds), "dateOK": "\(ok)"])
+            print("[ctx-plan] \(q.id) \(ok ? "date ok " : "DATE ✗ ") \(String(format: "%.1f s", r.seconds)) \(people) | \(r.plan.semanticQueries.first ?? "-")")
+        }
+        times.sort()
+        let head = String(format: "# ctx-eval plan — %@\n\nMeeting-date constraint correct: %d/%d. Planner p50 %.2f s, p95 %.2f s, max %.2f s; fallbacks %d.\n\n",
+                          set.set, dateOK, dateN, times[times.count / 2], times[Int(Double(times.count) * 0.95)], times.last ?? 0, fallbacks)
+        try (head + lines.joined(separator: "\n") + "\n").write(to: results.appending(path: "plan-report.md"), atomically: true, encoding: .utf8)
+        try JSONSerialization.data(withJSONObject: jsonRows, options: [.prettyPrinted, .sortedKeys]).write(to: results.appending(path: "plans.json"))
+        print(head)
         return 0
     }
 
