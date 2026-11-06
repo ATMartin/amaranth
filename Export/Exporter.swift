@@ -42,7 +42,7 @@ public enum Exporter {
     struct Line { var start: SessionTime; var end: SessionTime; var speaker: String; var source: SourceKind; var text: String; var flags: [String] }
 
     static func speakerNames(_ t: TranscriptRevision) -> [SpeakerID: String] {
-        Dictionary(t.speakers.map { ($0.id, $0.displayName ?? $0.label) }, uniquingKeysWith: { a, _ in a })
+        Dictionary(t.speakers.map { ($0.id, $0.shownName) }, uniquingKeysWith: { a, _ in a })
     }
 
     static func label(_ a: SpeakerAssignment, _ names: [SpeakerID: String]) -> String {
@@ -267,7 +267,7 @@ public enum Exporter {
         var meeting = input.meeting
         meeting.people = meeting.people.map { Person(name: $0.name, source: $0.source) }
         let doc = JSONDocument(format: jsonFormat, version: jsonVersion, exportedAt: exportedAt, meeting: meeting,
-                               speakers: Dictionary(input.transcript.speakers.map { ($0.id.rawValue, $0.displayName ?? $0.label) }, uniquingKeysWith: { a, _ in a }),
+                               speakers: Dictionary(input.transcript.speakers.map { ($0.id.rawValue, $0.shownName) }, uniquingKeysWith: { a, _ in a }),
                                transcript: input.transcript, summary: options.includeNotes ? input.summary?.withoutScratchpadReferences : nil,
                                notes: options.includeNotes ? input.notes : nil,
                                folder: input.folderName.map { .init(name: $0) })

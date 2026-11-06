@@ -37,7 +37,7 @@ struct SpeakerRenameSheet: View {
                 }
             }
             TextField("Rename \(speaker.label)", text: $text, axis: .vertical).lineLimit(1...6).frame(minWidth: 380)
-            Text("Leave empty to go back to “\(speaker.label)”. Names are only what you choose or type.").font(.caption).foregroundStyle(Color.brandSecondary)
+            Text("Leave empty to go back to “\(speaker.defaultName)”. Names are only what you choose or type.").font(.caption).foregroundStyle(Color.brandSecondary)
             HStack {
                 Spacer()
                 Button("Cancel", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)

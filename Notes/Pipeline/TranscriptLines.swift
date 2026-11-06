@@ -68,7 +68,7 @@ public struct NotesInputDocument: Sendable, Codable {
     /// non-citable markers.
     public static func build(transcript: TranscriptRevision, notes: NotesDocumentRevision?, maxWords: Int = 80,
                              minGap: Double = 5) -> NotesInputDocument {
-        let names = Dictionary(transcript.speakers.map { ($0.id, $0.displayName ?? $0.label) }, uniquingKeysWith: { a, _ in a })
+        let names = Dictionary(transcript.speakers.map { ($0.id, $0.shownName) }, uniquingKeysWith: { a, _ in a })
         func label(_ a: SpeakerAssignment) -> String {
             switch a {
             case .unknown: "Unknown speaker"

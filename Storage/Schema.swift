@@ -206,6 +206,9 @@ enum Schema {
             start_at REAL NOT NULL
         );
         """,
+        // v8 (T119): no schema change. The personal-mic speaker is now shown under the user's name, so the search
+        // index and contextual chunks are rebuilt once from current content (migrateData).
+        "SELECT 1;",
     ]
 
     /// Steps that rewrite stored content after a version's SQL, in that migration's transaction.
@@ -213,6 +216,7 @@ enum Schema {
         switch version {
         case 6: try MeetingStore.migrateToNotesDocuments(db)
         case 7: try MeetingStore.rechunkAll(db)
+        case 8: try MeetingStore.reindexAll(db)
         default: break
         }
     }

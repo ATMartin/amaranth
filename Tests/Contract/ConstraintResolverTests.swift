@@ -10,9 +10,11 @@ struct ConstraintResolverTests {
     let a = MeetingID("a"), b = MeetingID("b"), c = MeetingID("c")
 
     func resolve(_ q: String, _ people: [QueryPlan.Person], speakers: [String: Set<MeetingID>] = [:], attendees: [String: Set<MeetingID>] = [:],
+                 local: [String: Set<MeetingID>] = [:],
                  previous: ResolvedConstraints? = nil, mentioned: Set<String> = [], plan time: String? = nil) -> ResolvedConstraints {
         ConstraintResolver.resolve(question: q, plan: QueryPlan(people: people, meetingTime: time).validated(question: q), now: Self.now, timeZone: Self.ny,
-                                   previous: previous, directory: NameDirectory(speakers: speakers, attendees: attendees, meetingsInScope: [a, b, c]),
+                                   previous: previous, directory: NameDirectory(speakers: speakers, attendees: attendees, meetingsInScope: [a, b, c],
+                                                                                localUserSpeakers: local),
                                    accountName: "Alex Martin", mentioned: { mentioned.contains($0.lowercased()) })
     }
 
@@ -40,6 +42,18 @@ struct ConstraintResolverTests {
         let all = resolve(q, [.init(name: "me", role: .selfUser)], speakers: ["Me": [a, b], "Alex Martin": [c]])
         #expect(!all.selfUnmapped && all.people[0].resolution == .selfMapped && all.selfSpeakers.count == 3)
         #expect(resolve("What did Me say", [.init(name: "Me", role: .speaker)], speakers: ["Me": [a]]).people[0].resolution != .speaker)
+    }
+
+    /// T119: the personal-mic speaker is the user unless they renamed it to someone else.
+    @Test func personalMicSpeakerMapsTheUser() {
+        let q = "What did I promise today?"
+        let me = [QueryPlan.Person(name: "me", role: .selfUser)]
+        let r = resolve(q, me, speakers: ["Alex": [a], "Sam": [b], "Speaker 2": [c]], local: ["Alex": [a], "Sam": [b]])
+        #expect(r.selfSpeakers == [a: "Alex"] && r.people[0].resolution == .selfMapped && r.selfUnmappedMeetings == 2,
+                "first-name rename still the user; renamed to Sam is someone else; room-mode meeting unmapped")
+        let def = Speaker.$localUserNameOverride.withValue("Me") { resolve(q, me, speakers: ["Me": [a, b]], local: ["Me": [a, b]]) }
+        #expect(def.selfSpeakers.count == 2)
+        #expect(!ConstraintResolver.isLocalUserName("Alexandra", accountName: "Alex Martin"))
     }
 
     @Test func followUpDatesReplaceOrInherit() throws {

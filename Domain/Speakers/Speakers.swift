@@ -30,7 +30,25 @@ public struct Speaker: Hashable, Sendable, Codable, Identifiable {
         self.primarySource = primarySource
     }
 
-    public var shownName: String { displayName ?? label }
+    public var shownName: String { displayName ?? defaultName }
+
+    /// The personal-mic speaker (T119): in personal-mic mode the reconciler gives every microphone word to one speaker
+    /// with a `-mic` id. That speaker is the user unless they rename it to someone else.
+    public var isLocalUser: Bool { primarySource == .microphone && id.rawValue.hasSuffix("-mic") }
+
+    /// The name shown when the user has not named this speaker: the user's own name for the personal-mic speaker,
+    /// the anonymous label otherwise. Derived at display time, so stored revisions need no reprocessing.
+    public var defaultName: String { isLocalUser ? Self.localUserName : label }
+
+    /// Tests pin the user's name with `Speaker.$localUserNameOverride.withValue(...)`.
+    @TaskLocal public static var localUserNameOverride: String?
+
+    /// The macOS full name of the user running the app, or "Me" when it is empty.
+    public static var localUserName: String {
+        if let o = localUserNameOverride { return o }
+        let n = NSFullUserName().trimmingCharacters(in: .whitespacesAndNewlines)
+        return n.isEmpty ? "Me" : n
+    }
 }
 
 /// Inclusive word range within a specific revision.

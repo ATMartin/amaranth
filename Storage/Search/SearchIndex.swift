@@ -57,12 +57,16 @@ extension MeetingStore {
     /// Rebuilds the whole index from current content (migration backfill, repair).
     public func rebuildSearchIndex() throws {
         try withDB { db in
-            try db.transaction {
-                try db.run("DELETE FROM search_index")
-                for row in try db.run("SELECT id FROM meetings WHERE deleted_at IS NULL") {
-                    if let id = row["id"]?.text { try Self.reindex(db, MeetingID(id)) }
-                }
-            }
+            try db.transaction { try Self.reindexAll(db) }
+        }
+    }
+
+    /// Rewrites every live meeting's index rows and contextual chunks (call inside a transaction). Library v8 runs it
+    /// once (T119); chunks whose text changed are re-embedded by the background indexer.
+    static func reindexAll(_ db: SQLiteDB) throws {
+        try db.run("DELETE FROM search_index")
+        for row in try db.run("SELECT id FROM meetings WHERE deleted_at IS NULL") {
+            if let id = row["id"]?.text { try reindex(db, MeetingID(id)) }
         }
     }
 
@@ -99,7 +103,7 @@ extension MeetingStore {
             let tr = try ContractCoding.decode(TranscriptRevision.self, from: blob).applyingTextEdits(edits)
             let names = speakerNames(tr.speakers, edits)
             current = (tr, names)
-            for sp in tr.speakers { if let name = names[sp.id], name != sp.label { try insert(.speaker, sp.id.rawValue, nil, name) } }
+            for sp in tr.speakers { if let name = names[sp.id], name != sp.label || sp.isLocalUser { try insert(.speaker, sp.id.rawValue, nil, name) } }
             for seg in tr.segments {
                 var ids = seg.speaker.speakerIDs
                 for w in seg.words { for id in w.speaker.speakerIDs where !ids.contains(id) { ids.append(id) } }
@@ -127,7 +131,7 @@ extension MeetingStore {
     public static func speakerNames(_ speakers: [Speaker], _ edits: [UserEdit]) -> [SpeakerID: String] {
         var names = Dictionary(speakers.map { ($0.id, $0.shownName) }, uniquingKeysWith: { a, _ in a })
         for e in edits where e.conflict == .applied {
-            if case .renameSpeaker(let id, let name) = e.operation, let sp = speakers.first(where: { $0.id == id }) { names[id] = name ?? sp.label }
+            if case .renameSpeaker(let id, let name) = e.operation, let sp = speakers.first(where: { $0.id == id }) { names[id] = name ?? sp.defaultName }
         }
         return names
     }

@@ -35,7 +35,7 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "V (contextual local search, T109–T116; user requested the next milestone 2026-11-06; spec 0010, product requirements confirmed 2026-11-06) → T117 (keep-audio setting and stored-audio controls, user request 2026-11-06) → T21 (trimmed) → T (read-only local MCP) → U (managed vault mirror) → Feedback round → F (trimmed). S is done. The recorded placement of T/U after T21 is preserved; L, P and T15 stay parked. Existing loose ends and hands-on checks remain tracked. Previous order: T21 (trimmed) → T (read-only local MCP, T101–T104) → U (managed vault mirror, T105–T108) → Feedback round → F (trimmed) (user decision 2026-11-06, after S was done: T and U placed as numbers 2 and 3, Feedback round moved after U, F stays last). Earlier, superseded: S (shared read model and portable export, T97–T100; spec 0009 accepted 2026-11-03, user picked S up ahead of T21) → T21 (trimmed) → Feedback round → F (trimmed), with T and U proposed and unplaced. Earlier still: T96 (delete lines, start/end here; user request 2026-11-02, before any more milestones) → Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
+    "milestone_order": "T119 (personal-mic speaker as the user, user request 2026-11-06, done first) → V (contextual local search, T109–T116; user requested the next milestone 2026-11-06; spec 0010, product requirements confirmed 2026-11-06) → T117 (keep-audio setting and stored-audio controls, user request 2026-11-06) → T21 (trimmed) → T (read-only local MCP) → U (managed vault mirror) → Feedback round → F (trimmed). S is done. The recorded placement of T/U after T21 is preserved; L, P and T15 stay parked. Existing loose ends and hands-on checks remain tracked. Previous order: T21 (trimmed) → T (read-only local MCP, T101–T104) → U (managed vault mirror, T105–T108) → Feedback round → F (trimmed) (user decision 2026-11-06, after S was done: T and U placed as numbers 2 and 3, Feedback round moved after U, F stays last). Earlier, superseded: S (shared read model and portable export, T97–T100; spec 0009 accepted 2026-11-03, user picked S up ahead of T21) → T21 (trimmed) → Feedback round → F (trimmed), with T and U proposed and unplaced. Earlier still: T96 (delete lines, start/end here; user request 2026-11-02, before any more milestones) → Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md",
@@ -60,8 +60,8 @@
     "M": "Calendar and people placeholders: T49-T51",
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
     "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
-    "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them. Parked as Later 2026-10-31 (kept on purpose for future integrations); open questions stay open",
-    "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit. T117 (keep-audio setting + Delete all stored audio, user request 2026-11-06), placed after V and before T21.",
+    "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them. Parked as Later 2026-10-31 (kept on purpose for future integrations); open questions stay open. 2026-11-06: also holds T120 (per-meeting microphone mode) and T121 (voice recognition of the user), user decision; both follow T119",
+    "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit. T117 (keep-audio setting + Delete all stored audio, user request 2026-11-06), placed after V and before T21. T119 (personal-mic speaker named as the user; Ask attributes I/me/my; user request 2026-11-06), placed first, before T117.",
     "Q": "Updates (“Check for Updates…” from GitHub Releases, plus a local folder): T70–T73. Planned 2026-10-27 as local-only; parked 2026-10-31; un-parked and extended 2026-11-02 (user: stop copying DMGs between Macs). User decisions 2026-10-27 still hold: Release and Debug builds are both published, Debug offered only with a Settings opt-in; a quiet note when a newer build exists (never install on its own); no rollbacks. 2026-11-02: remote source = GitHub Releases on the public repo ATMartin/amaranth (zipped app + manifest.json per release; Debug as prerelease; downloads need no token, so builds are public); publishing happens only when the user asks (scripts/publish.sh; install-local.sh stays local); checks at launch and from the menu only, no periodic timer. Not notarized (free personal team): trust rests on the same bundle ID + team ID codesign check. The update check is the app's only network call besides model downloads; Settings → Updates → Off disables it, and F's offline qualification must account for it.",
     "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
     "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit.",
@@ -3723,6 +3723,103 @@
       "review_timestamps": [
         "2026-11-06"
       ]
+    },
+    {
+      "id": "T119",
+      "title": "Name the personal-mic speaker as the user and let Ask attribute I/me/my to it",
+      "milestone": "Fixes",
+      "status": "done (2026-11-06): Speaker.isLocalUser/defaultName (macOS full name, 'Me' fallback) used by shownName, exports, notes input and the search index; NameDirectory.localUserSpeakers + ConstraintResolver.isLocalUserName map I/me/my (renamed to someone else = not the user); library v8 rebuilds the search index and chunks once (changed chunks re-embedded in the background); tests personalMicSpeakerIsShownAsTheUser, personalMicSpeakerMapsTheUser, LocalUserIndexTests; scripts/check.sh passes. Hands-on: Ask 'what did I say/promise' on a past personal-mic meeting.",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "Domain + Storage/Search",
+      "module_scope": [
+        "Domain/Speakers/",
+        "Domain/Search/",
+        "Storage/",
+        "Export/",
+        "Notes/Pipeline/TranscriptLines.swift",
+        "App/Transcript/",
+        "Tests/"
+      ],
+      "context": "User request 2026-11-06: separate the user from other speakers so contextual Ask (Milestone V) can answer questions about what the user said. Personal-mic mode (Settings > My microphone is, default personal) already gives every microphone word to one speaker (Domain/Attribution/MeetingReconciler.swift, id suffix '-mic', primarySource .microphone); only the system track is diarized (InferenceWorker/Runtime/StageRunner.swift). Room mode diarizes the mic too. FluidDiarizer already computes WeSpeaker embeddings and per-cluster centroids (Diarization/FluidDiarizer.swift). Names are never inferred from other people; the user's own speaker is a correctable proposal. Gap: the mic speaker is labelled 'Speaker N' and Ask only maps I/me/my to a speaker the user renamed to Me/You/their macOS full name (ConstraintResolver.isSelfName). User decisions 2026-11-06: default shown name is the macOS full name (NSFullUserName, fallback 'Me') everywhere (app, exports, notes input, Ask, MeetingAccess); backfill past meetings (no reprocessing; one search-index/chunk rebuild; existing notes are not regenerated); commit + install locally when done; hands-on checks are the user's.",
+      "deliverables": [
+        "Speaker.isLocalUser (personal-mic speaker: primarySource .microphone and the '-mic' id) and Speaker.defaultName (the user's name for it, the anonymous label otherwise); shownName uses it. No change to stored transcript revisions, so existing meetings get the name without reprocessing.",
+        "Every place that showed displayName ?? label shows the default name instead (exports, notes input lines, search index names, rename-to-empty).",
+        "Ask: the name directory carries which speakers are personal-mic speakers; the resolver maps I/me/my to such a speaker unless the user renamed it to someone else (a self name, the macOS full name or its first name still count as the user).",
+        "Library migration v8: rebuild the search index and contextual chunks once so past meetings carry the name; changed chunks are re-embedded by the existing background indexer.",
+        "Rename sheet: 'Leave empty to go back to <default name>'."
+      ],
+      "acceptance": [
+        "Unit tests: the personal-mic speaker shows the user's name; room-mode and system speakers keep their labels; renaming and clearing a rename behave as before.",
+        "Resolver tests: I/me/my map to the mic speaker in personal-mic meetings (unrenamed, renamed to the user's first name) and not when it was renamed to another name; room-mode meetings stay unmapped.",
+        "Migration test: a v7 library gains the name in search rows and chunks after opening.",
+        "scripts/check.sh passes; installed locally."
+      ],
+      "fallback": "If the migration rebuild is too slow on a large library, rebuild in the background indexer instead of at open.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T120",
+      "title": "Per-meeting microphone mode: “several people on my side” at Record or afterwards",
+      "milestone": "P",
+      "status": "planned (2026-11-06): not started; placed in Milestone P by user decision 2026-11-06 (P is parked as Later)",
+      "optional": false,
+      "depends_on": [
+        "T119"
+      ],
+      "owner_role": "App + Processing",
+      "module_scope": [
+        "App/",
+        "Presentation/",
+        "InferenceWorker/Core/JobScheduler.swift",
+        "Domain/",
+        "Storage/",
+        "Tests/"
+      ],
+      "context": "Step 2 of the user-attribution plan (2026-11-06). Personal-mic mode (Settings > My microphone is, default personal) already gives every microphone word to one speaker (Domain/Attribution/MeetingReconciler.swift, id suffix '-mic', primarySource .microphone); only the system track is diarized (InferenceWorker/Runtime/StageRunner.swift). Room mode diarizes the mic too. FluidDiarizer already computes WeSpeaker embeddings and per-cluster centroids (Diarization/FluidDiarizer.swift). Names are never inferred from other people; the user's own speaker is a correctable proposal. Today the mode is one global setting applied after the next launch. The user occasionally records in-person meetings or calls where several people share their mic.",
+      "deliverables": [
+        "A per-meeting microphone mode stored on the meeting (default from the global setting).",
+        "Choose it at Record (compact, not a new step in one-click Record) and change it afterwards from the meeting, which re-runs diarization and reconciliation for that meeting only, keeping user edits (existing rebase rules).",
+        "In room mode, the mic speakers are anonymous until T121 proposes which one is the user."
+      ],
+      "acceptance": [
+        "Switching a meeting to several-people re-diarizes only the mic track of that meeting and preserves renames/merges or flags them for review.",
+        "Global setting still applies to new meetings; no relaunch needed."
+      ],
+      "fallback": "Afterwards-only switch (no control at Record).",
+      "review_timestamps": []
+    },
+    {
+      "id": "T121",
+      "title": "Recognise the user's voice and propose them among mic speakers",
+      "milestone": "P",
+      "status": "planned (2026-11-06): not started; placed in Milestone P by user decision 2026-11-06 (P is parked as Later)",
+      "optional": false,
+      "depends_on": [
+        "T119",
+        "T120"
+      ],
+      "owner_role": "Diarization",
+      "module_scope": [
+        "Diarization/",
+        "InferenceWorker/",
+        "Domain/Attribution/",
+        "Storage/",
+        "Benchmarks/",
+        "Tests/"
+      ],
+      "context": "Step 3 of the user-attribution plan (2026-11-06). Personal-mic mode (Settings > My microphone is, default personal) already gives every microphone word to one speaker (Domain/Attribution/MeetingReconciler.swift, id suffix '-mic', primarySource .microphone); only the system track is diarized (InferenceWorker/Runtime/StageRunner.swift). Room mode diarizes the mic too. FluidDiarizer already computes WeSpeaker embeddings and per-cluster centroids (Diarization/FluidDiarizer.swift). Names are never inferred from other people; the user's own speaker is a correctable proposal. Personal-mic meetings give clean, automatically labelled samples of the user's voice.",
+      "deliverables": [
+        "A local 'my voice' profile (embedding centroid, versioned with the embedding model) built and refined from personal-mic meetings without a setup step; viewable and resettable in Settings.",
+        "In room-mode meetings, the mic cluster closest to the profile above a calibrated threshold is proposed as the user (same flag as T119); other clusters stay anonymous.",
+        "Threshold calibrated on the user's own recordings (different mics/rooms), not only AMI; a decision record with the measured false-accept/false-reject rates."
+      ],
+      "acceptance": [
+        "No proposal below threshold; proposals correctable and corrections survive reprocessing.",
+        "Measured false-accept rate on recordings with other voices on the user's mic is reported and below the agreed bound."
+      ],
+      "fallback": "Keep T120's manual choice of which mic speaker is the user (a 'This is me' speaker action).",
+      "review_timestamps": []
     }
   ]
 }

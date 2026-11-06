@@ -85,6 +85,25 @@ struct ReconcilerTests {
         #expect(ids.count == 2, "a source never guarantees one human")
     }
 
+    @Test func personalMicSpeakerIsShownAsTheUser() throws {
+        try Speaker.$localUserNameOverride.withValue("Alex Martin") {
+            let asr = Build.asr([("we", 1, 1.3, .microphone), ("ok", 3, 3.3, .systemOutput)])
+            let sys = Build.diar([(2.5, 4, "R")])
+            let personal = try MeetingReconciler(microphoneMode: .personal).combine(asr, diarization: [sys], sourceMap: map, edits: []).revision
+            let mic = try #require(personal.speakers.first { $0.primarySource == .microphone })
+            let remote = try #require(personal.speakers.first { $0.primarySource == .systemOutput })
+            #expect(mic.isLocalUser && mic.shownName == "Alex Martin" && mic.displayName == nil && mic.label.hasPrefix("Speaker "))
+            #expect(!remote.isLocalUser && remote.shownName == remote.label, "other speakers stay anonymous")
+            var renamed = mic; renamed.displayName = "Sam"
+            #expect(renamed.shownName == "Sam" && renamed.defaultName == "Alex Martin")
+            // Room mode: mic clusters are anonymous; none is assumed to be the user.
+            let micDiar = Build.diar([(0.9, 1.35, "M1")], source: .microphone, id: "d2")
+            let room = try MeetingReconciler(microphoneMode: .room).combine(asr, diarization: [sys, micDiar], sourceMap: map, edits: []).revision
+            #expect(room.speakers.allSatisfy { !$0.isLocalUser && $0.shownName == $0.label })
+        }
+        #expect(Speaker.$localUserNameOverride.withValue("  ") { Speaker.localUserName } == "  ", "override wins")
+    }
+
     @Test func echoIsFlaggedReversiblyAndRealInterruptionsSurvive() throws {
         // System says a sentence; the mic picks it up 0.12 s later (speakerphone bleed). The local user also interrupts.
         var spec: [(String, Double, Double, SourceKind)] = []

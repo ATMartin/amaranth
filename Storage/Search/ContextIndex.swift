@@ -345,15 +345,19 @@ extension MeetingStore {
             try db.forEach("SELECT s.meeting_id FROM context_meeting_state s JOIN meetings m ON m.id = s.meeting_id WHERE \(where_)", b) { st in
                 if let m = SQLiteDB.columnText(st, 0) { inScope.insert(MeetingID(m)) }
             }
-            var speakers: [String: Set<MeetingID>] = [:], attendees: [String: Set<MeetingID>] = [:]
+            var speakers: [String: Set<MeetingID>] = [:], attendees: [String: Set<MeetingID>] = [:], local: [String: Set<MeetingID>] = [:]
             try db.forEach("""
-                SELECT i.meeting_id, i.kind, i.text FROM search_index i JOIN context_meeting_state s ON s.meeting_id = i.meeting_id
+                SELECT i.meeting_id, i.kind, i.text, i.ref FROM search_index i JOIN context_meeting_state s ON s.meeting_id = i.meeting_id
                 JOIN meetings m ON m.id = i.meeting_id WHERE i.kind IN ('speaker', 'person') AND \(where_)
                 """, b) { st in
                 guard let m = SQLiteDB.columnText(st, 0), let k = SQLiteDB.columnText(st, 1), let t = SQLiteDB.columnText(st, 2) else { return }
-                if k == "speaker" { speakers[t, default: []].insert(MeetingID(m)) } else { attendees[t, default: []].insert(MeetingID(m)) }
+                if k == "speaker" {
+                    speakers[t, default: []].insert(MeetingID(m))
+                    // Speaker rows' ref is the speaker ID; the personal-mic speaker's ends in "-mic" (T119).
+                    if SQLiteDB.columnText(st, 3)?.hasSuffix("-mic") == true { local[t, default: []].insert(MeetingID(m)) }
+                } else { attendees[t, default: []].insert(MeetingID(m)) }
             }
-            return NameDirectory(speakers: speakers, attendees: attendees, meetingsInScope: inScope)
+            return NameDirectory(speakers: speakers, attendees: attendees, meetingsInScope: inScope, localUserSpeakers: local)
         }
     }
 

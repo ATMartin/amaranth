@@ -123,3 +123,46 @@ struct ContextIndexTests {
         #expect(try reopened.contextIndexStats().vectors == 0, "migration never embeds")
     }
 }
+
+@Suite("User attribution in the index (T119)")
+struct LocalUserIndexTests {
+    /// One meeting whose mic words belong to the personal-mic speaker and whose system words to Speaker 2.
+    static func micMeeting(_ lib: RetrievalLibrary) throws -> MeetingID {
+        let m = try lib.meeting("Sync", lines: [])
+        let mic = SpeakerID("spk-abcd1234-mic"), other = SpeakerID("spk-abcd1234-1")
+        func seg(_ i: Int, _ text: String, _ src: SourceKind, _ spk: SpeakerID) -> TranscriptSegment {
+            let words = text.split(separator: " ").enumerated().map { j, w in
+                Word(id: WordID("\(i)-\(j)"), text: String(w), interval: .seconds(Double(i) * 5 + Double(j) * 0.2, Double(i) * 5 + Double(j) * 0.2 + 0.15),
+                     source: src, speaker: .speaker(spk))
+            }
+            return TranscriptSegment(id: TranscriptSegmentID("seg\(i)"), source: src, interval: SessionInterval(unchecked: words.first!.interval.start, words.last!.interval.end),
+                                     words: words, speaker: .speaker(spk))
+        }
+        try lib.store.publishTranscript(TranscriptRevision(meetingID: m, kind: .final, stage: .attributed, createdAt: Date(), producer: ProducerInfo(component: "t", configHash: "t"),
+                                                           segments: [seg(0, "I will send the deck", .microphone, mic), seg(1, "thanks see you", .systemOutput, other)],
+                                                           coverage: [], speakers: [Speaker(id: mic, label: "Speaker 2", primarySource: .microphone),
+                                                                                    Speaker(id: other, label: "Speaker 1", primarySource: .systemOutput)]))
+        return m
+    }
+
+    @Test func micSpeakerIsIndexedUnderTheUsersNameAndMarked() throws {
+        let lib = try RetrievalLibrary()
+        let m = try Self.micMeeting(lib)
+        let dir = try lib.store.nameDirectory(ContextFilter())
+        #expect(dir.localUserSpeakers == [Speaker.localUserName: [m]])
+        #expect(dir.speakers[Speaker.localUserName] == [m] && dir.speakers["Speaker 1"] == nil)
+        #expect(try lib.store.contextChunks(m).contains { $0.text.contains(Speaker.localUserName) })
+    }
+
+    @Test func v7LibraryIsReindexedWithTheName() throws {
+        let lib = try RetrievalLibrary()
+        let m = try Self.micMeeting(lib)
+        do {
+            let db = try SQLiteDB(path: lib.root.appending(path: "amaranth.sqlite").path)
+            try db.exec("DELETE FROM search_index; DELETE FROM context_chunks; PRAGMA user_version = 7;")
+        }
+        let reopened = try MeetingStore(root: lib.root)
+        #expect(try reopened.nameDirectory(ContextFilter()).localUserSpeakers == [Speaker.localUserName: [m]])
+        #expect(try reopened.contextChunks(m).contains { $0.text.contains(Speaker.localUserName) })
+    }
+}

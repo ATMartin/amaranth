@@ -6,8 +6,11 @@ public struct NameDirectory: Sendable {
     public var speakers: [String: Set<MeetingID>]
     public var attendees: [String: Set<MeetingID>]
     public var meetingsInScope: Set<MeetingID>
-    public init(speakers: [String: Set<MeetingID>], attendees: [String: Set<MeetingID>], meetingsInScope: Set<MeetingID>) {
-        self.speakers = speakers; self.attendees = attendees; self.meetingsInScope = meetingsInScope
+    /// Shown names of personal-mic speakers (T119; also listed in `speakers`): the user unless renamed to someone else.
+    public var localUserSpeakers: [String: Set<MeetingID>]
+    public init(speakers: [String: Set<MeetingID>], attendees: [String: Set<MeetingID>], meetingsInScope: Set<MeetingID>,
+                localUserSpeakers: [String: Set<MeetingID>] = [:]) {
+        self.speakers = speakers; self.attendees = attendees; self.meetingsInScope = meetingsInScope; self.localUserSpeakers = localUserSpeakers
     }
 }
 
@@ -38,6 +41,16 @@ public enum ConstraintResolver {
         return false
     }
 
+    /// Whether a personal-mic speaker shown as `name` is still the user: a self name, the default name for the user
+    /// (`Speaker.localUserName`) or the first name of the account. Any other name means the user renamed it to someone else.
+    public static func isLocalUserName(_ name: String, accountName: String?) -> Bool {
+        if isSelfName(name, accountName: accountName) { return true }
+        let n = name.trimmingCharacters(in: .whitespaces).lowercased()
+        if n == Speaker.localUserName.lowercased() { return true }
+        if let first = accountName?.split(separator: " ").first?.lowercased(), !first.isEmpty, n == first { return true }
+        return false
+    }
+
     /// `previous`: the constraints of the turn this question follows (nil when it's not a follow-up). A new time phrase
     /// replaces the old one; without one a follow-up keeps it. People come from the validated plan and are resolved
     /// against `directory`; `mentioned(name)` says whether current transcript or notes text in scope contains the name.
@@ -54,6 +67,10 @@ public enum ConstraintResolver {
         // The user's own speakers.
         for (name, ms) in directory.speakers where isSelfName(name, accountName: accountName) {
             for m in ms { out.selfSpeakers[m] = name }
+        }
+        // The personal-mic speaker (T119) is the user under its default name or a rename to the user's first name.
+        for (name, ms) in directory.localUserSpeakers where isLocalUserName(name, accountName: accountName) {
+            for m in ms where out.selfSpeakers[m] == nil { out.selfSpeakers[m] = name }
         }
         var seen = Set<String>()
         for p in plan.people where seen.insert(p.name.lowercased()).inserted {
