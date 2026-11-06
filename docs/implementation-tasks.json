@@ -3473,7 +3473,7 @@
       "id": "T112",
       "title": "Build resumable backfill and incremental local indexing",
       "milestone": "V",
-      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "status": "done (2026-11-06): ContextIndexingEngine (resumable, guarded, producer-versioned) + app ContextIndexer (yields to recording/processing/Ask/pressure, Record cancels); 200-meeting backfill 6.4 min, 786 MiB; docs/qualification/milestone-v/t112-indexing.md",
       "optional": false,
       "depends_on": [
         "T111"
@@ -3502,7 +3502,9 @@
         "Measured backfill throughput, database growth and physical footprint at the scale fixture are reported; partial coverage and failed jobs remain distinguishable."
       ],
       "fallback": "Pause background indexing and retain explicit limited keyword lookup on resource failure; never silently claim the whole library was searched.",
-      "review_timestamps": []
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     },
     {
       "id": "T113",

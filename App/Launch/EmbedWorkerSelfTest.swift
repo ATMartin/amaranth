@@ -1,6 +1,7 @@
 import Foundation
 import Domain
 import Models
+import Storage
 
 /// `Amaranth --self-test embed-worker --model-dir <dir with qwen3-embedding-0.6b-q8_0/>` (Debug builds, T110): proves the
 /// packaged XPC worker embeds offline from a verified install. Installs an encoder-only pack from the bundled pack's
@@ -48,14 +49,86 @@ enum EmbedWorkerSelfTest {
             let producerOK = docs.producer == q.producer && docs.producer.manifestID == enc.id.rawValue
                 && docs.producer.revision == enc.sourceRevision && dims == 1024
             let ok = valid && deterministic && ranks && producerOK && docs.loaded && !q.loaded
+            let indexOK = await indexing(worker: worker)
             SelfTest.log(["step": "embed", "producer": docs.producer.id, "dims": "\(dims)", "valid": "\(valid)", "deterministic": "\(deterministic)",
                           "related": String(format: "%.3f", d.count == 2 ? cos(qv[0], d[0]) : -1), "unrelated": String(format: "%.3f", d.count == 2 ? cos(qv[0], d[1]) : -1),
                           "coldSeconds": String(format: "%.2f", cold), "warmQuerySeconds": String(format: "%.3f", warm),
                           "workerLoaded": "\(docs.loaded)/\(q.loaded)", "ok": "\(ok)"])
-            return ok
+            return ok && indexOK
         } catch { SelfTest.log(["step": "embed", "error": "\(error)"]); return false }
         #else
         SelfTest.log(["step": "setup", "error": "Debug builds only"]); return false
         #endif
     }
+
+    #if DEBUG
+    /// T112 through the packaged worker: backfill a temporary library, pause, cancel a running batch, edit, restart.
+    @MainActor static func indexing(worker: WorkerClient) async -> Bool {
+        let root = FileManager.default.temporaryDirectory.appending(path: "amaranth-index-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        guard let store = try? MeetingStore(root: root) else { return false }
+        var ids: [MeetingID] = []
+        do {
+            for k in 0..<6 {
+                let m = MeetingID(); ids.append(m)
+                let start = Date().addingTimeInterval(Double(-k) * 86_400)
+                try store.upsertMeeting(Meeting(id: m, title: "Index \(k)", createdAt: start, clock: SessionClock(utcOrigin: start, timeZoneIdentifier: "UTC", hostTimeOriginNanos: 0),
+                                                captureState: .captured, duration: .seconds(600)))
+                let spk = SpeakerID("s\(k)")
+                let segs = (0..<120).map { i in
+                    let words = "in meeting \(k) line \(i) we talked about the budget the launch and who could help next month".split(separator: " ").enumerated().map { j, w in
+                        Word(id: WordID("\(k)-\(i)-\(j)"), text: String(w), interval: .seconds(Double(i) * 5 + Double(j) * 0.2, Double(i) * 5 + Double(j) * 0.2 + 0.1), source: .systemOutput, speaker: .speaker(spk))
+                    }
+                    return TranscriptSegment(id: TranscriptSegmentID("\(k)-\(i)"), source: .systemOutput, interval: SessionInterval(unchecked: words.first!.interval.start, words.last!.interval.end),
+                                             words: words, speaker: .speaker(spk))
+                }
+                try store.publishTranscript(TranscriptRevision(meetingID: m, kind: .final, stage: .attributed, createdAt: start, producer: ProducerInfo(component: "t", configHash: "t"),
+                                                               segments: segs, coverage: [], speakers: [Speaker(id: spk, label: "Speaker 1")]))
+            }
+        } catch { SelfTest.log(["step": "index", "error": "\(error)"]); return false }
+        func wait(_ indexer: ContextIndexer, until: (ContextIndexer) -> Bool, seconds: Double) async -> Bool {
+            let t0 = ContinuousClock.now
+            while Perf.seconds(since: t0) < seconds { if until(indexer) { return true }; try? await Task.sleep(for: .milliseconds(50)) }
+            return false
+        }
+        // Paused (as while recording): nothing is embedded.
+        let indexer = ContextIndexer(store: store, worker: worker, remember: false)
+        var paused = true
+        indexer.pauseReason = { paused ? "Paused while recording" : nil }
+        indexer.start()
+        let sawPause = await wait(indexer, until: { if case .paused = $0.state { true } else { false } }, seconds: 5)
+        let nothingWhilePaused = (try? store.contextIndexStats().vectors) == 0
+        // Resume; cancel a running batch (Record pressed) and time the acknowledgement.
+        paused = false
+        indexer.kick()
+        _ = await wait(indexer, until: { $0.state == .indexing }, seconds: 10)
+        let tc = ContinuousClock.now
+        paused = true
+        indexer.yieldNow()
+        let stopped = await wait(indexer, until: { if case .paused = $0.state { true } else { false } }, seconds: 5)
+        let cancelSeconds = Perf.seconds(since: tc)
+        paused = false
+        indexer.kick()
+        let t0 = ContinuousClock.now
+        let done = await wait(indexer, until: { $0.state == .ready }, seconds: 120)
+        let backfill = Perf.seconds(since: t0)
+        let cov = indexer.coverage
+        // Edit one line: only its chunk is embedded again.
+        let tr = (try? store.meeting(ids[2]))??.currentTranscriptRevisionID
+        if let tr { try? store.appendEdit(UserEdit(meetingID: ids[2], baseRevisionID: tr, sequence: 1, createdAt: Date(),
+                                                    operation: .correctText(WordRange(revisionID: tr, first: WordID("2-5-0"), last: WordID("2-5-0")), replacement: "EDITED"))) }
+        indexer.kick()
+        let reindexed = await wait(indexer, until: { $0.state == .ready && $0.coverage.complete && (try? store.pendingContextChunks(producer: $0.engine?.producer?.id ?? "", limit: 1).isEmpty) == true }, seconds: 30)
+        indexer.stop()
+        // Restart: a new indexer with the same producer finds nothing to do.
+        let again = ContextIndexer(store: store, worker: worker, remember: false)
+        let pendingAfterRestart = (try? store.pendingContextChunks(producer: indexer.engine?.producer?.id ?? "", limit: 10).count) ?? -1
+        _ = again
+        let ok = sawPause && nothingWhilePaused && stopped && cancelSeconds < 1 && done && cov.complete && reindexed && pendingAfterRestart == 0
+        SelfTest.log(["step": "index", "chunks": "\(cov.chunks)", "meetings": "\(cov.meetingsIndexed)/\(cov.meetingsInScope)",
+                      "backfillSeconds": String(format: "%.1f", backfill), "cancelAckSeconds": String(format: "%.2f", cancelSeconds),
+                      "pausedFirst": "\(sawPause && nothingWhilePaused)", "reindexedAfterEdit": "\(reindexed)", "pendingAfterRestart": "\(pendingAfterRestart)", "ok": "\(ok)"])
+        return ok
+    }
+    #endif
 }

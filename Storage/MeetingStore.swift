@@ -102,7 +102,11 @@ public final class MeetingStore: @unchecked Sendable {
             // Keep the title searchable; a tombstoned meeting leaves the index entirely.
             if m.deletedAt != nil {
                 try db.run("DELETE FROM search_index WHERE meeting_id=?", [.text(m.id.rawValue)])
+                // T111: contextual chunks and vectors go too, so no in-flight indexing job can publish for it.
+                try Self.rechunk(db, m.id, m, current: nil)
             } else {
+                try db.run("UPDATE context_meeting_state SET start_at=? WHERE meeting_id=?",
+                           [.double((m.clock?.utcOrigin ?? m.createdAt).timeIntervalSince1970), .text(m.id.rawValue)])
                 try db.run("DELETE FROM search_index WHERE meeting_id=? AND kind='title'", [.text(m.id.rawValue)])
                 try db.run("INSERT INTO search_index (meeting_id, kind, ref, start_ns, text) VALUES (?,?,?,NULL,?)",
                            [.text(m.id.rawValue), .text("title"), .text(m.id.rawValue), .text(m.title)])

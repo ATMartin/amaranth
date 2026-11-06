@@ -62,7 +62,7 @@ let package = Package(
         .target(name: "ProcessingCore", dependencies: ["Domain", "Storage"], path: "InferenceWorker/Core", swiftSettings: strict),
         .target(name: "ProcessingRuntime", dependencies: ["Domain", "ProcessingCore", "ASR", "Diarization", "Models", "Notes"],
                 path: "InferenceWorker/Runtime", swiftSettings: strict),
-        .testTarget(name: "JobsTests", dependencies: ["ProcessingCore", "ProcessingRuntime", "Storage", "Capture", "Domain", "ASR", "Scoring", "Notes"],
+        .testTarget(name: "JobsTests", dependencies: ["ProcessingCore", "ProcessingRuntime", "Storage", "Capture", "Domain", "DomainFixtures", "ASR", "Scoring", "Notes"],
                     path: "Tests/Jobs", swiftSettings: strict),
         .target(name: "Scoring", path: "Benchmarks/Scoring", swiftSettings: strict),
         // llama.cpp b11669 (= release v0.7.0), Metal embedded.

@@ -45,6 +45,8 @@ final class LibraryModel {
     private enum Jump { case hit(SearchHit), evidence(MeetingID, TranscriptEvidence?, notes: Bool), citation(CitationTarget) }
     /// T54: answers from the local model, shown above the matches. Nil in contexts without a worker (ui-render).
     var answers: AnswerModel?
+    /// Contextual-search indexing state and coverage (T112).
+    var indexer: ContextIndexer?
     private(set) var error: String?
     /// Transcript row to scroll to and highlight (set by evidence links and search hits).
     var focusRowID: String?
@@ -77,6 +79,7 @@ final class LibraryModel {
 
     /// Reloads the list and the open meeting off the main thread (a two-hour transcript must not stall the UI).
     func reload() {
+        indexer?.kick()   // T112: edits, deletions and new transcripts reach the contextual index promptly
         guard let store else { return }
         generation += 1
         let gen = generation, id = selection

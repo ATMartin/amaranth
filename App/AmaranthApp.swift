@@ -53,10 +53,11 @@ struct AmaranthApp: App {
         let library = LibraryModel(store: recorder.store)
         recorder.processing = processing
         library.processing = processing
-        processing.onChange = { [weak library] in library?.reload() }
+        processing.onChange = { [weak library] in library?.reload(); library?.indexer?.kick() }
         // An answer in progress stops at Record: the speech models need the Mac (T54 yields like notes).
         recorder.onStarted = { [weak library, weak recorder] id in
             library?.answers?.cancel()
+            library?.indexer?.yieldNow()
             library?.recordingStarted(id, folder: recorder?.folderID)
         }
         recorder.onFinished = { [weak library] id in library?.recordingStopped(id) }
@@ -73,6 +74,18 @@ struct AmaranthApp: App {
             return nil
         }
         library.answers = answers
+        // T112: contextual-search indexing in the background; everything else goes first.
+        let indexer = ContextIndexer(store: recorder.store, worker: worker)
+        indexer.pauseReason = { [weak recorder, weak processing, weak answers] in
+            if recorder?.inSession == true { return "Paused while recording" }
+            if processing?.workPending == true { return "Waits for transcripts and notes to finish" }
+            if answers?.isWorking == true { return "Paused while answering" }
+            if processing?.memoryPressure == true { return "Paused while memory is low" }
+            let t = ProcessInfo.processInfo.thermalState
+            if t == .serious || t == .critical { return "Paused while the Mac is hot" }
+            return nil
+        }
+        library.indexer = indexer
         AppDelegate.recorder = recorder
         let live = LiveTextModel(client: worker)
         recorder.live = live
@@ -95,7 +108,10 @@ struct AmaranthApp: App {
         _live = State(initialValue: live)
         let models = ModelSetupModel()
         // Core ML compiles each model for this Mac on its first load (about 16 s for ASR): do it now, not on the first job.
-        models.onInstalled = { Task { _ = try? await worker.send(.warmUp, timeout: .seconds(600)) } }
+        models.onInstalled = { [weak indexer] in
+            indexer?.kick()
+            Task { _ = try? await worker.send(.warmUp, timeout: .seconds(600)) }
+        }
         _models = State(initialValue: models)
         let calendar = CalendarModel()
         recorder.calendar = calendar   // T59: the suggestion at Record reads it; it never asks for access
@@ -104,6 +120,7 @@ struct AmaranthApp: App {
         let reminders = ReminderController(calendar: calendar)
         reminders.recorder = recorder
         if !SelfTest.isRequested && !Self.probing { reminders.start() }
+        if !SelfTest.isRequested { indexer.start() }
         _reminders = State(initialValue: reminders)
         let updates = UpdateModel()
         updates.recorder = recorder
