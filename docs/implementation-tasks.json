@@ -3701,7 +3701,7 @@
       "id": "T118",
       "title": "Fix crash on memory-pressure events (main-actor isolation trap in ProcessingModel)",
       "milestone": "Fixes",
-      "status": "implemented (2026-11-06): MemoryPressureMonitor (ProcessingCore, @Sendable callback) replaces the inline source; audit of App/ found no other off-main closures inferred @MainActor; unit tests + --self-test memory-pressure pass; full scripts/check.sh passes. Pending: user's sudo memory_pressure check on an installed build.",
+      "status": "done (2026-11-06): MemoryPressureMonitor (ProcessingCore, @Sendable callback) replaces the inline source; audit of App/ found no other off-main closures inferred @MainActor; unit tests + --self-test memory-pressure pass; full scripts/check.sh passes. Hands-on: user ran sudo memory_pressure -S -l warn and -l critical against installed build 145; app kept running, no crash report.",
       "optional": false,
       "depends_on": [],
       "owner_role": "App",
