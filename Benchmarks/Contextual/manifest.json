@@ -1,0 +1,22 @@
+{
+  "frozen": "2026-11-06",
+  "note": "heldout.json is frozen: any change must be listed in docs/qualification/milestone-v/t109-semantics.md 'Changes after freezing'. dev.json may be extended for tuning.",
+  "files": {
+    "dev.json": {
+      "sha256": "f0d77b1c2b2f74a767662d887e01ae43fba7698911f2f463937bfa133949d9e1",
+      "questions": 55,
+      "meetings": 26,
+      "lines": 811,
+      "author": "separate Claude subagent (spec + FORMAT.md only)",
+      "provenance": "synthetic, no real meeting text"
+    },
+    "heldout.json": {
+      "sha256": "76cbc4fb5d785f39cff24f8931f7db4e4d846d909b344bc75cc2568299b6057f",
+      "questions": 63,
+      "meetings": 30,
+      "lines": 879,
+      "author": "separate Claude subagent (spec + FORMAT.md only)",
+      "provenance": "synthetic, no real meeting text"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+[ctx-eval] h01 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] h02 HIT  spans 2/2 post-fit 2/2 Yes, Andrew proposed staying hands-on through next year and suggested revisiting the lead role next 
+[ctx-eval] h03 miss spans 1/2 post-fit 1/2 Andrew brought up studying for an exam, originally planning to sit it in December.
+[ctx-eval] h04 miss spans 0/2 post-fit 0/2 No one besides Andrew talked about changing roles in last week's meetings.
+[ctx-eval] h05 miss spans 1/3 post-fit 1/3 In mid-October, during the meeting on October 28, Andrew expressed that he was ready to manage peopl
+[ctx-eval] h06 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h07 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h08 miss spans 3/7 post-fit 3/7 In the Trane client check-in (Nov 5, 2026), Lucia was identified as the person who will be the main 
+[ctx-eval] h09 miss spans 1/2 post-fit 1/2 No one has been formally locked in for the Trane work. Speaker 1 states in multiple meetings that th
+[ctx-eval] h10 HIT  spans 2/2 post-fit 2/2 No, Kofi cannot help out on the Trane controls integration because the Northgate cutover slipped aga
+[ctx-eval] h11 miss spans 1/3 post-fit 1/3 Before the mid-November window, Kofi was floated for the Trane project, as noted in the Resourcing s
+[ctx-eval] h12 HIT  spans 3/3 post-fit 3/3 Priyanka said she is at about sixty percent through December, meaning she is busy and has roughly tw
+[ctx-eval] h13 miss spans 1/2 post-fit 1/2 The Trane client stops accepting changes on December eighteenth.
+[ctx-eval] h14 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h15 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h16 miss spans 2/3 post-fit 2/3 No, a final decision about strategic planning for 2027 was not made. At the leadership offsite, Spea
+[ctx-eval] h17 HIT  spans 2/2 post-fit 2/2 The offsite outcome was thrown back open because board members pushed back hard on mid-market, think
+[ctx-eval] h18 miss spans 0/2 post-fit 0/2 The 2027 plan will be settled at the leadership offsite on October 23, 2026, when a decision is made
+[ctx-eval] h19 miss spans 2/3 post-fit 2/3 No, the 2027 pricing changes were not finalized. Speaker 1 stated that pricing changes for 2027 shou
+[ctx-eval] h20 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] h21 miss spans 0/3 post-fit 0/3 The old invoicing platform is being retired because two critical issues were identified in it during
+[ctx-eval] h22 miss spans 0/7 post-fit 1/7 I promised to send the revised pricing quote for the extra sites by Monday noon.
+[ctx-eval] h23 miss spans 1/3 post-fit 1/3 I promised to book the room, but changed to setting up a call instead due to half of the team being 
+[ctx-eval] h24 miss spans 2/4 post-fit 2/4 I promised to send the finance team's shared address after the call and to confirm the sandbox setup
+[ctx-eval] h25 miss spans 1/3 post-fit 1/3 Sending the finance team's shared address has a condition attached—sending it 'right after this call
+[ctx-eval] h26 miss spans 1/4 post-fit 1/4 I couldn't find that in these meetings.
+[ctx-eval] h27 HIT  spans 2/2 post-fit 2/2 Marta agreed to take on the vendor follow-up on the certificate renewal.
+[ctx-eval] h28 miss spans 0/0 post-fit 0/0 Me was not present in the morning's standup on Nov 6, 2026, as the only speakers mentioned are Speak
+[ctx-eval] h29 miss spans 0/0 post-fit 0/0 Speaker 2 committed to sending the agenda to the client, checking the budget for on-site travel to C
+[ctx-eval] h30 miss spans 0/1 post-fit 0/1 No, the Atlas launch was not pushed back last week. The launch date was planned for November sevente
+[ctx-eval] h31 HIT  spans 2/2 post-fit 2/2 The current Atlas launch date is December 12.
+[ctx-eval] h32 HIT  spans 2/2 post-fit 2/2 The launch slipped because the data sharing toggle defaults to on, which doesn't work for the EU, re
+[ctx-eval] h33 HIT  spans 1/1 post-fit 1/1 Fifty thousand testers will be able to try the Atlas beta after it opens up.
+[ctx-eval] h34 HIT  spans 2/2 post-fit 2/2 Speaker 1 said last week that we're moving the Atlas launch to December.
+[ctx-eval] h35 HIT  spans 1/1 post-fit 1/1 Nadia recommended failing over to the Ohio replica now because the primary database in Virginia was 
+[ctx-eval] h36 miss spans 0/1 post-fit 0/1 I couldn't find that in these meetings.
+[ctx-eval] h37 miss spans 0/0 post-fit 0/0 Yes, during the incident follow-up on Nov 2, 2026, Speaker 2 asked if they should roll back the cach
+[ctx-eval] h38 miss spans 1/2 post-fit 1/2 On the late Sunday night outage call, the primary database in Virginia started throwing storage late
+[ctx-eval] h39 HIT  spans 2/2 post-fit 2/2 Imogen reported that all critical issues from the pen test are closed, and two medium issues remain.
+[ctx-eval] h40 HIT  spans 2/2 post-fit 2/2 The week before last, Imogen said the big finding from the pen test was the admin panel exposed on s
+[ctx-eval] h41 miss spans 0/0 post-fit 0/0 Yes, Imogen brought up SOC 2 in the leadership offsite meeting on October 23, 2026, noting that the 
+[ctx-eval] h42 HIT  spans 1/1 post-fit 1/1 The new staff designer starts on January 11.
+[ctx-eval] h43 HIT  spans 1/1 post-fit 1/1 Pinecrest Logistics was dropped, and no other logistics suppliers are mentioned as still being consi
+[ctx-eval] h44 HIT  spans 2/2 post-fit 2/2 The design debrief concluded that Sabine was a strong candidate, with her systems thinking being the
+[ctx-eval] h45 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h46 HIT  spans 1/1 post-fit 1/1 Owen told Speaker 1 that he'd rather not be on the panel again because he is stretched thin with the
+[ctx-eval] h47 HIT  spans 1/1 post-fit 1/1 I said the panel goes to four interviewers next time.
+[ctx-eval] h48 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h49 HIT  spans 1/1 post-fit 1/1 The Q4 marketing spend cap is one eighty k.
+[ctx-eval] h50 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h51 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h52 miss spans 1/2 post-fit 1/2 The team dinner is on Thursday the twelfth.
+[ctx-eval] h53 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h54 HIT  spans 2/2 post-fit 2/2 Ruth stated that she'd rather not renew the Reno test lab lease, as it is half empty most weeks and 
+[ctx-eval] h55 miss spans 0/2 post-fit 0/2 This week, Ruth's position on the Reno test lab lease was confirmed as not renewing, as the remainin
+[ctx-eval] h56 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h57 HIT  spans 2/2 post-fit 2/2 Andrew L. thought renewing the Corvane contract for two years was reasonable, stating that the migra
+[ctx-eval] h58 HIT  spans 2/2 post-fit 1/2 Andrew B. thought it would be better to rebid the Corvane contract due to their poor support since t
+[ctx-eval] h59 miss spans 0/0 post-fit 0/0 Andrew said multiple things throughout the meetings, including that he would renew the Corvane contr
+[ctx-eval] h60 miss spans 1/2 post-fit 1/2 I couldn't find that in these meetings.
+[ctx-eval] h61 miss spans 1/2 post-fit 1/2 I couldn't find that in these meetings.
+[ctx-eval] h62 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] h63 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.

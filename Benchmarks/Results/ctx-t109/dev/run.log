@@ -1,0 +1,55 @@
+[ctx-eval] dev01 miss spans 0/5 post-fit 0/5 Over the past seven days, Tomas was mentioned as someone who might take on the Kestrel migration, wi
+[ctx-eval] dev02 miss spans 0/2 post-fit 0/2 The Kestrel migration is not locked in. Speaker 1 confirms that the migration involves moving the cu
+[ctx-eval] dev03 miss spans 1/2 post-fit 1/2 Rosa got the go-ahead to help shift our customer accounts off the legacy database.
+[ctx-eval] dev04 HIT  spans 2/2 post-fit 2/2 No, Tomas is not free to help on Kestrel. In the Capacity check-in (Nov 2, 2026), Speaker 2 states t
+[ctx-eval] dev05 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev06 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev07 HIT  spans 1/1 post-fit 1/1 I couldn't find that in these meetings.
+[ctx-eval] dev08 HIT  spans 2/2 post-fit 2/2 Sam is supposed to do the UI review for the cutover status page.
+[ctx-eval] dev09 HIT  spans 2/2 post-fit 2/2 Omar owns the cutover runbook.
+[ctx-eval] dev10 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev11 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev12 miss spans 1/3 post-fit 2/3 Yes, Pipewell was selected as the platform to hold our sales contacts. This was confirmed in the CRM
+[ctx-eval] dev13 HIT  spans 1/1 post-fit 1/1 The Pipewell pick was supposed to be looked at again on the thirteenth, as mentioned in the Finance 
+[ctx-eval] dev14 HIT  spans 1/1 post-fit 1/1 The Pipewell quote came back forty percent over what we budgeted.
+[ctx-eval] dev15 HIT  spans 2/2 post-fit 2/2 No, Pipewell was not finalized, as the decision was put on hold due to the Pipewell quote being fort
+[ctx-eval] dev16 miss spans 0/0 post-fit 0/0 I said I'd lean toward Pipewell but didn't want to decide today, and that we should get references f
+[ctx-eval] dev17 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev18 miss spans 0/0 post-fit 0/0 The decision about the vendor was deferred, with a plan to gather references from both Halyard and P
+[ctx-eval] dev19 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev20 miss spans 0/2 post-fit 0/2 The decision on where to base the office is being held up because the Wharf Street lease is up in Ju
+[ctx-eval] dev21 HIT  spans 1/1 post-fit 1/1 The Delancey building has the bigger floor, but it's twenty minutes further for most people. The ren
+[ctx-eval] dev22 HIT  spans 1/1 post-fit 1/1 The Wharf Street lease is up in June.
+[ctx-eval] dev23 HIT  spans 1/1 post-fit 1/1 Yes, standing desks were approved for the third floor.
+[ctx-eval] dev24 miss spans 0/4 post-fit 0/4 I promised to tell procurement about the CRM selection, to send a note to managers holding off on no
+[ctx-eval] dev25 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev26 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev27 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev28 miss spans 0/7 post-fit 0/7 Speaker 1 promised to share the creative brief template after the Brightline kickoff call. Speaker 2
+[ctx-eval] dev29 HIT  spans 1/1 post-fit 1/1 Brightline will see the reworked scene-by-scene drawings by Thursday.
+[ctx-eval] dev30 HIT  spans 1/1 post-fit 1/1 Ingrid is being invited back for the in-person round.
+[ctx-eval] dev31 miss spans 0/0 post-fit 0/0 The action items from the Lumen Freight call last week included confirming the integration timeline 
+[ctx-eval] dev32 HIT  spans 1/1 post-fit 1/1 The problem with the Northwind indemnity clause is that it covers third-party data, which was flagge
+[ctx-eval] dev33 HIT  spans 1/1 post-fit 1/1 Maria suggested that her next step is running the vendor reviews myself, end to end, like actually l
+[ctx-eval] dev34 HIT  spans 2/2 post-fit 2/2 Yes, that changed this week. Maria stated she had changed her mind and now wanted to focus on mentor
+[ctx-eval] dev35 miss spans 0/1 post-fit 0/1 Maria said she wants to run the vendor reviews herself, end to end, like actually leading the Q1 rev
+[ctx-eval] dev36 HIT  spans 1/1 post-fit 1/1 Speaker 2 said they want to take on the forecasting model.
+[ctx-eval] dev37 HIT  spans 1/1 post-fit 1/1 I couldn't find that in these meetings.
+[ctx-eval] dev38 HIT  spans 1/1 post-fit 1/1 Speaker 2 brought up Maria getting a certification.
+[ctx-eval] dev39 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev40 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev41 miss spans 1/3 post-fit 1/3 The false alarms on the queue were mentioned by Speaker 2 during the on-call review on November 2, 2
+[ctx-eval] dev42 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev43 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev44 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev45 miss spans 0/1 post-fit 0/1 I couldn't find that in these meetings.
+[ctx-eval] dev46 HIT  spans 2/2 post-fit 2/2 No, the platform group cannot bring on anyone new right now. New hires on the platform side are froz
+[ctx-eval] dev47 HIT  spans 2/2 post-fit 2/2 The price breaks for partners who resell were discussed as twelve percent for standard deals, eighte
+[ctx-eval] dev48 miss spans 0/2 post-fit 0/2 I couldn't find that in these meetings.
+[ctx-eval] dev49 HIT  spans 1/1 post-fit 1/1 No, we are not rolling out to every region on day one. The rollout plan specifies starting with Cana
+[ctx-eval] dev50 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev51 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev52 HIT  spans 1/1 post-fit 1/1 The outside security testers found two high severity issues in the upload service, both related to f
+[ctx-eval] dev53 HIT  spans 1/1 post-fit 1/1 The plan for fixing the high severity issues is that the fixes are due by November twentieth, then t
+[ctx-eval] dev54 miss spans 0/0 post-fit 0/0 I couldn't find that in these meetings.
+[ctx-eval] dev55 miss spans 0/0 post-fit 0/0 Speaker 2 said the budget came up again, the budget is a bit behind, the budget might slip a little,

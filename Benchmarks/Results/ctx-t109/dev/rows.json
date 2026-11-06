@@ -1,0 +1,1485 @@
+[
+  {
+    "answer" : "Over the past seven days, Tomas was mentioned as someone who might take on the Kestrel migration, with Speaker 2 noting that Tomas has 'plenty of room right now' and could take Kestrel. Additionally, in the Kestrel cutover prep meeting, Speaker 1 confirmed that the migration involves moving the customer ledger off the old Oracle box and reconciliation reports, indicating ongoing planning around Kestrel. No other specific individuals were mentioned as potential candidates for the Kestrel migration during this period.",
+    "behavior" : "answer",
+    "categories" : [
+      "staffing",
+      "person_date",
+      "cross_meeting",
+      "multipart",
+      "speaker_vs_mentioned"
+    ],
+    "checkerNote" : "numbers not in the cited passages: [7]",
+    "citations" : [
+      6,
+      4,
+      2
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev01",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 5,
+    "proxyOK" : true,
+    "question" : "Over the past seven days, what came up about who might be able to work on the Kestrel migration?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.014070917,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 3.169581167
+  },
+  {
+    "answer" : "The Kestrel migration is not locked in. Speaker 1 confirms that the migration involves moving the customer ledger off the old Oracle box and reconciliation reports, but no specific individual or timeline is confirmed as locked in. In the Brightline kickoff meeting, a decision is made to develop one of three options, but no mention is made of Kestrel. In the 1:1 Maria meeting, Maria expresses intent to lead vendor reviews end-to-end, but this is unrelated to Kestrel. No meeting explicitly states that any aspect of the Kestrel migration is finalized or assigned to a specific person.",
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "staffing",
+      "decision_status"
+    ],
+    "checkerNote" : "names not in the cited passages: [\"Brightline\"]",
+    "citations" : [
+      1,
+      3,
+      6
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev02",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "Which of those are actually locked in?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.014059,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 3.293419333
+  },
+  {
+    "answer" : "Rosa got the go-ahead to help shift our customer accounts off the legacy database.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "staffing"
+    ],
+    "checkerNote" : "partial support 0.40",
+    "citations" : [
+      7
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev03",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "Who got the go-ahead to help shift our customer accounts off the legacy database?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.014895042,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 2.098691834
+  },
+  {
+    "answer" : "No, Tomas is not free to help on Kestrel. In the Capacity check-in (Nov 2, 2026), Speaker 2 states that Tomas is out, he's booked on the billing audit through December.",
+    "behavior" : "answer",
+    "categories" : [
+      "changed_plan",
+      "cross_meeting",
+      "staffing",
+      "speaker_vs_mentioned"
+    ],
+    "citations" : [
+      2
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 2,
+    "coveredTop10" : 2,
+    "id" : "dev04",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "Is Tomas still free to help on Kestrel?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.002108625,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 2.271876125
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "negation",
+      "staffing",
+      "cross_meeting"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev05",
+    "passages" : 3,
+    "passagesUsed" : 3,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "Who has been ruled out for Kestrel, and why?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.000509042,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 0.735640292
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev06",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "What budget was approved for the Kestrel migration?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.013179375,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 1.9700272079999999
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "qualify",
+    "categories" : [
+      "ambiguous",
+      "speaker_vs_mentioned",
+      "adversarial"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev07",
+    "passages" : 2,
+    "passagesUsed" : 2,
+    "pieces" : 1,
+    "proxyOK" : false,
+    "question" : "What did Rosa say in the capacity check-in?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : true,
+    "retrievalSeconds" : 0.000555542,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 0.5662866249999999
+  },
+  {
+    "answer" : "Sam is supposed to do the UI review for the cutover status page.",
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous"
+    ],
+    "citations" : [
+      8
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 2,
+    "coveredTop10" : 2,
+    "id" : "dev08",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "What is Sam supposed to be doing?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.00139425,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 1.956319791
+  },
+  {
+    "answer" : "Omar owns the cutover runbook.",
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 2,
+    "coveredTop10" : 2,
+    "id" : "dev09",
+    "passages" : 5,
+    "passagesUsed" : 5,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "Who owns the cutover runbook?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.000750125,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 1.098590292
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "speaker_vs_mentioned"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev10",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "What did Omar say about the Pipewell contract?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.001689917,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 2.077995834
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "adversarial"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev11",
+    "passages" : 12,
+    "passagesUsed" : 10,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "Did Omar agree to cover on-call over Thanksgiving?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.002183459,
+    "scenario" : "kestrel-staffing",
+    "totalSeconds" : 1.984543543
+  },
+  {
+    "answer" : "Yes, Pipewell was selected as the platform to hold our sales contacts. This was confirmed in the CRM selection meeting on Oct 27, 2026, when Speaker 1 stated, 'So we're going with Pipewell. That's final, I'll tell procurement today.'",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "decision_status",
+      "changed_plan",
+      "cross_meeting"
+    ],
+    "citations" : [
+      4,
+      11
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 2,
+    "coveredTop10" : 1,
+    "id" : "dev12",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 3,
+    "proxyOK" : true,
+    "question" : "Did we ever settle on which platform will hold our sales contacts?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.001480834,
+    "scenario" : "crm-vendor",
+    "totalSeconds" : 2.397629751
+  },
+  {
+    "answer" : "The Pipewell pick was supposed to be looked at again on the thirteenth, as mentioned in the Finance sync meeting on Nov 3, 2026, where Speaker 2 said, 'Let's put it on the agenda for the thirteenth.'",
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "decision_status"
+    ],
+    "citations" : [
+      2
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev13",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "When is that supposed to be looked at again?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.012416792,
+    "scenario" : "crm-vendor",
+    "totalSeconds" : 1.7299715420000001
+  },
+  {
+    "answer" : "The Pipewell quote came back forty percent over what we budgeted.",
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev14",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "What did the Pipewell quote come back at?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.001989125,
+    "scenario" : "crm-vendor",
+    "totalSeconds" : 2.0625663330000004
+  },
+  {
+    "answer" : "No, Pipewell was not finalized, as the decision was put on hold due to the Pipewell quote being forty percent over budget and legal wanting to reopen the CRM choice before anything was signed.",
+    "behavior" : "qualify",
+    "categories" : [
+      "adversarial",
+      "decision_status"
+    ],
+    "citations" : [
+      1,
+      3
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 2,
+    "coveredTop10" : 2,
+    "id" : "dev15",
+    "passages" : 12,
+    "passagesUsed" : 10,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "Everyone signed off on Pipewell, so that's done, right?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.013019375,
+    "scenario" : "crm-vendor",
+    "totalSeconds" : 2.329771917
+  },
+  {
+    "answer" : "I said I'd lean toward Pipewell but didn't want to decide today, and that we should get references from both vendors.",
+    "behavior" : "clarify",
+    "categories" : [
+      "self",
+      "ambiguous"
+    ],
+    "citations" : [
+      4,
+      7
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev16",
+    "passages" : 7,
+    "passagesUsed" : 7,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "What did I say about the CRM vendors?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.000921208,
+    "scenario" : "crm-vendor",
+    "totalSeconds" : 1.574926625
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev17",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "What did the Halyard sales rep promise us on their call?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.001846708,
+    "scenario" : "crm-vendor",
+    "totalSeconds" : 2.017054416
+  },
+  {
+    "answer" : "The decision about the vendor was deferred, with a plan to gather references from both Halyard and Pipewell and aim to pick a vendor next week. The discussion also included data migration from the old system.",
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous"
+    ],
+    "checkerNote" : "names not in the cited passages: [\"Halyard\"]",
+    "citations" : [
+      2
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev18",
+    "passages" : 5,
+    "passagesUsed" : 5,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "What did we decide about the vendor?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.000858625,
+    "scenario" : "crm-vendor",
+    "totalSeconds" : 1.563381667
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "decision_status",
+      "cross_meeting"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev19",
+    "passages" : 11,
+    "passagesUsed" : 11,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "Has anyone made the final call on relocating our workspace?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.001883,
+    "scenario" : "office-move",
+    "totalSeconds" : 1.6926587920000002
+  },
+  {
+    "answer" : "The decision on where to base the office is being held up because the Wharf Street lease is up in June, and the landlord has offered a renewal at five percent higher, meaning the team must decide whether to renew or move.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "citations" : [
+      2
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev20",
+    "passages" : 8,
+    "passagesUsed" : 8,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "What's holding things up on choosing where we'll be based after June?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.000987583,
+    "scenario" : "office-move",
+    "totalSeconds" : 1.7770700419999998
+  },
+  {
+    "answer" : "The Delancey building has the bigger floor, but it's twenty minutes further for most people. The rent is about the same per square foot, but there are more square feet.",
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev21",
+    "passages" : 4,
+    "passagesUsed" : 4,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "What was said about the Delancey building?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.000584916,
+    "scenario" : "office-move",
+    "totalSeconds" : 1.189518124
+  },
+  {
+    "answer" : "The Wharf Street lease is up in June.",
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev22",
+    "passages" : 3,
+    "passagesUsed" : 3,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "When is the Wharf Street lease up?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.000523541,
+    "scenario" : "office-move",
+    "totalSeconds" : 0.6972759159999999
+  },
+  {
+    "answer" : "Yes, standing desks were approved for the third floor.",
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev23",
+    "passages" : 7,
+    "passagesUsed" : 7,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "Were standing desks approved?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.000839208,
+    "scenario" : "office-move",
+    "totalSeconds" : 1.212115042
+  },
+  {
+    "answer" : "I promised to tell procurement about the CRM selection, to send a note to managers holding off on non-client trips, to let the Halyard rep know after the contract is signed, to assign fixes to the platform team, and to inform marketing of the new date.",
+    "behavior" : "qualify",
+    "categories" : [
+      "self",
+      "commitments",
+      "person_date",
+      "cross_meeting",
+      "ambiguous"
+    ],
+    "citations" : [
+      2,
+      11,
+      12,
+      9,
+      10
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev24",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 4,
+    "proxyOK" : true,
+    "question" : "What follow-up actions did I promise during my calls today?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.013998584,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 2.466832501
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "self",
+      "commitments"
+    ],
+    "checkerNote" : "no passages",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev25",
+    "passages" : 0,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "What did I promise to do on this call?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.000220708,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 0.000221499
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "qualify",
+    "categories" : [
+      "self",
+      "commitments",
+      "ambiguous"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev26",
+    "passages" : 1,
+    "passagesUsed" : 1,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "What did I commit to on this call?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.000259541,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 0.43258349999999995
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "self",
+      "commitments",
+      "person_date"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev27",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "What did I say I'd take care of after yesterday's interview debrief?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.005531042,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 2.0603165839999997
+  },
+  {
+    "answer" : "Speaker 1 promised to share the creative brief template after the Brightline kickoff call. Speaker 2 committed to sending the brand guidelines by Monday. Speaker 1 also suggested that someone from support should join the next Northwind renewal call. Additionally, Speaker 2 asked about the fuel surcharge calculation, which was clarified by Me.",
+    "behavior" : "answer",
+    "categories" : [
+      "commitments",
+      "cross_meeting",
+      "multipart",
+      "person_date"
+    ],
+    "citations" : [
+      2,
+      4,
+      1,
+      6
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev28",
+    "passages" : 6,
+    "passagesUsed" : 6,
+    "pieces" : 7,
+    "proxyOK" : true,
+    "question" : "What follow-ups were promised across this week's client calls?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.002198166,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 1.854882958
+  },
+  {
+    "answer" : "Brightline will see the reworked scene-by-scene drawings by Thursday.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev29",
+    "passages" : 9,
+    "passagesUsed" : 9,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "When will Brightline see the reworked scene-by-scene drawings?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.001026,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 1.469952167
+  },
+  {
+    "answer" : "Ingrid is being invited back for the in-person round.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev30",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "Which applicant is being invited back for the in-person round?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.001738,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 1.987482583
+  },
+  {
+    "answer" : "The action items from the Lumen Freight call last week included confirming the integration timeline of about two weeks, identifying the main contact as the speaker (me) for now with an account manager to be added later, and noting that the integration would be realistic given their standard setup.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "person_date"
+    ],
+    "citations" : [
+      1,
+      8
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev31",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 0,
+    "proxyOK" : false,
+    "question" : "What were the action items from the Lumen Freight call last week?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.014095334,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 2.606860917
+  },
+  {
+    "answer" : "The problem with the Northwind indemnity clause is that it covers third-party data, which was flagged by the legal team.",
+    "behavior" : "answer",
+    "categories" : [
+      "lexical"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev32",
+    "passages" : 2,
+    "passagesUsed" : 2,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "What's the problem with the Northwind indemnity clause?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.000548,
+    "scenario" : "follow-ups",
+    "totalSeconds" : 0.840336209
+  },
+  {
+    "answer" : "Maria suggested that her next step is running the vendor reviews myself, end to end, like actually leading the Q1 review cycle, not just prepping the decks.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "person_date",
+      "speaker_vs_mentioned"
+    ],
+    "citations" : [
+      2
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev33",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "What did Maria suggest as her next growth step last week?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.013406833,
+    "scenario" : "maria-growth",
+    "totalSeconds" : 2.327815208
+  },
+  {
+    "answer" : "Yes, that changed this week. Maria stated she had changed her mind and now wanted to focus on mentoring the two new analysts instead of vendor reviews, with vendor reviews being postponed until next year.",
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "changed_plan",
+      "person_date"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 2,
+    "coveredTop10" : 2,
+    "id" : "dev34",
+    "passages" : 12,
+    "passagesUsed" : 10,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "Did that change this week?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.013325291,
+    "scenario" : "maria-growth",
+    "totalSeconds" : 2.3160774990000004
+  },
+  {
+    "answer" : "Maria said she wants to run the vendor reviews herself, end to end, like actually leading the Q1 review cycle, not just prepping the decks.",
+    "behavior" : "answer",
+    "categories" : [
+      "person_date",
+      "paraphrase"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev35",
+    "passages" : 12,
+    "passagesUsed" : 9,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "What did Maria say last week about where she wants to grow?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.012114708,
+    "scenario" : "maria-growth",
+    "totalSeconds" : 2.254959708
+  },
+  {
+    "answer" : "Speaker 2 said they want to take on the forecasting model.",
+    "behavior" : "answer",
+    "categories" : [
+      "speaker_vs_mentioned",
+      "adversarial"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev36",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "Who said they want to take over the forecasting model?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.006669333,
+    "scenario" : "maria-growth",
+    "totalSeconds" : 2.034382583
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "qualify",
+    "categories" : [
+      "adversarial",
+      "speaker_vs_mentioned"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev37",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 1,
+    "proxyOK" : false,
+    "question" : "Did Maria bring up her development plans in the ops standup?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : true,
+    "retrievalSeconds" : 0.009682125,
+    "scenario" : "maria-growth",
+    "totalSeconds" : 2.060261917
+  },
+  {
+    "answer" : "Speaker 2 brought up Maria getting a certification.",
+    "behavior" : "answer",
+    "categories" : [
+      "speaker_vs_mentioned"
+    ],
+    "checkerNote" : "partial support 0.25",
+    "citations" : [
+      10
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev38",
+    "passages" : 10,
+    "passagesUsed" : 10,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "Who brought up Maria getting a certification?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.001876041,
+    "scenario" : "maria-growth",
+    "totalSeconds" : 1.964182541
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev39",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "What did Maria say about relocating to the Denver office?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.001788667,
+    "scenario" : "maria-growth",
+    "totalSeconds" : 1.989307334
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "dst_boundary",
+      "person_date",
+      "paraphrase"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev40",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "Last week, what did the on-call folks report about our web front door's security certificates?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.013806709,
+    "scenario" : "oncall-dst",
+    "totalSeconds" : 2.116225584
+  },
+  {
+    "answer" : "The false alarms on the queue were mentioned by Speaker 2 during the on-call review on November 2, 2026. Speaker 1 then asked if the threshold had been tuned, indicating that this issue was passed along from the weekend shift cover.",
+    "behavior" : "answer",
+    "categories" : [
+      "dst_boundary",
+      "person_date",
+      "paraphrase",
+      "multipart"
+    ],
+    "checkerNote" : "partial support 0.40",
+    "citations" : [
+      8
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev41",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 3,
+    "proxyOK" : true,
+    "question" : "What got passed along to us from whoever covered the weekend shift yesterday?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.013347792,
+    "scenario" : "oncall-dst",
+    "totalSeconds" : 2.4838982499999998
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "dst_boundary",
+      "person_date",
+      "changed_plan",
+      "paraphrase",
+      "cross_meeting"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev42",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "What did we talk about last week regarding who carries the beeper?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.014324875,
+    "scenario" : "oncall-dst",
+    "totalSeconds" : 1.939076709
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev43",
+    "passages" : 12,
+    "passagesUsed" : 11,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "Which customer is having trouble pulling large amounts of data out of the product?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.013882875,
+    "scenario" : "oncall-dst",
+    "totalSeconds" : 1.962408958
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev44",
+    "passages" : 12,
+    "passagesUsed" : 9,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "Which team won the fall hackathon?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.009872667,
+    "scenario" : "oncall-dst",
+    "totalSeconds" : 1.974103959
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "notes_only"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev45",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 1,
+    "proxyOK" : false,
+    "question" : "What did the travel allowance end up at for the first quarter?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.010333958,
+    "scenario" : "budget",
+    "totalSeconds" : 1.870142124
+  },
+  {
+    "answer" : "No, the platform group cannot bring on anyone new right now. New hires on the platform side are frozen until February.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 2,
+    "coveredTop10" : 2,
+    "id" : "dev46",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "Can the platform group bring on anyone new right now?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.002388666,
+    "scenario" : "budget",
+    "totalSeconds" : 2.0358309159999997
+  },
+  {
+    "answer" : "The price breaks for partners who resell were discussed as twelve percent for standard deals, eighteen percent for deals above fifty seats, and a proposed twenty-two percent tier for platinum partners with over two hundred seats. This was mentioned in the partner pricing workshop on Nov 5, 2026.",
+    "behavior" : "partial",
+    "categories" : [
+      "paraphrase",
+      "incomplete_index",
+      "person_date"
+    ],
+    "citations" : [
+      1,
+      2
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 2,
+    "coveredTop10" : 2,
+    "id" : "dev47",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 2,
+    "proxyOK" : true,
+    "question" : "What price breaks for partners who resell us were talked about this week?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.01454025,
+    "scenario" : "partner-pricing",
+    "totalSeconds" : 2.583806833
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "answer",
+    "categories" : [
+      "trimmed",
+      "paraphrase"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev48",
+    "passages" : 12,
+    "passagesUsed" : 8,
+    "pieces" : 2,
+    "proxyOK" : false,
+    "question" : "When are we now planning to put the mobile app out?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.009888667,
+    "scenario" : "launch",
+    "totalSeconds" : 1.9073285
+  },
+  {
+    "answer" : "No, we are not rolling out to every region on day one. The rollout plan specifies starting with Canada and the UK, then the rest after two weeks.",
+    "behavior" : "answer",
+    "categories" : [
+      "trimmed",
+      "negation"
+    ],
+    "citations" : [
+      4
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev49",
+    "passages" : 12,
+    "passagesUsed" : 12,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "Are we rolling out to every region on day one?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.010551375,
+    "scenario" : "launch",
+    "totalSeconds" : 2.3394892499999997
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "trimmed"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev50",
+    "passages" : 5,
+    "passagesUsed" : 5,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "What was said about the hotel block for the sales offsite?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.000673541,
+    "scenario" : "launch",
+    "totalSeconds" : 0.8987824160000001
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "adversarial"
+    ],
+    "checkerNote" : "model refused",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev51",
+    "passages" : 12,
+    "passagesUsed" : 9,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "Is there a plan to combine the design and research teams?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.01158525,
+    "scenario" : "reorg",
+    "totalSeconds" : 2.083156625
+  },
+  {
+    "answer" : "The outside security testers found two high severity issues in the upload service, both related to file type validation. An example was that a script could be uploaded disguised as an image and served back.",
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "adversarial"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev52",
+    "passages" : 12,
+    "passagesUsed" : 9,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "What did the outside security testers turn up in our file intake service?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.008654375,
+    "scenario" : "security-test",
+    "totalSeconds" : 2.42036075
+  },
+  {
+    "answer" : "The plan for fixing the high severity issues is that the fixes are due by November twentieth, then the team will retest. The fixes are mostly configuration changes.",
+    "behavior" : "answer",
+    "categories" : [
+      "followup"
+    ],
+    "citations" : [
+      1
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 1,
+    "coveredTop10" : 1,
+    "id" : "dev53",
+    "passages" : 12,
+    "passagesUsed" : 10,
+    "pieces" : 1,
+    "proxyOK" : true,
+    "question" : "And what's the plan for fixing them?",
+    "recallHit" : true,
+    "recallHitPostFit" : true,
+    "refused" : false,
+    "retrievalSeconds" : 0.013616292,
+    "scenario" : "security-test",
+    "totalSeconds" : 2.09526275
+  },
+  {
+    "answer" : "I couldn't find that in these meetings.",
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous"
+    ],
+    "checkerNote" : "no passages",
+    "citations" : [
+
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev54",
+    "passages" : 0,
+    "pieces" : 0,
+    "proxyOK" : false,
+    "question" : "Summarize the meeting.",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : true,
+    "retrievalSeconds" : 0.00017,
+    "scenario" : "generic-ambiguity",
+    "totalSeconds" : 0.00017075
+  },
+  {
+    "answer" : "Speaker 2 said the budget came up again, the budget is a bit behind, the budget might slip a little, the budget should wrap up soon, and the budget needs another pass.",
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous",
+      "speaker_vs_mentioned"
+    ],
+    "citations" : [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "citationsValid" : true,
+    "coveredPostFit" : 0,
+    "coveredTop10" : 0,
+    "id" : "dev55",
+    "passages" : 12,
+    "passagesUsed" : 10,
+    "pieces" : 0,
+    "proxyOK" : true,
+    "question" : "What did Speaker 2 say about the budget?",
+    "recallHit" : false,
+    "recallHitPostFit" : false,
+    "refused" : false,
+    "retrievalSeconds" : 0.01971725,
+    "scenario" : "generic-ambiguity",
+    "totalSeconds" : 2.5802905
+  }
+]

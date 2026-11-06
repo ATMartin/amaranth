@@ -3363,7 +3363,7 @@
       "id": "T109",
       "title": "Define contextual question semantics, contracts and held-out evaluation",
       "milestone": "V",
-      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "status": "done (2026-11-06): contracts Domain/Search/ContextualSearch.swift; semantics/rubric/gates docs/qualification/milestone-v/t109-semantics.md; fixtures Benchmarks/Contextual (dev 55 q, held-out 63 q frozen, manifest sha256); baseline held-out all-span Recall@10 21/46 (t109-baseline.md)",
       "optional": false,
       "depends_on": [
         "T100"
@@ -3389,7 +3389,9 @@
         "Contracts and evaluation manifest include scenario split, fixture hashes/provenance, all required spans, latency definitions and executable limits; report baseline misses without tuning on held-out outcomes."
       ],
       "fallback": "Keep unresolved product choices explicit; use recommended defaults only where the user has delegated judgment. Do not implement a vague semantic-search feature without testable meaning and source freshness rules.",
-      "review_timestamps": []
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     },
     {
       "id": "T110",
