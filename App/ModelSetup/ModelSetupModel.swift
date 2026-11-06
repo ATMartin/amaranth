@@ -45,18 +45,42 @@ final class ModelSetupModel {
 
     var downloadBytes: Int64 { pack?.manifests.reduce(0) { $0 + $1.totalBytes } ?? 0 }
 
-    /// T115: the installed pack works but predates the contextual search encoder the bundled pack has (an upgrade
-    /// downloads only the encoder: identical files are reused).
+    /// The installed pack verifies and includes the search model (cached by `refresh()`; Ask needs both).
+    private(set) var searchModelInstalled = false
+    /// Manifests of the bundled pack the installed one doesn't already have verified (what an install downloads).
+    private(set) var missingManifests: Set<ModelManifestID> = []
+
+    /// The installed pack works but lacks the search model the bundled pack has (an update from before spec 0010):
+    /// transcripts and notes work, Ask doesn't. Installing the bundled pack downloads only the missing models.
     var searchModelMissing: Bool {
-        guard case .ready = status, pack?.manifests.contains(where: { $0.role == .textEmbedding }) == true else { return false }
-        return ContextIndexer.installedEncoder() == nil
+        guard case .ready = status else { return false }
+        return !searchModelInstalled
     }
     var searchModelBytes: Int64 { pack?.manifests.first { $0.role == .textEmbedding }?.totalBytes ?? 0 }
+    /// What an install of the bundled pack downloads now (models already installed and verified are reused).
+    var pendingDownloadBytes: Int64 {
+        pack?.manifests.filter { missingManifests.contains($0.id) }.reduce(0) { $0 + $1.totalBytes } ?? 0
+    }
+
+    /// Whether Ask can run: the pack is installed and verified with its search model. There is no keyword-only Ask.
+    var askReady: Bool { if case .ready = status { return searchModelInstalled }; return false }
+
+    /// Whether the search model resolves in the active pack (the gate `AnswerModel` checks before every attempt).
+    nonisolated static func isSearchReady() -> Bool { ContextIndexer.installedEncoder() != nil }
+
     var requiredFreeBytes: Int64 { pack.map { ModelInstaller(store: store).requiredBytes(for: $0) } ?? 0 }
 
     func refresh() {
         availableBytes = ModelPackStore.availableBytes(at: store.root)
-        switch LocalModelRegistry(store: store).state() {
+        let registry = LocalModelRegistry(store: store)
+        let installed = store.activePack().flatMap { try? store.installedPack($0) }
+        missingManifests = Set((pack?.manifests ?? []).filter { m in
+            // Reused only if the installed copy is the same model (same files) and verifies.
+            guard installed?.manifests.first(where: { $0.id == m.id })?.files == m.files else { return true }
+            return (try? registry.resolve(m.id)) == nil
+        }.map(\.id))
+        searchModelInstalled = (pack?.manifests.first { $0.role == .textEmbedding }).map { (try? registry.resolve($0.id)) != nil } ?? false
+        switch registry.state() {
         case .ready(let id, let v): status = .ready(packID: id, version: v)
         case .notInstalled: status = .recordOnly(reason: "Models are not installed. Recording works; transcripts and notes need the model pack.")
         case .corrupt(let id, let path):
@@ -64,32 +88,84 @@ final class ModelSetupModel {
         }
     }
 
+    /// Why the last install didn't finish, when the pack that was already installed still works (an encoder-only
+    /// upgrade that was cancelled or failed); shown in Settings → Models.
+    private(set) var installNote: String?
+    /// The running install; progress from an earlier or finished one is dropped (it could land after `refresh()`).
+    private var installGeneration = 0
+
     func install(fromDirectory dir: URL? = nil) {
         guard let pack, task == nil else { return }
         let token = CancellationToken()
         cancellation = token
         let source: any ModelSource = dir.map { DirectoryModelSource(root: $0) } ?? HTTPModelSource()
         let installer = ModelInstaller(store: store)
-        status = .installing(InstallProgress(phase: .checkingSpace, bytesDone: 0, bytesTotal: downloadBytes))
+        installGeneration += 1
+        let generation = installGeneration
+        installNote = nil
+        status = .installing(InstallProgress(phase: .checkingSpace, bytesDone: 0, bytesTotal: pendingDownloadBytes > 0 ? pendingDownloadBytes : downloadBytes))
         task = Task {
+            var problem: String?
             do {
                 try await installer.install(pack, from: source, cancellation: token) { p in
-                    Task { @MainActor in self.status = .installing(p) }
+                    Task { @MainActor in if self.installGeneration == generation, self.task != nil { self.status = .installing(p) } }
                 }
-                refresh()
-                if case .ready = status { onInstalled?() }
             } catch is CancellationError {
-                status = .recordOnly(reason: "Installation cancelled. Downloaded parts are kept and the next install resumes.")
+                problem = "Installation cancelled. Downloaded parts are kept and the next install resumes."
             } catch ModelInstallError.insufficientSpace(let need, let have) {
-                status = .failed("Not enough free space: need \(Self.gb(need)), have \(Self.gb(have)).")
+                problem = "Not enough free space: need \(Self.gb(need)), have \(Self.gb(have))."
             } catch {
-                status = .failed("Installation failed: \(error). No partial model was activated.")
+                problem = "Installation failed: \(error). No partial model was activated."
             }
+            installGeneration += 1   // late progress callbacks are ignored from here on
             task = nil
+            refresh()
+            if let problem {
+                // The pack already installed may still work (cancelled encoder-only upgrade): keep it, note why.
+                if case .ready = status { installNote = problem }
+                else if problem.hasPrefix("Installation cancelled") { status = .recordOnly(reason: problem) }
+                else { status = .failed(problem) }
+            } else if case .ready = status { onInstalled?() }
         }
     }
 
     func cancel() { cancellation?.cancel() }
 
     static func gb(_ b: Int64) -> String { String(format: "%.2f GB", Double(b) / 1e9) }
+}
+
+extension ModelSetupModel {
+    /// What each model in the pack does, for Settings → Models.
+    static func roleTitle(_ r: ModelRole) -> String {
+        switch r {
+        case .asr: "Transcription"
+        case .vad: "Speech detection"
+        case .diarizationSegmentation, .diarizationEmbedding: "Speaker separation"
+        case .summary: "Notes and answers"
+        case .textEmbedding: "Search"
+        }
+    }
+
+    static func roleDetail(_ r: ModelRole) -> String {
+        switch r {
+        case .asr: "Turns speech into the transcript."
+        case .vad: "Finds where people are speaking."
+        case .diarizationSegmentation, .diarizationEmbedding: "Tells the speakers apart."
+        case .summary: "Writes meeting notes and Ask's answers."
+        case .textEmbedding: "Lets Ask find what was meant, not just the words used. Ask needs it."
+        }
+    }
+
+    #if DEBUG
+    /// ui-render: show a model state without touching the models root.
+    func showForRender(_ status: Status, searchInstalled: Bool) {
+        self.status = status
+        searchModelInstalled = searchInstalled
+        if case .ready = status {
+            missingManifests = searchInstalled ? [] : Set((pack?.manifests ?? []).filter { $0.role == .textEmbedding }.map(\.id))
+        } else {
+            missingManifests = Set((pack?.manifests ?? []).map(\.id))
+        }
+    }
+    #endif
 }

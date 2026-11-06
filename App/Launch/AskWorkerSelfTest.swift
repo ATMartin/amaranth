@@ -11,8 +11,9 @@ enum AskWorkerSelfTest {
     @MainActor static func run() async -> Bool {
         let root = FileManager.default.temporaryDirectory.appending(path: "amaranth-ask-\(UUID())")
         defer { try? FileManager.default.removeItem(at: root) }
-        guard ModelSetupModel.isReady(), let store = try? MeetingStore(root: root) else {
-            SelfTest.log(["step": "setup", "error": "model pack not installed or store failed"]); return false
+        // Ask needs the search model too (spec 0010 amendment: no keyword-only Ask).
+        guard ModelSetupModel.isReady(), ModelSetupModel.isSearchReady(), let store = try? MeetingStore(root: root) else {
+            SelfTest.log(["step": "setup", "error": "model pack with the search model not installed, or store failed"]); return false
         }
         let f = Fixtures.twoSourceConversation
         do {
@@ -23,6 +24,7 @@ enum AskWorkerSelfTest {
         let worker = WorkerClient()
         let answers = AnswerModel(store: store, worker: worker)
         answers.modelReady = { true }
+        answers.searchReady = { true }
         var ok = true
         for (question, expectAnswer) in [("When will they ship, and what is still missing?", true), ("What did they decide about the office lease?", false)] {
             var streamed = 0, last = ""

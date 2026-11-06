@@ -219,7 +219,7 @@ struct LibrarySidebar: View {
             .accessibilityLabel("Meetings")
         }
         // Opaque, so the Lower Garden stops behind the footer.
-        .safeAreaInset(edge: .bottom, spacing: 0) { LocalModelFooter(state: .init(models.status)).background(Color.canvas) }
+        .safeAreaInset(edge: .bottom, spacing: 0) { LocalModelFooter(state: .init(models.status, searchInstalled: models.searchModelInstalled)).background(Color.canvas) }
         // Lower Garden: once, behind the whole body (heading to footer), fixed while the rows scroll over it.
         .background { LowerGardenWatermark() }
         .background(Color.canvas)
@@ -321,13 +321,15 @@ struct FolderRowLabel: View {
 }
 
 /// The sidebar's footer (T77). Models ready: the quiet leaf and "Processing on this Mac". No local model: a warning and
-/// "No local model found". Either way a click opens Settings on the Models tab, the only home of model setup.
+/// "No local model found"; the pack without its search model (an update from before spec 0010): a warning and "Search
+/// model not installed", since Ask needs it. Either way a click opens Settings on the Models tab, the only home of model setup.
 struct LocalModelFooter: View {
     enum Kind: Equatable {
-        case ready, installing, missing
-        init(_ status: ModelSetupModel.Status) {
+        case ready, installing, missing, searchMissing
+        init(_ status: ModelSetupModel.Status, searchInstalled: Bool) {
             switch status {
-            case .ready, .checking: self = .ready   // checking takes milliseconds at launch: no warning flash
+            case .checking: self = .ready   // checking takes milliseconds at launch: no warning flash
+            case .ready: self = searchInstalled ? .ready : .searchMissing
             case .installing: self = .installing
             case .recordOnly, .failed: self = .missing
             }
@@ -343,9 +345,10 @@ struct LocalModelFooter: View {
                 case .ready: Label("Processing on this Mac", systemImage: "leaf").foregroundStyle(Color.statusOK)
                 case .installing: Label("Installing local model…", systemImage: "arrow.down.circle").foregroundStyle(Color.brandSecondary)
                 case .missing: Label("No local model found", systemImage: "exclamationmark.triangle.fill").foregroundStyle(Color.statusAttention)
+                case .searchMissing: Label("Search model not installed", systemImage: "exclamationmark.triangle.fill").foregroundStyle(Color.statusAttention)
                 }
             }
-            .appFont(.caption2, weight: state == .missing ? .medium : nil)
+            .appFont(.caption2, weight: state == .missing || state == .searchMissing ? .medium : nil)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
         }
@@ -360,6 +363,7 @@ struct LocalModelFooter: View {
         case .ready: "Recording, transcription, notes and answers run on this Mac. Nothing is uploaded. Click for model details."
         case .installing: "The local model pack is installing. Click to see progress."
         case .missing: "Transcripts and notes need the local model pack. Amaranth still records. Click to install it in Settings → Models."
+        case .searchMissing: "Ask needs the search model. Recording, transcripts and notes work. Click to install it in Settings → Models."
         }
     }
 }

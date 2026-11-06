@@ -86,7 +86,7 @@ final class ContextIndexer {
                 case .indexed:
                     self.state = .indexing; backoff = 5; pause = 0.05
                 case .idle:
-                    self.state = cov.complete ? .ready : .failed("Some text couldn't be indexed; keyword search still covers it.")
+                    self.state = cov.complete ? .ready : .failed("Some text couldn't be prepared for search; Ask finds it only by its exact words.")
                     pause = 120
                 case .paused(let r): self.state = .paused(r); pause = 3
                 case .unavailable(let r): self.state = .unavailable(r); pause = 60

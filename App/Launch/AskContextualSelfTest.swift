@@ -39,6 +39,7 @@ enum AskContextualSelfTest {
         indexer.stop()
         let answers = AnswerModel(store: store, worker: worker)
         answers.modelReady = { true }
+        answers.searchReady = ModelSetupModel.isSearchReady   // the self-test pack (debugModelsRoot)
         answers.producer = { indexer.engine?.activeProducer }
         func ask(_ q: String, scope: MeetingID? = nil) async -> (phase: AnswerModel.Phase, seconds: Double, text: String, cited: [Passage], notes: [String]) {
             let t = ContinuousClock.now

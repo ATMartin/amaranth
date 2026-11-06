@@ -57,9 +57,9 @@ struct ContextualAskTests {
         #expect(g.contains { $0.contains("Mon, Oct 26 to Sun, Nov 1") || $0.contains("Oct 26") })
         #expect(g.contains { $0.contains("Rosa is not a named speaker") })
         let n = ContextualAsk.notes(e, timeZone: Self.tz)
-        #expect(n.contains { $0.contains("4 of 10 meetings") })
+        #expect(n.contains { $0.contains("6 of 10 meetings ready") })
         #expect(n.contains { $0.contains("Rosa isn't a named speaker") })
         #expect(ContextualAsk.notes(evidence([], coverage: IndexCoverage(meetingsInScope: 1, meetingsIndexed: 0, chunks: 1, chunksEmbedded: 0, encoderAvailable: false), semantic: false), timeZone: Self.tz)
-            .contains { $0.contains("needs the search model") })
+            .allSatisfy { !$0.contains("keyword") }, "no keyword-only note: the app never shows a keyword-only answer")
     }
 }

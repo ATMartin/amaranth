@@ -254,3 +254,18 @@ old <= 3-second first-text target.
 No further product clarification is needed to define V. The date rule, automatic local backfill and extra small
 embedding-model download are engineering recommendations delegated by the user; ordinary model installation must
 still use the app's explicit verified download flow. All performance and quality gates await implementation evidence.
+
+## Amendment (2026-11-06, after T116): search model required
+
+User decision: contextual search is a core feature, not an optional upgrade, and there is **no keyword-only Ask**.
+- Ask runs only when the model pack is installed with its search model. Otherwise the Ask pane is dimmed and inert,
+  with what is missing and a link to Settings → Models (the only home of model setup, T77) on top. Recording,
+  transcripts and notes work without the search model.
+- The sidebar's model footer warns "Search model not installed" like "No local model found"; Settings → Models lists
+  every model of the pack with its job, size and installed state, and downloads only what is missing.
+- An attempt whose question the search model couldn't embed fails with Retry instead of answering from keyword matches.
+  With the encoder installed but no producer reported yet, Ask searches the vectors of the encoder that embedded the
+  question (`ContextualRetriever.learnsProducer`).
+- Kept: the exact-word matches listed under an answer (labeled as such, not the answer's evidence) and the lexical
+  list inside hybrid retrieval; meetings not yet indexed during backfill are matched by exact words only, and the answer
+  says so.

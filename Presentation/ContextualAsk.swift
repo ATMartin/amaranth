@@ -99,10 +99,9 @@ public enum ContextualAsk {
     public static func notes(_ e: ContextualEvidence, timeZone: TimeZone) -> [String] {
         var n: [String] = []
         if let r = e.constraints.dateRange { n.append("Searched meetings from \(rangeText(r, timeZone: timeZone)) (“\(r.phrase)”).") }
-        if !e.semantic {
-            n.append(e.coverage.encoderAvailable ? "Matched by keywords only this time." : "Searched by keywords only: contextual search needs the search model.")
-        } else if !e.coverage.complete, e.coverage.meetingsInScope > 0 {
-            n.append("Contextual search covers \(e.coverage.meetingsIndexed) of \(e.coverage.meetingsInScope) meetings so far; the rest were searched by keywords.")
+        if e.semantic, !e.coverage.complete, e.coverage.meetingsInScope > 0 {
+            let left = e.coverage.meetingsInScope - e.coverage.meetingsIndexed
+            n.append("Still getting \(left) of \(e.coverage.meetingsInScope) meetings ready for search; until then they're only matched by their exact words.")
         }
         if e.planFallback { n.append("The question was searched as written (it couldn't be interpreted in time).") }
         if e.constraints.people.contains(where: { $0.role == .selfUser && $0.resolution != .selfMapped }) {

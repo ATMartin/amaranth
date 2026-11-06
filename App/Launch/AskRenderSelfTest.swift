@@ -4,6 +4,7 @@ import Domain
 import Storage
 import Presentation
 import DomainFixtures
+import Models
 
 /// `Amaranth --self-test ui-render-ask --render-dir <dir>` (T115/T116): renders the Ask pane's contextual states —
 /// the loading graphic at each stage (animated and Reduce Motion), waiting, streaming, a cited answer with notes and the
@@ -37,7 +38,7 @@ enum AskRenderSelfTest {
             try? rep.representation(using: .png, properties: [:])?.write(to: out.appending(path: "\(name).png"))
         }
         let answers = AnswerModel(store: store, worker: nil)
-        let notes = ["Searched meetings from Mon Oct 26 to Sun Nov 1 (“last week”).", "Contextual search covers 12 of 40 meetings so far; the rest were searched by keywords."]
+        let notes = ["Searched meetings from Mon Oct 26 to Sun Nov 1 (“last week”).", "Still getting 28 of 40 meetings ready for search; until then they're only matched by their exact words."]
         let done = AnswerResponse(text: "Dana could pick it up once Northgate wraps; nothing was confirmed yet.", citations: [1], confidence: .high, refused: false,
                                   promptTokens: 0, generatedTokens: 0, firstTextSeconds: nil, totalSeconds: 0)
         for (appName, appearance) in [("light", NSAppearance(named: .aqua)!), ("dark", NSAppearance(named: .darkAqua)!)] {
@@ -57,9 +58,32 @@ enum AskRenderSelfTest {
                 render(ScrollView { AnswerSection(answers: answers) }, "answer-\(name)-\(appName)", appearance: appearance)
             }
         }
+        // Model readiness: without the local models or the search model the pane is dimmed and inert with the notice on
+        // top; Settings → Models lists every model with its state. Rendered from forced states (the models root is not read).
+        let packID = models.pack?.id ?? "pack", packVersion = models.pack?.version ?? "0"
+        let readiness: [(String, ModelSetupModel.Status, Bool)] = [
+            ("no-models", .recordOnly(reason: "Models are not installed. Recording works; transcripts and notes need the model pack."), false),
+            ("search-missing", .ready(packID: packID, version: "0.1.1"), false),
+            ("installing", .installing(InstallProgress(phase: .downloading, bytesDone: 260_000_000, bytesTotal: 639_000_000)), false),
+            ("ready", .ready(packID: packID, version: packVersion), true)]
+        for (appName, appearance) in [("light", NSAppearance(named: .aqua)!), ("dark", NSAppearance(named: .darkAqua)!)] {
+            for (name, status, search) in readiness {
+                models.showForRender(status, searchInstalled: search)
+                render(AskPane(), "pane-\(name)-\(appName)", appearance: appearance, size: CGSize(width: 300, height: 520))
+                render(ModelSetupView(model: models).frame(maxHeight: .infinity, alignment: .top), "settings-models-\(name)-\(appName)", appearance: appearance,
+                       size: CGSize(width: 560, height: 640))
+            }
+        }
+        models.showForRender(.ready(packID: packID, version: "0.1.1"), searchInstalled: false)
+        let gated = !models.askReady && models.searchModelMissing && models.pendingDownloadBytes == models.searchModelBytes
+        models.showForRender(.ready(packID: packID, version: packVersion), searchInstalled: true)
+        let open = models.askReady && !models.searchModelMissing
+        SelfTest.log(["step": "ask-readiness", "gatedWithoutSearch": "\(gated)", "openWithSearch": "\(open)"])
+        ok = ok && gated && open
         // Feedback timing: ask() shows the loading state synchronously; cancel stops it synchronously.
         let live = AnswerModel(store: store, worker: nil)
         live.modelReady = { true }
+        live.searchReady = { true }
         let t0 = ContinuousClock.now
         live.ask("When will they ship?", in: f.meeting.id)
         let feedback = Perf.seconds(since: t0)

@@ -10,11 +10,15 @@ import Storage
 /// focuses the field with All meetings as the scope.
 struct AskPane: View {
     @Environment(LibraryModel.self) private var library
+    @Environment(ModelSetupModel.self) private var models
 
     var body: some View {
         @Bindable var library = library
         let groups = AskResults.grouped(library.hits)
         let thisMeetingAvailable = library.selection != nil
+        // Ask always searches by meaning: without the models and the search model the pane is shown dimmed and inert,
+        // with what's missing and the way to Settings → Models on top (checking takes milliseconds at launch: no flash).
+        let usable = models.askReady || models.status == .checking
         VStack(spacing: 0) {
             VStack(alignment: .leading, spacing: AppStyle.grid) {
                 HStack(alignment: .firstTextBaseline) {
@@ -30,23 +34,28 @@ struct AskPane: View {
                 // T42: “This folder” appears while the sidebar shows a folder.
                 BrandSegmented(options: AskScope.options(folderShown: library.filteredFolder != nil, meetingOpen: thisMeetingAvailable), selection: $library.askScope) { $0.label(short: library.filteredFolder != nil) }
                     .accessibilityLabel("Scope")
-                .disabled(!thisMeetingAvailable && library.filteredFolder == nil)
+                .disabled(!usable || !thisMeetingAvailable && library.filteredFolder == nil)
                 .help(library.filteredFolder.map { "Ask about this meeting, the folder “\($0.name)” or all meetings" }
                       ?? (thisMeetingAvailable ? "Ask about this meeting or all meetings" : "Open a meeting to ask about just that meeting"))
             }
             .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.grid + 4).padding(.bottom, AppStyle.grid + 2)
+            .opacity(usable ? 1 : AskUnavailableNotice.dimmed)
             Hairline(opacity: 0.4)
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        SearchModelNotice()
-                        if library.askPanelOpen {
+                        if !usable {
+                            AskUnavailableNotice()
+                            intro.opacity(AskUnavailableNotice.dimmed).accessibilityHidden(true)
+                        } else if library.askPanelOpen {
+                            SearchModelNotice()
                             if let answers = library.answers, answers.phase != .idle {
                                 AnswerSection(answers: answers)
                                 Hairline(opacity: 0.35).padding(.horizontal, AppStyle.double)
                             }
                             results(groups)
                         } else {
+                            SearchModelNotice()
                             intro
                         }
                     }
@@ -56,6 +65,8 @@ struct AskPane: View {
             }
             Hairline(opacity: 0.4)
             AskField()
+                .disabled(!usable)
+                .opacity(usable ? 1 : AskUnavailableNotice.dimmed)
         }
         .background(Color.canvas)
         .accessibilityElement(children: .contain)
@@ -415,21 +426,19 @@ struct PassagesRead: View {
     }
 }
 
-/// Contextual search readiness in the Ask pane (T115): the search model to download (explicit, verified install) or the
-/// meetings still being indexed. Nothing when ready.
+/// Indexing progress in the Ask pane (T115): the meetings still being prepared for search. Nothing when ready.
 struct SearchModelNotice: View {
     @Environment(LibraryModel.self) private var library
-    @Environment(ModelSetupModel.self) private var models
 
     var body: some View {
-        if models.searchModelMissing {
-            notice(icon: "arrow.down.circle", text: "Answers that understand meaning, not just words, need the search model (\(ByteCountFormatter.string(fromByteCount: models.searchModelBytes, countStyle: .file)) download). Until then, Ask matches words.") {
-                Button("Download") { models.install() }.buttonStyle(.brandLink)
+        if let i = library.indexer, i.coverage.encoderAvailable || i.state == .indexing, i.coverage.meetingsInScope > 0, !i.coverage.complete {
+            VStack(alignment: .leading, spacing: AppStyle.half) {
+                Label { Text("Getting meetings ready for search: \(i.coverage.meetingsIndexed) of \(i.coverage.meetingsInScope)\(pauseText(i.state)).").fixedSize(horizontal: false, vertical: true) }
+                    icon: { Image(systemName: "circle.dashed").foregroundStyle(Color.sage) }
+                    .appFont(.caption).foregroundStyle(Color.brandSecondary)
             }
-        } else if case .installing(let p) = models.status {
-            notice(icon: "arrow.down.circle", text: "Downloading the search model… \(Int(100 * Double(p.bytesDone) / Double(max(1, p.bytesTotal))))%") { EmptyView() }
-        } else if let i = library.indexer, i.coverage.encoderAvailable || i.state == .indexing, i.coverage.meetingsInScope > 0, !i.coverage.complete {
-            notice(icon: "circle.dashed", text: "Getting meetings ready for contextual search: \(i.coverage.meetingsIndexed) of \(i.coverage.meetingsInScope)\(pauseText(i.state)).") { EmptyView() }
+            .padding(.horizontal, AppStyle.double).padding(.vertical, AppStyle.grid)
+            .accessibilityElement(children: .combine)
         }
     }
 
@@ -437,14 +446,46 @@ struct SearchModelNotice: View {
         if case .paused(let r) = s { return " (\(r.lowercased()))" }
         return ""
     }
+}
 
-    func notice<A: View>(icon: String, text: String, @ViewBuilder action: () -> A) -> some View {
-        VStack(alignment: .leading, spacing: AppStyle.half) {
-            Label { Text(text).fixedSize(horizontal: false, vertical: true) } icon: { Image(systemName: icon).foregroundStyle(Color.sage) }
-                .appFont(.caption).foregroundStyle(Color.brandSecondary)
-            action().appFont(.caption)
+/// Why Ask can't be used yet, on top of the dimmed pane: no local models (a new install), the search model missing
+/// (an update from before spec 0010) or installing. Setup lives in Settings → Models (T77), like the sidebar footer.
+struct AskUnavailableNotice: View {
+    /// The opacity of the inert pane behind the notice.
+    static let dimmed = 0.4
+    @Environment(ModelSetupModel.self) private var models
+    @Environment(\.openSettings) private var openSettings
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppStyle.grid) {
+            Label { Text(title).appFont(.callout, weight: .semibold).foregroundStyle(Color.brandText) }
+                icon: { Image(systemName: installing ? "arrow.down.circle" : "exclamationmark.triangle.fill").foregroundStyle(installing ? Color.brandSecondary : Color.statusAttention) }
+            Text(message).appFont(.caption).foregroundStyle(Color.brandSecondary).fixedSize(horizontal: false, vertical: true)
+            Button(installing ? "Show Progress in Settings" : "Open Settings → Models") { openSettings(.models) }
+                .buttonStyle(.brandLink).appFont(.caption)
         }
-        .padding(.horizontal, AppStyle.double).padding(.vertical, AppStyle.grid)
-        .accessibilityElement(children: .combine)
+        .padding(AppStyle.grid + 4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 8).fill(Color.surface))
+        .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(Color.controlBorder, lineWidth: 1))
+        .padding(.horizontal, AppStyle.double).padding(.top, AppStyle.double)
+        .accessibilityElement(children: .contain)   // the Settings button stays its own control
+    }
+
+    var installing: Bool { if case .installing = models.status { true } else { false } }
+
+    var title: String {
+        if case .installing(let p) = models.status {
+            return "Installing models… \(Int(100 * Double(p.bytesDone) / Double(max(1, p.bytesTotal))))%"
+        }
+        return models.searchModelMissing ? "Ask needs the search model" : "Ask needs the local models"
+    }
+
+    var message: String {
+        if installing { return "Ask is ready as soon as the install finishes." }
+        if models.searchModelMissing {
+            return "Ask finds what was meant in your meetings, not just the words used, with a search model that runs on this Mac (\(ModelSetupModel.gb(models.pendingDownloadBytes)) download; the models you have are reused). Recording, transcripts and notes keep working."
+        }
+        return "Ask answers from your meetings with models that run on this Mac. Install them in Settings → Models. Recording works without them."
     }
 }

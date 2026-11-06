@@ -72,7 +72,9 @@ final class AnswerModel {
     /// Why the model must wait (transcription using the speech models), or nil. Waited out inside the deadline.
     var busyReason: () -> String? = { nil }
     var modelReady: () -> Bool = { false }
-    /// The encoder producer whose vectors are searched (from the indexer); nil → keyword-only, labeled.
+    /// The search model is installed. Ask always searches by meaning: without it there is no answer (no keyword-only Ask).
+    var searchReady: () -> Bool = { false }
+    /// The encoder producer whose vectors are searched (from the indexer); nil → the one that embeds the question.
     var producer: () -> EncoderProducer? = { nil }
     private var task: Task<Void, Never>?
     private var watchdog: Task<Void, Never>?
@@ -125,7 +127,10 @@ final class AnswerModel {
             guard let self else { return }
             @MainActor func current() -> Bool { if Task.isCancelled { return false }; return self.requestID == id }
             guard self.modelReady(), let worker = self.worker else {
-                self.end(id, .unavailable("Answers need the notes model (Models in the toolbar). The exact word matches are below.")); return
+                self.end(id, .unavailable("Ask needs the local models. Install them in Settings → Models.")); return
+            }
+            guard self.searchReady() else {
+                self.end(id, .unavailable("Ask needs the search model. Install it in Settings → Models.")); return
             }
             if let r = self.recordingReason() { self.end(id, .unavailable(r)); return }
             while let reason = self.busyReason() {
@@ -136,7 +141,8 @@ final class AnswerModel {
                 guard current() else { return }
             }
             self.phase = .working(.searching)
-            let retriever = ContextualRetriever(store: store, models: WorkerContextModels(worker: worker), producer: self.producer(), accountName: NSFullUserName())
+            let retriever = ContextualRetriever(store: store, models: WorkerContextModels(worker: worker), producer: self.producer(), learnsProducer: true,
+                                                accountName: NSFullUserName())
             let evidence: ContextualEvidence
             do {
                 evidence = try await retriever.retrieve(request, previous: previous, requestID: id,
@@ -146,6 +152,12 @@ final class AnswerModel {
                 self.end(id, .failed("The search could not run: \(error.localizedDescription)")); return
             }
             guard current() else { return }
+            // No keyword-only answers: the search model must have read the question.
+            guard evidence.semantic else { self.end(id, .failed("The search model couldn't read the question. Try again.")); return }
+            // Nothing indexed yet (just after the search model installed): an answer now would rest on exact words alone.
+            if evidence.coverage.meetingsInScope > 0, evidence.coverage.meetingsIndexed == 0 {
+                self.end(id, .unavailable("Your meetings are still being prepared for search (it runs when nothing else is). Ask again in a moment.")); return
+            }
             let tz = TimeZone.current
             self.notes = ContextualAsk.notes(evidence, timeZone: tz)
             self.lastConstraints = evidence.constraints
@@ -216,7 +228,7 @@ final class AnswerModel {
         response = a
         text = a.text
         phase = .done
-        if partial, !a.refused, !notes.contains(where: { $0.hasPrefix("Contextual search covers") }) {
+        if partial, !a.refused, !notes.contains(where: { $0.hasPrefix("Still getting") }) {
             notes.append("Contextual search hasn't finished indexing every meeting yet; this answer may be incomplete.")
         }
         if !a.refused { history = Array((history + [AnswerTurn(question: question, answer: a.text)]).suffix(AskFollowUp.maxTurns)) }

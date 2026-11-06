@@ -53,8 +53,8 @@ struct ContextualRetrieverTests {
     func lib() throws -> Lib { Lib(store: try MeetingStore(root: FileManager.default.temporaryDirectory.appending(path: "amr-ctxret-\(UUID())"))) }
 
     func ask(_ l: Lib, _ q: String, scope: ContextualRequest.Scope = .all, history: [AnswerTurn] = [], models: Models = Models(), producer: EncoderProducer? = FakeEncoder.producer,
-             planBudget: Double = 4.5) async throws -> ContextualEvidence {
-        try await ContextualRetriever(store: l.store, models: models, producer: producer)
+             learnsProducer: Bool = false, planBudget: Double = 4.5) async throws -> ContextualEvidence {
+        try await ContextualRetriever(store: l.store, models: models, producer: producer, learnsProducer: learnsProducer)
             .retrieve(ContextualRequest(question: q, scope: scope, requestTime: Self.now, timeZoneIdentifier: Self.tz, history: history),
                       previous: nil, requestID: UUID().uuidString, planDeadline: Date().addingTimeInterval(planBudget))
     }
@@ -113,6 +113,17 @@ struct ContextualRetrieverTests {
         // Keyword only (no encoder): still answers from FTS, labeled not semantic.
         let k = try await ask(l, "where is the Lisbon venue", producer: nil)
         #expect(!k.semantic && k.passages.contains { $0.passage.meetingID == pending })
+    }
+
+    /// The app's Ask: no producer reported yet (the indexer hasn't embedded a batch this launch) still searches by
+    /// meaning with the encoder that embedded the question — never keyword-only.
+    @Test func unknownProducerIsLearnedFromTheQuestionEmbedding() async throws {
+        let l = try lib()
+        let m = try l.meeting("Staffing", [(nil, "Dana could pick that up once her current work wraps")], start: "2026-11-02T10:00:00-05:00")
+        try l.embedAll()
+        let e = try await ask(l, "Dana could pick that up once her current work wraps", producer: nil, learnsProducer: true)
+        #expect(e.semantic && e.coverage.complete)
+        #expect(e.passages.contains { $0.passage.meetingID == m })
     }
 
     @Test func slowPlanningFallsBackWithinBudgetAndKeepsConstraints() async throws {

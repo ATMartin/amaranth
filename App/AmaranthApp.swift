@@ -66,6 +66,7 @@ struct AmaranthApp: App {
         // T54: answers from the notes model, only while it can't push the speech models out (notes 0002, processing 0003).
         let answers = AnswerModel(store: recorder.store, worker: worker)
         answers.modelReady = ModelSetupModel.isReady
+        answers.searchReady = ModelSetupModel.isSearchReady
         // T115: a recording ends the attempt at once with the reason (a later Retry is a new attempt); transcription is
         // waited out inside the 15 s.
         answers.recordingReason = { [weak recorder] in
@@ -109,6 +110,7 @@ struct AmaranthApp: App {
         _incremental = State(initialValue: incremental)
         _live = State(initialValue: live)
         let models = ModelSetupModel()
+        library.askAvailable = { [weak models] in models?.askReady ?? false }
         // Core ML compiles each model for this Mac on its first load (about 16 s for ASR): do it now, not on the first job.
         models.onInstalled = { [weak indexer] in
             indexer?.kick()

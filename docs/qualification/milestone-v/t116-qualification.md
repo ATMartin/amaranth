@@ -109,4 +109,6 @@ negation 1/2. Misses: h04, h11, h20, h21, h34, h43. Planning p50 1.12 s / p95 1.
 Contextual search needs the 639 MB search model: the Ask pane offers **Download** (pack 0.1.2; files already
 installed are reused, only the encoder is fetched). Existing meetings are indexed in the background, newest first, only
 while nothing else runs; the Ask pane shows "Getting meetings ready… n of m" and answers say when coverage is partial.
-A replaced encoder rebuilds the index automatically; without it Ask still works by keywords and says so.
+A replaced encoder rebuilds the index automatically. *Superseded 2026-11-06 (spec 0010 amendment): there is no
+keyword-only Ask; without the search model the Ask pane is dimmed with a link to Settings → Models, the sidebar footer
+warns, and Settings → Models lists the search model with the others.*

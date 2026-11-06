@@ -52,12 +52,15 @@ public struct RankedPassage: Sendable, Hashable {
 public final class ContextualRetriever: Sendable {
     public let store: MeetingStore
     public let models: any ContextualModels
-    /// The producer whose vectors are searched (from the indexer); nil → keyword only.
+    /// The producer whose vectors are searched (from the indexer); nil → keyword only, unless `learnsProducer`.
     public let producer: EncoderProducer?
+    /// With no known producer, search the vectors of the encoder that embedded the question (the app: Ask always
+    /// searches by meaning once the search model is installed, even before the indexer has reported its producer).
+    public let learnsProducer: Bool
     public let accountName: String?
 
-    public init(store: MeetingStore, models: any ContextualModels, producer: EncoderProducer?, accountName: String? = nil) {
-        self.store = store; self.models = models; self.producer = producer; self.accountName = accountName
+    public init(store: MeetingStore, models: any ContextualModels, producer: EncoderProducer?, learnsProducer: Bool = false, accountName: String? = nil) {
+        self.store = store; self.models = models; self.producer = producer; self.learnsProducer = learnsProducer; self.accountName = accountName
     }
 
     public enum Failure: Error, Sendable { case deadline, cancelled }
@@ -76,12 +79,12 @@ public final class ContextualRetriever: Sendable {
         }
         // Plan and embed the question concurrently.
         let models = self.models
-        let semanticOn = producer != nil
+        let semanticOn = producer != nil || learnsProducer
         // A follow-up (“which of those are locked in?”) also searches with the question it follows, so its subject is
         // never lost even if planning fails.
         let followUpText = request.history.last.map { $0.question + " " + request.question }
         let firstTexts = [request.question] + (followUpText.map { [$0] } ?? [])
-        async let questionVectors: [[Float]] = semanticOn ? ((try? await models.embedQueries(requestID: requestID + "-q", texts: firstTexts).unpacked()) ?? []) : []
+        async let questionEmbedding: EmbedResponse? = semanticOn ? (try? await models.embedQueries(requestID: requestID + "-q", texts: firstTexts)) : nil
         let planned: PlanResponse = await withTaskGroup(of: PlanResponse?.self) { g in
             g.addTask { try? await models.plan(requestID: requestID + "-plan", question: request.question, history: request.history) }
             g.addTask {
@@ -97,7 +100,9 @@ public final class ContextualRetriever: Sendable {
         try Task.checkCancellation()
         timings["plan"] = planned.seconds
         let plan = planned.plan
-        let qvs = await questionVectors
+        let questionEmbed = await questionEmbedding
+        let qvs = questionEmbed?.unpacked() ?? []
+        let searched: EncoderProducer? = producer ?? (learnsProducer ? questionEmbed?.producer : nil)
         timings["embedQuestion"] = Perf.seconds(since: t0)
 
         // Constraints → filter (dates before candidates).
@@ -114,7 +119,7 @@ public final class ContextualRetriever: Sendable {
                                                      mentioned: { [store] in (try? store.mentions($0, filter: peopleFilter)) ?? false })
         let meetings = try store.contextMeetings(filter)
         let generations = try store.contextGenerations(meetings)
-        let coverage = try store.contextCoverage(filter, producer: producer?.id)
+        let coverage = try store.contextCoverage(filter, producer: searched?.id)
 
         // Query vectors for paraphrases and subquestions (one foreground batch).
         let extraTexts = Array((plan.semanticQueries + plan.subquestions).prefix(ContextualLimits.maxSemanticQueries + ContextualLimits.maxSubquestions - 1))
@@ -130,9 +135,9 @@ public final class ContextualRetriever: Sendable {
         let tc = ContinuousClock.now
         var lists: [[Key]] = []
         var subLists: [String: [Key]] = [:]
-        if let producer, !meetings.isEmpty {
+        if let searched, !meetings.isEmpty {
             for (text, v) in vectors {
-                let hits = try store.vectorSearch(v, producer: producer, filter: filter, k: ContextualLimits.candidatesPerList)
+                let hits = try store.vectorSearch(v, producer: searched, filter: filter, k: ContextualLimits.candidatesPerList)
                 let keys = hits.map { Key(meeting: $0.meetingID, kind: 0, ref: String($0.ordinal)) }
                 lists.append(keys)
                 if plan.subquestions.contains(text) { subLists[text] = keys }
@@ -256,7 +261,7 @@ public final class ContextualRetriever: Sendable {
         timings["expand"] = Perf.seconds(since: te)
         timings["retrieval"] = Perf.seconds(since: tr)
         return ContextualEvidence(passages: out, plan: plan, planFallback: planned.fallback, constraints: constraints, coverage: coverage,
-                                  semantic: semanticOn && !vectors.isEmpty, generations: generations, timings: timings, scopeMeetings: meetings.count)
+                                  semantic: searched != nil && !vectors.isEmpty, generations: generations, timings: timings, scopeMeetings: meetings.count)
     }
 
     /// Rerank weights, frozen from the dev-set sweep (t114-retrieval.md): the lexical list weighs as much as all semantic

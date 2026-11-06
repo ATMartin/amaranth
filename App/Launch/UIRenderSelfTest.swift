@@ -525,7 +525,7 @@ enum UIRenderSelfTest {
         _ = await host(OnboardingView {}, "onboarding", size: CGSize(width: 560, height: 520))
         // T77: model setup lives only in Settings → Models (at the Settings size); the sidebar footer in each state.
         _ = await host(ModelSetupView(model: models).frame(maxHeight: .infinity, alignment: .top), "settings-models", size: CGSize(width: 560, height: 640))
-        for (kind, name) in [(LocalModelFooter.Kind.ready, "ready"), (.installing, "installing"), (.missing, "missing")] {
+        for (kind, name) in [(LocalModelFooter.Kind.ready, "ready"), (.installing, "installing"), (.missing, "missing"), (.searchMissing, "search-missing")] {
             _ = await host(LocalModelFooter(state: kind).background(Color.canvas), "sidebar-footer-\(name)", size: CGSize(width: 200, height: 40))
         }
         _ = await host(VStack(alignment: .leading, spacing: 6) { MenuBarContent(recorder: recorder) }.padding(), "menu-bar", size: CGSize(width: 260, height: 180))

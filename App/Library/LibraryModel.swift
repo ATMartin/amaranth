@@ -62,6 +62,8 @@ final class LibraryModel {
     private var tabAppliedFor: MeetingID?
     /// Set by the app: whether the notes model is installed (no model → never auto-switch to Notes).
     var notesModelReady: () -> Bool = { false }
+    /// Ask can run (models and search model installed); the pane is inert otherwise (no keyword-only Ask).
+    var askAvailable: () -> Bool = { true }
     enum DetailTab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Audio details" }
     /// Bumped by ⌘K; the ask field takes focus.
     var askFocusRequest = 0
@@ -173,7 +175,7 @@ final class LibraryModel {
             if shown.indices.contains(i) { open(shown[i]) }
             return
         }
-        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty, askAvailable() else { return }
         askPanelOpen = true
         runSearch()
         answers?.ask(query, in: AskResults.effectiveScope(askScope, meeting: selection), folder: askFolder)
@@ -184,7 +186,7 @@ final class LibraryModel {
 
     /// The scope switched with an answer on screen: answer again over the new scope.
     private func reaskIfAnswered() {
-        guard let answers, answers.phase != .idle, !answers.question.isEmpty else { return }
+        guard askAvailable(), let answers, answers.phase != .idle, !answers.question.isEmpty else { return }
         answers.ask(answers.question, in: AskResults.effectiveScope(askScope, meeting: selection), folder: askFolder)
     }
 
