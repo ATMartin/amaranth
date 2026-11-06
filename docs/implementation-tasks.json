@@ -35,11 +35,12 @@
       "remaining_failures",
       "next_ready_task"
     ],
-    "milestone_order": "S (shared read model and portable export, T97–T100; spec 0009 accepted 2026-11-03, user picked S up ahead of T21) → T21 (trimmed) → Feedback round → F (trimmed). T and U (spec 0009) stay proposed and unplaced. Earlier, superseded: T96 (delete lines, start/end here; user request 2026-11-02, before any more milestones) → Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
+    "milestone_order": "V (contextual local search, T109–T116; user requested the next milestone 2026-11-06; spec 0010, product requirements confirmed 2026-11-06) → T117 (keep-audio setting and stored-audio controls, user request 2026-11-06) → T21 (trimmed) → T (read-only local MCP) → U (managed vault mirror) → Feedback round → F (trimmed). S is done. The recorded placement of T/U after T21 is preserved; L, P and T15 stay parked. Existing loose ends and hands-on checks remain tracked. Previous order: T21 (trimmed) → T (read-only local MCP, T101–T104) → U (managed vault mirror, T105–T108) → Feedback round → F (trimmed) (user decision 2026-11-06, after S was done: T and U placed as numbers 2 and 3, Feedback round moved after U, F stays last). Earlier, superseded: S (shared read model and portable export, T97–T100; spec 0009 accepted 2026-11-03, user picked S up ahead of T21) → T21 (trimmed) → Feedback round → F (trimmed), with T and U proposed and unplaced. Earlier still: T96 (delete lines, start/end here; user request 2026-11-02, before any more milestones) → Q (updates, un-parked and extended to GitHub Releases, user decision 2026-11-02) → T21 (trimmed) → Feedback round → F (trimmed). Loose ends → T21 (trimmed) → Feedback round → F (trimmed) (user decision 2026-10-31, after reviewing the remaining milestones; R is done). Loose ends: rerun the full ui-render and timing self-tests on a quiet machine; settle the open question from Milestone R (should a user line cited by a generated item stay visible?); hands-on checklist items 59–85 belong to the user. Feedback round: the user uses the app for about a week, then the feedback becomes its own small milestone (like Polish and Polish 2), with tasks written then. Later (parked, tasks kept as written): L (notes templates, T46–T48: not needed yet), P (Google Calendar, T62–T66: kept as a Later option for future integrations, since EventKit from Milestone O covers calendars added to macOS), T15.",
     "milestone_order_2026_10_23": "Superseded by milestone_order (2026-10-26). G → T21 → H → I → J → K → L → M → N → F (user decision 2026-10-23: quick wins first, then qualify Milestone E, then the larger UI milestones, then release qualification). Order among H–N is a recommendation; H and I unblock the most daily use.",
     "milestone_validation": "Every milestone ends with an independent Sonnet validator pass against the milestone's acceptance criteria before its commit (see docs/qualification/*-validation-brief.md for the format). Commit per milestone to main.",
     "design_review": "docs/design-review/2026-10-23/ (transcript.md with timestamps, reference images) and docs/decisions/0005-design-review-2026-10-23.md",
     "milestone_order_2026_10_30": "Superseded by milestone_order (2026-10-31). R → L → T21 → F → P → Q (user decision 2026-10-30: Milestone R before L; J, Polish and Polish 2 are done). Earlier: K → M → N → O → Fixes → J → L → T21 → F → P → Q (user decision 2026-10-26, after Milestone I; O placed right after N on 2026-10-27; P placed last on 2026-10-27; Q (local updates) placed after P on 2026-10-27 as “for later”; small fixes (T67+) placed before J on 2026-10-27 (spec 0007 still proposed, its open questions unanswered); G, H, I, K and M are done). Replaces the 2026-10-23 order below. Dependencies were checked for this order: T49 no longer depends on T39 and T52 no longer on T40 (both were sequencing only, not functional; see their notes). T21 now runs after L, so L's default template must reproduce today's notes (notes-v3) for T21's comparison against baseline-v0 to stay meaningful.",
+    "contextual_search_2026_11_06": "Milestone V defined with user-confirmed requirements 2026-11-06; implementation not started. Spec docs/decisions/0010-contextual-search-spec.md. Direct answers with clickable citations; local LLM query interpretation + transcript embeddings + FTS; backfill/current-content lifecycle. Maximum 15 seconds per foreground attempt including cold load/queueing, with friendly Inner Circle / Forest loading graphic (T115) and warm/cold/loading validation (T116). Prioritize general questions over mostly unnamed transcripts: Trane staffing in the past week, final strategic planning decisions for 2027 and self-commitments in calls today. Resolve I/my only from supported user attribution; separate speaker-naming rollout is not a prerequisite. T109 freezes evaluation/execution limits; T110 measures models against the shared 15-second budget.",
     "external_access_proposal_2026_11_02": "User requested a plan for exposing meeting history to external AI tools/vaults. Proposed S → T → U (optional), spec docs/decisions/0009-external-meeting-access-spec.md. Suggested after Q if prioritized; placement relative to T21/feedback/F remains undecided. Existing approved milestone_order is unchanged. First client/vault preference is still to be selected; default supports local MCP clients and portable Markdown equally."
   },
   "milestones": {
@@ -60,14 +61,15 @@
     "N": "Ask anything over meetings (local, evidence-backed): T52-T55",
     "O": "Calendar integration (EventKit, local calendars): T56-T61. Spec docs/decisions/0006 accepted 2026-10-27 (always ask before linking, keep the reminder, unlink keeps people); placed after N; done and validated 2026-10-27 (verdict v1 PASS WITH FIXES, fixes applied). Scope 2026-10-27: T61 included, real calendars may be read during validation, validator may link one meeting then revert",
     "P": "Google Calendar integration (direct, read-only Google Calendar API): T62-T66. Spec docs/decisions/0007, proposed 2026-10-27 by user request after Milestone O, pending review (open questions in the spec); placed last in the milestone order (after F) 2026-10-27; the spec's open questions 1-5 stay open until the user works through them. Parked as Later 2026-10-31 (kept on purpose for future integrations); open questions stay open",
-    "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit",
+    "Fixes": "Small fixes and features the user asked for before Milestone J (2026-10-27): T67 (scroll stuck after Stop), T68 (quiet-recording alert), T69 (local install script). Each in its own commit. T117 (keep-audio setting + Delete all stored audio, user request 2026-11-06), placed after V and before T21.",
     "Q": "Updates (“Check for Updates…” from GitHub Releases, plus a local folder): T70–T73. Planned 2026-10-27 as local-only; parked 2026-10-31; un-parked and extended 2026-11-02 (user: stop copying DMGs between Macs). User decisions 2026-10-27 still hold: Release and Debug builds are both published, Debug offered only with a Settings opt-in; a quiet note when a newer build exists (never install on its own); no rollbacks. 2026-11-02: remote source = GitHub Releases on the public repo ATMartin/amaranth (zipped app + manifest.json per release; Debug as prerelease; downloads need no token, so builds are public); publishing happens only when the user asks (scripts/publish.sh; install-local.sh stays local); checks at launch and from the menu only, no periodic timer. Not notarized (free personal team): trust rests on the same bundle ID + team ID codesign check. The update check is the app's only network call besides model downloads; Settings → Updates → Off disables it, and F's offline qualification must account for it.",
     "Polish": "Visual feedback on the Inner Circle redesign (screencast review 2026-10-28): T74–T82. User decisions 2026-10-28: dark-mode accent becomes rose amaranth #C25A7C (below AA on purpose, to experiment); meeting cards keep only a processing spinner and a failure mark; the models button leaves the toolbar for a Settings tab, and the sidebar footer warns when no local model is installed. Each task in its own commit.",
     "Polish 2": "UI feedback after a few meetings on the restyled build (2026-10-28): T83–T88. Placed next, before L (user asked for these right away; one DMG after all of them for the user to validate at once). Each task in its own commit.",
     "R": "One notes field per meeting (personal/private notes removed; editable notes; typing during the meeting feeds generation): T89–T95. Spec docs/decisions/0008 accepted 2026-10-30 with all recommendations (user lines always survive, Regenerate asks and keeps history, snapshot + 'Replace?' while generating, inline source chips, rich-text editor, typed-at times). Never-included scratchpads are deleted by the v6 migration (user, 2026-10-31). Placed next, before L; L's tasks are revised in T94.",
     "S": "Shared external read model, citations, bounded retrieval and portable bulk export (T97–T100). Spec docs/decisions/0009-external-meeting-access-spec.md accepted 2026-11-03; placed next, before T21 (user decision 2026-11-03). Run decisions: commit per task; T98 scale measured on a 200-meeting synthetic library (the 1,000-meeting gate is reported as not measured, user decision); T100 reads the export with a parser script plus a throwaway Obsidian vault; after validation back up the real library and install locally (no publish). Done and validated 2026-11-03 (T97 39c541d, T98 e9c72f3, T99 f9cc506, T100 + validator fixes; verdict v1 PASS WITH FIXES, v2 PASS).",
-    "T": "Proposed: read-only local MCP with app-owned broker, scoped grants and packaged client setup (T101–T104). After S; spec docs/decisions/0009-external-meeting-access-spec.md.",
-    "U": "Optional proposed follow-on: one-way managed Markdown/JSON vault mirror with safe reconciliation (T105–T108). After T; spec docs/decisions/0009-external-meeting-access-spec.md."
+    "T": "Placed after T21 (user decision 2026-11-06). Proposed: read-only local MCP with app-owned broker, scoped grants and packaged client setup (T101–T104). After S; spec docs/decisions/0009-external-meeting-access-spec.md.",
+    "U": "Placed after T, before the Feedback round (user decision 2026-11-06). Optional proposed follow-on: one-way managed Markdown/JSON vault mirror with safe reconciliation (T105–T108). After T; spec docs/decisions/0009-external-meeting-access-spec.md.",
+    "V": "Contextual local search over conversation transcripts: T109–T116. User requested 2026-11-06 as the next milestone, after completed S and before T21/T/U/feedback/F. Spec docs/decisions/0010-contextual-search-spec.md; product requirements confirmed 2026-11-06: direct cited answers, maximum 15 seconds including cold load, friendly on-theme loading graphic, priority general questions over unnamed transcripts. Includes local query planning, dedicated embeddings, versioned incremental/backfill indexing, hybrid retrieval, evidence-backed answers and contextual source results. T/U are not prerequisites; no cloud search or automatic speaker identity."
   },
   "tasks": [
     {
@@ -3104,7 +3106,7 @@
       "id": "T101",
       "title": "Build app-owned local access with scoped revocable grants",
       "milestone": "T",
-      "status": "proposed (2026-11-02): not started",
+      "status": "proposed (2026-11-02), placed in milestone order 2026-11-06: not started",
       "optional": false,
       "depends_on": [
         "T100"
@@ -3138,7 +3140,7 @@
       "id": "T102",
       "title": "Bundle a read-only stdio MCP server",
       "milestone": "T",
-      "status": "proposed (2026-11-02): not started",
+      "status": "proposed (2026-11-02), placed in milestone order 2026-11-06: not started",
       "optional": false,
       "depends_on": [
         "T101"
@@ -3171,7 +3173,7 @@
       "id": "T103",
       "title": "Add integration settings and installable client configuration",
       "milestone": "T",
-      "status": "proposed (2026-11-02): not started",
+      "status": "proposed (2026-11-02), placed in milestone order 2026-11-06: not started",
       "optional": false,
       "depends_on": [
         "T102"
@@ -3205,7 +3207,7 @@
       "id": "T104",
       "title": "Qualify live AI querying in packaged desktop clients",
       "milestone": "T",
-      "status": "proposed (2026-11-02): not started",
+      "status": "proposed (2026-11-02), placed in milestone order 2026-11-06: not started",
       "optional": false,
       "depends_on": [
         "T103"
@@ -3235,7 +3237,7 @@
       "id": "T105",
       "title": "Reconcile a one-way managed meeting directory",
       "milestone": "U",
-      "status": "proposed (2026-11-02): not started",
+      "status": "proposed (2026-11-02), placed in milestone order 2026-11-06: not started",
       "optional": true,
       "depends_on": [
         "T104"
@@ -3266,7 +3268,7 @@
       "id": "T106",
       "title": "Schedule bounded mirror updates while Amaranth runs",
       "milestone": "U",
-      "status": "proposed (2026-11-02): not started",
+      "status": "proposed (2026-11-02), placed in milestone order 2026-11-06: not started",
       "optional": true,
       "depends_on": [
         "T105"
@@ -3299,7 +3301,7 @@
       "id": "T107",
       "title": "Add managed vault setup, conflict resolution and safe stop",
       "milestone": "U",
-      "status": "proposed (2026-11-02): not started",
+      "status": "proposed (2026-11-02), placed in milestone order 2026-11-06: not started",
       "optional": true,
       "depends_on": [
         "T106"
@@ -3331,7 +3333,7 @@
       "id": "T108",
       "title": "Qualify managed export in a real vault and under failure",
       "milestone": "U",
-      "status": "proposed (2026-11-02): not started",
+      "status": "proposed (2026-11-02), placed in milestone order 2026-11-06: not started",
       "optional": true,
       "depends_on": [
         "T107"
@@ -3355,6 +3357,328 @@
         "Stopping/removing managed files behaves as previewed; user modifications and unrelated files survive, and no real meeting text or credentials are committed."
       ],
       "fallback": "Leave U optional until lifecycle and recovery gates pass; Milestones S and T remain usable independently.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T109",
+      "title": "Define contextual question semantics, contracts and held-out evaluation",
+      "milestone": "V",
+      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "optional": false,
+      "depends_on": [
+        "T100"
+      ],
+      "owner_role": "Retrieval design and evaluation",
+      "module_scope": [
+        "Domain/",
+        "Benchmarks/",
+        "docs/decisions/",
+        "docs/qualification/",
+        "docs/implementation-tasks.json"
+      ],
+      "context": "Read docs/decisions/0010-contextual-search-spec.md first. Milestone V is a planning request (2026-11-06); implementation has not started. Build on N local answers and S current-content projection/citations. Keep app-owned single writer, scoped current corrected/trimmed transcripts, local-only inference, capture/transcription priority and explicit verified model downloads. Do not read the live user library for fixtures. User confirmed direct cited answers, a hard 15-second foreground deadline including cold load, friendly on-theme loading feedback and general questions over mostly unnamed transcripts. Separate speaker naming is not a prerequisite; I/my needs supported user attribution. Preserve default model-free MeetingAccess behavior; no dependency on proposed MCP/vault milestones T/U.",
+      "deliverables": [
+        "Apply confirmed product requirements and freeze question semantics: general questions over mostly unnamed transcripts, staffing availability/assignments, explicit final decisions versus proposals/reversals, self-commitments with supported I/my attribution, meeting dates versus dates discussed and follow-ups. Use all three user scenarios from spec 0010 plus Andrew as evaluation cases; separate naming rollout is not a prerequisite.",
+        "Define typed versioned chunk/encoder/plan/retrieval/freshness contracts and exact input/token/candidate/round/deadline limits from spec 0010; require explicit UI scope intersection and current source spans for citations. Freeze the single 15-second end-to-end foreground deadline including queueing/cold startup and UI delivery; clarification/partial/timeout states must be explicit, and timeouts count as quality misses.",
+        "Build tuning fixtures and a distinct held-out set separated by meeting/scenario: >=60 questions (40 answerable including >=20 paraphrases and >=10 combined person/date cases, 10 unanswerable, 10 ambiguous/adversarial). Label all required spans and answer meaning; freeze the held-out set before tuning.",
+        "Run the existing lexical + answer pipeline as baseline, preserving N/S regression sets and recording source coverage before and after prompt fitting. Freeze the human scoring rubric and proposed quality/performance gates with raw denominators."
+      ],
+      "acceptance": [
+        "The Trane staffing, final 2027 planning decision and today's promised actions scenarios work with unnamed speakers wherever the content suffices; self/Andrew attribution requires explicit support. Include tentative assignments, reopened decisions, wrong-period distractors and commitments made by others.",
+        "DST/calendar-week boundaries, follow-up date replacement, ambiguous names, corrections, negation, transcript trimming and incomplete indexing have explicit expected outcomes.",
+        "Contracts and evaluation manifest include scenario split, fixture hashes/provenance, all required spans, latency definitions and executable limits; report baseline misses without tuning on held-out outcomes."
+      ],
+      "fallback": "Keep unresolved product choices explicit; use recommended defaults only where the user has delegated judgment. Do not implement a vague semantic-search feature without testable meaning and source freshness rules.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T110",
+      "title": "Select and pin a local embedding encoder and runtime",
+      "milestone": "V",
+      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "optional": false,
+      "depends_on": [
+        "T109"
+      ],
+      "owner_role": "Local inference and model packaging",
+      "module_scope": [
+        "Models/",
+        "Notes/Engine/",
+        "InferenceWorker/",
+        "Domain/Worker/",
+        "Package.swift",
+        "project.yml",
+        "Benchmarks/",
+        "Tests/Models/",
+        "Tests/Notes/",
+        "docs/decisions/models/",
+        "App/Resources/THIRD_PARTY_NOTICES.md"
+      ],
+      "context": "Read docs/decisions/0010-contextual-search-spec.md first. Milestone V is a planning request (2026-11-06); implementation has not started. Build on N local answers and S current-content projection/citations. Keep app-owned single writer, scoped current corrected/trimmed transcripts, local-only inference, capture/transcription priority and explicit verified model downloads. Do not read the live user library for fixtures. User confirmed direct cited answers, a hard 15-second foreground deadline including cold load, friendly on-theme loading feedback and general questions over mostly unnamed transcripts. Separate speaker naming is not a prerequisite; I/my needs supported user attribution. Preserve default model-free MeetingAccess behavior; no dependency on proposed MCP/vault milestones T/U.",
+      "deliverables": [
+        "Evaluate Qwen3-Embedding-0.6B first with the pinned llama.cpp b11669; prove actual embedding API, tokenizer, retrieval instruction, pooling, normalization, dimensions, batching and packaged offline execution. Compare a smaller compatible encoder if needed.",
+        "Benchmark encoder-only and hybrid candidate recall on development fixtures, including long turns and name/date distractors. Compare quantization/vector dimensions; reject non-finite, zero or wrong-dimension vectors.",
+        "Pin model revision, artifact hashes, conversion/quantization, license, producer identity and verified installation path; report actual download/disk size, load/query/batch latency and physical footprint alongside the answer model.",
+        "Choose bounded contexts/batches and load/unload policy. Document any runtime upgrade with ASR/notes/answers regression evidence rather than silently changing the shared runtime. Budget cold model startup/switching together with query planning, retrieval and final answer/checking inside 15 seconds; no 25-second cold exception."
+      ],
+      "acceptance": [
+        "A packaged worker generates compatible query/document vectors offline with no external Python/server dependency or network calls after explicit installation.",
+        "Producer identity captures every setting that changes the vector space; model cards/runtime support are verified, not inferred from sharing the Qwen name.",
+        "Measured quality, memory and latency support the proposed workflow; no claim that a generic chat-model embedding or an upstream leaderboard proves app retrieval quality. Report whether cold and warm foreground attempts meet the full 15-second deadline; a timeout is not a successful answer."
+      ],
+      "fallback": "Benchmark another supported small encoder on the same development set. A model/runtime failure blocks semantic-search completion; keep keyword lookup available and explicitly report the gap.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T111",
+      "title": "Add versioned transcript chunks and local vector storage",
+      "milestone": "V",
+      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "optional": false,
+      "depends_on": [
+        "T109",
+        "T110"
+      ],
+      "owner_role": "Storage and source provenance",
+      "module_scope": [
+        "Storage/",
+        "Domain/",
+        "MeetingAccess/",
+        "Tests/Storage/",
+        "Tests/DataLifecycle/",
+        "Benchmarks/"
+      ],
+      "context": "Read docs/decisions/0010-contextual-search-spec.md first. Milestone V is a planning request (2026-11-06); implementation has not started. Build on N local answers and S current-content projection/citations. Keep app-owned single writer, scoped current corrected/trimmed transcripts, local-only inference, capture/transcription priority and explicit verified model downloads. Do not read the live user library for fixtures. User confirmed direct cited answers, a hard 15-second foreground deadline including cold load, friendly on-theme loading feedback and general questions over mostly unnamed transcripts. Separate speaker naming is not a prerequisite; I/my needs supported user attribution. Preserve default model-free MeetingAccess behavior; no dependency on proposed MCP/vault milestones T/U.",
+      "deliverables": [
+        "Add app-owned SQLite schema/migrations for derived current-transcript chunks, source spans, vector blobs, producer identities and per-meeting indexing state. Keep generation/citation parity with S and a single writer.",
+        "Chunk current corrected/trimmed transcripts by turns with bounded overlap and token limits (initially 200–400 encoder tokens); split oversized turns without truncation. Preserve exact source text, speaker labels, segment/word ranges and all required context.",
+        "Implement scope-first vector reads/exact cosine baseline with bounded memory, compatible-generation checks and metadata filters independent of encoder text; benchmark chunk/vector counts and storage growth.",
+        "Invalidate affected derived records inside content-changing transactions for edits/retranscription/trims/line restore/rename/reassignment/deletion. Metadata/folder changes update filter generation; content hashes reuse unchanged chunks. Add guarded atomic publication that rejects stale sources/producers."
+      ],
+      "acceptance": [
+        "Opening/migrating an existing library preserves transcripts/notes/audio; migration never generates embeddings while holding the database writer.",
+        "Every chunk resolves to current spans; hidden/deleted words never enter new chunks, source fetches or citations. Full deletion removes vectors/jobs; audio-only deletion preserves retrieval.",
+        "Wrong dimensions/producer, changed revisions, concurrent edits, deletion and metadata/folder moves cannot produce a mixed/stale/out-of-scope generation."
+      ],
+      "fallback": "Use ordinary SQLite vectors and measured exact search first. If a local vector extension is necessary, record packaging/license/recall/deletion tradeoffs and prove scope and lifecycle semantics before adoption.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T112",
+      "title": "Build resumable backfill and incremental local indexing",
+      "milestone": "V",
+      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "optional": false,
+      "depends_on": [
+        "T111"
+      ],
+      "owner_role": "Worker orchestration",
+      "module_scope": [
+        "App/",
+        "InferenceWorker/",
+        "Domain/Worker/",
+        "Models/",
+        "Storage/",
+        "Tests/Jobs/",
+        "Tests/DataLifecycle/",
+        "Benchmarks/"
+      ],
+      "context": "Read docs/decisions/0010-contextual-search-spec.md first. Milestone V is a planning request (2026-11-06); implementation has not started. Build on N local answers and S current-content projection/citations. Keep app-owned single writer, scoped current corrected/trimmed transcripts, local-only inference, capture/transcription priority and explicit verified model downloads. Do not read the live user library for fixtures. User confirmed direct cited answers, a hard 15-second foreground deadline including cold load, friendly on-theme loading feedback and general questions over mostly unnamed transcripts. Separate speaker naming is not a prerequisite; I/my needs supported user attribution. Preserve default model-free MeetingAccess behavior; no dependency on proposed MCP/vault milestones T/U.",
+      "deliverables": [
+        "Schedule indexing after final transcript publication independently of notes, plus resumable backfill of existing transcripts. Never require retranscription or index provisional live text.",
+        "Persist content-keyed bounded work/checkpoints, coverage and errors; worker computes from immutable inputs and app writer validates/publishes current results. Support pause/retry/rebuild and encoder-version replacement.",
+        "Arbitrate index inference with capture/transcription/notes/Ask: indexing yields first, foreground Ask does not queue behind all backfill, recording and pressure cancel/yield bounded work. Bound queue, batch and resident memory. Foreground queue delay consumes the same 15-second request budget; unavailable/recording waits are reported promptly instead of hidden behind an indefinite loading animation.",
+        "Handle worker crash/relaunch, cancelled/repeated jobs, corrupt/missing model, low disk, edit/delete during generation and late replies; expose machine-readable readiness for UI and answer coverage."
+      ],
+      "acceptance": [
+        "Existing/new meetings become searchable without regenerating notes; restart resumes backfill idempotently and does not mix model generations.",
+        "Deletion/edit while indexing cannot publish obsolete vectors; record/cancel/pressure paths stop obsolete work promptly without blocking capture.",
+        "Measured backfill throughput, database growth and physical footprint at the scale fixture are reported; partial coverage and failed jobs remain distinguishable."
+      ],
+      "fallback": "Pause background indexing and retain explicit limited keyword lookup on resource failure; never silently claim the whole library was searched.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T113",
+      "title": "Interpret questions locally with validated people and date constraints",
+      "milestone": "V",
+      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "optional": false,
+      "depends_on": [
+        "T109",
+        "T110"
+      ],
+      "owner_role": "Query planning",
+      "module_scope": [
+        "Domain/",
+        "Notes/",
+        "Presentation/",
+        "App/Library/",
+        "App/Worker/",
+        "InferenceWorker/",
+        "Tests/Notes/",
+        "Tests/UI/",
+        "Benchmarks/"
+      ],
+      "context": "Read docs/decisions/0010-contextual-search-spec.md first. Milestone V is a planning request (2026-11-06); implementation has not started. Build on N local answers and S current-content projection/citations. Keep app-owned single writer, scoped current corrected/trimmed transcripts, local-only inference, capture/transcription priority and explicit verified model downloads. Do not read the live user library for fixtures. User confirmed direct cited answers, a hard 15-second foreground deadline including cold load, friendly on-theme loading feedback and general questions over mostly unnamed transcripts. Separate speaker naming is not a prerequisite; I/my needs supported user attribution. Preserve default model-free MeetingAccess behavior; no dependency on proposed MCP/vault milestones T/U.",
+      "deliverables": [
+        "Implement a grammar/schema-constrained local query planner with bounded variants/subquestions and no executable SQL/tools. Freeze request time/timezone and preserve original question and explicit scope.",
+        "Deterministically resolve calendar week/rolling date expressions to UTC meeting-start bounds, distinguish dates discussed, and resolve known shown speaker names versus participants/mentioned people; ambiguous or unknown mappings clarify/qualify. Support in/over the last week as rolling seven days, today as local midnight through now, 2027 planning as topic context rather than a meeting-year filter, and I/my only through trustworthy user attribution. Anonymous labels alone must not block general topic answers.",
+        "Replace heuristic question concatenation with bounded follow-up subject/context resolution and explicit constraint replacement. Earlier answers are context only, never evidence; scope changes reset session.",
+        "Validate malformed/oversized/injected plans, cancellation, timeout and no-scope-expansion. Record plan/version timing without meeting text in normal logs."
+      ],
+      "acceptance": [
+        "Andrew last-week cases enforce the requested period and attribution rather than matching those words; timezone/DST and meeting-relative spoken dates pass deterministic fixtures. The Trane, final-decision and today/self-commitment scenarios resolve their topic/time/identity constraints correctly with mostly unnamed transcripts.",
+        "Wrong/ambiguous names, participant-only metadata, pronouns and conflicting follow-up dates never become guessed facts or silent scope changes.",
+        "Only allowlisted operations and bounded validated data reach retrieval; planner failure is surfaced or uses a clearly labeled constrained fallback without dropping explicit person/time constraints."
+      ],
+      "fallback": "Use validated literal/date behavior with an explicit clarification if planning fails. Do not silently broaden a specific question into unrestricted keyword search and present the answer as complete.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T114",
+      "title": "Retrieve contextual evidence with hybrid search and bounded reranking",
+      "milestone": "V",
+      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "optional": false,
+      "depends_on": [
+        "T112",
+        "T113"
+      ],
+      "owner_role": "Semantic retrieval",
+      "module_scope": [
+        "Storage/Search/",
+        "MeetingAccess/",
+        "Domain/",
+        "Notes/",
+        "App/Library/",
+        "InferenceWorker/",
+        "Benchmarks/",
+        "Tests/Storage/",
+        "Tests/DataLifecycle/",
+        "Tests/Notes/"
+      ],
+      "context": "Read docs/decisions/0010-contextual-search-spec.md first. Milestone V is a planning request (2026-11-06); implementation has not started. Build on N local answers and S current-content projection/citations. Keep app-owned single writer, scoped current corrected/trimmed transcripts, local-only inference, capture/transcription priority and explicit verified model downloads. Do not read the live user library for fixtures. User confirmed direct cited answers, a hard 15-second foreground deadline including cold load, friendly on-theme loading feedback and general questions over mostly unnamed transcripts. Separate speaker naming is not a prerequisite; I/my needs supported user attribution. Preserve default model-free MeetingAccess behavior; no dependency on proposed MCP/vault milestones T/U.",
+      "deliverables": [
+        "Implement a separate contextual orchestrator using shared current-content/scoped storage/citation primitives. Preserve the default model-free MeetingAccess list/search/get contract; do not add inference dependencies to Storage.",
+        "Retrieve FTS and semantic candidates within intersected scope/date constraints, fuse ranks (initially RRF), deduplicate overlapping source spans, expand current neighboring lines and rerank for the full question.",
+        "Maintain speaker versus mentioned-person semantics and subquestion/meeting coverage through the final token budget; support one bounded additional retrieval round. Do not cap an exact scan by arbitrarily omitting later meetings. For the priority user scenarios, preserve staffing uncertainty, explicit final-decision status/later changes and who actually promised an action. Extra retrieval shares the original 15-second deadline.",
+        "Benchmark lexical-only/semantic-only/hybrid and optional bounded reranking on development data. Adopt an extra reranker or approximate index only with measured quality/latency/memory evidence. Recheck generations before returning sources."
+      ],
+      "acceptance": [
+        "Frozen gates: held-out paraphrase all-evidence Recall@10 >=90%, combined person/date >=95%, lexical/name >=95% with no material same-set baseline regression; report numerator/denominator and post-prompt-fitting coverage.",
+        "Filter intersections precede candidate selection/context expansion; no wrong-scope or stale current-content line leaks through rerank/context paths; rank scores are not answer confidence.",
+        "At >=200 meetings/~200,000 source lines report chunk/vector counts, exact/approximate comparison if relevant and stage costs; proposed warm retrieval p95 <=2 s excluding query planning."
+      ],
+      "fallback": "If exact scanning is too slow, evaluate an embedded local index against exact recall and lifecycle checks. If quality fails, improve owning stages and keep the milestone open; keyword-only fallback does not satisfy contextual search.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T115",
+      "title": "Integrate cited contextual answers, on-theme loading feedback and a 15-second deadline",
+      "milestone": "V",
+      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "optional": false,
+      "depends_on": [
+        "T114"
+      ],
+      "owner_role": "Ask product integration",
+      "module_scope": [
+        "App/Library/",
+        "App/Shared/",
+        "App/Worker/",
+        "Presentation/",
+        "Notes/Answer/",
+        "Domain/Worker/",
+        "InferenceWorker/",
+        "Tests/UI/",
+        "Tests/Notes/",
+        "Tests/DataLifecycle/",
+        "docs/release/"
+      ],
+      "context": "Read docs/decisions/0010-contextual-search-spec.md first. Milestone V is a planning request (2026-11-06); implementation has not started. Build on N local answers and S current-content projection/citations. Keep app-owned single writer, scoped current corrected/trimmed transcripts, local-only inference, capture/transcription priority and explicit verified model downloads. Do not read the live user library for fixtures. User confirmed direct cited answers, a hard 15-second foreground deadline including cold load, friendly on-theme loading feedback and general questions over mostly unnamed transcripts. Separate speaker naming is not a prerequisite; I/my needs supported user attribution. Preserve default model-free MeetingAccess behavior; no dependency on proposed MCP/vault milestones T/U.",
+      "deliverables": [
+        "Wire Ask through the validated contextual pipeline and show direct grounded answers, clickable current transcript citations and the contextual passages actually used. Keep fast labeled literal lookup accessible.",
+        "Revise prompt packing/checker as needed for semantic paraphrases and multi-part coverage; grade claim support/meaning rather than treating lexical overlap or valid citations as proof of correctness. Preserve source authorship, numbers, negation and dated changes.",
+        "Show resolved date range, clarification, preparation/search/reading/answering, indexing coverage, model install/retry, waiting, partial results and insufficient evidence states. Distinguish errors/unfinished indexing from no supporting evidence.",
+        "Implement a friendly animated ring/seed loading graphic using the existing Inner Circle / Forest identity and rose/sage/cream tokens; show feedback within 250 ms and stage copy throughout cold load, planning, retrieval and pre-answer generation. Provide a static Reduce Motion equivalent, VoiceOver progress label and accessible cancellation. Stop active motion at terminal states; avoid fake percentages or an empty waiting pane.",
+        "Cancel all stages on new question/scope/Record/Escape/close. Validate generations before prompt and delivery; suppress/mark stale streamed/finished answers and history when source edits/deletions change their support. Keep source navigation and accessibility working in light/dark mode.",
+        "Enforce one 15-second end-to-end deadline from submission including queueing, cold load, all retrieval rounds, generation/checking and UI delivery. Cancel obsolete work before the deadline, finalize only a checked full/supported labeled partial answer, or show an honest timeout/clarification/unavailable state with Retry; streaming never resets the clock. Recording-unavailable feedback is prompt, and a later explicit retry is a new attempt."
+      ],
+      "acceptance": [
+        "All three priority user scenarios in spec 0010 return accurate cited general answers from unnamed transcripts where supported; self/Andrew attribution is clarified or qualified when unknown. The visible sources support the claims, final-decision status and promises actually made.",
+        "Held-out text grading reaches >=90% fully correct answerable questions and >=95% supported claims, with 100% valid current citations and zero wrong-person/wrong-period fixture attributions; all unanswerable/adversarial cases abstain or resist injection.",
+        "No confident negative finding from missing models, partial indexes or obsolete results. Every foreground attempt, warm or cold, reaches a checked answer or explicit terminal state within 15 seconds including queueing; timeout/partial results count against full-answer correctness. Loading feedback appears within 250 ms; cancellation acknowledgement <=1 s. Report actual stage/queue timings.",
+        "Light/dark, Reduce Motion, VoiceOver and keyboard checks cover the on-theme loading graphic across cold load, slow retrieval, waiting, timeout, cancellation, failure and streaming; no indefinite active loading graphic or stale prior-request update remains."
+      ],
+      "fallback": "Prefer supported partial answers/clarifications over invented completeness. Adjust checker/prompt/coverage using development evidence; do not weaken held-out factual gates or silently ship the old keyword list as contextual evidence.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T116",
+      "title": "Qualify contextual search quality, lifecycle, scale and offline packaging",
+      "milestone": "V",
+      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "optional": false,
+      "depends_on": [
+        "T115"
+      ],
+      "owner_role": "Milestone qualification",
+      "module_scope": [
+        "Benchmarks/",
+        "Tests/",
+        "docs/qualification/",
+        "docs/release/",
+        "README.md",
+        "docs/decisions/0010-contextual-search-spec.md",
+        "docs/implementation-tasks.json"
+      ],
+      "context": "Read docs/decisions/0010-contextual-search-spec.md first. Milestone V is a planning request (2026-11-06); implementation has not started. Build on N local answers and S current-content projection/citations. Keep app-owned single writer, scoped current corrected/trimmed transcripts, local-only inference, capture/transcription priority and explicit verified model downloads. Do not read the live user library for fixtures. User confirmed direct cited answers, a hard 15-second foreground deadline including cold load, friendly on-theme loading feedback and general questions over mostly unnamed transcripts. Separate speaker naming is not a prerequisite; I/my needs supported user attribution. Preserve default model-free MeetingAccess behavior; no dependency on proposed MCP/vault milestones T/U.",
+      "deliverables": [
+        "Run frozen held-out and N/S regression evaluations, with a human rubric for answer meaning/completeness/claim support as well as all-span retrieval recall and current citation validity. Publish category counts, failures and data provenance. Include all three user scenarios with unnamed speakers and supported/unknown self-identity variants; general semantic usefulness must not depend on the separate naming rollout.",
+        "Run >=100 varied warm queries and >=20 process-cold runs on the supported M2 Max profile at >=200 meetings/~200,000 source lines; report all-stage latency, queue delay, index/model disk growth, backfill throughput and total physical footprint. Do not claim unmeasured 1,000-meeting or 8/16 GB support. Measure submission-to-checked-answer and terminal-state times including queue/cold startup against a maximum 15 seconds for every attempt; count timeouts/partials as misses rather than successful answers.",
+        "Exercise packaged offline record/process/index/ask/edit/ask/delete/ask, restart/backfill recovery, model replacement/failure, scope changes and in-flight stale-result races on isolated libraries. Measure capture health during index/query load.",
+        "Write a validation brief and obtain the independent milestone validator pass required by existing coordination; run relevant scripts/check.sh checks, document model install/index rebuild/coverage behavior and remaining limits. No publishing or installing on the live library is implied by the planning request.",
+        "Validate immediate friendly Inner Circle / Forest loading feedback and readable stage messages in light/dark mode, Reduce Motion and VoiceOver through cold load, slow stages, recording unavailable, timeout, cancel, failure and streaming. Record renders plus timed transition evidence; no empty/indefinitely animated pane."
+      ],
+      "acceptance": [
+        "All spec 0010 gates pass with reproducible artifacts and measured raw counts; unresolved failures stay open and targets are not relabeled as measurements.",
+        "No stale/deleted/out-of-scope transcript text, invented identity/date attribution, instruction execution, unreported capture loss or implicit network inference occurs in the controlled lifecycle/offline suite.",
+        "A tester can install the verified model, see existing history index, ask paraphrased and cross-meeting questions, follow sources and recover a failed rebuild; independent verdict and applied fixes are recorded.",
+        "All measured attempts terminate within 15 seconds, including cold/queued cases; successful-answer quality gates still hold when timeout/partial cases are counted as misses. Loading feedback appears within 250 ms and stops on every terminal path."
+      ],
+      "fallback": "Fix the owning task and rerun affected checks. Report any required scope/budget revision with evidence; do not call keyword fallback or a citation-only correctness score milestone completion.",
+      "review_timestamps": []
+    },
+    {
+      "id": "T117",
+      "title": "Keep audio after processing (setting) and stored-audio storage controls",
+      "milestone": "Fixes",
+      "status": "planned (2026-11-06): not started",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App UI + Storage",
+      "module_scope": [
+        "App/Settings/SettingsView.swift",
+        "App/Library/",
+        "InferenceWorker/Core/JobScheduler.swift",
+        "Storage/Deletion/Deletion.swift",
+        "Tests/"
+      ],
+      "context": "User request 2026-11-06, after asking how audio is used. Transcription, live text and speakers read the stored CAF segments and the 16 kHz analysis copies; notes are made from transcript text only. The existing \"Delete audio only\" step (JobScheduler.deleteAudio → MeetingStore.deleteAudio) already removes original audio and every derivative while keeping transcript, speakers, notes and edits. This task exposes that as a setting and a library-wide storage control; it does not change capture (audio is still written to disk while recording, so crash recovery is unchanged).",
+      "deliverables": [
+        "Recording settings tab, new \"Storage\" section: Toggle \"Keep audio after processing\", default on (current behaviour). Caption: when off, a new meeting's audio is deleted once its processing finishes; transcripts, speakers and notes stay; playback, re-transcribing and Start from Here… / End Here… are unavailable for those meetings. Turning it off does not touch existing meetings (that is what Delete all stored audio is for).",
+        "Auto-delete when the setting is off: the value is recorded per meeting at Stop, so changing the setting mid-processing does not flip an in-flight meeting. When that meeting's processing finishes (transcript and speakers reconciled, and notes finished or not applicable, since notes need no audio), call the existing JobScheduler.deleteAudio. If a transcript or speaker stage fails or is cancelled, keep the audio so Retry still works. Never deletes audio of a meeting that is recording.",
+        "Same section: \"Stored audio: <size> in <n> meetings\" (original audio + analysis copies across the library, via MeetingStore.diskUsage, computed off the main thread; refreshes on appear and after any delete).",
+        "Button \"Delete all stored audio…\": disabled at 0 bytes; confirmation names the size and meeting count, says it cannot be undone and that transcripts, speakers, notes and edits are kept. Runs JobScheduler.deleteAudio for every meeting with audio, skipping a meeting that is recording or whose transcript/speaker work is queued or running (the confirmation or result says how many were skipped).",
+        "Update the Privacy caption in Recording settings to mention the new setting."
+      ],
+      "acceptance": [
+        "Unit tests: setting on keeps audio (unchanged behaviour); setting off deletes original audio and derivatives after processing and leaves transcript, speakers, notes and edits intact; failure keeps audio; per-meeting value recorded at Stop wins over later changes; bulk delete skips recording/in-progress meetings and leaves text intact; storage total matches the sum of diskUsage.",
+        "Full scripts/check.sh passes.",
+        "Hands-on checklist item for the user: toggle persists across relaunch; record a short meeting with the setting off and see Delete audio greyed out and the size drop; Delete all stored audio on the real library (back up first, per the real-library validation recipe)."
+      ],
+      "fallback": "None needed.",
       "review_timestamps": []
     }
   ]

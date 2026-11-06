@@ -2,6 +2,18 @@ Local meeting transcription for macOS
 Research and prototype development plan
 15 October 2026 • Revision 1 • Implementation handoff
 
+Planning addendum, 6 November 2026: contextual local search
+
+See docs/decisions/0010-contextual-search-spec.md and implementation-tasks.json, Milestone V (T109–T116).
+The user requested this next milestone after completed S, before T21 / T / U / feedback / F. V adds bounded local LLM
+question interpretation, transcript embeddings alongside FTS, resumable backfill/incremental indexing and grounded
+contextual answers with current-source citations. It supersedes section 9's v0 exclusion of embeddings for this
+milestone. Confirmed 2026-11-06: direct answers with clickable citations, a 15-second maximum per foreground attempt
+(including cold startup), friendly on-theme loading feedback and general questions over mostly unnamed transcripts.
+Priority cases are Trane staffing over the past week, a final 2027 planning decision and today's self-commitments
+(only with supported user attribution). Targets await measurement. Implementation, installation and publishing have not started.
+The existing relative order of external MCP/vault milestones T/U is preserved; they are not dependencies for V.
+
 Planning addendum, 2 November 2026: exposing meeting history to external tools
 
 See docs/decisions/0009-external-meeting-access-spec.md for the proposed architecture and gates, and
