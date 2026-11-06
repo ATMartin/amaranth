@@ -20,6 +20,7 @@ enum SelfTest {
             case "worker-crash": ok = await workerCrash()
             case "worker-hang": ok = await workerHang()
             case "os-gate": ok = osGate()
+            case "memory-pressure": ok = await MemoryPressureSelfTest.run()
             case "capture-signals": ok = await CaptureSelfTest.signals()
             case "capture-routes": ok = await CaptureSelfTest.routes()
             case "pipeline-e2e": ok = await PipelineSelfTest.endToEnd()

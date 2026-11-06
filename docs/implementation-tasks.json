@@ -3696,6 +3696,33 @@
       ],
       "fallback": "None needed.",
       "review_timestamps": []
+    },
+    {
+      "id": "T118",
+      "title": "Fix crash on memory-pressure events (main-actor isolation trap in ProcessingModel)",
+      "milestone": "Fixes",
+      "status": "implemented (2026-11-06): MemoryPressureMonitor (ProcessingCore, @Sendable callback) replaces the inline source; audit of App/ found no other off-main closures inferred @MainActor; unit tests + --self-test memory-pressure pass; full scripts/check.sh passes. Pending: user's sudo memory_pressure check on an installed build.",
+      "optional": false,
+      "depends_on": [],
+      "owner_role": "App",
+      "module_scope": [
+        "App/Processing/ProcessingModel.swift",
+        "Tests/"
+      ],
+      "context": "Crash report 2026-11-05 (build 134, reports/crash-report-20261105.txt): EXC_BREAKPOINT in dispatch_assert_queue via swift_task_isCurrentExecutor, from closure #3 in ProcessingModel.init on com.apple.root.default-qos. ProcessingModel is @MainActor, so the memory-pressure DispatchSource event handler (setEventHandler, non-@Sendable parameter) is inferred main-actor isolated; Swift 6 inserts a runtime isolation check and the handler runs on .global(), so the app traps the first time the system posts any memory-pressure event (warning, critical or normal). Reproduced with a minimal Swift 6 program (same pattern, user-data source on .global(): Trace/BPT trap 5; marking the handler @Sendable runs cleanly). Still present in build 144. The InferenceWorker .ips files on this Mac are Debug fault-injection aborts (WorkerService.handleFault), not related.",
+      "deliverables": [
+        "Mark the memory-pressure event handler @Sendable so it is nonisolated (it touches only PressureFlags, @unchecked Sendable, and JobScheduler.poke, thread-safe); keep delivery on .global().",
+        "Audit App/ for other closures created inside @MainActor types and handed to non-@Sendable callback APIs that fire off the main thread (dispatch sources, CoreAudio/AVFoundation callbacks, notification observers with queue: nil); fix any found the same way.",
+        "Regression test that a memory-pressure-style handler created in a @MainActor context runs on a background queue without trapping (e.g. factor the source setup into a nonisolated helper and fire a user-data source in the test)."
+      ],
+      "acceptance": [
+        "Regression test passes; full scripts/check.sh passes.",
+        "Release app survives `sudo memory_pressure -S -l warn` then `-l critical` while idle and while processing (user runs it, since it needs sudo), and processing pauses then resumes."
+      ],
+      "fallback": "None needed.",
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     }
   ]
 }

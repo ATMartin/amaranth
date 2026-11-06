@@ -27,7 +27,7 @@ xcodebuild -project Amaranth.xcodeproj -scheme Amaranth -configuration Debug -de
 test -d "$APP/Contents/XPCServices/com.alexmartin.amaranth.InferenceWorker.xpc"
 
 echo "== app self-tests against the real bundle (no audio permissions needed)"
-for t in os-gate worker-crash worker-hang; do
+for t in os-gate memory-pressure worker-crash worker-hang; do
   timeout 60 "$APP/Contents/MacOS/Amaranth" --self-test "$t" | tail -1
 done
 echo "ALL AUTOMATED CHECKS PASSED"

@@ -13,7 +13,8 @@ final class ProcessingModel {
     let store: MeetingStore?
     private(set) var scheduler: JobScheduler?
     private let flags = PressureFlags()
-    private var memorySource: (any DispatchSourceMemoryPressure)?
+    /// Memory-pressure watcher; exposed so `--self-test memory-pressure` can fire it through the real wiring.
+    private(set) var memoryMonitor: MemoryPressureMonitor?
     private var refreshPending = false
     /// Called (throttled, on the main actor) after job changes.
     var onChange: (() -> Void)?
@@ -64,14 +65,13 @@ final class ProcessingModel {
         do { try s.start() } catch { self.error = "Processing unavailable: \(error)" }
         scheduler = s
         // Memory pressure suspends heavy work until it clears (re-checked by the scheduler loop).
-        let src = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical, .normal], queue: .global())
-        src.setEventHandler { [weak src] in
-            guard let src else { return }
-            flags.memoryPressure = src.data.contains(.warning) || src.data.contains(.critical)
+        // The callback runs on a background queue; it must stay @Sendable (nonisolated), never main-actor (T118).
+        let monitor = MemoryPressureMonitor { underPressure in
+            flags.memoryPressure = underPressure
             s.poke()
         }
-        src.resume()
-        memorySource = src
+        monitor.start()
+        memoryMonitor = monitor
         // Thermal changes are re-evaluated by the scheduler; poke it so a cooled-down Mac resumes promptly.
         NotificationCenter.default.addObserver(forName: ProcessInfo.thermalStateDidChangeNotification, object: nil, queue: nil) { _ in s.poke() }
     }
