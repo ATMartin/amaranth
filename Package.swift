@@ -57,7 +57,7 @@ let package = Package(
         .target(name: "Presentation", dependencies: ["Domain", "Storage"], path: "Presentation", swiftSettings: strict),
         .testTarget(name: "PresentationTests", dependencies: ["Presentation", "Storage", "Domain", "DomainFixtures", "ProcessingCore", "Export"],
                     path: "Tests/UI", exclude: ["Fixtures"], swiftSettings: strict),
-        .testTarget(name: "DataLifecycleTests", dependencies: ["Export", "Storage", "ProcessingCore", "Domain", "Presentation", "MeetingAccess"], path: "Tests/DataLifecycle", swiftSettings: strict),
+        .testTarget(name: "DataLifecycleTests", dependencies: ["Export", "Storage", "ProcessingCore", "Domain", "DomainFixtures", "Presentation", "MeetingAccess"], path: "Tests/DataLifecycle", swiftSettings: strict),
         .testTarget(name: "NotesTests", dependencies: ["Notes", "Domain", "DomainFixtures", "Scoring"], path: "Tests/Notes", swiftSettings: strict),
         .target(name: "ProcessingCore", dependencies: ["Domain", "Storage"], path: "InferenceWorker/Core", swiftSettings: strict),
         .target(name: "ProcessingRuntime", dependencies: ["Domain", "ProcessingCore", "ASR", "Diarization", "Models", "Notes"],

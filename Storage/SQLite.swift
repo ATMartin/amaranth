@@ -90,6 +90,43 @@ final class SQLiteDB {
         return rows
     }
 
+    /// Streams rows to `body` without materializing them (bounded memory for scans). The statement is only valid inside
+    /// `body`; read columns with the `column…` helpers.
+    func forEach(_ sql: String, _ bindings: [Value] = [], _ body: (OpaquePointer) throws -> Void) throws {
+        let stmt = try prepare(sql)
+        defer { sqlite3_reset(stmt); sqlite3_clear_bindings(stmt) }
+        for (i, b) in bindings.enumerated() {
+            let idx = Int32(i + 1)
+            let rc: Int32
+            switch b {
+            case .int(let v): rc = sqlite3_bind_int64(stmt, idx, v)
+            case .double(let v): rc = sqlite3_bind_double(stmt, idx, v)
+            case .text(let v): rc = sqlite3_bind_text(stmt, idx, v, -1, SQLITE_TRANSIENT_)
+            case .blob(let v): rc = v.withUnsafeBytes { sqlite3_bind_blob(stmt, idx, $0.baseAddress, Int32(v.count), SQLITE_TRANSIENT_) }
+            case .null: rc = sqlite3_bind_null(stmt, idx)
+            }
+            guard rc == SQLITE_OK else { throw lastError(sql) }
+        }
+        while true {
+            let rc = sqlite3_step(stmt)
+            if rc == SQLITE_DONE { break }
+            guard rc == SQLITE_ROW else { throw lastError(sql) }
+            try body(stmt)
+        }
+    }
+
+    static func columnText(_ stmt: OpaquePointer, _ c: Int32) -> String? {
+        sqlite3_column_type(stmt, c) == SQLITE_NULL ? nil : String(cString: sqlite3_column_text(stmt, c))
+    }
+    static func columnInt(_ stmt: OpaquePointer, _ c: Int32) -> Int64 { sqlite3_column_int64(stmt, c) }
+    static func columnDouble(_ stmt: OpaquePointer, _ c: Int32) -> Double { sqlite3_column_double(stmt, c) }
+    /// The blob's bytes, valid until the next step.
+    static func columnBlob(_ stmt: OpaquePointer, _ c: Int32) -> UnsafeRawBufferPointer {
+        let n = Int(sqlite3_column_bytes(stmt, c))
+        guard n > 0, let p = sqlite3_column_blob(stmt, c) else { return UnsafeRawBufferPointer(start: nil, count: 0) }
+        return UnsafeRawBufferPointer(start: p, count: n)
+    }
+
     func transaction<T>(_ body: () throws -> T) throws -> T {
         try exec("BEGIN IMMEDIATE")
         do {

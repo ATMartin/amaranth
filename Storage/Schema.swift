@@ -165,12 +165,54 @@ enum Schema {
         );
         CREATE INDEX notes_documents_by_meeting ON notes_document_revisions (meeting_id, created_at);
         """,
+        // v7 (T111, spec 0010): derived contextual-search index. Chunks of each meeting's *current* transcript (chunk-v1),
+        // rewritten in the same transaction as the search index; vectors keyed by chunk content hash + encoder producer, so
+        // unchanged text keeps its vector and text that is gone can't get one back. Per-meeting state: a generation bumped
+        // on every rewrite (stale-answer checks) and the meeting start used by date filters. `migrateData(to: 7)` chunks
+        // existing meetings (no embeddings: the writer is never held for model work).
+        """
+        CREATE TABLE context_chunks (
+            meeting_id TEXT NOT NULL,
+            ordinal INTEGER NOT NULL,
+            chunking TEXT NOT NULL,
+            content_hash TEXT NOT NULL,
+            text TEXT NOT NULL,
+            spans TEXT NOT NULL,
+            first_line INTEGER NOT NULL,
+            last_line INTEGER NOT NULL,
+            start_ns INTEGER NOT NULL,
+            revision_id TEXT NOT NULL,
+            PRIMARY KEY (meeting_id, ordinal)
+        );
+        CREATE INDEX context_chunks_by_hash ON context_chunks (content_hash);
+        CREATE TABLE context_vectors (
+            content_hash TEXT NOT NULL,
+            producer TEXT NOT NULL,
+            dims INTEGER NOT NULL,
+            vector BLOB NOT NULL,
+            created_at REAL NOT NULL,
+            PRIMARY KEY (content_hash, producer)
+        );
+        CREATE TABLE context_failures (
+            content_hash TEXT NOT NULL,
+            producer TEXT NOT NULL,
+            attempts INTEGER NOT NULL,
+            error TEXT NOT NULL,
+            PRIMARY KEY (content_hash, producer)
+        );
+        CREATE TABLE context_meeting_state (
+            meeting_id TEXT PRIMARY KEY,
+            generation INTEGER NOT NULL,
+            start_at REAL NOT NULL
+        );
+        """,
     ]
 
     /// Steps that rewrite stored content after a version's SQL, in that migration's transaction.
     static func migrateData(to version: Int, _ db: SQLiteDB) throws {
         switch version {
         case 6: try MeetingStore.migrateToNotesDocuments(db)
+        case 7: try MeetingStore.rechunkAll(db)
         default: break
         }
     }

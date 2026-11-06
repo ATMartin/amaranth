@@ -3437,7 +3437,7 @@
       "id": "T111",
       "title": "Add versioned transcript chunks and local vector storage",
       "milestone": "V",
-      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "status": "done (2026-11-06): library v7 context_chunks/vectors/state/failures rewritten in reindex; guarded publication; scope-first exact Float16 scan (p95 66 ms at 200 meetings / 25,493 chunks); docs/qualification/milestone-v/t111-storage.md",
       "optional": false,
       "depends_on": [
         "T109",
@@ -3465,7 +3465,9 @@
         "Wrong dimensions/producer, changed revisions, concurrent edits, deletion and metadata/folder moves cannot produce a mixed/stale/out-of-scope generation."
       ],
       "fallback": "Use ordinary SQLite vectors and measured exact search first. If a local vector extension is necessary, record packaging/license/recall/deletion tradeoffs and prove scope and lifecycle semantics before adoption.",
-      "review_timestamps": []
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     },
     {
       "id": "T112",

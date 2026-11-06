@@ -77,9 +77,12 @@ extension MeetingStore {
     static func reindex(_ db: SQLiteDB, _ meeting: MeetingID) throws {
         db.contentGeneration &+= 1
         try db.run("DELETE FROM search_index WHERE meeting_id=?", [.text(meeting.rawValue)])
-        guard let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(meeting.rawValue)]).first?["json"]?.blob else { return }
+        guard let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(meeting.rawValue)]).first?["json"]?.blob else {
+            try rechunk(db, meeting, nil, current: nil); return
+        }
         let m = try ContractCoding.decode(Meeting.self, from: row)
-        guard m.deletedAt == nil else { return }
+        guard m.deletedAt == nil else { try rechunk(db, meeting, m, current: nil); return }
+        var current: (TranscriptRevision, [SpeakerID: String])?
         func insert(_ kind: SearchHit.Kind, _ ref: String, _ start: Int64?, _ text: String, speaker: String? = nil, evidence: [TranscriptEvidence] = []) throws {
             guard !text.isEmpty else { return }
             let refs: SQLiteDB.Value = evidence.isEmpty ? .null : .text(String(decoding: try JSONEncoder().encode(evidence), as: UTF8.self))
@@ -95,6 +98,7 @@ extension MeetingStore {
                 .compactMap { $0["json"]?.blob }.map { try ContractCoding.decode(UserEdit.self, from: $0) }
             let tr = try ContractCoding.decode(TranscriptRevision.self, from: blob).applyingTextEdits(edits)
             let names = speakerNames(tr.speakers, edits)
+            current = (tr, names)
             for sp in tr.speakers { if let name = names[sp.id], name != sp.label { try insert(.speaker, sp.id.rawValue, nil, name) } }
             for seg in tr.segments {
                 var ids = seg.speaker.speakerIDs
@@ -115,6 +119,8 @@ extension MeetingStore {
                 try insert(.notes, b.id.rawValue, nil, [b.text, b.detail].compactMap { $0 }.joined(separator: " — "), evidence: evidence)
             }
         }
+        // T111: the contextual-search chunks follow the same current content, in the same transaction.
+        try rechunk(db, meeting, m, current: current)
     }
 
     /// Each speaker's shown name, with renames the user made since this revision was reconciled applied on top.

@@ -74,7 +74,7 @@ struct NotesDocumentMigrationTests {
         defer { try? FileManager.default.removeItem(at: root) }
         let ids = try makeV5Library(root)
         let store = try MeetingStore(root: root)
-        #expect(try store.withDB { try $0.run("PRAGMA user_version").first?["user_version"]?.int } == 6)
+        #expect(try store.withDB { try $0.run("PRAGMA user_version").first?["user_version"]?.int } == Int64(MeetingStore.schemaVersion))
         func doc(_ name: String) throws -> NotesDocumentRevision {
             let revs = try store.notesDocumentRevisions(ids[name]!)
             #expect(revs.count == 1, "exactly one document for \(name)")

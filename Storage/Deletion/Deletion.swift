@@ -70,9 +70,13 @@ extension MeetingStore {
                 db.contentGeneration &+= 1
                 for table in ["search_index", "capture_epochs", "audio_segments", "capture_events", "processing_jobs", "transcript_revisions",
                               "diarization_results", "user_edits", "summary_revisions", "scratchpad_revisions", "manual_notes_revisions",
-                              "notes_document_revisions"] {
+                              "notes_document_revisions", "context_meeting_state"] {
                     try db.run("DELETE FROM \(table) WHERE meeting_id=?", [.text(id.rawValue)])
                 }
+                // T111: its chunks, and every vector no other meeting's chunk still holds.
+                let hashes = Set(try db.run("SELECT content_hash FROM context_chunks WHERE meeting_id=?", [.text(id.rawValue)]).compactMap { $0["content_hash"]?.text })
+                try db.run("DELETE FROM context_chunks WHERE meeting_id=?", [.text(id.rawValue)])
+                try Self.collectOrphanVectors(db, candidates: hashes)
                 let scrubbed = Meeting(id: id, title: "", createdAt: m.createdAt, captureState: m.captureState, selectedSources: m.selectedSources,
                                        audio: .deletedByUser, deletedAt: m.deletedAt)
                 try db.run("""

@@ -148,6 +148,7 @@ struct RetrieverTests {
                 ALTER TABLE meetings DROP COLUMN folder_id;
                 DROP TABLE folders;
                 DROP TABLE notes_document_revisions;
+                DROP TABLE context_chunks; DROP TABLE context_vectors; DROP TABLE context_failures; DROP TABLE context_meeting_state;
                 PRAGMA user_version = 3;
                 """)
         }

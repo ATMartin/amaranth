@@ -1,0 +1,7 @@
+[ctx-scale] open (incl. any migration) 13.8 s; db 433 MB before → 537 MB
+[ctx-scale] chunks 25493, vectors 0, chunk text 33 MB
+[ctx-scale] fill random: 25493 vectors in 20.7 s (1231.0 chunks/s); vectors 25493 (52 MB); db 592 MB; footprint peak 99 MiB
+[ctx-scale] coverage: 200/200 meetings, 25493/25493 chunks
+[ctx-scale] vector search all (k=100): n 39 p50 63 ms p95 66 ms max 66 ms; footprint peak 99 MiB
+[ctx-scale] vector search folder (k=100): n 39 p50 19 ms p95 20 ms max 20 ms; footprint peak 99 MiB
+[ctx-scale] vector search week (k=100): n 39 p50 39 ms p95 39 ms max 39 ms; footprint peak 99 MiB
