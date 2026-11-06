@@ -9,7 +9,9 @@ import MeetingAccess
 /// real time through the real ring, segment writer, journal and store indexer; their samples encode the frame index,
 /// so any dropped or duplicated frame is found exactly. Real Core Audio device callbacks are not exercised.
 enum RecordUnderLoad {
-    static func run(root: URL, seconds: Double, exportDest: URL, load: Bool) async throws {
+    /// `ctxLoad` (T116): instead of external reads, the contextual-search store work that can overlap a recording —
+    /// exact vector scans over the whole library, guarded vector publication and content edits that rechunk a meeting.
+    static func run(root: URL, seconds: Double, exportDest: URL, load: Bool, ctxLoad: Bool = false) async throws {
         let store = try MeetingStore(root: root)
         let reader = MeetingReader(store: store)
         let ids = try store.liveMeetingIDs()
@@ -25,7 +27,38 @@ enum RecordUnderLoad {
         let stop = Flag()
         let ops = Counter(), exports = Counter()
         var workers: [Thread] = []
-        if load {
+        if ctxLoad {
+            let probe = EncoderProducer(family: "ctxload", manifestID: "ctxload", revision: "1", weightsSHA256: "-", quantization: "-", dimensions: 1024,
+                                        pooling: "-", normalization: "l2", queryInstruction: "", documentPrefix: "", chunking: ChunkingVersion.current, runtime: "ctxload")
+            func unit(_ r: inout Synthetic.RNG) -> [Float] {
+                var v = (0..<1024).map { _ in Float(Int.random(in: -1000...1000, using: &r)) / 1000 }
+                let n = v.reduce(0) { $0 + $1 * $1 }.squareRoot(); v = v.map { $0 / max(n, 1e-6) }; return v
+            }
+            for w in 0..<2 {   // two scan threads (Ask-like) over every meeting
+                let t = Thread {
+                    var r = Synthetic.RNG(state: UInt64(w + 11))
+                    while !stop.isSet { _ = try? store.vectorSearch(unit(&r), producer: probe, filter: ContextFilter(), k: 100); ops.add(1) }
+                }
+                t.start(); workers.append(t)
+            }
+            let writer = Thread {   // indexing-like writes + rechunking edits
+                var r = Synthetic.RNG(state: 99)
+                var seq = 1000
+                while !stop.isSet {
+                    if let batch = try? store.pendingContextChunks(producer: probe.id, limit: 32), !batch.isEmpty {
+                        _ = try? store.publishContextVectors(batch.map { ($0.contentHash, unit(&r)) }, producer: probe)
+                    }
+                    if let m = ids.randomElement(using: &r), let tr = try? store.meeting(m)?.currentTranscriptRevisionID,
+                       let seg = try? store.transcriptRevision(tr)?.segments.randomElement(using: &r), let w = seg.words.first {
+                        seq += 1
+                        _ = try? store.appendEdit(UserEdit(meetingID: m, baseRevisionID: tr, sequence: seq, createdAt: Date(),
+                                                           operation: .correctText(WordRange(revisionID: tr, first: w.id, last: w.id), replacement: w.text)))
+                    }
+                    exports.add(1)
+                }
+            }
+            writer.start(); workers.append(writer)
+        } else if load {
             for w in 0..<2 {
                 let t = Thread {
                     var r = Synthetic.RNG(state: UInt64(w + 1))
@@ -58,7 +91,7 @@ enum RecordUnderLoad {
 
         // Frame-exact check: every frame's first channel must be the previous frame's + 1 (mod 1,000,000), inside segments
         // and across them, and the total must match the time recorded (within 0.25 s: start-up and stop).
-        var report: [String: Any] = ["load": load, "seconds": seconds, "elapsedSeconds": elapsed, "stopSeconds": stopSeconds, "finalState": result.finalState.rawValue,
+        var report: [String: Any] = ["load": load, "ctxLoad": ctxLoad, "seconds": seconds, "elapsedSeconds": elapsed, "stopSeconds": stopSeconds, "finalState": result.finalState.rawValue,
                                      "readerOps": ops.value, "exportRuns": exports.value, "missingAudioEvents": result.events.filter(\.isMissingAudio).count]
         for kind in SourceKind.allCases {
             var expected: Float = 0, dropped = 0, frames = 0

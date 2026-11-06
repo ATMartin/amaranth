@@ -1,0 +1,443 @@
+[
+ {
+  "id": "h01",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h02",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h03",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h04",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h05",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h06",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h07",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h08",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h09",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h10",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h11",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": true,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h12",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h13",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h14",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h15",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h16",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h17",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h18",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h19",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h20",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h21",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h22",
+  "grade": "wrong",
+  "wrong_person": true,
+  "wrong_period": false,
+  "claims_supported": "no"
+ },
+ {
+  "id": "h23",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h24",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h25",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h26",
+  "grade": "wrong",
+  "wrong_person": true,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h27",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h28",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h29",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h30",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "no"
+ },
+ {
+  "id": "h31",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "no"
+ },
+ {
+  "id": "h32",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "no"
+ },
+ {
+  "id": "h33",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h34",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h35",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h36",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h37",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h38",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": true,
+  "claims_supported": "no"
+ },
+ {
+  "id": "h39",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h40",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h41",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h42",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h43",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h44",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h45",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h46",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h47",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h48",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h49",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "no"
+ },
+ {
+  "id": "h50",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h51",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h52",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h53",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h54",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h55",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h56",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h57",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h58",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h59",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h60",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h61",
+  "grade": "wrong",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h62",
+  "grade": "correct",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ },
+ {
+  "id": "h63",
+  "grade": "partial",
+  "wrong_person": false,
+  "wrong_period": false,
+  "claims_supported": "n/a/yes"
+ }
+]

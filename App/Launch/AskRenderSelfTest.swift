@@ -11,6 +11,9 @@ import DomainFixtures
 /// loading view appears within one frame of `ask()` and that cancel stops it at once.
 enum AskRenderSelfTest {
     @MainActor static func run(outputDirectory: URL?) async -> Bool {
+        #if !DEBUG
+        SelfTest.log(["step": "setup", "error": "Debug builds only"]); return false
+        #else
         let out = outputDirectory ?? FileManager.default.temporaryDirectory.appending(path: "ask-render-\(UUID())")
         try? FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
         let root = FileManager.default.temporaryDirectory.appending(path: "amaranth-askrender-\(UUID())")
@@ -70,5 +73,6 @@ enum AskRenderSelfTest {
         SelfTest.log(["step": "ask-render", "dir": out.path, "feedbackSeconds": String(format: "%.4f", feedback), "cancelAckSeconds": String(format: "%.4f", cancelAck), "ok": "\(timingOK)"])
         ok = ok && timingOK
         return ok
+        #endif
     }
 }

@@ -141,3 +141,51 @@ enum CtxRetrieveEval {
         return 0
     }
 }
+
+/// T116 R3: contextual retrieval vs the shipped FTS retriever on the T98 labeled library (`amaranth-access seed-eval`),
+/// questions with an expected source and a scope the Ask UI offers (all meetings or a folder). Participant/date-window
+/// filters are external-API features (T98), not Ask scopes: reported as not applicable.
+///   ctx-eval access <library-root> <questions.json> <notes.gguf> <encoder.gguf>
+enum CtxAccessEval {
+    static func run(_ args: [String]) async throws -> Int32 {
+        let root = URL(filePath: args[1])
+        let store = try MeetingStore(root: root)
+        let map = try JSONDecoder().decode([String: String].self, from: Data(contentsOf: root.appending(path: "eval-map.json")))
+        let qs = (try JSONSerialization.jsonObject(with: Data(contentsOf: URL(filePath: args[2]))) as! [String: Any])["questions"] as! [[String: Any]]
+        let models = try CtxRetrieveEval.load(notes: args[3], encoder: args[4])
+        while true {
+            let b = try store.pendingContextChunks(producer: models.enc.producer.id, limit: 64)
+            if b.isEmpty { break }
+            try store.publishContextVectors(zip(b, try models.enc.embed(b.map(\.text), query: false)).map { ($0.contentHash, $1) }, producer: models.enc.producer)
+        }
+        let folders = Dictionary(uniqueKeysWithValues: try store.folders().map { ($0.name, $0.id) })
+        let retriever = ContextualRetriever(store: store, models: models, producer: models.enc.producer)
+        var rows: [(String, String, Bool, Bool)] = []
+        var na: [String] = []
+        for q in qs {
+            guard let expect = q["expect"] as? [String], !expect.isEmpty, let id = q["id"] as? String, let text = q["question"] as? String, let kind = q["kind"] as? String else { continue }
+            let filter = q["filter"] as? [String: Any] ?? [:]
+            if filter.keys.contains(where: { $0 != "folder" }) || q["meetings"] != nil { na.append(id); continue }
+            let folder = (filter["folder"] as? String).flatMap { folders[$0] }
+            let want = Set(expect.compactMap { map[$0] })
+            func refs(_ ps: [Passage]) -> Set<String> { Set(ps.flatMap { p in p.lines.compactMap { $0.segmentID?.rawValue } + [p.ref] }) }
+            let fts = try Retriever(store: store, k: 10).search(text, folder: folder)
+            let ev = try await retriever.retrieve(ContextualRequest(question: text, scope: folder.map { .folder($0) } ?? .all, requestTime: Date(), timeZoneIdentifier: "UTC"),
+                                                  previous: nil, requestID: id, planDeadline: Date().addingTimeInterval(4.5))
+            let ctx = ev.passages.sorted { $0.rank < $1.rank }.prefix(10).map(\.passage)
+            rows.append((id, kind, !want.isDisjoint(with: refs(fts)), !want.isDisjoint(with: refs(Array(ctx)))))
+            print("[ctx-access] \(id) \(kind) fts \(rows.last!.2) ctx \(rows.last!.3)")
+        }
+        var out = "# T116 R3 — T98 labeled set: shipped FTS vs contextual retrieval (Recall@10, any expected source)\n\n| kind | n | FTS | contextual |\n|---|---|---|---|\n"
+        for k in ["ALL"] + Array(Set(rows.map(\.1))).sorted() {
+            let rs = rows.filter { k == "ALL" || $0.1 == k }
+            out += "| \(k) | \(rs.count) | \(rs.filter(\.2).count) | \(rs.filter(\.3).count) |\n"
+        }
+        let lex = rows.filter { !["paraphrase"].contains($0.1) }
+        out += "\nLexical/name/acronym/notes/edited/cross/folder (non-paraphrase): FTS \(lex.filter(\.2).count)/\(lex.count), contextual \(lex.filter(\.3).count)/\(lex.count).\n"
+        out += "Contextual misses where FTS hit: " + rows.filter { $0.2 && !$0.3 }.map(\.0).joined(separator: ", ") + "\nNot applicable (participant/date-window filter or meeting list): " + na.joined(separator: ", ") + "\n"
+        print(out)
+        try out.write(to: URL(filePath: args[5]), atomically: true, encoding: .utf8)
+        return 0
+    }
+}

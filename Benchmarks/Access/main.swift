@@ -8,7 +8,7 @@ import MeetingAccess
 ///   amaranth-access snapshot <library-root> <meeting> the meeting's external snapshot (JSON)
 ///   amaranth-access resolve <library-root> <url>      what a source link resolves to now
 ///   amaranth-access export <library-root> <destination> [--notes]  bulk snapshot export of every meeting (T99)
-///   amaranth-access record-under-load <library-root> <seconds> <export-dest> [--no-load]   T100 capture health
+///   amaranth-access record-under-load <library-root> <seconds> <export-dest> [--no-load] [--ctx-load]   T100/T116 capture health
 ///   amaranth-access seed-eval <library-root>          the labeled T98 retrieval library (+ eval-map.json)
 ///   amaranth-access eval <library-root> <questions.json> <out-dir>
 ///   amaranth-access seed-scale <library-root> <meetings> <lines>
@@ -49,7 +49,8 @@ case "export" where args.count >= 4:
     exit(r.status == .complete ? 0 : 1)
 case "record-under-load" where args.count >= 5:
     try await RecordUnderLoad.run(root: URL(filePath: args[2], directoryHint: .isDirectory), seconds: Double(args[3])!,
-                                  exportDest: URL(filePath: args[4], directoryHint: .isDirectory), load: !args.contains("--no-load"))
+                                  exportDest: URL(filePath: args[4], directoryHint: .isDirectory), load: !args.contains("--no-load"),
+                                  ctxLoad: args.contains("--ctx-load"))
 case "seed-hostile" where args.count >= 3:
     // Metadata and text built to break YAML, Markdown, HTML and paths (T99/T100 inertness checks).
     let store = try MeetingStore(root: URL(filePath: args[2], directoryHint: .isDirectory))

@@ -145,7 +145,11 @@ public struct QueryPlan: Hashable, Sendable, Codable {
                 return seenPeople.insert("\u{0}self").inserted ? Person(name: "I", role: .selfUser) : nil
             }
             if groupWords.contains(lower) { return nil }
-            guard haystack.contains(n.lowercased()), seenPeople.insert(n.lowercased()).inserted else { return nil }
+            // Whole-word grounding (“Al” is not grounded by “also”).
+            // Split both on every non-alphanumeric, so "Al's" and "Ask Al." ground "Al" and "O'Neil" matches itself.
+            let hayWords = " " + haystack.split { !$0.isLetter && !$0.isNumber }.joined(separator: " ") + " "
+            let nameWords = " " + lower.split { !$0.isLetter && !$0.isNumber }.joined(separator: " ") + " "
+            guard hayWords.contains(nameWords), seenPeople.insert(lower).inserted else { return nil }
             return Person(name: n, role: person.role)
         }.prefix(ContextualLimits.maxPeople))
         p.meetingTime = meetingTime.flatMap(clean).flatMap { question.lowercased().contains($0.lowercased()) ? $0 : nil }

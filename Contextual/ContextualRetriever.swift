@@ -280,7 +280,9 @@ public final class ContextualRetriever: Sendable {
     func QueryPlanner_fallback(_ r: ContextualRequest) -> QueryPlan {
         let words = r.question.split { !$0.isLetter && !$0.isNumber && $0 != "'" }.map(String.init)
         var people: [QueryPlan.Person] = []
-        for (i, w) in words.enumerated() where i > 0 && w.first?.isUppercase == true && w.count > 1 { people.append(.init(name: w, role: .mentioned)) }
+        let common: Set<String> = ["i", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "january", "february", "march", "april",
+                                   "may", "june", "july", "august", "september", "october", "november", "december", "q1", "q2", "q3", "q4"]
+        for (i, w) in words.enumerated() where i > 0 && w.first?.isUppercase == true && w.count > 1 && !common.contains(w.lowercased()) { people.append(.init(name: w, role: .mentioned)) }
         return QueryPlan(people: people).validated(question: r.question, context: r.history.map(\.question).joined(separator: " "))
     }
 }

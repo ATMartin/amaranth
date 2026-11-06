@@ -60,6 +60,8 @@ struct ChunkerTests {
         #expect(v.subquestions.count == 3)
         #expect(QueryPlan(people: [.init(name: "me", role: .selfUser)]).validated(question: "Who could take on the rollout?").people.isEmpty,
                 "no self person unless the question says I/me/my")
+        #expect(QueryPlan(people: [.init(name: "Al", role: .speaker)]).validated(question: "What else was also decided?").people.isEmpty, "whole-word grounding")
+        #expect(QueryPlan(people: [.init(name: "Al", role: .speaker)]).validated(question: "What did Al's team say? Ask Al.").people.count == 1)
     }
 
     @Test func vectorsAndProducerIdentity() {

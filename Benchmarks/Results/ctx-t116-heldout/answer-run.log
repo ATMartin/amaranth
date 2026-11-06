@@ -1,0 +1,63 @@
+[ctx-ans] h01 answered 4.0 s (plan 1.2, retr 0.05, ans 2.7) spans 2/2 | Andrew proposed that he is ready to manage people, not just own systems, and specifically expressed interest in being considered for the lead spot in the paymen
+[ctx-ans] h02 partial 4.5 s (plan 1.5, retr 0.05, ans 2.9) spans 2/2 | Yes, Andrew changed his proposal this week. He stated that he would rather stay hands-on through next year and did not want to take on a team right now, suggest
+[ctx-ans] h03 clarification 1.6 s (plan 1.6, retr 0.06, ans 0.0) spans 2/2 | Which Andrew do you mean? There are speakers named “Andrew”, “Andrew B.” and “Andrew L.” in these meetings. Ask again with the full name.
+[ctx-ans] h04 answered 4.8 s (plan 1.5, retr 0.06, ans 3.2) spans 0/2 | Yes, Speaker 1 and Speaker 3 mentioned role-related changes. Speaker 1 said they want to delegate more, stating, 'I'm in too many meetings,' and Speaker 3 asked
+[ctx-ans] h05 clarification 2.2 s (plan 2.1, retr 0.07, ans 0.0) spans 3/3 | Which Andrew do you mean? There are speakers named “Andrew”, “Andrew B.” and “Andrew L.” in these meetings. Ask again with the full name.
+[ctx-ans] h06 insufficient_evidence 3.7 s (plan 1.2, retr 0.05, ans 2.4) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h07 clarification 1.4 s (plan 1.4, retr 0.05, ans 0.0) spans 0/0 | Which Andrew do you mean? There are speakers named “Andrew”, “Andrew B.” and “Andrew L.” in these meetings. Ask again with the full name.
+[ctx-ans] h08 partial 5.4 s (plan 1.2, retr 0.05, ans 4.1) spans 7/7 | In the Trane weekly meeting on November 2, 2026, Speaker 2 suggested Kofi could potentially take on the controls integration work after the Northgate cutover, w
+[ctx-ans] h09 partial 4.5 s (plan 1.1, retr 0.04, ans 3.2) spans 2/2 | Yes, Lucia has been locked in for the Trane work. She accepted the assignment and is officially on Trane starting the ninth. Additionally, Kofi is considered a 
+[ctx-ans] h10 partial 4.2 s (plan 1.3, retr 0.05, ans 2.8) spans 2/2 | Yes, Kofi could probably pick up some of the controls integration work once the Northgate cutover is done, but not before the sixteenth of November. Speaker 2 m
+[ctx-ans] h11 partial 6.0 s (plan 2.6, retr 0.07, ans 3.1) spans 0/3 | Before the window of mid-November, Kofi was floated as a potential person to take on the controls integration work, as suggested by Speaker 2 in the Trane weekl
+[ctx-ans] h12 partial 4.3 s (plan 1.5, retr 0.05, ans 2.7) spans 3/3 | Speaker 2 mentioned that Priyanka told them she is at about sixty percent through December, meaning she is busy and has roughly two days a week free.
+[ctx-ans] h13 partial 3.7 s (plan 1.3, retr 0.05, ans 2.3) spans 2/2 | The Trane client stops accepting changes on December eighteenth.
+[ctx-ans] h14 insufficient_evidence 3.5 s (plan 1.1, retr 0.05, ans 2.3) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h15 insufficient_evidence 3.6 s (plan 1.3, retr 0.05, ans 2.3) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h16 partial 5.6 s (plan 1.7, retr 0.06, ans 3.7) spans 3/3 | No, a final decision was not made about strategic planning for 2027. Initially, a decision was reached at the leadership offsite on October 23, 2026, agreeing o
+[ctx-ans] h17 partial 4.1 s (plan 1.6, retr 0.07, ans 2.4) spans 2/2 | The offsite outcome was thrown back open because two board members pushed back hard on the mid-market plan, citing that the sales hiring was too risky in the cu
+[ctx-ans] h18 partial 5.1 s (plan 2.4, retr 0.07, ans 2.6) spans 1/2 | The plan will be settled on November 19, 2026, after a board review. The first step required is to present a new partner channel case, as board members pushed b
+[ctx-ans] h19 partial 4.4 s (plan 1.3, retr 0.06, ans 3.0) spans 3/3 | No, the 2027 pricing changes were not finalized. The pricing working group discussed two options—moving to usage-based pricing or adding a cheaper starter tier—
+[ctx-ans] h20 insufficient_evidence 3.8 s (plan 1.5, retr 0.05, ans 2.3) spans 0/2 | I couldn't find that in these meetings.
+[ctx-ans] h21 insufficient_evidence 3.5 s (plan 1.2, retr 0.05, ans 2.2) spans 0/3 | I couldn't find that in these meetings.
+[ctx-ans] h22 answered 4.6 s (plan 1.6, retr 0.04, ans 2.9) spans 7/7 | Me promised to send the revised quote for pricing by Monday noon, loop in the security lead after legal signs off on the NDA, confirm the sandbox setup timeline
+[ctx-ans] h23 answered 4.4 s (plan 1.6, retr 0.03, ans 2.8) spans 3/3 | Speaker 1 promised to send the revised migration checklist to the group by end of day, to ping infra about the staging database disk issue, and to book the room
+[ctx-ans] h24 answered 3.7 s (plan 1.6, retr 0.03, ans 2.0) spans 4/4 | Me promised to send the revised pricing quote by Monday noon, loop in the security lead after legal signs off on the NDA, confirm the sandbox setup date with Jo
+[ctx-ans] h25 answered 5.0 s (plan 2.7, retr 0.01, ans 2.2) spans 3/3 | The revised pricing quote has a deadline: Monday noon. The sandbox setup date has a condition: it depends on Jonah's confirmation. The security lead loop-in has
+[ctx-ans] h26 partial 4.6 s (plan 1.7, retr 0.04, ans 2.9) spans 4/4 | The user signed up for several changes in yesterday's retro: extending the retro meeting from 45 minutes to one hour, moving it to Wednesdays instead of Thursda
+[ctx-ans] h27 answered 3.8 s (plan 1.3, retr 0.03, ans 2.4) spans 2/2 | Marta agreed to take on the vendor follow-up on the certificate renewal.
+[ctx-ans] h28 answered 4.2 s (plan 1.2, retr 0.03, ans 2.9) spans 0/0 | Me was not in the platform standup on Nov 6, 2026. The speaker labeled 'Me' appears only in the Brightwater onboarding call on Nov 6, 2026, which is a different
+[ctx-ans] h29 partial 5.3 s (plan 1.4, retr 0.07, ans 3.6) spans 0/0 | Speaker 2 committed to following up on the analytics next week, the design review next week, the mobile app next week, the hiring plan next week, the sprint goa
+[ctx-ans] h30 answered 4.1 s (plan 1.2, retr 0.05, ans 2.8) spans 1/1 | No, the Atlas launch was not pushed back last week. The launch date was confirmed as the twelfth, and no decision to move it to December or any other date was m
+[ctx-ans] h31 partial 3.3 s (plan 1.0, retr 0.04, ans 2.2) spans 2/2 | The current Atlas launch date is November seventeenth.
+[ctx-ans] h32 partial 4.7 s (plan 1.5, retr 0.06, ans 3.1) spans 2/2 | The launch date did not slip; it was originally planned for November seventeenth and remained unchanged. Legal's early review of the consent screen with only mi
+[ctx-ans] h33 partial 4.0 s (plan 1.6, retr 0.07, ans 2.2) spans 1/1 | Fifty thousand testers will be able to try the Atlas beta after it opens up.
+[ctx-ans] h34 insufficient_evidence 3.9 s (plan 1.5, retr 0.05, ans 2.4) spans 1/2 | I couldn't find that in these meetings.
+[ctx-ans] h35 answered 4.0 s (plan 1.6, retr 0.05, ans 2.4) spans 1/1 | Nadia recommended failing over to the Ohio replica immediately and failing back after the storage patch, noting that the data loss risk was basically nothing du
+[ctx-ans] h36 answered 4.0 s (plan 1.5, retr 0.04, ans 2.5) spans 1/1 | Nadia said we would keep running on the Ohio replica through Wednesday, then fail back during the maintenance window.
+[ctx-ans] h37 insufficient_evidence 3.9 s (plan 1.5, retr 0.06, ans 2.4) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h38 partial 5.1 s (plan 1.7, retr 0.06, ans 3.4) spans 2/2 | There was no outage on that late Sunday night call. The cache change was noted to have a low hit rate and slight latency increase, but these were described as n
+[ctx-ans] h39 partial 4.0 s (plan 1.3, retr 0.05, ans 2.5) spans 2/2 | Imogen reported that all the critical pen test issues were closed, and two medium issues remained.
+[ctx-ans] h40 partial 3.7 s (plan 1.3, retr 0.06, ans 2.3) spans 2/2 | The week before last, Imogen said the staging exposure would be locked behind the VPN by Tuesday.
+[ctx-ans] h41 insufficient_evidence 3.6 s (plan 1.3, retr 0.06, ans 2.2) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h42 partial 3.5 s (plan 1.3, retr 0.04, ans 2.1) spans 1/1 | The new staff designer starts on the checkout redesign first, then moves to the design system.
+[ctx-ans] h43 insufficient_evidence 3.3 s (plan 1.3, retr 0.06, ans 2.0) spans 0/1 | I couldn't find that in these meetings.
+[ctx-ans] h44 partial 4.2 s (plan 1.3, retr 0.06, ans 2.9) spans 2/2 | The design debrief concluded that Sabine was a strong candidate, with her systems thinking being the best seen by the panel. The group recommended making an off
+[ctx-ans] h45 insufficient_evidence 3.7 s (plan 1.4, retr 0.05, ans 2.2) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h46 partial 3.9 s (plan 1.5, retr 0.04, ans 2.4) spans 1/1 | Owen said he'd rather not be on the panel again because he is stretched thin with the rebrand.
+[ctx-ans] h47 insufficient_evidence 3.8 s (plan 1.4, retr 0.05, ans 2.4) spans 1/1 | I couldn't find that in these meetings.
+[ctx-ans] h48 insufficient_evidence 3.9 s (plan 1.5, retr 0.05, ans 2.4) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h49 partial 3.5 s (plan 1.2, retr 0.05, ans 2.2) spans 1/1 | The Q4 marketing spend cap is two hundred k.
+[ctx-ans] h50 insufficient_evidence 3.9 s (plan 1.5, retr 0.06, ans 2.3) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h51 insufficient_evidence 3.4 s (plan 1.1, retr 0.05, ans 2.3) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h52 partial 3.4 s (plan 1.1, retr 0.05, ans 2.3) spans 2/2 | The team dinner is on Wednesday the eleventh.
+[ctx-ans] h53 insufficient_evidence 3.2 s (plan 1.1, retr 0.05, ans 2.1) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h54 answered 4.3 s (plan 1.2, retr 0.05, ans 2.9) spans 2/2 | Ruth stood against renewing the Reno test lab lease, stating it is half empty most weeks and that they moved most device testing to the cloud farm. She suggeste
+[ctx-ans] h55 partial 5.2 s (plan 2.1, retr 0.06, ans 2.9) spans 2/2 | The lab lease was renewed for twelve months, with the renewal signed on November 5, 2026. The decision was influenced by the landlord offering three months free
+[ctx-ans] h56 insufficient_evidence 3.6 s (plan 1.3, retr 0.05, ans 2.2) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h57 clarification 1.3 s (plan 1.2, retr 0.05, ans 0.0) spans 2/2 | Which Andrew do you mean? There are speakers named “Andrew”, “Andrew B.” and “Andrew L.” in these meetings. Ask again with the full name.
+[ctx-ans] h58 partial 4.1 s (plan 1.4, retr 0.06, ans 2.5) spans 2/2 | The user meant Andrew B., who suggested rebidding the Corvane contract due to poor support since the acquisition, citing a three-week ticket turnaround as terri
+[ctx-ans] h59 clarification 1.4 s (plan 1.3, retr 0.06, ans 0.0) spans 0/0 | Which Andrew do you mean? There are speakers named “Andrew”, “Andrew B.” and “Andrew L.” in these meetings. Ask again with the full name.
+[ctx-ans] h60 partial 4.5 s (plan 0.8, retr 0.05, ans 3.5) spans 2/2 | The Harbor project is on track. Backend and frontend developments are progressing, with the ingest service in staging and the new upload flow behind a flag. The
+[ctx-ans] h61 insufficient_evidence 4.4 s (plan 1.3, retr 0.06, ans 3.0) spans 2/2 | I couldn't find that in these meetings.
+[ctx-ans] h62 insufficient_evidence 3.2 s (plan 0.7, retr 0.02, ans 2.5) spans 0/0 | I couldn't find that in these meetings.
+[ctx-ans] h63 insufficient_evidence 3.1 s (plan 1.5, retr 0.03, ans 1.6) spans 0/0 | I couldn't find that in these meetings.

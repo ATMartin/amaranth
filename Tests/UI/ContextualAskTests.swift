@@ -42,6 +42,8 @@ struct ContextualAskTests {
         #expect(ContextualAsk.modelQuestion("What did I promise?", mapped) == "What did Me (the user) promise?")
         #expect(ContextualAsk.attributionViolation("I promised to send the deck by Friday.", c) != nil)
         #expect(ContextualAsk.attributionViolation("You committed to the review.", c) != nil)
+        #expect(ContextualAsk.attributionViolation("I'll send it by Friday.", c) != nil)
+        #expect(ContextualAsk.attributionViolation("You’ll send the deck and we'd review it.", c) != nil)
         #expect(ContextualAsk.attributionViolation("Speaker 2 said they would send the deck; I can't tell which speaker is you.", c) == nil)
         #expect(ContextualAsk.attributionViolation("I promised it.", mapped) == nil, "mapped: the model may speak about the user's speaker")
     }

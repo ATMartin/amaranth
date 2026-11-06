@@ -59,7 +59,7 @@ public enum ContextualAsk {
     /// a wrong-person claim → a clarification instead of the answer.
     public static func attributionViolation(_ answer: String, _ c: ResolvedConstraints) -> String? {
         guard c.people.contains(where: { $0.role == .selfUser && $0.resolution == .selfUnmapped }) else { return nil }
-        let pattern = #"(?i)(^|[\s,.;:])(i|you|we)\s+(promised|committed|said|agreed|offered|will|would|'ll|’ll|owe|need to|have to|should)\b|(?i)\byour (commitments?|promises?|follow-ups?)\b"#
+        let pattern = #"(?i)(^|[\s,.;:"“(])(i|you|we)(\s+(promised|committed|said|agreed|offered|will|would|owe|need to|have to|should)\b|['’](ll|d|ve)\b)|(?i)\byour (commitments?|promises?|follow-ups?)\b"#
         guard answer.range(of: pattern, options: .regularExpression) != nil else { return nil }
         return "I can't tell which speaker is you in these meetings, so I won't say what you promised. Rename your speaker to “Me”, or ask about a speaker, for example “What did Speaker 2 promise?”."
     }

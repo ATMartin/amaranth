@@ -175,6 +175,7 @@ final class AnswerModel {
                     case .answer(let a):
                         guard self.fresh(evidence, a.citations.compactMap { ordered.indices.contains($0 - 1) ? ordered[$0 - 1] : nil }) else { self.end(id, .stale); return }
                         if !a.refused, let v = ContextualAsk.attributionViolation(a.text, evidence.constraints) { self.end(id, .clarification(v)); return }
+                        self.answeredGenerations = evidence.generations
                         self.finish(a, partial: !evidence.coverage.complete && evidence.semantic)
                     case .cancelled: break
                     case .failed(_, let code): self.end(id, .failed("The local model could not answer (\(code.prefix(80)))."))
@@ -198,7 +199,7 @@ final class AnswerModel {
 
     private func timeOut(_ id: String) {
         guard requestID == id else { return }
-        if let worker { worker.cancel(JobID(id)) }
+        if let worker { for suffix in ["", "-plan", "-q", "-x"] { worker.cancel(JobID(id + suffix)) } }
         task?.cancel()
         text = ""; response = nil
         end(id, .timedOut)
@@ -226,12 +227,17 @@ final class AnswerModel {
         ask(question, in: scopeAsked, folder: folderAsked, force: true)
     }
 
+    /// Generations of the passages behind the shown answer (for `sourcesChanged`).
+    private var answeredGenerations: [MeetingID: Int64] = [:]
+
     /// Sources changed (edit, deletion): a finished answer that cites them is marked stale.
     func sourcesChanged() {
         guard phase == .done, let store, !citedPassages.isEmpty else { return }
         let ids = Set(citedPassages.map(\.meetingID))
-        let live = (try? store.contextMeetings(ContextFilter(meetings: ids))) ?? []
-        if live != ids { phase = .stale; response = nil; text = "" }
+        let now = (try? store.contextGenerations(ids)) ?? [:]
+        if ids.contains(where: { now[$0] == nil || (answeredGenerations[$0] != nil && now[$0] != answeredGenerations[$0]) }) {
+            phase = .stale; response = nil; text = ""
+        }
     }
 
     /// The panel closed: the next question starts a new conversation.

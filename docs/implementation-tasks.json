@@ -3632,7 +3632,7 @@
       "id": "T116",
       "title": "Qualify contextual search quality, lifecycle, scale and offline packaging",
       "milestone": "V",
-      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "status": "done (2026-11-06): qualification docs/qualification/milestone-v/t116-qualification.md — pass: R2, R3, A3, L1, P1–P4, check.sh, capture under load, packaged flow; MISSED and kept open (user rule): R1 paraphrase 21/25, A1 11/45 model-graded, A2, A4 (4 wrong-person, 2 wrong-period), A5 abstain 13/14 / clarify 2/4. Sonnet verdict v1 PASS WITH FIXES (fixed), v2 PASS WITH FIXES (no must-fix)",
       "optional": false,
       "depends_on": [
         "T115"
@@ -3662,7 +3662,9 @@
         "All measured attempts terminate within 15 seconds, including cold/queued cases; successful-answer quality gates still hold when timeout/partial cases are counted as misses. Loading feedback appears within 250 ms and stops on every terminal path."
       ],
       "fallback": "Fix the owning task and rerun affected checks. Report any required scope/budget revision with evidence; do not call keyword fallback or a citation-only correctness score milestone completion.",
-      "review_timestamps": []
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     },
     {
       "id": "T117",

@@ -1,0 +1,1139 @@
+[
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "person_date"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 2,
+    "id" : "h01",
+    "passages" : 9,
+    "people" : "Andrew:speaker",
+    "pieces" : 2,
+    "planSeconds" : 0.827249375,
+    "retrievalSeconds" : 0.046517833,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 0.874024
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "changed_plan",
+      "person_date"
+    ],
+    "dateRange" : "calendar_week 2026-11-02T05:00:00Z…",
+    "final" : 2,
+    "id" : "h02",
+    "passages" : 9,
+    "people" : "Andrew:speaker",
+    "pieces" : 2,
+    "planSeconds" : 1.5185306669999998,
+    "retrievalSeconds" : 0.062151167,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.580812375
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "person_date"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h03",
+    "passages" : 8,
+    "people" : "Andrew:ambiguous",
+    "pieces" : 2,
+    "planSeconds" : 1.200507083,
+    "retrievalSeconds" : 0.057860916,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.2585099579999999
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "paraphrase",
+      "speaker_vs_mentioned"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 0,
+    "id" : "h04",
+    "passages" : 10,
+    "people" : "Andrew:speaker",
+    "pieces" : 2,
+    "planSeconds" : 1.477230334,
+    "retrievalSeconds" : 0.078763875,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.556131417
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "multipart",
+      "cross_meeting",
+      "person_date",
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 3,
+    "id" : "h05",
+    "passages" : 7,
+    "people" : "Andrew:ambiguous",
+    "pieces" : 3,
+    "planSeconds" : 1.771255208,
+    "retrievalSeconds" : 0.067802791,
+    "semantic" : true,
+    "top10" : 3,
+    "totalSeconds" : 1.839214917
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "person_date"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 0,
+    "id" : "h06",
+    "passages" : 9,
+    "people" : "Andrew:speaker",
+    "pieces" : 0,
+    "planSeconds" : 1.233139833,
+    "retrievalSeconds" : 0.053169958,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.2864270420000001
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "adversarial"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h07",
+    "passages" : 5,
+    "people" : "Andrew:ambiguous",
+    "pieces" : 0,
+    "planSeconds" : 1.084513584,
+    "retrievalSeconds" : 0.050245375,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.134941
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "staffing",
+      "cross_meeting",
+      "multipart"
+    ],
+    "dateRange" : "rolling 2026-10-30T21:00:00Z…",
+    "final" : 7,
+    "id" : "h08",
+    "passages" : 7,
+    "people" : "",
+    "pieces" : 7,
+    "planSeconds" : 1.199730625,
+    "retrievalSeconds" : 0.051526875,
+    "semantic" : true,
+    "top10" : 7,
+    "totalSeconds" : 1.2513717500000001
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "staffing",
+      "decision_status"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h09",
+    "passages" : 6,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 0.793176458,
+    "retrievalSeconds" : 0.043589167,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 0.836934708
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "changed_plan",
+      "cross_meeting",
+      "staffing"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h10",
+    "passages" : 4,
+    "people" : "Kofi:mentioned_only",
+    "pieces" : 2,
+    "planSeconds" : 1.021738708,
+    "retrievalSeconds" : 0.049584875,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.071515292
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "staffing"
+    ],
+    "dateRange" : "rolling 2026-10-30T21:00:00Z…",
+    "final" : 0,
+    "id" : "h11",
+    "passages" : 6,
+    "people" : "Kofi:mentioned_only,Priyanka:mentioned_only,Lucia:mentioned_only",
+    "pieces" : 3,
+    "planSeconds" : 2.042875875,
+    "retrievalSeconds" : 0.0660905,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 2.109111375
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "person_date",
+      "speaker_vs_mentioned",
+      "staffing"
+    ],
+    "dateRange" : "calendar_week 2026-11-02T05:00:00Z…",
+    "final" : 3,
+    "id" : "h12",
+    "passages" : 8,
+    "people" : "Priyanka:mentioned_only",
+    "pieces" : 3,
+    "planSeconds" : 1.180556709,
+    "retrievalSeconds" : 0.049654125,
+    "semantic" : true,
+    "top10" : 3,
+    "totalSeconds" : 1.230327083
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "cross_meeting"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h13",
+    "passages" : 8,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 1.004824833,
+    "retrievalSeconds" : 0.047159667,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.052131291
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h14",
+    "passages" : 8,
+    "people" : "",
+    "pieces" : 0,
+    "planSeconds" : 0.805697375,
+    "retrievalSeconds" : 0.044416625,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 0.85028825
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "trimmed"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h15",
+    "passages" : 10,
+    "people" : "Theo:mentioned_only",
+    "pieces" : 0,
+    "planSeconds" : 0.950498042,
+    "retrievalSeconds" : 0.045967333,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 0.996647125
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "decision_status",
+      "changed_plan",
+      "cross_meeting"
+    ],
+    "dateRange" : "–",
+    "final" : 3,
+    "id" : "h16",
+    "passages" : 10,
+    "people" : "",
+    "pieces" : 3,
+    "planSeconds" : 1.403665583,
+    "retrievalSeconds" : 0.062141584,
+    "semantic" : true,
+    "top10" : 3,
+    "totalSeconds" : 1.465982917
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h17",
+    "passages" : 8,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 1.240711292,
+    "retrievalSeconds" : 0.076286375,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.317179125
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "multipart"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h18",
+    "passages" : 9,
+    "people" : "board:mentioned_only,partner-channel:mentioned_only",
+    "pieces" : 2,
+    "planSeconds" : 1.936548792,
+    "retrievalSeconds" : 0.075573208,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 2.012312875
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "decision_status"
+    ],
+    "dateRange" : "–",
+    "final" : 3,
+    "id" : "h19",
+    "passages" : 6,
+    "people" : "",
+    "pieces" : 3,
+    "planSeconds" : 1.02038325,
+    "retrievalSeconds" : 0.062407083,
+    "semantic" : true,
+    "top10" : 3,
+    "totalSeconds" : 1.082955625
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h20",
+    "passages" : 11,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 1.204148916,
+    "retrievalSeconds" : 0.054783541,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.259093792
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "cross_meeting"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h21",
+    "passages" : 10,
+    "people" : "",
+    "pieces" : 3,
+    "planSeconds" : 0.961192209,
+    "retrievalSeconds" : 0.050843041,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.012286375
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "self",
+      "commitments",
+      "person_date",
+      "multipart"
+    ],
+    "dateRange" : "day 2026-11-06T05:00:00Z…",
+    "final" : 7,
+    "id" : "h22",
+    "passages" : 2,
+    "people" : "I:self_mapped",
+    "pieces" : 7,
+    "planSeconds" : 1.304851292,
+    "retrievalSeconds" : 0.034390167,
+    "semantic" : true,
+    "top10" : 7,
+    "totalSeconds" : 1.339320875
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "self",
+      "commitments"
+    ],
+    "dateRange" : "–",
+    "final" : 3,
+    "id" : "h23",
+    "passages" : 1,
+    "people" : "I:self_unmapped",
+    "pieces" : 3,
+    "planSeconds" : 1.290913833,
+    "retrievalSeconds" : 0.032880209,
+    "semantic" : true,
+    "top10" : 3,
+    "totalSeconds" : 1.323863625
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "self",
+      "commitments"
+    ],
+    "dateRange" : "–",
+    "final" : 4,
+    "id" : "h24",
+    "passages" : 1,
+    "people" : "I:self_mapped",
+    "pieces" : 4,
+    "planSeconds" : 1.24968925,
+    "retrievalSeconds" : 0.030293875,
+    "semantic" : true,
+    "top10" : 4,
+    "totalSeconds" : 1.280083584
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "commitments",
+      "self"
+    ],
+    "dateRange" : "–",
+    "final" : 3,
+    "id" : "h25",
+    "passages" : 1,
+    "people" : "security lead:mentioned_only,Jonah:mentioned_only",
+    "pieces" : 3,
+    "planSeconds" : 1.859765292,
+    "retrievalSeconds" : 0.039119208,
+    "semantic" : true,
+    "top10" : 3,
+    "totalSeconds" : 1.898964416
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "self",
+      "commitments",
+      "person_date",
+      "paraphrase"
+    ],
+    "dateRange" : "day 2026-11-05T05:00:00Z…",
+    "final" : 4,
+    "id" : "h26",
+    "passages" : 8,
+    "people" : "I:self_mapped",
+    "pieces" : 4,
+    "planSeconds" : 1.3690413750000001,
+    "retrievalSeconds" : 0.043486708,
+    "semantic" : true,
+    "top10" : 4,
+    "totalSeconds" : 1.412620542
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "person_date",
+      "speaker_vs_mentioned",
+      "paraphrase",
+      "commitments"
+    ],
+    "dateRange" : "day 2026-11-06T05:00:00Z…",
+    "final" : 2,
+    "id" : "h27",
+    "passages" : 3,
+    "people" : "Marta:mentioned_only",
+    "pieces" : 2,
+    "planSeconds" : 1.034308167,
+    "retrievalSeconds" : 0.033900625,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.068280167
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "ambiguous",
+      "self"
+    ],
+    "dateRange" : "day 2026-11-06T05:00:00Z…",
+    "final" : 0,
+    "id" : "h28",
+    "passages" : 3,
+    "people" : "I:self_mapped",
+    "pieces" : 0,
+    "planSeconds" : 0.924083416,
+    "retrievalSeconds" : 0.035866333,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 0.96004175
+  },
+  {
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h29",
+    "passages" : 10,
+    "people" : "Speaker 2:speaker",
+    "pieces" : 0,
+    "planSeconds" : 1.06173625,
+    "retrievalSeconds" : 0.070370166,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.132297166
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "negation",
+      "paraphrase"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 1,
+    "id" : "h30",
+    "passages" : 10,
+    "people" : "",
+    "pieces" : 1,
+    "planSeconds" : 0.92494025,
+    "retrievalSeconds" : 0.0525695,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 0.977627125
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "changed_plan",
+      "cross_meeting"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h31",
+    "passages" : 8,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 0.715250041,
+    "retrievalSeconds" : 0.040991834,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 0.756407083
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h32",
+    "passages" : 7,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 1.415177458,
+    "retrievalSeconds" : 0.074298792,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.489627667
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 1,
+    "id" : "h33",
+    "passages" : 7,
+    "people" : "",
+    "pieces" : 1,
+    "planSeconds" : 1.287099084,
+    "retrievalSeconds" : 0.068912417,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 1.356198375
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "adversarial",
+      "negation"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 1,
+    "id" : "h34",
+    "passages" : 9,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 1.184479584,
+    "retrievalSeconds" : 0.050652792,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 1.235242042
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "person_date",
+      "dst_boundary"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 1,
+    "id" : "h35",
+    "passages" : 8,
+    "people" : "Nadia:speaker",
+    "pieces" : 1,
+    "planSeconds" : 1.2666715,
+    "retrievalSeconds" : 0.054637541,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 1.321497875
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "person_date",
+      "dst_boundary",
+      "paraphrase"
+    ],
+    "dateRange" : "day 2026-11-02T05:00:00Z…",
+    "final" : 1,
+    "id" : "h36",
+    "passages" : 7,
+    "people" : "Nadia:speaker",
+    "pieces" : 1,
+    "planSeconds" : 1.15041225,
+    "retrievalSeconds" : 0.040358833,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 1.190846042
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "dst_boundary"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 0,
+    "id" : "h37",
+    "passages" : 10,
+    "people" : "",
+    "pieces" : 0,
+    "planSeconds" : 1.148913792,
+    "retrievalSeconds" : 0.058259917,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.207285042
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "dst_boundary",
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h38",
+    "passages" : 7,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 1.368150209,
+    "retrievalSeconds" : 0.059913792,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.428290542
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "person_date",
+      "paraphrase",
+      "dst_boundary"
+    ],
+    "dateRange" : "calendar_week 2026-11-02T05:00:00Z…",
+    "final" : 2,
+    "id" : "h39",
+    "passages" : 9,
+    "people" : "Imogen:speaker",
+    "pieces" : 2,
+    "planSeconds" : 1.048080334,
+    "retrievalSeconds" : 0.047894875,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.09610525
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "person_date",
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h40",
+    "passages" : 8,
+    "people" : "Imogen:speaker",
+    "pieces" : 2,
+    "planSeconds" : 0.9612735,
+    "retrievalSeconds" : 0.056733833,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.018179333
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "person_date"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 0,
+    "id" : "h41",
+    "passages" : 11,
+    "people" : "Imogen:mentioned_only",
+    "pieces" : 0,
+    "planSeconds" : 1.039753584,
+    "retrievalSeconds" : 0.054084708,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.093947292
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "notes_only"
+    ],
+    "dateRange" : "–",
+    "final" : 1,
+    "id" : "h42",
+    "passages" : 10,
+    "people" : "designer:mentioned_only",
+    "pieces" : 1,
+    "planSeconds" : 1.001619167,
+    "retrievalSeconds" : 0.042973625,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 1.044781209
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "notes_only",
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h43",
+    "passages" : 10,
+    "people" : "",
+    "pieces" : 1,
+    "planSeconds" : 0.951650458,
+    "retrievalSeconds" : 0.062683458,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.014547875
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h44",
+    "passages" : 11,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 0.985607042,
+    "retrievalSeconds" : 0.077319,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.063127375
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "speaker_vs_mentioned"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h45",
+    "passages" : 11,
+    "people" : "Grace:mentioned_only,Whitfield:unknown",
+    "pieces" : 0,
+    "planSeconds" : 1.118256833,
+    "retrievalSeconds" : 0.046236667,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.1646840410000001
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "speaker_vs_mentioned",
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 1,
+    "id" : "h46",
+    "passages" : 11,
+    "people" : "Owen:mentioned_only",
+    "pieces" : 1,
+    "planSeconds" : 1.199363,
+    "retrievalSeconds" : 0.045977958,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 1.2455540840000001
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "ambiguous",
+      "self"
+    ],
+    "dateRange" : "–",
+    "final" : 1,
+    "id" : "h47",
+    "passages" : 11,
+    "people" : "I:self_mapped",
+    "pieces" : 1,
+    "planSeconds" : 1.134322208,
+    "retrievalSeconds" : 0.045570083,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 1.180079083
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h48",
+    "passages" : 12,
+    "people" : "",
+    "pieces" : 0,
+    "planSeconds" : 1.218759875,
+    "retrievalSeconds" : 0.050632084,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.269595125
+  },
+  {
+    "behavior" : "partial",
+    "categories" : [
+      "incomplete_index"
+    ],
+    "dateRange" : "–",
+    "final" : 1,
+    "id" : "h49",
+    "passages" : 8,
+    "people" : "",
+    "pieces" : 1,
+    "planSeconds" : 0.900408292,
+    "retrievalSeconds" : 0.048520917,
+    "semantic" : true,
+    "top10" : 1,
+    "totalSeconds" : 0.949121583
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "trimmed"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h50",
+    "passages" : 12,
+    "people" : "",
+    "pieces" : 0,
+    "planSeconds" : 1.248793625,
+    "retrievalSeconds" : 0.055831667,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.3048017920000001
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h51",
+    "passages" : 10,
+    "people" : "",
+    "pieces" : 0,
+    "planSeconds" : 0.7763805,
+    "retrievalSeconds" : 0.053631416,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 0.830217833
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "paraphrase",
+      "changed_plan"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h52",
+    "passages" : 11,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 0.771517542,
+    "retrievalSeconds" : 0.053013875,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 0.824727
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h53",
+    "passages" : 11,
+    "people" : "",
+    "pieces" : 0,
+    "planSeconds" : 0.757430167,
+    "retrievalSeconds" : 0.055722583,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 0.813294042
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "person_date",
+      "paraphrase"
+    ],
+    "dateRange" : "calendar_week 2026-10-26T04:00:00Z…",
+    "final" : 2,
+    "id" : "h54",
+    "passages" : 9,
+    "people" : "Ruth:speaker",
+    "pieces" : 2,
+    "planSeconds" : 0.996302541,
+    "retrievalSeconds" : 0.050689084,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.04711275
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "changed_plan",
+      "person_date"
+    ],
+    "dateRange" : "calendar_week 2026-11-02T05:00:00Z…",
+    "final" : 2,
+    "id" : "h55",
+    "passages" : 8,
+    "people" : "Ruth:speaker",
+    "pieces" : 2,
+    "planSeconds" : 1.217554,
+    "retrievalSeconds" : 0.047993792,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.2656665
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "unanswerable",
+      "person_date"
+    ],
+    "dateRange" : "calendar_week 2026-11-02T05:00:00Z…",
+    "final" : 0,
+    "id" : "h56",
+    "passages" : 7,
+    "people" : "Ruth:speaker",
+    "pieces" : 0,
+    "planSeconds" : 1.060621083,
+    "retrievalSeconds" : 0.049761541,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.110499
+  },
+  {
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous",
+      "speaker_vs_mentioned"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h57",
+    "passages" : 7,
+    "people" : "Andrew:ambiguous",
+    "pieces" : 2,
+    "planSeconds" : 0.928611959,
+    "retrievalSeconds" : 0.050867666,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 0.979659375
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "followup",
+      "speaker_vs_mentioned"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h58",
+    "passages" : 8,
+    "people" : "Andrew B.:speaker,I:self_mapped",
+    "pieces" : 2,
+    "planSeconds" : 1.462402584,
+    "retrievalSeconds" : 0.065453916,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.528025709
+  },
+  {
+    "behavior" : "clarify",
+    "categories" : [
+      "ambiguous"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h59",
+    "passages" : 6,
+    "people" : "Andrew:ambiguous",
+    "pieces" : 0,
+    "planSeconds" : 1.034404459,
+    "retrievalSeconds" : 0.056379625,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.090968542
+  },
+  {
+    "behavior" : "answer",
+    "categories" : [
+      "adversarial",
+      "paraphrase"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h60",
+    "passages" : 11,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 0.876528458,
+    "retrievalSeconds" : 0.048247875,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 0.924952375
+  },
+  {
+    "behavior" : "qualify",
+    "categories" : [
+      "adversarial"
+    ],
+    "dateRange" : "–",
+    "final" : 2,
+    "id" : "h61",
+    "passages" : 9,
+    "people" : "",
+    "pieces" : 2,
+    "planSeconds" : 1.08473925,
+    "retrievalSeconds" : 0.060255375,
+    "semantic" : true,
+    "top10" : 2,
+    "totalSeconds" : 1.1452712919999999
+  },
+  {
+    "behavior" : "abstain",
+    "categories" : [
+      "adversarial"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h62",
+    "passages" : 11,
+    "people" : "",
+    "pieces" : 0,
+    "planSeconds" : 0.456470375,
+    "retrievalSeconds" : 0.02007675,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 0.476715375
+  },
+  {
+    "behavior" : "clarify",
+    "categories" : [
+      "adversarial"
+    ],
+    "dateRange" : "–",
+    "final" : 0,
+    "id" : "h63",
+    "passages" : 2,
+    "people" : "Nadia:unknown,I:self_unmapped",
+    "pieces" : 0,
+    "planSeconds" : 1.17615975,
+    "retrievalSeconds" : 0.030503666,
+    "semantic" : true,
+    "top10" : 0,
+    "totalSeconds" : 1.20674875
+  }
+]

@@ -93,8 +93,8 @@ extension MeetingStore {
     /// Library v7 migration: chunks for every meeting from current content (no model work, search index untouched).
     static func rechunkAll(_ db: SQLiteDB) throws {
         for row in try db.run("SELECT id, json FROM meetings") {
-            guard let id = row["id"]?.text, let blob = row["json"]?.blob else { continue }
-            let m = try ContractCoding.decode(Meeting.self, from: blob)
+            // A row that can't be decoded is left unchunked (keyword search still has it) rather than blocking the library.
+            guard let id = row["id"]?.text, let blob = row["json"]?.blob, let m = try? ContractCoding.decode(Meeting.self, from: blob) else { continue }
             var current: (TranscriptRevision, [SpeakerID: String])?
             if m.deletedAt == nil, let tid = m.currentTranscriptRevisionID,
                let t = try db.run("SELECT json FROM transcript_revisions WHERE id=?", [.text(tid.rawValue)]).first?["json"]?.blob {

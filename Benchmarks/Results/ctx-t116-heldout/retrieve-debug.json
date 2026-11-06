@@ -1,0 +1,317 @@
+[
+  {
+    "id" : "h01",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1028-s0 1:Andrew \/ Simone 1:1:h-andrew-1028-s18 4:Team growth roundtable:h-growth-1029-s4 5:Team growth roundtable:h-growth-1029-s0 7:Team sync 33:filler-32-s6 8:Team sync 34:filler-33-s11 9:Team sync 30:filler-29-s21 10:Team sync 32:filler-31-s28 11:Team sync 29:filler-28-s4",
+    "queries" : "Andrew said he wanted to move into product management next"
+  },
+  {
+    "id" : "h02",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1103-s0 1:Andrew \/ Simone 1:1:h-andrew-1103-s19 4:Team sync 39:filler-38-s40 5:Resourcing sync:h-resourcing-1104-s21 7:Team sync 38:filler-37-s14 8:Incident follow-up:h-incident-1102-s0 9:Team sync 39:filler-38-s22 10:Atlas launch update:h-atlas-1104-s14 11:Trane weekly:h-trane-1102-s22",
+    "queries" : "Did Andrew make any updates to his career goal this week? \/ Has he shared anything new about his lead role interest since last week?"
+  },
+  {
+    "id" : "h03",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1028-s12 1:Andrew \/ Simone 1:1:h-andrew-1103-s10 2:Andrew \/ Simone 1:1:h-andrew-1014-s0 5:Andrew \/ Simone 1:1:h-andrew-1103-s0 7:Andrew \/ Simone 1:1:h-andrew-1014-s22 8:Andrew \/ Simone 1:1:h-andrew-1028-s0 9:Corvane renewal:h-corvane-1020-s13 11:Team growth roundtable:h-growth-1029-s12",
+    "queries" : "Andrew mentioned he wanted to take a leadership training course in mid-October. \/ He brought up a goal to complete a project management certification around mid-October."
+  },
+  {
+    "id" : "h04",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1028-s0 1:Andrew \/ Simone 1:1:h-andrew-1028-s12 2:Team growth roundtable:h-growth-1029-s12 5:Q3 retrospective:h-retro-1030-s4 6:Team sync 29:filler-28-s4 7:Pricing working group:h-pricing-1029-s5 8:Team sync 34:filler-33-s28 9:Staff designer debrief:h-hiring-1027-s6 10:Team sync 30:filler-29-s46 11:Team sync 36:filler-35-s13",
+    "queries" : "Did anyone else mention switching roles last week? \/ Was there anyone besides Andrew who talked about changing positions in the meeting from last week?"
+  },
+  {
+    "id" : "h05",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1103-s0 2:Andrew \/ Simone 1:1:h-andrew-1014-s6 3:Andrew \/ Simone 1:1:h-andrew-1028-s0 4:Andrew \/ Simone 1:1:h-andrew-1028-s12 5:Andrew \/ Simone 1:1:h-andrew-1103-s19 6:Corvane renewal:h-corvane-1020-s27 9:Andrew \/ Simone 1:1:h-andrew-1014-s0",
+    "queries" : "Last week Andrew said he wanted to work on the client project, but in mid-October he wanted to shift focus to the internal tool development. \/ He originally asked for the client project last week, but by mid-October he was pushing for the internal tool instead."
+  },
+  {
+    "id" : "h06",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1028-s0 1:Andrew \/ Simone 1:1:h-andrew-1028-s18 4:Team growth roundtable:h-growth-1029-s12 5:Q3 retrospective:h-retro-1030-s4 6:Team sync 36:filler-35-s13 7:Team sync 29:filler-28-s4 8:Team sync 36:filler-35-s49 9:Facilities: Reno test lab:h-lab-1027-s15 11:Team sync 30:filler-29-s21",
+    "queries" : "Andrew said he might be able to move to Austin next quarter if the workload allows. \/ He mentioned he’s open to relocating to Austin, but hasn’t made a final decision yet."
+  },
+  {
+    "id" : "h07",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1103-s0 1:Andrew \/ Simone 1:1:h-andrew-1028-s0 5:Corvane renewal:h-corvane-1020-s13 6:Andrew \/ Simone 1:1:h-andrew-1014-s0 8:Andrew \/ Simone 1:1:h-andrew-1103-s19",
+    "queries" : "Andrew said he was asking for $120,000 for the lead role. \/ He mentioned he wanted $120k for the lead position."
+  },
+  {
+    "id" : "h08",
+    "passages" : "0:Resourcing sync:h-resourcing-1104-s0 1:Trane weekly:h-trane-1102-s0 2:Exec staff:h-plan-1103-s15 4:Trane client check-in:h-trane-1105-s0 6:Trane weekly:h-trane-1102-s22 10:Harbor project sync:h-harbor-1103-s0 11:Harbor project sync:h-harbor-1103-s15",
+    "queries" : "She could pick that up once her current work wraps. \/ John mentioned he’d be available to staff the Trane project after the deadline passes."
+  },
+  {
+    "id" : "h09",
+    "passages" : "0:Trane weekly:h-trane-1102-s0 1:Trane client check-in:h-trane-1105-s0 2:Trane kickoff prep:h-trane-1028-s0 4:Resourcing sync:h-resourcing-1104-s6 5:Trane client check-in:h-trane-1105-s13 8:Trane weekly:h-trane-1102-s13",
+    "queries" : "Yeah, someone actually locked in for the Trane work"
+  },
+  {
+    "id" : "h10",
+    "passages" : "0:Trane weekly:h-trane-1102-s0 2:Trane kickoff prep:h-trane-1028-s0 3:Resourcing sync:h-resourcing-1104-s0 4:Trane client check-in:h-trane-1105-s0",
+    "queries" : "Kofi still available to help with Trane controls integration? \/ Can Kofi take on the Trane controls work right now?"
+  },
+  {
+    "id" : "h11",
+    "passages" : "0:Resourcing sync:h-resourcing-1104-s0 2:Trane client check-in:h-trane-1105-s0 3:Trane weekly:h-trane-1102-s0 5:Trane weekly:h-trane-1102-s22 7:Trane client check-in:h-trane-1105-s13 9:Team sync 39:filler-38-s40",
+    "queries" : "Who else was considered before Lucia got assigned? \/ Was anyone else mentioned as a possible staff member before Lucia was picked?"
+  },
+  {
+    "id" : "h12",
+    "passages" : "0:Trane weekly:h-trane-1102-s6 1:Resourcing sync:h-resourcing-1104-s14 2:Team retro:h-retro-1105-s6 3:Platform standup:h-standup-1106-s7 5:Team sync 39:filler-38-s30 9:Trane client check-in:h-trane-1105-s13 10:Trane weekly:h-trane-1102-s22 11:Team sync 40:filler-39-s15",
+    "queries" : "Priyanka said she can work on it this week once her current project wraps up. \/ She mentioned she’s free this week after her meeting on Tuesday."
+  },
+  {
+    "id" : "h13",
+    "passages" : "0:Trane kickoff prep:h-trane-1028-s13 1:Trane weekly:h-trane-1102-s13 2:Trane weekly:h-trane-1102-s0 4:Pricing working group:h-pricing-1029-s5 5:Trane client check-in:h-trane-1105-s0 6:Trane kickoff prep:h-trane-1028-s0 9:Resourcing sync:h-resourcing-1104-s0 10:Atlas launch update:h-atlas-1104-s0",
+    "queries" : "When does Trane stop accepting change requests for the year? \/ The Trane client's change acceptance window closes at the end of Q4."
+  },
+  {
+    "id" : "h14",
+    "passages" : "0:Trane weekly:h-trane-1102-s0 1:Trane kickoff prep:h-trane-1028-s0 3:Resourcing sync:h-resourcing-1104-s0 4:Trane kickoff prep:h-trane-1028-s23 6:Trane weekly:h-trane-1102-s13 7:Trane client check-in:h-trane-1105-s0 10:Team retro:h-retro-1105-s15 11:Staff designer debrief:h-hiring-1027-s0",
+    "queries" : "We agreed on a rate of $75 per hour with Trane. \/ The team settled on $75 an hour for Trane."
+  },
+  {
+    "id" : "h15",
+    "passages" : "0:Trane kickoff prep:h-trane-1028-s0 2:Incident follow-up:h-incident-1102-s0 3:2027 planning kickoff:h-plan-1015-s0 5:Andrew \/ Simone 1:1:h-andrew-1103-s5 6:Late incident bridge:h-incident-1101-s5 7:Team sync 39:filler-38-s40 8:Team sync 7:filler-6-s47 9:Team growth roundtable:h-growth-1029-s4 10:Trane kickoff prep:h-trane-1028-s23 11:Team sync 1:filler-0-s0",
+    "queries" : "Theo said he's taking a leave of absence next month. \/ He mentioned he'll be on leave starting in June."
+  },
+  {
+    "id" : "h16",
+    "passages" : "0:2027 planning kickoff:h-plan-1015-s0 1:Exec staff:h-plan-1103-s0 2:Leadership offsite:h-plan-1023-s0 3:2027 planning kickoff:h-plan-1015-s11 6:Andrew \/ Simone 1:1:h-andrew-1028-s12 7:Team sync 13:filler-12-s39 8:Team sync 6:filler-5-s23 9:Pricing working group:h-pricing-1029-s0 10:Atlas launch planning:h-atlas-1020-s0 11:Q4 budget review:h-budget-1105-s9",
+    "queries" : "We still haven't finalized the strategic planning for 2027. \/ No decision has been made yet on the 2027 strategic plan."
+  },
+  {
+    "id" : "h17",
+    "passages" : "0:Exec staff:h-plan-1103-s0 1:Leadership offsite:h-plan-1023-s0 3:Brightwater onboarding call:h-client-1106-s0 5:Incident follow-up:h-incident-1102-s0 6:Resourcing sync:h-resourcing-1104-s6 9:2027 planning kickoff:h-plan-1015-s11 10:Late incident bridge:h-incident-1101-s15 11:Atlas launch planning:h-atlas-1020-s7",
+    "queries" : "Why did we have to reopen the offsite outcome? \/ We had to go back and reopen the offsite because of the feedback we got."
+  },
+  {
+    "id" : "h18",
+    "passages" : "0:2027 planning kickoff:h-plan-1015-s0 1:Exec staff:h-plan-1103-s0 2:Leadership offsite:h-plan-1023-s5 3:Exec staff:h-plan-1103-s15 4:Resourcing sync:h-resourcing-1104-s6 5:Q4 budget review:h-budget-1105-s9 6:Atlas go\/no-go prep:h-atlas-1029-s24 9:Platform standup:h-standup-1106-s0 11:Team sync 23:filler-22-s23",
+    "queries" : "When will it be settled? It's pending the board review on the 19th. \/ The final decision won't be made until the board review on the 19th, and first the partner-channel case needs to be written."
+  },
+  {
+    "id" : "h19",
+    "passages" : "0:2027 planning kickoff:h-plan-1015-s0 2:Pricing working group:h-pricing-1029-s0 5:Exec staff:h-plan-1103-s0 6:Leadership offsite:h-plan-1023-s0 7:Team sync 33:filler-32-s14 9:Team sync 4:filler-3-s0",
+    "queries" : "We did finalize the 2027 pricing changes last week. \/ The team wrapped up the 2027 pricing update during the last meeting."
+  },
+  {
+    "id" : "h20",
+    "passages" : "0:Exec staff:h-plan-1103-s0 1:Team sync 8:filler-7-s15 2:Team sync 12:filler-11-s5 3:Team sync 36:filler-35-s42 4:Team sync 39:filler-38-s22 5:Team sync 7:filler-6-s55 6:Staff designer debrief:h-hiring-1027-s6 7:Team sync 19:filler-18-s49 8:Team sync 28:filler-27-s42 9:Team sync 39:filler-38-s48 11:Team sync 34:filler-33-s11",
+    "queries" : "We finally settled on hiring through a local partner in India for the offshore team. \/ Decided to go with a third-party recruiter for the international hiring process."
+  },
+  {
+    "id" : "h21",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1014-s0 1:Andrew \/ Simone 1:1:h-andrew-1103-s10 2:Andrew \/ Simone 1:1:h-andrew-1014-s13 3:Platform standup:h-standup-1106-s7 4:Leadership offsite:h-plan-1023-s14 6:Brightwater onboarding call:h-client-1106-s13 7:Corvane renewal:h-corvane-1020-s13 9:Team sync 25:filler-24-s8 10:Weekend deploy check:h-incident-1025-s6 11:Team sync 3:filler-2-s32",
+    "queries" : "We're still in the evaluation phase for replacing the old invoicing platform. \/ The team hasn't made a final decision on phasing out the current invoicing system yet."
+  },
+  {
+    "id" : "h22",
+    "passages" : "0:Brightwater onboarding call:h-client-1106-s0 3:Platform standup:h-standup-1106-s0",
+    "queries" : "I promised to follow up with the team by Friday. \/ I committed to sending over the updated timeline by end of day today."
+  },
+  {
+    "id" : "h23",
+    "passages" : "0:Platform standup:h-standup-1106-s0",
+    "queries" : "I promised to send over the updated timeline by end of day tomorrow. \/ I committed to following up with the team by Friday."
+  },
+  {
+    "id" : "h24",
+    "passages" : "0:Brightwater onboarding call:h-client-1106-s0",
+    "queries" : "I promised to send over the updated timeline by end of day tomorrow. \/ I committed to following up with the team by Friday."
+  },
+  {
+    "id" : "h25",
+    "passages" : "0:Brightwater onboarding call:h-client-1106-s0",
+    "queries" : "Which of the actions have a specific date or requirement tied to them? \/ What follow-up items have a deadline or depend on something else?"
+  },
+  {
+    "id" : "h26",
+    "passages" : "0:Team retro:h-retro-1105-s15 1:Team retro:h-retro-1105-s0 4:Facilities check-in:h-lab-1105-s0 5:Trane client check-in:h-trane-1105-s0 6:Facilities check-in:h-lab-1105-s17 7:Team sync 40:filler-39-s30 8:Team sync 40:filler-39-s0 10:Team sync 40:filler-39-s51",
+    "queries" : "What did I commit to after the retro yesterday? \/ What action did I agree to from yesterday's retrospective?"
+  },
+  {
+    "id" : "h27",
+    "passages" : "0:Platform standup:h-standup-1106-s0 2:Brightwater onboarding call:h-client-1106-s0 3:Brightwater onboarding call:h-client-1106-s22",
+    "queries" : "Marta said she'd take on the client onboarding project this morning. \/ She agreed to handle the new client setup this morning."
+  },
+  {
+    "id" : "h28",
+    "passages" : "0:Brightwater onboarding call:h-client-1106-s0 3:Platform standup:h-standup-1106-s0 4:Platform standup:h-standup-1106-s15",
+    "queries" : "Was I in the standup this morning? \/ I was the one who spoke in this morning's standup."
+  },
+  {
+    "id" : "h29",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1014-s22 1:Team sync 25:filler-24-s15 2:Team sync 26:filler-25-s42 3:Team sync 15:filler-14-s53 4:Team sync 38:filler-37-s0 5:Team sync 23:filler-22-s13 6:Team sync 22:filler-21-s28 8:Atlas launch update:h-atlas-1104-s22 9:Team sync 39:filler-38-s48 10:Team sync 4:filler-3-s45",
+    "queries" : "Speaker 2 said they'd handle the project updates starting next week. \/ They promised to send the report by Friday."
+  },
+  {
+    "id" : "h30",
+    "passages" : "0:Atlas go\/no-go prep:h-atlas-1029-s5 1:Atlas go\/no-go prep:h-atlas-1029-s0 3:Late incident bridge:h-incident-1101-s15 4:Late incident bridge:h-incident-1101-s0 5:Q3 retrospective:h-retro-1030-s4 6:Team sync 33:filler-32-s28 7:Team sync 31:filler-30-s21 8:Team sync 30:filler-29-s46 9:Facilities: Reno test lab:h-lab-1027-s5 10:Team sync 36:filler-35-s13",
+    "queries" : "Yeah, the Atlas launch was pushed back last week because of the weather issues. \/ We had to delay the Atlas launch last week due to forecasted storms."
+  },
+  {
+    "id" : "h31",
+    "passages" : "0:Atlas launch planning:h-atlas-1020-s0 1:Atlas launch update:h-atlas-1104-s14 2:Atlas go\/no-go prep:h-atlas-1029-s0 3:Atlas launch planning:h-atlas-1020-s17 4:Atlas launch update:h-atlas-1104-s0 5:Atlas go\/no-go prep:h-atlas-1029-s14 9:Exec staff:h-plan-1103-s15 11:Brightwater onboarding call:h-client-1106-s5",
+    "queries" : "When is the next Atlas launch scheduled? \/ What's the current launch date for Atlas?"
+  },
+  {
+    "id" : "h32",
+    "passages" : "0:Atlas go\/no-go prep:h-atlas-1029-s0 1:Atlas launch update:h-atlas-1104-s14 2:Atlas launch update:h-atlas-1104-s0 4:Atlas launch planning:h-atlas-1020-s0 7:Atlas launch planning:h-atlas-1020-s17 9:Exec staff:h-plan-1103-s15 11:Resourcing sync:h-resourcing-1104-s0",
+    "queries" : "Why did the launch date get pushed back? \/ We originally had it on Nov 17, but it shifted to Dec 1 after some delays in testing."
+  },
+  {
+    "id" : "h33",
+    "passages" : "0:Atlas launch update:h-atlas-1104-s0 2:Atlas launch planning:h-atlas-1020-s0 3:Atlas launch planning:h-atlas-1020-s17 4:Atlas go\/no-go prep:h-atlas-1029-s0 9:Exec staff:h-plan-1103-s25 10:Trane client check-in:h-trane-1105-s5 11:Trane weekly:h-trane-1102-s0",
+    "queries" : "How many people will get access to the Atlas beta when it launches? \/ Once the Atlas beta opens, how many users will be able to try it?"
+  },
+  {
+    "id" : "h34",
+    "passages" : "0:Atlas go\/no-go prep:h-atlas-1029-s0 1:Atlas go\/no-go prep:h-atlas-1029-s14 3:Team sync 32:filler-31-s42 4:Trane kickoff prep:h-trane-1028-s13 5:Team sync 30:filler-29-s28 7:Team sync 32:filler-31-s0 8:Team sync 36:filler-35-s20 9:Team sync 36:filler-35-s49 11:Andrew \/ Simone 1:1:h-andrew-1028-s12",
+    "queries" : "Alex said last week we're shifting the Atlas launch to December. \/ I think it was Sam who mentioned last week that the Atlas launch is now set for December."
+  },
+  {
+    "id" : "h35",
+    "passages" : "0:Late incident bridge:h-incident-1101-s0 4:Andrew \/ Simone 1:1:h-andrew-1028-s0 5:Andrew \/ Simone 1:1:h-andrew-1028-s12 6:Team sync 31:filler-30-s21 7:Team sync 33:filler-32-s28 8:Team sync 29:filler-28-s37 9:Team sync 35:filler-34-s12 11:Team sync 29:filler-28-s4",
+    "queries" : "Nadia suggested we switch to a more reliable database system after the last week's incident. \/ She recommended we patch the current database and move to a cloud-based solution during the incident call last week."
+  },
+  {
+    "id" : "h36",
+    "passages" : "0:Incident follow-up:h-incident-1102-s0 1:Incident follow-up:h-incident-1102-s13 4:Trane weekly:h-trane-1102-s6 5:Team sync 37:filler-36-s43 6:Team sync 37:filler-36-s6 8:Trane weekly:h-trane-1102-s22 11:Team sync 37:filler-36-s0",
+    "queries" : "Nadia said we'd stay on the backup for another two weeks until we get a new system in place. \/ She mentioned we’d keep the backup running for at least two more weeks."
+  },
+  {
+    "id" : "h37",
+    "passages" : "0:Late incident bridge:h-incident-1101-s5 2:Atlas go\/no-go prep:h-atlas-1029-s0 3:Pricing working group:h-pricing-1029-s5 4:Andrew \/ Simone 1:1:h-andrew-1028-s0 6:Q3 retrospective:h-retro-1030-s4 7:Team sync 33:filler-32-s28 8:Andrew \/ Simone 1:1:h-andrew-1028-s12 9:Team sync 29:filler-28-s4 10:Team sync 30:filler-29-s0 11:Team sync 30:filler-29-s14",
+    "queries" : "Did anyone mention rolling back the cache update from last week? \/ We talked about reversing the cache change last week—was that discussed?"
+  },
+  {
+    "id" : "h38",
+    "passages" : "0:Team retro:h-retro-1105-s0 1:Weekend deploy check:h-incident-1025-s0 2:Incident follow-up:h-incident-1102-s5 6:Late incident bridge:h-incident-1101-s0 7:Q3 retrospective:h-retro-1030-s23 9:Andrew \/ Simone 1:1:h-andrew-1014-s13 10:Team sync 2:filler-1-s7",
+    "queries" : "What caused the outage during that late Sunday night call? \/ How did the team respond when the system went down on Sunday night?"
+  },
+  {
+    "id" : "h39",
+    "passages" : "0:Incident follow-up:h-incident-1102-s0 4:Platform standup:h-standup-1106-s0 5:Trane weekly:h-trane-1102-s0 6:Trane client check-in:h-trane-1105-s5 7:Andrew \/ Simone 1:1:h-andrew-1103-s0 8:Team sync 37:filler-36-s23 9:Resourcing sync:h-resourcing-1104-s0 10:Harbor project sync:h-harbor-1103-s5 11:Team sync 39:filler-38-s40",
+    "queries" : "Imogen said there were a few lingering pen test issues left from last week, mostly around access controls and logging"
+  },
+  {
+    "id" : "h40",
+    "passages" : "0:Leadership offsite:h-plan-1023-s5 1:Incident follow-up:h-incident-1102-s0 3:Incident follow-up:h-incident-1102-s24 5:Platform standup:h-standup-1106-s15 6:Team retro:h-retro-1105-s6 7:Andrew \/ Simone 1:1:h-andrew-1014-s13 10:Team sync 22:filler-21-s28 11:Exec staff:h-plan-1103-s25",
+    "queries" : "Imogen said the staging exposure would be wrapped up by the end of the week"
+  },
+  {
+    "id" : "h41",
+    "passages" : "0:Team sync 29:filler-28-s30 1:Team sync 29:filler-28-s14 2:Team sync 29:filler-28-s44 4:Andrew \/ Simone 1:1:h-andrew-1028-s0 5:Team sync 30:filler-29-s28 6:Team sync 30:filler-29-s14 7:Q3 retrospective:h-retro-1030-s23 8:Team sync 35:filler-34-s12 9:Team sync 33:filler-32-s28 10:Team sync 36:filler-35-s28 11:Team sync 35:filler-34-s44",
+    "queries" : "Imogen mentioned SOC 2 compliance during last week's meeting. \/ Did Imogen bring up SOC 2 in the last week's call?"
+  },
+  {
+    "id" : "h42",
+    "passages" : "0:Staff designer debrief:h-hiring-1027-s13 1:Staff designer debrief:h-hiring-1027-s0 2:Harbor project sync:h-harbor-1103-s15 3:Harbor project sync:h-harbor-1103-s0 4:Exec staff:h-plan-1103-s0 6:Atlas launch update:h-atlas-1104-s5 8:Pricing working group:h-pricing-1029-s5 9:Trane weekly:h-trane-1102-s22 10:Staff designer debrief:h-hiring-1027-n0 11:Team sync 20:filler-19-s56",
+    "queries" : "So when does the designer for the new project actually begin?"
+  },
+  {
+    "id" : "h43",
+    "passages" : "0:Harbor project sync:h-harbor-1103-s5 1:Resourcing sync:h-resourcing-1104-s6 3:Trane client check-in:h-trane-1105-s13 4:Platform standup:h-standup-1106-s0 5:Andrew \/ Simone 1:1:h-andrew-1014-s13 6:Atlas go\/no-go prep:h-atlas-1029-s5 8:Trane weekly:h-trane-1102-s22 9:Exec staff:h-plan-1103-s5 10:Andrew \/ Simone 1:1:h-andrew-1103-s0 11:Team sync 17:filler-16-s50",
+    "queries" : "We're still looking at Supplier X and Supplier Y for logistics. \/ We haven't ruled out Supplier A or Supplier B yet for the logistics part."
+  },
+  {
+    "id" : "h44",
+    "passages" : "0:Staff designer debrief:h-hiring-1027-s0 1:Harbor project sync:h-harbor-1103-s15 2:Team sync 25:filler-24-s42 3:Team sync 24:filler-23-s36 4:Team sync 40:filler-39-s5 5:Team sync 22:filler-21-s36 6:Staff designer debrief:h-hiring-1027-s13 7:Team sync 30:filler-29-s54 8:Team sync 4:filler-3-s22 10:Team sync 33:filler-32-s14 11:Team sync 3:filler-2-s6",
+    "queries" : "The design debrief said the candidate didn't meet the core requirements for the project. \/ We concluded the candidate wasn't a good fit based on the design debrief."
+  },
+  {
+    "id" : "h45",
+    "passages" : "0:2027 planning kickoff:h-plan-1015-s0 1:Trane client check-in:h-trane-1105-s24 2:Resourcing sync:h-resourcing-1104-s6 3:Brightwater onboarding call:h-client-1106-s22 5:Q3 retrospective:h-retro-1030-s23 6:Team sync 11:filler-10-s52 7:Team sync 12:filler-11-s5 8:Staff designer debrief:h-hiring-1027-s0 9:Team sync 13:filler-12-s55 10:Team growth roundtable:h-growth-1029-s4 11:Staff designer debrief:h-hiring-1027-s23",
+    "queries" : "Grace said the candidate was a strong fit for the role. \/ She mentioned the candidate has great experience and could really contribute."
+  },
+  {
+    "id" : "h46",
+    "passages" : "0:Staff designer debrief:h-hiring-1027-s6 1:Team growth roundtable:h-growth-1029-s0 2:Andrew \/ Simone 1:1:h-andrew-1103-s0 3:Pricing working group:h-pricing-1029-s5 4:Leadership offsite:h-plan-1023-s14 5:Staff designer debrief:h-hiring-1027-n1 7:Team sync 13:filler-12-s55 8:Andrew \/ Simone 1:1:h-andrew-1028-s18 9:Team sync 7:filler-6-s47 10:Team sync 12:filler-11-s5 11:Brightwater onboarding call:h-client-1106-s22",
+    "queries" : "Owen said he's okay with sitting on panels as long as there's enough time to ask good questions. \/ He mentioned he's not a big fan of interview panels, but he'd do it if it helps the hiring process."
+  },
+  {
+    "id" : "h47",
+    "passages" : "0:Staff designer debrief:h-hiring-1027-s6 1:Team growth roundtable:h-growth-1029-s0 2:Pricing working group:h-pricing-1029-s5 3:Brightwater onboarding call:h-client-1106-s22 4:Harbor project sync:h-harbor-1103-s5 5:Q3 retrospective:h-retro-1030-s4 6:Corvane renewal:h-corvane-1020-s0 7:Leadership offsite:h-plan-1023-s0 8:Team retro:h-retro-1105-s15 10:Trane kickoff prep:h-trane-1028-s13 11:2027 planning kickoff:h-plan-1015-s4",
+    "queries" : "I mentioned we should keep the panel to three people max. \/ I said the interview panel should be small—just two or three people."
+  },
+  {
+    "id" : "h48",
+    "passages" : "0:Staff designer debrief:h-hiring-1027-s0 1:2027 planning kickoff:h-plan-1015-s21 2:Pricing working group:h-pricing-1029-s5 3:Staff designer debrief:h-hiring-1027-n0 4:Atlas launch update:h-atlas-1104-s5 5:Team sync 20:filler-19-s56 6:Team sync 33:filler-32-s14 7:Staff designer debrief:h-hiring-1027-s13 8:Team sync 4:filler-3-s22 9:Team sync 24:filler-23-s36 10:Trane kickoff prep:h-trane-1028-s13 11:Team sync 21:filler-20-s6",
+    "queries" : "We approved a salary range of $75,000 to $90,000 for the staff designer. \/ The team went with $75k to $90k as the approved range for the staff designer."
+  },
+  {
+    "id" : "h49",
+    "passages" : "0:Pricing working group:h-pricing-1029-s5 2:Atlas go\/no-go prep:h-atlas-1029-s5 3:Atlas launch update:h-atlas-1104-s5 4:2027 planning kickoff:h-plan-1015-s4 5:2027 planning kickoff:h-plan-1015-s0 6:Leadership offsite:h-plan-1023-s5 7:Q4 budget review:h-budget-1105-s0 11:Atlas launch planning:h-atlas-1020-s0",
+    "queries" : "What's the spending limit for Q4 marketing? \/ Is there a cap on how much we can spend on marketing in Q4?"
+  },
+  {
+    "id" : "h50",
+    "passages" : "0:Team sync 21:filler-20-s15 1:Team sync 4:filler-3-s0 2:Team sync 11:filler-10-s0 3:Team sync 32:filler-31-s42 4:Resourcing sync:h-resourcing-1104-s6 5:Q3 retrospective:h-retro-1030-s4 6:Team sync 17:filler-16-s15 7:Trane kickoff prep:h-trane-1028-s0 8:Team sync 8:filler-7-s0 9:Trane client check-in:h-trane-1105-s0 10:Team sync 23:filler-22-s39 11:Corvane renewal:h-corvane-1020-s0",
+    "queries" : "We heard that Pellucid is being acquired by a big tech firm, and they're planning to integrate their platform into the main product line. \/ The team mentioned that Pellucid’s acquisition is moving forward, and they expect a full integration by Q3."
+  },
+  {
+    "id" : "h51",
+    "passages" : "0:Q3 retrospective:h-retro-1030-s4 1:Team sync 2:filler-1-s32 2:Team sync 39:filler-38-s40 3:Team sync 27:filler-26-s12 4:Team sync 24:filler-23-s53 5:Team sync 28:filler-27-s56 6:Team sync 35:filler-34-s7 8:Team sync 3:filler-2-s6 9:Team sync 26:filler-25-s56 10:2027 planning kickoff:h-plan-1015-s4",
+    "queries" : "Is engineering getting merged with IT? \/ We're talking about combining engineering and IT into one team."
+  },
+  {
+    "id" : "h52",
+    "passages" : "0:Q3 retrospective:h-retro-1030-s11 1:Team retro:h-retro-1105-s15 2:Team sync 39:filler-38-s30 3:Team sync 20:filler-19-s41 4:Team sync 27:filler-26-s0 5:Team sync 14:filler-13-s20 6:Team sync 24:filler-23-s53 8:Team sync 29:filler-28-s23 9:Team sync 26:filler-25-s56 10:Team sync 10:filler-9-s7 11:Team sync 35:filler-34-s37",
+    "queries" : "When's the team dinner happening? \/ We're planning the team dinner for Thursday night."
+  },
+  {
+    "id" : "h53",
+    "passages" : "0:Q3 retrospective:h-retro-1030-s11 1:Team sync 8:filler-7-s29 2:Team sync 39:filler-38-s30 3:Team sync 20:filler-19-s41 4:Team sync 6:filler-5-s32 5:Team sync 35:filler-34-s37 7:Team sync 17:filler-16-s50 8:Team sync 36:filler-35-s0 9:Team sync 29:filler-28-s23 10:Team sync 1:filler-0-s6 11:Team growth roundtable:h-growth-1029-s20",
+    "queries" : "What's the budget set for the team dinner? \/ How much are we planning to spend on the team dinner?"
+  },
+  {
+    "id" : "h54",
+    "passages" : "0:Facilities: Reno test lab:h-lab-1027-s0 1:Facilities: Reno test lab:h-lab-1027-s15 3:Atlas go\/no-go prep:h-atlas-1029-s0 4:Q3 retrospective:h-retro-1030-s11 5:Team sync 29:filler-28-s4 6:Trane kickoff prep:h-trane-1028-s5 7:Late incident bridge:h-incident-1101-s5 8:Team sync 30:filler-29-s14 9:Team sync 30:filler-29-s0",
+    "queries" : "Ruth said she'd keep the Reno space open for now \/ She still stands by keeping the Reno space"
+  },
+  {
+    "id" : "h55",
+    "passages" : "0:Facilities check-in:h-lab-1105-s6 1:Facilities check-in:h-lab-1105-s0 3:Platform standup:h-standup-1106-s15 4:Platform standup:h-standup-1106-s0 5:Exec staff:h-plan-1103-s5 6:Team retro:h-retro-1105-s6 9:Incident follow-up:h-incident-1102-s0 10:Andrew \/ Simone 1:1:h-andrew-1103-s0",
+    "queries" : "Ruth decided last week not to renew the Reno lease, and this week she confirmed it's still on hold"
+  },
+  {
+    "id" : "h56",
+    "passages" : "0:Facilities check-in:h-lab-1105-s0 3:Team sync 39:filler-38-s40 4:Platform standup:h-standup-1106-s15 7:Team sync 38:filler-37-s6 8:Team sync 40:filler-39-s51 9:Team sync 39:filler-38-s15 11:Team sync 37:filler-36-s43",
+    "queries" : "Ruth mentioned the parking garage will be open later this week. \/ She said the parking garage should be accessible by Friday."
+  },
+  {
+    "id" : "h57",
+    "passages" : "0:Corvane renewal:h-corvane-1020-s0 1:Andrew \/ Simone 1:1:h-andrew-1103-s0 4:Corvane renewal:h-corvane-1020-s13 5:Andrew \/ Simone 1:1:h-andrew-1014-s13 7:Andrew \/ Simone 1:1:h-andrew-1028-s18 8:Andrew \/ Simone 1:1:h-andrew-1028-s0 10:Andrew \/ Simone 1:1:h-andrew-1014-s0",
+    "queries" : "Andrew said the Corvane renewal was going well and that they should keep the current terms"
+  },
+  {
+    "id" : "h58",
+    "passages" : "0:Corvane renewal:h-corvane-1020-s6 1:Corvane renewal:h-corvane-1020-s0 3:Andrew \/ Simone 1:1:h-andrew-1103-s0 5:Facilities check-in:h-lab-1105-s0 6:Andrew \/ Simone 1:1:h-andrew-1014-s13 7:Andrew \/ Simone 1:1:h-andrew-1028-s0 10:Resourcing sync:h-resourcing-1104-s6 11:Andrew \/ Simone 1:1:h-andrew-1103-s19",
+    "queries" : "Andrew B. said we should rebid on the Corvane renewal instead of renewing for two years. \/ He thought rebidding would give us better terms and avoid locking into a long-term commitment."
+  },
+  {
+    "id" : "h59",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1014-s6 1:Andrew \/ Simone 1:1:h-andrew-1103-s0 2:Andrew \/ Simone 1:1:h-andrew-1028-s12 7:Andrew \/ Simone 1:1:h-andrew-1028-s0 9:Andrew \/ Simone 1:1:h-andrew-1014-s0 11:Corvane renewal:h-corvane-1020-s13",
+    "queries" : "Andrew said he'd handle the project updates from now on. \/ He mentioned he'd take over the reporting for the team."
+  },
+  {
+    "id" : "h60",
+    "passages" : "0:Harbor project sync:h-harbor-1103-s0 1:Trane kickoff prep:h-trane-1028-s5 2:Harbor project sync:h-harbor-1103-s15 3:Trane weekly:h-trane-1102-s22 4:Exec staff:h-plan-1103-s15 5:Late incident bridge:h-incident-1101-s5 6:Team sync 28:filler-27-s42 7:Trane kickoff prep:h-trane-1028-s23 8:Team sync 34:filler-33-s5 9:Facilities check-in:h-lab-1105-s6 10:Team growth roundtable:h-growth-1029-s4",
+    "queries" : "So, how's the Harbor project holding up lately? \/ The Harbor project is moving forward, but we're still a few weeks behind schedule."
+  },
+  {
+    "id" : "h61",
+    "passages" : "0:Harbor project sync:h-harbor-1103-s0 1:Resourcing sync:h-resourcing-1104-s6 2:Team sync 39:filler-38-s40 3:Leadership offsite:h-plan-1023-s5 5:Exec staff:h-plan-1103-s15 6:Andrew \/ Simone 1:1:h-andrew-1103-s0 7:Q3 retrospective:h-retro-1030-s4 9:Atlas go\/no-go prep:h-atlas-1029-s24 10:Resourcing sync:h-resourcing-1104-s21",
+    "queries" : "Yeah, Harbor was cancelled last week during the team sync. \/ We decided to cancel Harbor back in the middle of last week's meeting."
+  },
+  {
+    "id" : "h62",
+    "passages" : "0:Andrew \/ Simone 1:1:h-andrew-1028-s12 1:Harbor project sync:h-harbor-1103-s0 3:Team sync 32:filler-31-s53 4:Team sync 11:filler-10-s8 5:Logistics vendor review:h-vendors-1027-n0 6:Team sync 27:filler-26-s0 7:Late incident bridge:h-incident-1101-s15 8:Team sync 21:filler-20-s0 9:Staff designer debrief:h-hiring-1027-s0 10:Trane client check-in:h-trane-1105-s13 11:Team sync 14:filler-13-s53",
+    "queries" : ""
+  },
+  {
+    "id" : "h63",
+    "passages" : "0:Harbor project sync:h-harbor-1103-s0 1:Harbor project sync:h-harbor-1103-s15",
+    "queries" : "Nadia said she'd handle the client onboarding next week. \/ She mentioned she'd take over the project after the deadline."
+  }
+]
