@@ -72,7 +72,8 @@ All in `ContextualLimits` (contract `ctx-v1`): question ≤ 500 chars, history �
 plan ≤ 3 subquestions, ≤ 3 semantic queries (incl. the question), ≤ 8 literal terms, ≤ 4 people, strings ≤ 160 chars,
 planner ≤ 200 generated tokens, planning ≤ 4.5 s then a labeled constrained fallback; ≤ 100 candidates per list,
 60 fused (RRF k = 60), ±2 context lines, ≤ 12 final passages, ≤ 1 extra retrieval round; answer prompt ≤ 2,200 tokens,
-≤ 320 output tokens; chunks 200–400 encoder tokens (target 300) with 1 line overlap.
+≤ 320 output tokens; chunks 200–400 encoder tokens (target 300) with 1 line overlap
+(revised in T110 with dev-set evidence to target 120 / max 200, see below).
 
 `QueryPlan.validated` drops a `meetingTime` that isn't literally in the question and people whose names aren't in the
 question or follow-up context, clamps sizes, and has no field that can name SQL, tools, files or scope.
@@ -148,3 +149,5 @@ dev 23/42 (55 %).
 - 2026-11-06, before any tuning: held-out author added `required_notes` (notes-only evidence) to the format; the
   rolling-7-day example start corrected from 16:00 −04:00 to 17:00 −04:00 (the author's catch). dev45 got its
   `required_notes`. No question or expected answer changed.
+- T110 (dev evidence, docs/decisions/models/0003-search-encoder.md): chunk size target 120 / max 200 encoder tokens
+  (was 300 / 400); no gate changed.

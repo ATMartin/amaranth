@@ -149,6 +149,16 @@ public final class ModelInstaller: Sendable {
                 let partial = final.appendingPathExtension("partial")
                 try fm.createDirectory(at: final.deletingLastPathComponent(), withIntermediateDirectories: true)
                 if fm.fileExists(atPath: final.path) { continue } // verified on a previous attempt
+                // T110: a pack upgrade (e.g. 0.1.1 → 0.1.2 adding the search encoder) reuses identical files of installed
+                // packs instead of downloading them again: same manifest, path, size and sha256, cloned (APFS, no copy).
+                if let local = reusableFile(m, f) {
+                    progress(InstallProgress(phase: .verifying, bytesDone: done.value, bytesTotal: total, currentFile: f.path))
+                    if (try? ModelPackStore.sha256(of: local)) == f.sha256.lowercased(), copyfile(local.path, final.path, nil, copyfile_flags_t(COPYFILE_CLONE)) == 0 {
+                        _ = done.add(f.byteSize)
+                        continue
+                    }
+                    try? fm.removeItem(at: final)
+                }
                 if !fm.fileExists(atPath: partial.path) { fm.createFile(atPath: partial.path, contents: nil) }
                 var have = (try? fm.attributesOfItem(atPath: partial.path)[.size] as? Int64) ?? 0
                 if have > f.byteSize { try fm.removeItem(at: partial); fm.createFile(atPath: partial.path, contents: nil); have = 0 }
@@ -191,6 +201,21 @@ public final class ModelInstaller: Sendable {
         }
         try store.setActive(.init(packID: pack.id, version: pack.version))
         progress(InstallProgress(phase: .done, bytesDone: total, bytesTotal: total))
+    }
+
+    /// The same file in another installed pack version (never the staging area), if its size matches; the caller verifies
+    /// its hash before using it.
+    func reusableFile(_ m: ModelManifest, _ f: ModelFile) -> URL? {
+        let fm = FileManager.default
+        let packs = store.packsDirectory
+        guard let ids = try? fm.contentsOfDirectory(atPath: packs.path) else { return nil }
+        for id in ids {
+            for v in (try? fm.contentsOfDirectory(atPath: packs.appending(path: id).path)) ?? [] {
+                let url = packs.appending(path: id).appending(path: v).appending(path: m.id.rawValue).appending(path: f.path)
+                if let size = (try? fm.attributesOfItem(atPath: url.path))?[.size] as? Int64, size == f.byteSize { return url }
+            }
+        }
+        return nil
     }
 
     func validate(_ m: ModelManifest) throws {

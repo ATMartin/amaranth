@@ -60,6 +60,48 @@ public enum WorkerRequest: Hashable, Sendable, Codable {
     /// “Ask anything” (T54): answer a question from the passages retrieved for it, with the notes model. Interactive and
     /// short; nothing is stored. Cancel with `cancel(jobID: requestID)`. Replies `.answer`.
     case answer(AnswerRequest)
+    /// Contextual search (T110): vectors for document chunks or a query with the text encoder. Bounded: at most
+    /// `EmbedRequest.maxTexts` texts per request. Cancel with `cancel(jobID: requestID)`. Replies `.embeddings`.
+    case embed(EmbedRequest)
+}
+
+public struct EmbedRequest: Hashable, Sendable, Codable {
+    public static let maxTexts = 64
+    public static let maxTextCharacters = 4000
+    public var requestID: String
+    public var texts: [String]
+    /// Apply the encoder's query instruction (questions); false for document chunks.
+    public var query: Bool
+    /// Foreground (Ask) work runs ahead of background indexing batches.
+    public var foreground: Bool
+    public init(requestID: String, texts: [String], query: Bool, foreground: Bool) {
+        self.requestID = requestID
+        self.texts = Array(texts.prefix(Self.maxTexts)).map { String($0.prefix(Self.maxTextCharacters)) }
+        self.query = query; self.foreground = foreground
+    }
+}
+
+public struct EmbedResponse: Hashable, Sendable, Codable {
+    public var producer: EncoderProducer
+    /// Little-endian Float32 vectors, `producer.dimensions` each, in request order.
+    public var vectors: Data
+    public var seconds: Double
+    /// Whether the encoder was loaded for this request (cold).
+    public var loaded: Bool
+    public init(producer: EncoderProducer, vectors: Data, seconds: Double, loaded: Bool) {
+        self.producer = producer; self.vectors = vectors; self.seconds = seconds; self.loaded = loaded
+    }
+    public static func pack(_ vs: [[Float]]) -> Data {
+        var d = Data(capacity: vs.reduce(0) { $0 + $1.count * 4 })
+        for v in vs { v.withUnsafeBufferPointer { d.append(Data(buffer: $0)) } }
+        return d
+    }
+    public func unpacked() -> [[Float]] {
+        let n = producer.dimensions
+        guard n > 0, vectors.count % (n * 4) == 0 else { return [] }
+        let all: [Float] = vectors.withUnsafeBytes { Array($0.bindMemory(to: Float.self)) }
+        return stride(from: 0, to: all.count, by: n).map { Array(all[$0..<($0 + n)]) }
+    }
 }
 
 /// One retrieved passage as the model sees it: a label (meeting, time) and its lines, already rendered as text.
@@ -223,6 +265,7 @@ public enum WorkerResponse: Hashable, Sendable, Codable {
     case live(LiveResponse)
     case incremental(IncrementalResponse)
     case answer(AnswerResponse)
+    case embeddings(EmbedResponse)
 }
 
 public enum WorkerIPCCodec {

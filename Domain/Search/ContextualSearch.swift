@@ -60,10 +60,12 @@ public enum ContextualLimits {
 
     // Chunking (encoder input)
     /// Target and hard limits of one chunk, in encoder tokens; the storage layer estimates with `estimatedTokens` and
-    /// the encoder re-checks with its tokenizer.
-    public static let chunkTargetTokens = 300
-    public static let chunkMinTokens = 200
-    public static let chunkMaxTokens = 400
+    /// the encoder re-checks with its tokenizer. T110 measured the spec's initial 200–400 against smaller chunks on the
+    /// dev set at an equal 100-line evidence budget (docs/decisions/models/0003-search-encoder.md): 120/200 gave the best
+    /// hybrid + date recall (33/41 vs 30/41), with 1.6× the vectors of 300/400.
+    public static let chunkTargetTokens = 120
+    public static let chunkMinTokens = 60
+    public static let chunkMaxTokens = 200
     /// Lines repeated from the previous chunk of the same meeting.
     public static let chunkOverlapLines = 1
 

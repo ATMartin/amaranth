@@ -2,6 +2,8 @@ public import Foundation
 
 public enum ModelRole: String, Hashable, Sendable, Codable {
     case asr, vad, diarizationSegmentation, diarizationEmbedding, summary
+    /// Text encoder for contextual search (spec 0010, T110). Optional to every other role: without it, keyword search only.
+    case textEmbedding
 }
 
 public struct ModelFile: Hashable, Sendable, Codable {

@@ -2,11 +2,21 @@ import Foundation
 import Domain
 import ProcessingCore
 import ProcessingRuntime
+import Models
 
 /// Bundled XPC inference worker. Runs processing stages with locally installed models; isolates model crashes from the
 /// app and releases model/GPU memory when it exits. Messages carry job descriptors and output paths/hashes only.
 final class WorkerService: NSObject, InferenceWorkerXPC, @unchecked Sendable {
-    private let runner = StageRunner(models: ModelProvider.installedPack())
+    private let runner = StageRunner(models: ModelProvider.installedPack(root: WorkerService.modelsRoot()))
+
+    static func modelsRoot() -> URL {
+        #if DEBUG
+        // Self-tests only (`embed-worker`, T110): a temporary models root, so the user's installed pack is never touched.
+        // Debug builds only; the Release worker always uses the real pack.
+        if let p = UserDefaults(suiteName: "com.alexmartin.amaranth")?.string(forKey: "debugModelsRoot"), !p.isEmpty { return URL(filePath: p) }
+        #endif
+        return ModelPackStore.defaultRoot()
+    }
     private let lock = NSLock()
     private var tokens: [JobID: CancellationToken] = [:]
     private var stallNext = false
@@ -70,6 +80,18 @@ final class WorkerService: NSObject, InferenceWorkerXPC, @unchecked Sendable {
                 } catch {
                     response = .failed(jobID: id, errorCode: String(describing: error).prefix(300).description)
                 }
+                reply(try? WorkerIPCCodec.encode(response), nil)
+            }
+        case .embed(let request):
+            let token = CancellationToken(), id = JobID(request.requestID)
+            lock.withLock { tokens[id] = token }
+            let runner = self.runner
+            Thread.detachNewThread {
+                defer { self.lock.withLock { self.tokens[id] = nil } }
+                let response: WorkerResponse
+                do { response = .embeddings(try runner.embed(request, cancellation: token)) }
+                catch is CancellationError { response = .cancelled(jobID: id) }
+                catch { response = .failed(jobID: id, errorCode: String(describing: error).prefix(300).description) }
                 reply(try? WorkerIPCCodec.encode(response), nil)
             }
         case .run(let job):

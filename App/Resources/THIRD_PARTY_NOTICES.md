@@ -517,3 +517,4 @@ SOFTWARE.
 - **speaker-diarization-coreml** — CC-BY-4.0: pyannote speaker-diarization-community-1 (CC-BY-4.0), WeSpeaker, BUT Speech@FIT VBx/PLDA, Fluid Inference conversion
 - **silero-vad-coreml** — MIT: Silero VAD (MIT)
 - **qwen3-4b-instruct-2507-q4_k_m** — Apache-2.0: Qwen3-4B-Instruct-2507 (Apache-2.0), Alibaba Qwen team; GGUF by bartowski
+- **qwen3-embedding-0.6b-q8_0** — Apache-2.0: Qwen3-Embedding-0.6B (Apache-2.0, model card), Alibaba Qwen team; LICENSE text from Qwen/Qwen3-0.6B-Base

@@ -463,9 +463,46 @@
         "sourceRevision" : "ae44f08e1392f39c0e474af10c3ff8355c8b6688",
         "tokenizerIdentity" : "embedded GGUF tokenizer",
         "version" : "ae44f08e1392"
+      },
+      {
+        "conversionProvenance" : "Official Qwen GGUF Q8_0 conversion of Qwen\/Qwen3-Embedding-0.6B@97b0c614 (Qwen\/Qwen3-Embedding-0.6B-GGUF)",
+        "family" : "qwen3-embedding-0.6b",
+        "files" : [
+          {
+            "byteSize" : 11343,
+            "path" : "LICENSE",
+            "sha256" : "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+            "sourceURL" : "https:\/\/huggingface.co\/Qwen\/Qwen3-0.6B-Base\/resolve\/da87bfb608c14b7cf20ba1ce41287e8de496c0cd\/LICENSE"
+          },
+          {
+            "byteSize" : 639150592,
+            "path" : "Qwen3-Embedding-0.6B-Q8_0.gguf",
+            "sha256" : "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439",
+            "sourceURL" : "https:\/\/huggingface.co\/Qwen\/Qwen3-Embedding-0.6B-GGUF\/resolve\/370f27d7550e0def9b39c1f16d3fbaa13aa67728\/Qwen3-Embedding-0.6B-Q8_0.gguf"
+          },
+          {
+            "byteSize" : 11889,
+            "path" : "README.md",
+            "sha256" : "5dc596e802ce79342678281d42ec4b98fbee2fee241758df330cdc35cc15d29f",
+            "sourceURL" : "https:\/\/huggingface.co\/Qwen\/Qwen3-Embedding-0.6B-GGUF\/resolve\/370f27d7550e0def9b39c1f16d3fbaa13aa67728\/README.md"
+          }
+        ],
+        "id" : "qwen3-embedding-0.6b-q8_0",
+        "license" : {
+          "attribution" : "Qwen3-Embedding-0.6B (Apache-2.0, model card), Alibaba Qwen team; LICENSE text from Qwen\/Qwen3-0.6B-Base",
+          "identifier" : "Apache-2.0",
+          "noticePath" : "LICENSE"
+        },
+        "minimumOS" : "26.5.2",
+        "promptTemplateIdentity" : "instruct-query-v1 (last-token pooling)",
+        "role" : "textEmbedding",
+        "sourceRepository" : "Qwen\/Qwen3-Embedding-0.6B-GGUF",
+        "sourceRevision" : "370f27d7550e0def9b39c1f16d3fbaa13aa67728",
+        "tokenizerIdentity" : "embedded GGUF tokenizer",
+        "version" : "370f27d7550e"
       }
     ],
     "profile" : "standard16GB",
-    "version" : "0.1.1"
+    "version" : "0.1.2"
   }
 }

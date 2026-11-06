@@ -970,6 +970,10 @@ case "notes-gate" where args.count >= 4:
     if let k = value("--kv").flatMap(Int.init) { gateEngine.kvTokens = k }
     try NotesGate.run(gguf: URL(filePath: args[2]), results: URL(filePath: args[3]), configuration: gateEngine,
                       nonThinking: args.contains("--non-thinking"), only: value("--only").map { Set($0.split(separator: ",").map(String.init)) })
+case "embed-probe" where args.count >= 3:
+    try EmbedProbe.run(gguf: URL(filePath: args[2]), dims: Int(value("--dims") ?? "1024") ?? 1024, docs: Int(value("--docs") ?? "128") ?? 128)
+case "embed-eval" where args.count >= 4:
+    try EmbedEval.run(Array(args.dropFirst(2)))
 case "ctx-eval":
     exit(try CtxEval.main(Array(args.dropFirst(2))))
 case "ask-eval" where args.count >= 5:

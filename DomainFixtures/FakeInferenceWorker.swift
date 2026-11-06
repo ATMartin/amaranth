@@ -41,6 +41,8 @@ public actor FakeInferenceWorker {
             }
             return .answer(AnswerResponse(text: String(first.text.prefix(120)), citations: [1], confidence: .medium, refused: false, promptTokens: 0,
                                           generatedTokens: 0, firstTextSeconds: 0, totalSeconds: 0))
+        case .embed(let r):
+            return .embeddings(EmbedResponse(producer: FakeEncoder.producer, vectors: EmbedResponse.pack(r.texts.map(FakeEncoder.vector)), seconds: 0, loaded: false))
         }
     }
 
@@ -99,5 +101,22 @@ public struct FixtureDiarizer: Diarizer {
 enum FixtureHash {
     static func sha256Hex(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+/// Fixture encoder: a hashed bag of lower-cased words (64 dimensions, L2-normalized). Deterministic; no model.
+public enum FakeEncoder {
+    public static let producer = EncoderProducer(family: "fake", manifestID: "fake-encoder", revision: "1", weightsSHA256: "none", quantization: "none",
+                                                 dimensions: 64, pooling: "bag", normalization: "l2", queryInstruction: "", documentPrefix: "",
+                                                 chunking: ChunkingVersion.current, runtime: "fake")
+    public static func vector(_ text: String) -> [Float] {
+        var v = [Float](repeating: 0, count: 64)
+        for w in text.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }) {
+            let h = StableHash.hex(String(w.prefix(5)))
+            v[Int(UInt64(h.prefix(8), radix: 16)! % 64)] += 1
+        }
+        if v.allSatisfy({ $0 == 0 }) { v[0] = 1 }
+        let n = v.reduce(0) { $0 + $1 * $1 }.squareRoot()
+        return v.map { $0 / n }
     }
 }

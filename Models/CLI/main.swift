@@ -38,6 +38,8 @@ let known: [String: Known] = [
         license: "Apache-2.0", attribution: "OpenAI Whisper tokenizer", tokenizer: nil, template: nil),
     "qwen3-4b-instruct-2507-q4_k_m": Known(role: .summary, family: "qwen3-4b-instruct-2507", provenance: "bartowski GGUF Q4_K_M (llama.cpp b6096, imatrix) of Qwen/Qwen3-4B-Instruct-2507",
         license: "Apache-2.0", attribution: "Qwen3-4B-Instruct-2507 (Apache-2.0), Alibaba Qwen team; GGUF by bartowski", tokenizer: "embedded GGUF tokenizer", template: "chatml-manual-v1"),
+    "qwen3-embedding-0.6b-q8_0": Known(role: .textEmbedding, family: "qwen3-embedding-0.6b", provenance: "Official Qwen GGUF Q8_0 conversion of Qwen/Qwen3-Embedding-0.6B@97b0c614 (Qwen/Qwen3-Embedding-0.6B-GGUF)",
+        license: "Apache-2.0", attribution: "Qwen3-Embedding-0.6B (Apache-2.0, model card), Alibaba Qwen team; LICENSE text from Qwen/Qwen3-0.6B-Base", tokenizer: "embedded GGUF tokenizer", template: "instruct-query-v1 (last-token pooling)"),
     "qwen3-1.7b-q4_k_m": Known(role: .summary, family: "qwen3-1.7b", provenance: "bartowski GGUF Q4_K_M (llama.cpp b5200, imatrix) of Qwen/Qwen3-1.7B; non-thinking mode",
         license: "Apache-2.0", attribution: "Qwen3-1.7B (Apache-2.0), Alibaba Qwen team; GGUF by bartowski", tokenizer: "embedded GGUF tokenizer", template: "chatml-manual-v1+empty-think"),
 ]

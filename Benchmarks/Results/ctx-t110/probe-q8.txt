@@ -1,0 +1,5 @@
+[embed] load 0.23 s, footprint +559 MB (model dims 1024, using 1024), producer enc-1653e494fbd14626
+[embed] sanity: related 0.585 unrelated 0.262 literal-dup 0.797
+[embed] doc tokens: 290
+[embed] 256 docs of ~290 tokens: 8.70 s → 29.4 docs/s, 8532 tokens/s; footprint 739 MB
+[embed] query latency p50 17.2 ms p95 18.0 ms max 18.6 ms

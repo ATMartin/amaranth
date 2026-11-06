@@ -183,6 +183,40 @@ struct ModelPackTests {
         #expect(throws: ModelInstallError.packInUse("active")) { try f.store.remove(.init(packID: "test-pack", version: "2.0.0")) }
     }
 
+    /// T110: upgrading to a pack version that adds a model downloads only the new model; identical files are reused from
+    /// the installed version (hash-verified, cloned), and a damaged installed copy is downloaded instead of reused.
+    @Test func upgradeReusesVerifiedFilesAndDownloadsOnlyNewModel() async throws {
+        let f = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: f.root) }
+        try await installer(f).install(f.pack, from: DirectoryModelSource(root: f.sourceDir))
+        let enc = Data((0..<50_000).map { UInt8(($0 * 3) % 256) })
+        let encURL = f.sourceDir.appending(path: "encoder.test/model.gguf")
+        try FileManager.default.createDirectory(at: encURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try enc.write(to: encURL)
+        var p2 = f.pack; p2.version = "1.1.0"
+        p2.manifests.append(ModelManifest(id: ModelManifestID("encoder.test"), version: "1", role: .textEmbedding, family: "test",
+                                          sourceRepository: "example/enc", sourceRevision: String(repeating: "b", count: 40), conversionProvenance: "test",
+                                          files: [ModelFile(path: "model.gguf", sha256: Self.hex(enc), byteSize: Int64(enc.count))],
+                                          license: ModelLicense(identifier: "MIT", attribution: "test"), minimumOS: "26.5.2"))
+        // Damage one installed file: it must be fetched again, not cloned.
+        let vocab = f.store.packDirectory("test-pack", "1.0.0").appending(path: "asr.test/vocab.json")
+        try Data(#"{"a":2}"#.utf8).write(to: vocab)
+        final class Fetched: @unchecked Sendable { var paths: [String] = []; let lock = NSLock() }
+        let fetched = Fetched()
+        struct LoggingSource: ModelSource {
+            let inner: DirectoryModelSource; let log: Fetched
+            func fetch(_ file: ModelFile, manifest: ModelManifest, appendingTo partial: URL, from offset: Int64,
+                       progress: @Sendable (Int64) -> Void, cancellation: CancellationToken) async throws {
+                log.lock.withLock { log.paths.append(manifest.id.rawValue + "/" + file.path) }
+                try await inner.fetch(file, manifest: manifest, appendingTo: partial, from: offset, progress: progress, cancellation: cancellation)
+            }
+        }
+        try await installer(f).install(p2, from: LoggingSource(inner: DirectoryModelSource(root: f.sourceDir), log: fetched))
+        #expect(fetched.paths.sorted() == ["asr.test/vocab.json", "encoder.test/model.gguf"])
+        #expect(LocalModelRegistry(store: f.store, verification: .fullHash).state() == .ready(packID: "test-pack", version: "1.1.0"))
+        #expect(try LocalModelRegistry(store: f.store).resolve(ModelManifestID("encoder.test")).manifest.role == .textEmbedding)
+    }
+
     @Test func cancellationLeavesNothingActive() async throws {
         let f = try makeFixture()
         defer { try? FileManager.default.removeItem(at: f.root) }

@@ -57,6 +57,9 @@ enum SelfTest {
             case "update-install": ok = await UpdateSelfTest.install()
             case "ui-density": ok = await UIDensitySelfTest.run(args: args)
             case "ask-worker": ok = await AskWorkerSelfTest.run()
+            case "embed-worker":
+                let dir = args.firstIndex(of: "--model-dir").flatMap { $0 + 1 < args.count ? URL(filePath: args[$0 + 1]) : nil }
+                ok = await EmbedWorkerSelfTest.run(modelDirectory: dir)
             case "calendar-access": ok = await CalendarSelfTest.run()
             case "capture-soak":
                 let minutes = args.firstIndex(of: "--minutes").flatMap { Double(args[$0 + 1]) } ?? 30

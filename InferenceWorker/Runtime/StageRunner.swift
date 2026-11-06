@@ -151,7 +151,48 @@ public final class ModelProvider: @unchecked Sendable {
         }
     }
 
-    public func unloadAll() { lock.withLock { asr = nil; diarizer = nil; notesModel = nil; answerModel = nil; liveASR = nil; incrementalASR = nil } }
+    /// Manifest ID of the contextual search encoder (pack 0.1.2+, T110).
+    public static let encoderManifestID = "qwen3-embedding-0.6b-q8_0"
+    /// T110 policy: the encoder (≈ 0.75 GB with its 4,096-token batch context) stays resident beside whichever other
+    /// models are loaded — Ask needs it and the answer model within one 15-second attempt, and indexing yields to
+    /// everything else by scheduling, not by unloading. Released by `unloadAll` (memory pressure, worker exit).
+    private var encoderModel: LlamaEmbedder?
+    public static let encoderConfiguration: LlamaEmbedder.Configuration = {
+        var c = LlamaEmbedder.Configuration(); c.dimensions = ContextualEncoder.dimensions; return c
+    }()
+
+    /// The text encoder; `loaded` reports whether this call loaded it.
+    public func encoder() throws -> (LlamaEmbedder, loaded: Bool) {
+        try lock.withLock {
+            if let encoderModel { return (encoderModel, false) }
+            let (dir, rev) = try resolveDirectory(Self.encoderManifestID)
+            guard let gguf = try FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)
+                .first(where: { $0.pathExtension == "gguf" }) else { throw Error.missing("\(Self.encoderManifestID) gguf") }
+            let e = try Perf.measure("model.load.encoder") {
+                try LlamaEmbedder(gguf: gguf, manifestID: ModelManifestID(Self.encoderManifestID), revision: rev,
+                                  weightsSHA256: ContextualEncoder.weightsSHA256, quantization: "q8_0", configuration: Self.encoderConfiguration)
+            }
+            encoderModel = e
+            return (e, true)
+        }
+    }
+
+    public func unloadAll() { lock.withLock { asr = nil; diarizer = nil; notesModel = nil; answerModel = nil; liveASR = nil; incrementalASR = nil; encoderModel = nil } }
+}
+
+/// Counts foreground embedding requests in flight, so background batches start only when none is waiting.
+final class ForegroundGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private var waiting = 0
+    var foregroundWaiting: Bool { lock.withLock { waiting > 0 } }
+    func enterForeground() { lock.withLock { waiting += 1 } }
+    func leaveForeground() { lock.withLock { waiting -= 1 } }
+}
+
+/// The pinned contextual-search encoder (T110, docs/decisions/models/0003-search-encoder.md).
+public enum ContextualEncoder {
+    public static let dimensions = 1024
+    public static let weightsSHA256 = "06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439"
 }
 
 /// Executes one stage from `input.json` in the job's work directory and writes `output.json` (atomically).
@@ -201,6 +242,20 @@ public final class StageRunner: @unchecked Sendable {
     public func answer(_ r: AnswerRequest, cancellation: CancellationToken, onPartial: @escaping (String) -> Void) throws -> AnswerResponse {
         try Answerer.answer(r, generator: try models.answers(), cancellation: cancellation, onPartial: onPartial)
     }
+
+    /// Contextual search (T110): vectors with the text encoder. Foreground (Ask) requests wait for at most one running
+    /// background batch (bounded by `EmbedRequest.maxTexts`); background requests yield to a waiting foreground one.
+    public func embed(_ r: EmbedRequest, cancellation: CancellationToken) throws -> EmbedResponse {
+        let t0 = ContinuousClock.now
+        if !r.foreground {
+            while embedGate.foregroundWaiting { try cancellation.check(); Thread.sleep(forTimeInterval: 0.01) }
+        } else { embedGate.enterForeground() }
+        defer { if r.foreground { embedGate.leaveForeground() } }
+        let (e, loaded) = try models.encoder()
+        let vs = try e.embed(r.texts, query: r.query, cancellation: cancellation)
+        return EmbedResponse(producer: e.producer, vectors: EmbedResponse.pack(vs), seconds: Perf.seconds(since: t0), loaded: loaded)
+    }
+    let embedGate = ForegroundGate()
 
     /// Loads (and so compiles, on first use on this Mac) the transcription and diarization models.
     public func warmUp() throws {

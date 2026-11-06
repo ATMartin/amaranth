@@ -3397,7 +3397,7 @@
       "id": "T110",
       "title": "Select and pin a local embedding encoder and runtime",
       "milestone": "V",
-      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "status": "done (2026-11-06): Qwen3-Embedding-0.6B Q8_0 1024 d via llama.cpp b11669 (LlamaEmbedder), pack 0.1.2 with installer file reuse, worker .embed + embed-worker self-test; docs/decisions/models/0003-search-encoder.md",
       "optional": false,
       "depends_on": [
         "T109"
@@ -3429,7 +3429,9 @@
         "Measured quality, memory and latency support the proposed workflow; no claim that a generic chat-model embedding or an upstream leaderboard proves app retrieval quality. Report whether cold and warm foreground attempts meet the full 15-second deadline; a timeout is not a successful answer."
       ],
       "fallback": "Benchmark another supported small encoder on the same development set. A model/runtime failure blocks semantic-search completion; keep keyword lookup available and explicitly report the gap.",
-      "review_timestamps": []
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     },
     {
       "id": "T111",
