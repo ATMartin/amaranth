@@ -219,7 +219,8 @@ public struct ContextualRequest: Hashable, Sendable, Codable {
 
 /// How current transcript text becomes encoder input (T111). Part of every chunk's identity: a change re-chunks.
 public enum ChunkingVersion {
-    public static let current = "chunk-v1"
+    /// chunk-v2 (T114): chunk-v1 plus a `Meeting: <title>` first line (dev-set evidence, t114-retrieval.md).
+    public static let current = "chunk-v2"
 }
 
 /// Everything that changes the vector space (T110). Vectors are compatible only with the same `id`.

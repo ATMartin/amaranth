@@ -3549,7 +3549,7 @@
       "id": "T114",
       "title": "Retrieve contextual evidence with hybrid search and bounded reranking",
       "milestone": "V",
-      "status": "planned (2026-11-06): not started; product requirements confirmed",
+      "status": "done (2026-11-06): Contextual module (scope/date-first hybrid FTS+vector, weighted RRF, bounded rerank, context expansion); dev all-span 35/42 top-10, 37/42 final (baseline 23); scale retrieval p95 1.24 s; held-out gates measured in T116; docs/qualification/milestone-v/t114-retrieval.md",
       "optional": false,
       "depends_on": [
         "T112",
@@ -3581,7 +3581,9 @@
         "At >=200 meetings/~200,000 source lines report chunk/vector counts, exact/approximate comparison if relevant and stage costs; proposed warm retrieval p95 <=2 s excluding query planning."
       ],
       "fallback": "If exact scanning is too slow, evaluate an embedded local index against exact recall and lifecycle checks. If quality fails, improve owning stages and keep the milestone open; keyword-only fallback does not satisfy contextual search.",
-      "review_timestamps": []
+      "review_timestamps": [
+        "2026-11-06"
+      ]
     },
     {
       "id": "T115",

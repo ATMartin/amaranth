@@ -1,0 +1,11 @@
+[ctx-scale-ret] 10 Who said the hiring plan was behind last week? passages 8 retrieval 1.09 s
+[ctx-scale-ret] 20 Who said the data migration was behind last week? passages 11 retrieval 1.11 s
+[ctx-scale-ret] 30 Who said the status page was behind last week? passages 10 retrieval 1.11 s
+[ctx-scale-ret] 40 Who said the budget was behind last week? passages 10 retrieval 1.11 s
+[ctx-scale-ret] 50 Who said the hiring plan was behind last week? passages 8 retrieval 1.09 s
+[ctx-scale-ret] 60 Who said the data migration was behind last week? passages 11 retrieval 1.11 s
+[ctx-scale-ret] 70 Who said the status page was behind last week? passages 10 retrieval 1.14 s
+[ctx-scale-ret] 80 Who said the budget was behind last week? passages 10 retrieval 1.06 s
+[ctx-scale-ret] 90 Who said the hiring plan was behind last week? passages 8 retrieval 1.12 s
+[ctx-scale-ret] 100 Who said the data migration was behind last week? passages 11 retrieval 1.14 s
+[ctx-scale-ret] n 100; retrieval after planning p50 1.08 s p95 1.24 s max 1.26 s; planning p50 1.07 s p95 1.38 s; total p50 2.12 s p95 2.49 s max 2.61 s; footprint peak 4600 MiB

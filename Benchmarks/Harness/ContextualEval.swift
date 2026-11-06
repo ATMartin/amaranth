@@ -11,6 +11,8 @@ import Storage
 // baseline: the pipeline as shipped before V (T53 FTS retriever → T54 answer prompt/checker), no date or person
 // constraints. Measures all-span Recall@10 before and after prompt fitting; with --answers also generates the answers
 // (for grading) and their timings.
+final class ResultBox: @unchecked Sendable { var code: Int32 = 0 }
+
 enum CtxEval {
     struct Row: Codable {
         var id: String, scenario: String, categories: [String], behavior: String, question: String
@@ -24,6 +26,18 @@ enum CtxEval {
 
     static func main(_ args: [String]) throws -> Int32 {
         if args.first == "plan", args.count >= 4 { return try plan(args) }
+        if args.first == "scale-retrieve", args.count >= 4 {
+            let box = ResultBox(); let sem = DispatchSemaphore(value: 0)
+            Task.detached { box.code = (try? await CtxRetrieveEval.scale(args)) ?? 1; sem.signal() }
+            sem.wait(); return box.code
+        }
+        if args.first == "retrieve", args.count >= 5 {
+            let box = ResultBox()
+            let sem = DispatchSemaphore(value: 0)
+            Task.detached { box.code = (try? await CtxRetrieveEval.run(args)) ?? 1; sem.signal() }
+            sem.wait()
+            return box.code
+        }
         guard args.count >= 3, args[0] == "baseline" else {
             print("usage: ctx-eval baseline <set.json> <results-dir> [--answers <model.gguf>] [--only a,b]"); return 2
         }

@@ -58,7 +58,7 @@ extension MeetingStore {
             try db.run("DELETE FROM context_meeting_state WHERE meeting_id=?", [.text(meeting.rawValue)])
         }
         if let (tr, names) = current, m?.deletedAt == nil {
-            for c in Chunker.chunks(chunkLines(tr, names)) {
+            for c in Chunker.chunks(chunkLines(tr, names), title: m?.title) {
                 try db.run("""
                     INSERT INTO context_chunks (meeting_id, ordinal, chunking, content_hash, text, spans, first_line, last_line, start_ns, revision_id)
                     VALUES (?,?,?,?,?,?,?,?,?,?)
@@ -368,6 +368,55 @@ extension MeetingStore {
                 SELECT 1 AS x FROM search_index i JOIN context_meeting_state s ON s.meeting_id = i.meeting_id JOIN meetings m ON m.id = i.meeting_id
                 WHERE search_index MATCH ? AND i.kind IN ('transcript', 'notes') AND \(where_) LIMIT 1
                 """, [.text(match)] + b).isEmpty)
+        }
+    }
+}
+
+extension MeetingStore {
+    /// Live meetings in `filter`'s scope (T114: the meeting set handed to FTS, so lexical candidates obey dates too).
+    public func contextMeetings(_ filter: ContextFilter) throws -> Set<MeetingID> {
+        try withDB { db in
+            let (where_, b) = Self.scopeSQL(filter)
+            var out = Set<MeetingID>()
+            try db.forEach("SELECT s.meeting_id FROM context_meeting_state s JOIN meetings m ON m.id = s.meeting_id WHERE \(where_)", b) { st in
+                if let m = SQLiteDB.columnText(st, 0) { out.insert(MeetingID(m)) }
+            }
+            return out
+        }
+    }
+
+    /// Current transcript lines of `meeting` covering `segments` plus `context` lines on each side, in order, from the
+    /// search index (the same rows citations resolve against). `matched` marks `segments`. Empty when they're gone.
+    public func transcriptWindow(_ meeting: MeetingID, segments: [TranscriptSegmentID], context: Int, maxLines: Int = 40)
+        throws -> (lines: [Passage.Line], evidence: [TranscriptEvidence]) {
+        guard !segments.isEmpty else { return ([], []) }
+        return try withDB { db in
+            let refs = segments.map(\.rawValue)
+            let rows = try db.run("SELECT rowid AS rid, ref FROM search_index WHERE meeting_id = ? AND kind = 'transcript' AND ref IN ("
+                                  + Array(repeating: "?", count: refs.count).joined(separator: ",") + ")", [.text(meeting.rawValue)] + refs.map { .text($0) })
+            let rids = rows.compactMap { $0["rid"]?.int }
+            guard let lo = rids.min(), let hi = rids.max() else { return ([], []) }
+            let wanted = Set(refs)
+            let window = try db.run("""
+                SELECT rowid AS rid, kind, meeting_id, ref, start_ns, text, speaker, evidence FROM search_index
+                WHERE rowid BETWEEN ? AND ? AND meeting_id = ? AND kind = 'transcript' ORDER BY rowid
+                """, [.int(lo - Int64(context)), .int(min(hi + Int64(context), lo + Int64(maxLines))), .text(meeting.rawValue)])
+            let lines = window.map { Retriever.line($0, matched: wanted.contains($0["ref"]?.text ?? "")) }
+            return (lines, window.flatMap(Retriever.evidence))
+        }
+    }
+
+    public struct MeetingMeta: Hashable, Sendable { public var title: String; public var start: Date; public var folder: FolderID? }
+
+    public func meetingMeta(_ ids: Set<MeetingID>) throws -> [MeetingID: MeetingMeta] {
+        try withDB { db in
+            var out: [MeetingID: MeetingMeta] = [:]
+            for id in ids {
+                guard let r = try db.run("SELECT m.title, m.folder_id, s.start_at FROM meetings m LEFT JOIN context_meeting_state s ON s.meeting_id = m.id WHERE m.id = ? AND m.deleted_at IS NULL",
+                                         [.text(id.rawValue)]).first else { continue }
+                out[id] = MeetingMeta(title: r["title"]?.text ?? "", start: Date(timeIntervalSince1970: r["start_at"]?.double ?? 0), folder: r["folder_id"]?.text.map(FolderID.init))
+            }
+            return out
         }
     }
 }

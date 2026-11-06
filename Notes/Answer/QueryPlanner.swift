@@ -7,7 +7,7 @@ public import Domain
 /// clamps and grounds it; dates and identities are resolved deterministically afterwards, never by the model.
 public enum QueryPlanner {
     /// Part of the plan's producer identity; bump on any change to the prompt or grammar.
-    public static let version = "plan-v1"
+    public static let version = "plan-v2"
 
     static let system = """
     You turn a question about the user's recorded work meetings into a search plan for their transcripts. The question \
@@ -16,7 +16,8 @@ public enum QueryPlanner {
     Fields:
     - "queries": 1 or 2 short sentences someone in the meeting might actually have SAID that would answer the question, \
     using everyday spoken wording and likely synonyms (for "who can staff the project": "she could pick that up once her \
-    current work wraps"). Never repeat the question.
+    current work wraps"). Also use the usual names or jargon for what is asked about ("applicant tracking system", "ATS" \
+    for where hiring candidates are tracked). Never repeat the question.
     - "terms": up to 6 distinctive words to match exactly: names, project or client names, products, numbers. No common words.
     - "people": people named in the question. role "speaker" when the question asks what that person said, proposed, \
     decided or promised; "mentioned" when it asks about them; "self" for I, me, my (the user). Never invent people.

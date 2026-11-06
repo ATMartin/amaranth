@@ -73,8 +73,10 @@ public final class MeetingStore: @unchecked Sendable {
         try sync {
             db.contentGeneration &+= 1
             var m = meeting
+            var titleChanged = false
             if let row = try db.run("SELECT json FROM meetings WHERE id=?", [.text(m.id.rawValue)]).first?["json"]?.blob {
                 let stored = try ContractCoding.decode(Meeting.self, from: row)
+                titleChanged = !keepingStoredTitle && stored.title != m.title
                 m.people = stored.people
                 m.linkedEvent = stored.linkedEvent
                 m.folderID = stored.folderID
@@ -107,6 +109,8 @@ public final class MeetingStore: @unchecked Sendable {
             } else {
                 try db.run("UPDATE context_meeting_state SET start_at=? WHERE meeting_id=?",
                            [.double((m.clock?.utcOrigin ?? m.createdAt).timeIntervalSince1970), .text(m.id.rawValue)])
+                // Chunks carry the title (chunk-v2): a rename rewrites them (and the search index) in this write.
+                if titleChanged { try Self.reindex(db, m.id) }
                 try db.run("DELETE FROM search_index WHERE meeting_id=? AND kind='title'", [.text(m.id.rawValue)])
                 try db.run("INSERT INTO search_index (meeting_id, kind, ref, start_ns, text) VALUES (?,?,?,NULL,?)",
                            [.text(m.id.rawValue), .text("title"), .text(m.id.rawValue), .text(m.title)])

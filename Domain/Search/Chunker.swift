@@ -42,7 +42,9 @@ public struct TranscriptChunk: Hashable, Sendable {
 /// chunk reaches the target size, never past the maximum; one line of overlap with the previous chunk; a line longer than
 /// the maximum is split into word windows, never truncated. Sizes are estimated tokens (`ContextualLimits`).
 public enum Chunker {
-    public static func chunks(_ lines: [ChunkSourceLine], version: String = ChunkingVersion.current,
+    /// `title`: the meeting title, written as a first `Meeting: …` line of every chunk's encoder input (chunk-v2), so a
+    /// passage carries its meeting's topic; a title change re-chunks.
+    public static func chunks(_ lines: [ChunkSourceLine], title: String? = nil, version: String = ChunkingVersion.current,
                               target: Int = ContextualLimits.chunkTargetTokens, maximum: Int = ContextualLimits.chunkMaxTokens) -> [TranscriptChunk] {
         struct Piece { var line: Int; var speaker: String?; var words: ArraySlice<String>; var ids: ArraySlice<WordID>; var seg: TranscriptSegmentID; var start: SessionTime }
         // Oversized lines become several pieces of at most `maxWords` words.
@@ -57,8 +59,9 @@ public enum Chunker {
             }
         }
         func tokens(_ p: Piece) -> Int { ContextualLimits.estimatedTokens(words: p.words.count, lines: 1) }
+        let header = title.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.flatMap { $0.isEmpty ? nil : "Meeting: " + String($0.prefix(120)) + "\n" } ?? ""
         func render(_ ps: ArraySlice<Piece>) -> String {
-            ps.map { ($0.speaker ?? "Unknown speaker") + ": " + $0.words.joined(separator: " ") }.joined(separator: "\n")
+            header + ps.map { ($0.speaker ?? "Unknown speaker") + ": " + $0.words.joined(separator: " ") }.joined(separator: "\n")
         }
         var out: [TranscriptChunk] = []
         var i = 0

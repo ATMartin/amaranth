@@ -1,0 +1,277 @@
+[
+  {
+    "id" : "dev01",
+    "passages" : "0:Capacity check-in:d-kes-3-s0 1:Team sync 37:filler-36-s6 3:Team sync 40:filler-39-s45 4:Kestrel cutover prep:d-kes-4-s0 6:Team sync 36:filler-35-s20 7:Team sync 38:filler-37-s6 8:Team sync 34:filler-33-s53 10:Team sync 37:filler-36-s51",
+    "queries" : "Who do you think could take on the Kestrel migration once their current work is done? \/ Could someone from the dev team pick that up for the Kestrel migration?"
+  },
+  {
+    "id" : "dev02",
+    "passages" : "0:1:1 Maria:d-mar-2-s7 1:Capacity check-in:d-kes-3-s0 3:Team sync 34:filler-33-s53 4:Team sync 36:filler-35-s13 5:Kestrel cutover prep:d-kes-4-s6 7:Team sync 38:filler-37-s6 8:Team sync 36:filler-35-s42 9:Team sync 40:filler-39-s45 10:Team sync 34:filler-33-s5 11:Lumen Freight onboarding:d-fol-2-s0",
+    "queries" : ""
+  },
+  {
+    "id" : "dev03",
+    "passages" : "0:Capacity check-in:d-kes-3-s0 1:Team sync 5:filler-4-s22 2:Team sync 35:filler-34-s12 4:Ops week start:d-oc-2-s0 5:Weekend on-call handoff:d-oc-3-s6 6:Sales ops review:d-crm-1-s17 9:Team sync 33:filler-32-s48 10:Kestrel cutover prep:d-kes-4-s17 11:Launch go\/no-go:d-lau-1-s10",
+    "queries" : "Sarah got the go-ahead to help shift the customer accounts off the old database. \/ The team decided that Mark could take over and start moving accounts off the legacy system."
+  },
+  {
+    "id" : "dev04",
+    "passages" : "0:Platform weekly:d-kes-1-s0 2:Capacity check-in:d-kes-3-s0 3:Kestrel cutover prep:d-kes-4-s0 4:1:1 Maria:d-mar-2-s7 6:Kestrel cutover prep:d-kes-4-s17 10:Partner pricing workshop:d-dis-2-s8 11:1:1 Maria:d-mar-1-s6",
+    "queries" : "Tomas still available to help on Kestrel? \/ Can Tomas take on Kestrel work right now?"
+  },
+  {
+    "id" : "dev05",
+    "passages" : "0:Platform weekly:d-kes-1-s0 1:Kestrel cutover prep:d-kes-4-s0 2:Capacity check-in:d-kes-3-s0 4:Kestrel cutover prep:d-kes-4-s27 6:Team sync 20:filler-19-s56 7:Team sync 12:filler-11-s5 8:Team sync 26:filler-25-s11 9:Team sync 21:filler-20-s15 10:Team sync 37:filler-36-s23 11:Team sync 22:filler-21-s45",
+    "queries" : "Who's been ruled out for the Kestrel project and why? \/ We ruled out Sarah because she's already committed to the Northwind project."
+  },
+  {
+    "id" : "dev06",
+    "passages" : "0:Kestrel cutover prep:d-kes-4-s0 1:Capacity check-in:d-kes-3-s0 2:Platform weekly:d-kes-1-s0 4:Team sync 29:filler-28-s0 5:Team sync 2:filler-1-s18 6:Team sync 19:filler-18-s32 8:Team sync 40:filler-39-s45 10:Team sync 37:filler-36-s51 11:Team sync 1:filler-0-s45",
+    "queries" : "We approved $1.2M for the Kestrel migration project last week."
+  },
+  {
+    "id" : "dev07",
+    "passages" : "0:Capacity check-in:d-kes-3-s0 2:Capacity check-in:d-kes-3-s24",
+    "queries" : "Rosa said she'd handle the capacity check-in since she's got the current project wrapped up"
+  },
+  {
+    "id" : "dev08",
+    "passages" : "0:Kestrel cutover prep:d-kes-4-s6 1:Team sync 34:filler-33-s5 2:Team sync 11:filler-10-s45 3:Team sync 31:filler-30-s14 4:Team sync 34:filler-33-s19 5:Staffing quick sync:d-kes-2-s7 6:Team sync 31:filler-30-s0 7:Ops week start:d-oc-2-s9 8:CRM selection:d-crm-2-s8 9:On-call review:d-oc-4-s7 10:Finance sync:d-crm-3-s0",
+    "queries" : "Sam was supposed to lead the client onboarding process. \/ She’s on deck to present the project update to the team."
+  },
+  {
+    "id" : "dev09",
+    "passages" : "0:Kestrel cutover prep:d-kes-4-s0 2:Kestrel cutover prep:d-kes-4-s17 3:Capacity check-in:d-kes-3-s0 4:On-call retro:d-oc-1-s8 5:On-call review:d-oc-4-s17 7:Team sync 5:filler-4-s29 9:Team sync 3:filler-2-s32 10:Team sync 33:filler-32-s6 11:Team sync 29:filler-28-s4",
+    "queries" : "Who has ownership of the cutover runbook? \/ Is the cutover runbook currently under someone's control?"
+  },
+  {
+    "id" : "dev10",
+    "passages" : "0:Kestrel cutover prep:d-kes-4-s0 1:Kestrel cutover prep:d-kes-4-s27 2:Capacity check-in:d-kes-3-s7 3:CRM selection:d-crm-2-s0 4:Sales ops review:d-crm-1-s0 5:Finance sync:d-crm-3-s0 7:CRM selection:d-crm-2-s19 8:Kestrel cutover prep:d-kes-4-s17 9:1:1 Maria:d-mar-1-s6 10:Staffing quick sync:d-kes-2-s7 11:Lumen Freight onboarding:d-fol-2-s18",
+    "queries" : "Omar said he'd handle the Pipewell contract once he finishes his current project. \/ Omar mentioned he's taking on the Pipewell contract after wrapping up his current work."
+  },
+  {
+    "id" : "dev11",
+    "passages" : "0:Kestrel cutover prep:d-kes-4-s6 1:Kestrel cutover prep:d-kes-4-s0 4:Capacity check-in:d-kes-3-s7 5:On-call retro:d-oc-1-s8 6:Platform weekly:d-kes-1-s5 7:1:1 Maria:d-mar-1-s17 8:Weekend on-call handoff:d-oc-3-s17 11:Northwind renewal call:d-fol-1-s0",
+    "queries" : "Omar said he'd cover on-call over Thanksgiving"
+  },
+  {
+    "id" : "dev12",
+    "passages" : "0:CRM selection:d-crm-2-s0 2:Finance sync:d-crm-3-s0 3:Lumen Freight onboarding:d-fol-2-s7 5:Budget review:d-bud-1-n1 6:Launch go\/no-go:d-lau-1-s10 7:Sales ops review:d-crm-1-s17 8:Security vendor demo:d-sec-1-s7 9:On-call review:d-oc-4-s7 10:Staffing quick sync:d-kes-2-s7 11:Team sync 9:filler-8-s0",
+    "queries" : "We finally decided on HubSpot for our sales contacts. \/ So, we settled on using Salesforce to store all our sales contacts."
+  },
+  {
+    "id" : "dev13",
+    "passages" : "0:Finance sync:d-crm-3-s0 1:All-hands planning:d-off-1-s15 2:Northwind renewal call:d-fol-1-s0 3:Sales ops review:d-crm-1-s0 4:Team sync 11:filler-10-s28 5:CRM selection:d-crm-2-s0 6:Team sync 4:filler-3-s6 7:Brightline kickoff:d-fol-4-s8 10:Security vendor demo:d-sec-1-s7 11:Budget review:d-bud-1-s0",
+    "queries" : "When are we planning to reevaluate the platforms again? \/ When exactly will we look at Halyard's revised price again?"
+  },
+  {
+    "id" : "dev14",
+    "passages" : "0:Finance sync:d-crm-3-s0 1:CRM selection:d-crm-2-s0 2:Sales ops review:d-crm-1-s0 3:CRM selection:d-crm-2-s19 5:Platform weekly:d-kes-1-s12 6:Facilities check-in:d-off-2-s21 8:Weekend on-call handoff:d-oc-3-s6 9:Budget review:d-bud-1-s0 10:1:1 Maria:d-mar-1-s6 12:Team sync 16:filler-15-s46 13:Brightline campaign review:d-fol-5-s0",
+    "queries" : "What did the Pipewell quote response come back with? \/ Did the Pipewell quote get a reply?"
+  },
+  {
+    "id" : "dev15",
+    "passages" : "0:CRM selection:d-crm-2-s0 1:Finance sync:d-crm-3-s0 2:Sales ops review:d-crm-1-s0 3:Team sync 21:filler-20-s15 4:Kestrel cutover prep:d-kes-4-s27 5:Team sync 1:filler-0-s0 6:Team sync 29:filler-28-s4 7:Team sync 16:filler-15-s46 8:Team sync 9:filler-8-s0 9:CRM selection:d-crm-2-s19 10:Northwind renewal call:d-fol-1-s23 11:Team sync 2:filler-1-s32",
+    "queries" : "Yeah, everyone checked off Pipewell, so we're good on that one. \/ I think we all signed off on Pipewell, so it's officially done."
+  },
+  {
+    "id" : "dev16",
+    "passages" : "0:Sales ops review:d-crm-1-s0 1:Finance sync:d-crm-3-s0 2:Finance sync:d-crm-3-s16 3:1:1 Maria:d-mar-2-s0 4:1:1 Maria:d-mar-1-s0 5:CRM selection:d-crm-2-s0 6:CRM selection:d-crm-2-s19 8:Facilities check-in:d-off-2-s10 9:Team sync 8:filler-7-s39 10:Team sync 11:filler-10-s52 11:Team sync 35:filler-34-s12",
+    "queries" : "I mentioned we should look at HubSpot and Salesforce for the CRM vendors. \/ We talked about evaluating HubSpot and Salesforce for our CRM needs."
+  },
+  {
+    "id" : "dev17",
+    "passages" : "0:Sales ops review:d-crm-1-s0 1:CRM selection:d-crm-2-s0 2:Finance sync:d-crm-3-s0 4:Team sync 1:filler-0-s6 5:Brightline campaign review:d-fol-5-s0 6:Hiring panel debrief:d-fol-3-s8 7:Team sync 11:filler-10-s0 9:Sales ops review:d-crm-1-s17 10:Ops week start:d-oc-2-s9 11:Facilities check-in:d-off-2-s0",
+    "queries" : "She promised to follow up with a detailed proposal by end of week. \/ The Halyard rep said they’d send over a custom offer by Friday."
+  },
+  {
+    "id" : "dev18",
+    "passages" : "0:1:1 Maria:d-mar-1-s0 1:Team sync 4:filler-3-s0 2:Team sync 5:filler-4-s13 3:Team sync 33:filler-32-s14 5:Team sync 12:filler-11-s51 6:1:1 Maria:d-mar-2-s0 7:Team sync 11:filler-10-s0 8:Team sync 17:filler-16-s50 9:Team sync 11:filler-10-s52 10:Team sync 32:filler-31-s12",
+    "queries" : "We went with Vendor X for the project since they had the best pricing and support. \/ Final decision was to go with the vendor that handles our ATS needs—no more delays."
+  },
+  {
+    "id" : "dev19",
+    "passages" : "0:Facilities check-in:d-off-2-s0 1:Hiring panel debrief:d-fol-3-s8 2:All-hands planning:d-off-1-s0 4:Team sync 5:filler-4-s29 5:Budget review:d-bud-1-s9 6:Team sync 11:filler-10-s0 7:Team sync 32:filler-31-s42 8:Team sync 4:filler-3-s37 9:Team sync 4:filler-3-s0 10:Team sync 9:filler-8-s56 11:Team sync 12:filler-11-s43",
+    "queries" : "Has anyone officially said yes to moving our office? \/ Who’s going to make the final decision on relocating?"
+  },
+  {
+    "id" : "dev20",
+    "passages" : "0:All-hands planning:d-off-1-s0 1:Kestrel cutover prep:d-kes-4-s27 2:Budget review:d-bud-1-s9 3:Finance sync:d-crm-3-s0 4:Northwind renewal call:d-fol-1-s0 5:Facilities check-in:d-off-2-s0 6:Launch go\/no-go:d-lau-1-s10 7:Team sync 29:filler-28-s23 9:Team sync 39:filler-38-s30 11:Team sync 24:filler-23-s53",
+    "queries" : "We're still waiting on final approval from the legal team for the new office location. \/ The decision is on hold until we get feedback from the finance department about the lease costs."
+  },
+  {
+    "id" : "dev21",
+    "passages" : "0:All-hands planning:d-off-1-s0 1:Facilities check-in:d-off-2-s0 2:Facilities check-in:d-off-2-s21 3:All-hands planning:d-off-1-s15 4:Ops week start:d-oc-2-s9 6:Ops standup:d-mar-3-s6 7:Budget review:d-bud-1-s0 9:Launch go\/no-go:d-lau-1-s10 10:Partner pricing workshop:d-dis-2-s8 11:Weekend on-call handoff:d-oc-3-s6",
+    "queries" : "We're looking at the Delancey building for the new office space. \/ The Delancey building is on the list for potential relocation."
+  },
+  {
+    "id" : "dev22",
+    "passages" : "0:All-hands planning:d-off-1-s0 1:Facilities check-in:d-off-2-s0 2:Budget review:d-bud-1-s9 3:Facilities check-in:d-off-2-s21 4:Platform weekly:d-kes-1-s0 5:Staffing quick sync:d-kes-2-s0 6:Ops week start:d-oc-2-s0 7:Northwind renewal call:d-fol-1-s5 8:1:1 Maria:d-mar-2-s18 9:Team sync 25:filler-24-s23",
+    "queries" : "When does the Wharf Street lease expire? \/ What's the end date for the Wharf Street lease?"
+  },
+  {
+    "id" : "dev23",
+    "passages" : "0:Facilities check-in:d-off-2-s0 2:Team sync 2:filler-1-s32 3:Launch go\/no-go:d-lau-1-s24 4:Hiring panel debrief:d-fol-3-s19 5:Capacity check-in:d-kes-3-s7 6:Team sync 39:filler-38-s40 7:Team sync 35:filler-34-s7 8:Team sync 9:filler-8-s21 9:Ops standup:d-mar-3-s18 10:1:1 Maria:d-mar-2-s18 11:Team sync 35:filler-34-s44",
+    "queries" : "Yeah, we went ahead and approved the standing desks for the team room. \/ The standing desks were officially approved last week."
+  },
+  {
+    "id" : "dev24",
+    "passages" : "0:Lumen Freight onboarding:d-fol-2-s7 2:Northwind renewal call:d-fol-1-s5 5:Northwind renewal call:d-fol-1-s0 6:Lumen Freight onboarding:d-fol-2-s0",
+    "queries" : "I promised to follow up with the team by Friday. \/ I committed to sending over the updated timeline by end of day today."
+  },
+  {
+    "id" : "dev25",
+    "passages" : "0:Lumen Freight onboarding:d-fol-2-s0 2:Lumen Freight onboarding:d-fol-2-s18",
+    "queries" : "I promised to follow up with the team by end of day tomorrow. \/ I committed to sending over the updated project timeline by Friday."
+  },
+  {
+    "id" : "dev26",
+    "passages" : "0:Northwind renewal call:d-fol-1-s5 3:Northwind renewal call:d-fol-1-s0",
+    "queries" : "I committed to following up with the team by Friday. \/ I promised to send over the updated timeline by end of day."
+  },
+  {
+    "id" : "dev27",
+    "passages" : "0:Team sync 40:filler-39-s23 1:Team sync 40:filler-39-s5 2:Team sync 40:filler-39-s45 6:Team sync 40:filler-39-s0 8:Hiring panel debrief:d-fol-3-s8 10:Hiring panel debrief:d-fol-3-s0 11:Facilities check-in:d-off-2-s21",
+    "queries" : "I said I'd follow up on the interview notes and get back to you by end of day"
+  },
+  {
+    "id" : "dev28",
+    "passages" : "0:Lumen Freight onboarding:d-fol-2-s0 2:Lumen Freight onboarding:d-fol-2-s18 3:Northwind renewal call:d-fol-1-s5 4:Northwind renewal call:d-fol-1-s0 6:Brightline campaign review:d-fol-5-s0 8:Brightline campaign review:d-fol-5-s16",
+    "queries" : "We promised to follow up with the client by end of day tomorrow. \/ Everyone agreed to send a follow-up email by Friday afternoon."
+  },
+  {
+    "id" : "dev29",
+    "passages" : "0:Brightline campaign review:d-fol-5-s0 2:Brightline kickoff:d-fol-4-s0 4:Brightline campaign review:d-fol-5-s16 5:Brightline kickoff:d-fol-4-s19 6:Finance sync:d-crm-3-s6 7:Platform weekly:d-kes-1-s19 8:1:1 Maria:d-mar-1-s17 9:Team sync 25:filler-24-s55 10:CRM selection:d-crm-2-s0 11:Hiring panel debrief:d-fol-3-s0",
+    "queries" : "When will the reworked scene-by-scene drawings for Brightline be ready? \/ When do we expect the updated scene-by-scene drawings for Brightline to come in?"
+  },
+  {
+    "id" : "dev30",
+    "passages" : "0:Capacity check-in:d-kes-3-s15 1:Hiring panel debrief:d-fol-3-s8 3:Kestrel cutover prep:d-kes-4-s27 4:Staffing quick sync:d-kes-2-s18 5:Budget review:d-bud-1-s0 6:1:1 Maria:d-mar-1-s6 8:Facilities check-in:d-off-2-s10 9:Capacity check-in:d-kes-3-s0 10:Launch go\/no-go:d-lau-1-s24 11:Team sync 20:filler-19-s56",
+    "queries" : "So, who's getting invited back for the in-person interview? \/ We're bringing back the applicant from the first round for the in-person interview."
+  },
+  {
+    "id" : "dev31",
+    "passages" : "0:Ops standup:d-mar-3-s6 1:CRM selection:d-crm-2-s8 2:Ops week start:d-oc-2-s9 3:Team sync 33:filler-32-s20 4:Team sync 30:filler-29-s35 5:Team sync 29:filler-28-s30 7:Team sync 36:filler-35-s13 8:Team sync 30:filler-29-s14 9:Team sync 35:filler-34-s21 10:Weekend on-call handoff:d-oc-3-s6 11:Team sync 31:filler-30-s29",
+    "queries" : "We need to follow up on the action items from the Lumen Freight call last week."
+  },
+  {
+    "id" : "dev32",
+    "passages" : "0:Northwind renewal call:d-fol-1-s0 2:Weekend on-call handoff:d-oc-3-s0 3:Northwind renewal call:d-fol-1-s23 6:Finance sync:d-crm-3-s0 7:Lumen Freight onboarding:d-fol-2-s18 8:Team sync 24:filler-23-s53 9:Hiring panel debrief:d-fol-3-s8 10:Team sync 8:filler-7-s15 11:Security vendor demo:d-sec-1-s17",
+    "queries" : "What's wrong with the Northwind indemnity clause? \/ We're having issues with the indemnity clause in the Northwind contract."
+  },
+  {
+    "id" : "dev33",
+    "passages" : "0:1:1 Maria:d-mar-1-s0 2:1:1 Maria:d-mar-1-s17 3:Platform weekly:d-kes-1-s12 4:Team sync 34:filler-33-s5 5:Team sync 36:filler-35-s13 6:Team sync 34:filler-33-s28 8:CRM selection:d-crm-2-s19 9:Team sync 36:filler-35-s42 10:Team sync 29:filler-28-s30 11:Ops week start:d-oc-2-s9",
+    "queries" : "Maria said she'd take on more client onboarding next, \/ She suggested focusing on expanding her client outreach as her next step"
+  },
+  {
+    "id" : "dev34",
+    "passages" : "0:1:1 Maria:d-mar-2-s0 1:1:1 Maria:d-mar-2-s18 3:Team sync 37:filler-36-s23 4:Team sync 40:filler-39-s5 5:Brightline campaign review:d-fol-5-s0 7:Capacity check-in:d-kes-3-s7 8:Kestrel cutover prep:d-kes-4-s17 9:Team sync 39:filler-38-s40 11:Team sync 37:filler-36-s43",
+    "queries" : "Did Maria make any changes to her growth plan this week? \/ Has Maria shifted from just prepping decks to leading vendor reviews this week?"
+  },
+  {
+    "id" : "dev35",
+    "passages" : "0:1:1 Maria:d-mar-2-s7 1:1:1 Maria:d-mar-2-s0 3:Capacity check-in:d-kes-3-s7 4:Northwind renewal call:d-fol-1-s0 5:Team sync 39:filler-38-s15 6:Team sync 40:filler-39-s45 9:Team sync 40:filler-39-s30 10:Team sync 39:filler-38-s48",
+    "queries" : "Maria said she wants to grow in the customer success area. \/ She mentioned she’s aiming to expand into the enterprise solutions space next year."
+  },
+  {
+    "id" : "dev36",
+    "passages" : "0:Ops standup:d-mar-3-s0 1:Team sync 35:filler-34-s12 2:Team sync 27:filler-26-s29 3:Team sync 40:filler-39-s5 4:Team sync 15:filler-14-s53 5:Team sync 5:filler-4-s13 6:Team sync 27:filler-26-s43 7:Hiring panel debrief:d-fol-3-s0 8:Team sync 4:filler-3-s45 9:Kestrel cutover prep:d-kes-4-s27 10:Team sync 29:filler-28-s4 11:Team sync 31:filler-30-s7",
+    "queries" : "Alex said they'd take over the forecasting model next week. \/ Jamie mentioned they wanted to step in and lead the forecasting model."
+  },
+  {
+    "id" : "dev37",
+    "passages" : "0:1:1 Maria:d-mar-1-s0 1:1:1 Maria:d-mar-2-s7 2:1:1 Maria:d-mar-1-s17 3:1:1 Maria:d-mar-2-s0 6:Team sync 26:filler-25-s11 7:Team sync 33:filler-32-s34 8:Team sync 3:filler-2-s6 9:Team sync 7:filler-6-s47 11:Team sync 39:filler-38-s48",
+    "queries" : "Maria mentioned her development plans during the ops standup. \/ She brought up her dev roadmap in the last ops standup."
+  },
+  {
+    "id" : "dev38",
+    "passages" : "0:1:1 Maria:d-mar-1-s0 1:1:1 Maria:d-mar-2-s7 4:1:1 Maria:d-mar-1-s17 5:1:1 Maria:d-mar-2-s0 6:Platform weekly:d-kes-1-s12 7:Partner pricing workshop:d-dis-2-s8 8:On-call review:d-oc-4-s0 9:Northwind renewal call:d-fol-1-s23 10:Weekend on-call handoff:d-oc-3-s17 11:On-call review:d-oc-4-s17",
+    "queries" : "John mentioned Maria should get that certification soon. \/ Sarah said Maria was going to get certified by the end of the month."
+  },
+  {
+    "id" : "dev39",
+    "passages" : "0:1:1 Maria:d-mar-1-s6 2:1:1 Maria:d-mar-2-s7 3:1:1 Maria:d-mar-2-s0 5:1:1 Maria:d-mar-1-s0 6:Platform weekly:d-kes-1-s12 7:All-hands planning:d-off-1-s0 8:Facilities check-in:d-off-2-s0 9:Budget review:d-bud-1-s9 10:Team sync 16:filler-15-s56 11:Team sync 1:filler-0-s0",
+    "queries" : "Maria said she might be able to move to Denver if the workload allows \/ She mentioned she’s open to relocating to Denver, but needs to check her current schedule first"
+  },
+  {
+    "id" : "dev40",
+    "passages" : "0:Weekend on-call handoff:d-oc-3-s0 2:Ops week start:d-oc-2-s0 3:Security vendor demo:d-sec-1-s17 4:Ops standup:d-mar-3-s18 5:Platform weekly:d-kes-1-s5 8:CRM selection:d-crm-2-s8 10:Team sync 30:filler-29-s7",
+    "queries" : "The on-call team reported that the web front door's security certificates were expiring in the next month. \/ Last week, the on-call folks said the SSL certs for the front door were about to expire and needed renewal."
+  },
+  {
+    "id" : "dev41",
+    "passages" : "0:Weekend on-call handoff:d-oc-3-s6 1:Team sync 36:filler-35-s0 3:Team sync 36:filler-35-s28 6:Team sync 36:filler-35-s49 7:Weekend on-call handoff:d-oc-3-s0 8:Team sync 36:filler-35-s20",
+    "queries" : "Who covered the weekend shift yesterday? What did they pass along to us? \/ Did anyone from the weekend shift send us an update? What was it?"
+  },
+  {
+    "id" : "dev42",
+    "passages" : "0:CRM selection:d-crm-2-s8 1:Ops week start:d-oc-2-s0 2:Weekend on-call handoff:d-oc-3-s6 4:Team sync 30:filler-29-s7 5:Team sync 30:filler-29-s35 6:Team sync 34:filler-33-s28 8:Ops standup:d-mar-3-s18 11:Team sync 34:filler-33-s11",
+    "queries" : "Who was going to carry the beeper last week? \/ We decided last week that Sarah would carry the beeper after the meeting."
+  },
+  {
+    "id" : "dev43",
+    "passages" : "0:Capacity check-in:d-kes-3-s15 1:On-call review:d-oc-4-s0 2:Team sync 37:filler-36-s30 3:Team sync 35:filler-34-s7 6:Team sync 10:filler-9-s24 7:Team sync 30:filler-29-s28 8:Team sync 18:filler-17-s20 10:Team sync 3:filler-2-s49 11:Capacity check-in:d-kes-3-s0",
+    "queries" : "The customer on the East Coast is having trouble pulling big data chunks from the product. \/ We’ve been getting complaints from the Midwest client about slow data exports from the product."
+  },
+  {
+    "id" : "dev44",
+    "passages" : "0:Team sync 20:filler-19-s41 1:Team sync 39:filler-38-s30 2:Team sync 27:filler-26-s12 3:Team sync 14:filler-13-s11 4:Team sync 19:filler-18-s24 7:Team sync 17:filler-16-s6 9:Team sync 23:filler-22-s56 10:Budget review:d-bud-1-s0",
+    "queries" : "The BioTech team took first place in the fall hackathon. \/ We ended up with the BioTech team winning the fall hackathon."
+  },
+  {
+    "id" : "dev45",
+    "passages" : "0:Budget review:d-bud-1-s9 1:Finance sync:d-crm-3-s16 2:Team sync 7:filler-6-s39 3:Team sync 13:filler-12-s39 4:Team sync 22:filler-21-s14 5:Team sync 9:filler-8-s41 7:Brightline campaign review:d-fol-5-s0 8:Team sync 28:filler-27-s18 9:All-hands planning:d-off-1-s6 10:Team sync 34:filler-33-s5 11:1:1 Maria:d-mar-2-s7",
+    "queries" : "What did we settle on for the travel allowance in Q1? \/ We ended up going with $500 per person for the first quarter travel allowance."
+  },
+  {
+    "id" : "dev46",
+    "passages" : "0:Budget review:d-bud-1-s0 1:Staffing quick sync:d-kes-2-s7 2:Northwind renewal call:d-fol-1-s13 4:Weekend on-call handoff:d-oc-3-s6 5:Facilities check-in:d-off-2-s10 7:Ops week start:d-oc-2-s9 8:Launch go\/no-go:d-lau-1-s10 9:Team sync 13:filler-12-s55 10:Partner pricing workshop:d-dis-2-s8 11:Hiring panel debrief:d-fol-3-s8",
+    "queries" : "Can the platform group add anyone new right now? \/ Is there anyone the platform group can bring on immediately?"
+  },
+  {
+    "id" : "dev47",
+    "passages" : "0:Finance sync:d-crm-3-s0 2:Northwind renewal call:d-fol-1-s5 3:Brightline campaign review:d-fol-5-s16 4:On-call review:d-oc-4-s0 6:Lumen Freight onboarding:d-fol-2-s18 7:Team sync 40:filler-39-s51 8:Team sync 40:filler-39-s30 10:Team sync 38:filler-37-s24 11:Team sync 39:filler-38-s40",
+    "queries" : "We went over the price breaks for partners who resell our products this week. \/ The team discussed the reseller pricing tiers that were approved last week."
+  },
+  {
+    "id" : "dev48",
+    "passages" : "0:Team sync 16:filler-15-s0 1:Team sync 27:filler-26-s36 2:Team sync 19:filler-18-s41 3:Team sync 12:filler-11-s36 4:Team sync 22:filler-21-s20 5:Team sync 36:filler-35-s36 6:Team sync 6:filler-5-s32 7:Team sync 14:filler-13-s5 8:Team sync 13:filler-12-s31 9:Team sync 17:filler-16-s43 10:Launch go\/no-go:d-lau-1-s4 11:Team sync 34:filler-33-s45",
+    "queries" : "When are we targeting for the mobile app launch? \/ We're aiming to release the mobile app in Q3."
+  },
+  {
+    "id" : "dev49",
+    "passages" : "0:Launch go\/no-go:d-lau-1-s4 1:CRM selection:d-crm-2-s8 2:Ops week start:d-oc-2-s9 3:Kestrel cutover prep:d-kes-4-s27 4:Kestrel cutover prep:d-kes-4-s0 6:Team sync 34:filler-33-s37 8:Team sync 21:filler-20-s15 9:Lumen Freight onboarding:d-fol-2-s7 10:Team sync 6:filler-5-s23",
+    "queries" : "Yes, we're launching to all regions on day one. \/ We're going full rollout across every region from day one."
+  },
+  {
+    "id" : "dev50",
+    "passages" : "0:Staffing quick sync:d-kes-2-s7 1:Ops standup:d-mar-3-s0 2:1:1 Maria:d-mar-1-s17 3:Team sync 31:filler-30-s7 4:Launch go\/no-go:d-lau-1-s4 5:CRM selection:d-crm-2-s8 6:Team sync 32:filler-31-s53 8:Finance sync:d-crm-3-s0 9:Team sync 7:filler-6-s47 10:Team sync 36:filler-35-s49",
+    "queries" : "We're still finalizing the hotel block for the sales offsite, but we're looking at a few options in the city center. \/ The hotel block for the sales offsite hasn't been confirmed yet—still in the discussion phase."
+  },
+  {
+    "id" : "dev51",
+    "passages" : "0:Team sync 20:filler-19-s56 1:Team sync 3:filler-2-s6 2:Team sync 4:filler-3-s22 3:Team sync 25:filler-24-s36 4:Team sync 37:filler-36-s23 6:Team sync 9:filler-8-s14 7:Team sync 22:filler-21-s36 8:Team sync 29:filler-28-s23 9:Team sync 36:filler-35-s13 10:Team sync 27:filler-26-s0 11:Team sync 17:filler-16-s30",
+    "queries" : "We're looking at merging the design and research teams to streamline things. \/ I think we should combine the design and research teams to improve collaboration."
+  },
+  {
+    "id" : "dev52",
+    "passages" : "0:Facilities check-in:d-off-2-s10 1:Security vendor demo:d-sec-1-s0 4:Weekend on-call handoff:d-oc-3-s0 5:Capacity check-in:d-kes-3-s15 6:Sales ops review:d-crm-1-s7 7:Team sync 25:filler-24-s30 8:Budget review:d-bud-1-s0 9:Team sync 8:filler-7-s15 10:Team sync 33:filler-32-s48",
+    "queries" : "The outside security testers found some vulnerabilities in the file intake service. \/ They flagged a few security issues during their scan of the file intake system."
+  },
+  {
+    "id" : "dev53",
+    "passages" : "0:Security vendor demo:d-sec-1-s0 3:1:1 Maria:d-mar-2-s7 4:Team sync 25:filler-24-s23 6:Sales ops review:d-crm-1-s7 7:Team sync 28:filler-27-s42 8:Team sync 14:filler-13-s40 9:Team sync 23:filler-22-s31 10:Team sync 19:filler-18-s49 11:Team sync 27:filler-26-s5",
+    "queries" : "We're going to fix the two high-severity issues first, especially the file type validation one, and then tackle the medium ones over thenext \/ The plan is to patch the file type validation in the upload service right away and address the header issues in phases"
+  },
+  {
+    "id" : "dev54",
+    "passages" : "0:Team sync 18:filler-17-s5 1:Team sync 29:filler-28-s44 2:Team sync 3:filler-2-s6 3:Team sync 16:filler-15-s22 4:Team sync 22:filler-21-s45 5:Team sync 34:filler-33-s5 6:Team sync 14:filler-13-s40 7:Team sync 4:filler-3-s22 8:Team sync 2:filler-1-s32 11:Team sync 25:filler-24-s23",
+    "queries" : "We went over the key points from the meeting and decided on the next steps. \/ The team discussed the project updates and wrapped up with a clear action plan."
+  },
+  {
+    "id" : "dev55",
+    "passages" : "0:Team sync 17:filler-16-s50 1:Budget review:d-bud-1-s9 2:Team sync 27:filler-26-s51 3:Brightline campaign review:d-fol-5-s16 5:Team sync 7:filler-6-s15 6:Team sync 20:filler-19-s41 7:Team sync 22:filler-21-s45 8:Team sync 23:filler-22-s13 10:Team sync 39:filler-38-s30 11:Team sync 27:filler-26-s29",
+    "queries" : "Speaker 2 said the budget is tight and we’ll need to cut some costs. \/ She mentioned the budget has a shortfall and we might have to delay some projects."
+  }
+]
