@@ -1,0 +1,90 @@
+import Foundation
+import Testing
+@testable import Presentation
+import Domain
+
+@Suite("Live transcript state")
+struct LiveTranscriptStateTests {
+    func w(_ text: String, _ a: Double, _ src: SourceKind = .microphone) -> Word {
+        Word(id: WordID("live-\(src.rawValue)-\(Int(a * 1000))"), text: text, interval: .seconds(a, a + 0.3), source: src)
+    }
+
+    @Test func mergesStableAndTentativeIgnoresStaleAndMeasuresLatencyOnce() throws {
+        var s = LiveTranscriptState()
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("hello", 1)], tentativeWords: [w("wor", 2)], stableUntil: .seconds(1.5), processedUntil: .seconds(3)),
+                sessionNow: .seconds(4))
+        // Next pass: the tentative word is re-decoded with a slightly different start (new ID) and becomes stable.
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("world", 2.05)], tentativeWords: [w("again", 3)], stableUntil: .seconds(2.6), processedUntil: .seconds(4)),
+                sessionNow: .seconds(6))
+        #expect(s.words.map(\.text) == ["hello", "world", "again"], "tentative words are replaced, stable words kept")
+        // A late, older response is ignored.
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("stale", 1.2)], tentativeWords: [], stableUntil: .seconds(1.5), processedUntil: .seconds(3)),
+                sessionNow: .seconds(7))
+        #expect(!s.words.contains { $0.text == "stale" })
+        #expect(s.latencies.count == 4, "hello, wor, world (different text), again — each measured once")
+        #expect(abs(s.latencies[0] - 2.7) < 0.01)   // 4.0 − (1.0 + 0.3)
+        // A provisional revision is valid and marked provisional.
+        let rev = try #require(s.revision(meetingID: MeetingID("m"), producer: ProducerInfo(component: "live", configHash: "l")))
+        #expect(rev.kind == .provisional)
+        try rev.validate()
+        #expect(s.lines.last?.tentative == true)
+    }
+
+    /// T122: per-source newest word and recent word count (the call-end monitor's inputs).
+    @Test func perSourceLastWordAndRecentCount() {
+        var s = LiveTranscriptState()
+        #expect(s.lastWordEnd(.systemOutput) == nil && s.wordCount(.microphone, endingAfter: .zero) == 0)
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("a", 1), w("b", 10), w("c", 50)], tentativeWords: [w("d", 55)],
+                             stableUntil: .seconds(51), processedUntil: .seconds(56)), sessionNow: .seconds(56))
+        s.apply(LiveResponse(source: .systemOutput, stableWords: [w("x", 20, .systemOutput)], tentativeWords: [],
+                             stableUntil: .seconds(21), processedUntil: .seconds(56)), sessionNow: .seconds(56))
+        #expect(s.lastWordEnd(.systemOutput)?.seconds == 20.3)
+        #expect(s.lastWordEnd(.microphone)?.seconds == 55.3)
+        #expect(s.wordCount(.microphone, endingAfter: .seconds(5)) == 3, "b, c and the tentative d")
+        #expect(s.wordCount(.systemOutput, endingAfter: .seconds(5)) == 1)
+        // Final words up to 12 s replace live a and b.
+        s.applyFinal(source: .microphone, words: [Word(id: WordID("f1"), text: "A", interval: .seconds(1, 1.3), source: .microphone),
+                                                  Word(id: WordID("f2"), text: "B", interval: .seconds(10, 10.3), source: .microphone)],
+                     until: .seconds(12))
+        #expect(s.wordCount(.microphone, endingAfter: .seconds(5)) == 3, "B (final), c, d — live b isn't counted twice")
+    }
+
+    /// T19: final-pipeline words replace live words before their point; later live words still show.
+    @Test func finalWordsReplaceLiveWordsBeforeTheirPoint() throws {
+        var s = LiveTranscriptState()
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("helo", 1), w("wurld", 2), w("next", 6)], tentativeWords: [w("tail", 7)],
+                             stableUntil: .seconds(6.5), processedUntil: .seconds(8)), sessionNow: .seconds(8))
+        let final = [Word(id: WordID("final-mic-1000"), text: "Hello", interval: .seconds(1, 1.3), source: .microphone),
+                     Word(id: WordID("final-mic-2000"), text: "world.", interval: .seconds(2, 2.3), source: .microphone)]
+        s.applyFinal(source: .microphone, words: final, until: .seconds(4))
+        #expect(s.words.map(\.text) == ["Hello", "world.", "next", "tail"])
+        // An older final point is ignored; a repeated delivery adds nothing.
+        s.applyFinal(source: .microphone, words: [final[0]], until: .seconds(3))
+        s.applyFinal(source: .microphone, words: final, until: .seconds(4))
+        #expect(s.words.map(\.text) == ["Hello", "world.", "next", "tail"])
+        #expect(s.latencies.count == 4, "final words are not live latency samples")
+        let rev = try #require(s.revision(meetingID: MeetingID("m"), producer: ProducerInfo(component: "live", configHash: "l")))
+        try rev.validate()
+        #expect(rev.allWords.map(\.text) == ["Hello", "world.", "next", "tail"])
+    }
+
+    /// T20: each sample's delay splits into waiting for the segment to be saved, waiting to be sent, and the worker.
+    @Test func latencyBreakdownSumsToTheDelayAndLogHoldsNoText() throws {
+        var s = LiveTranscriptState()
+        // "hello" ends at 1.3 s; its segment [0, 2) is saved at 2 s; the request goes at 3.1 s and returns at 3.5 s.
+        let timing = LiveTranscriptState.RequestTiming(sentAt: .seconds(3.1), segmentEnds: [.seconds(4), .seconds(2)])
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("hello", 1)], tentativeWords: [w("there", 2.5)], stableUntil: .seconds(2), processedUntil: .seconds(4)),
+                sessionNow: .seconds(3.5), timing: timing)
+        let a = s.samples[0], b = s.samples[1]
+        #expect(abs(a.seconds - 2.2) < 1e-9 && abs(a.unsaved! - 0.7) < 1e-9 && abs(a.waiting! - 1.1) < 1e-9 && abs(a.worker! - 0.4) < 1e-9)
+        #expect(abs(b.unsaved! + b.waiting! + b.worker! - b.seconds) < 1e-9)
+        // The flush at Stop merges words without delay samples.
+        s.apply(LiveResponse(source: .microphone, stableWords: [w("there", 2.5), w("end", 3.2)], tentativeWords: [], stableUntil: .seconds(4), processedUntil: .seconds(4)),
+                sessionNow: .seconds(4), measure: false)
+        #expect(s.samples.count == 2 && s.words.map(\.text) == ["hello", "there", "end"])
+        let log = LiveLatencyLog(meetingID: MeetingID("m"), tickSeconds: 1, requests: 1, samples: s.samples)
+        #expect(log.summary["all"]?.samples == 2 && log.summary["microphone"] != nil)
+        let json = String(decoding: try ContractCoding.encode(log), as: UTF8.self)
+        #expect(!json.contains("hello") && !json.contains("there"), "metrics only, never text")
+    }
+}

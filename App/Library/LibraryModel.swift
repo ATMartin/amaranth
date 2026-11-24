@@ -1,0 +1,619 @@
+import Foundation
+import Observation
+import Domain
+import Capture
+import Storage
+import ProcessingCore
+import Presentation
+import MeetingAccess
+
+/// Library, search and the selected meeting's detail. Reloads (throttled) when processing changes state; all user
+/// actions go through the store and scheduler, never around them.
+@MainActor @Observable
+final class LibraryModel {
+    private(set) var items: [MeetingListItem] = []
+    /// Single-level folders (T39/T40), in the store's order.
+    private(set) var folders: [Folder] = []
+    /// The sidebar's folder filter (T40; Unsorted T83). Kept across launches; a deleted folder falls back to All meetings.
+    var folderFilter = LibraryFolders.Filter(stored: UserDefaults.standard.string(forKey: LibraryModel.folderFilterKey)) {
+        didSet {
+            UserDefaults.standard.set(folderFilter.stored, forKey: Self.folderFilterKey)
+            guard folderFilter != oldValue, askScope == .thisFolder else { return }
+            // “This folder” follows the folder shown; with none shown (All meetings, Unsorted) it becomes All meetings (T42).
+            if folderFilter.folderID == nil { askScope = .allMeetings } else if askPanelOpen { runSearch(); reaskIfAnswered() }
+        }
+    }
+    static let folderFilterKey = "sidebarFolderFilter"
+    /// The meetings the sidebar lists under the current filter.
+    var visibleItems: [MeetingListItem] { LibraryFolders.visible(items, filter: folderFilter) }
+    var folderRows: [LibraryFolders.Row] { LibraryFolders.rows(folders, items: items) }
+    func folderName(_ id: FolderID?) -> String? { LibraryFolders.name(id, in: folders) }
+    var selection: MeetingID? { didSet { if oldValue != selection { reloadDetail(); if askPanelOpen, askScope == .thisMeeting { runSearch() } } } }
+    private(set) var detail: MeetingDetail?
+    /// The “Ask anything” field's text (T52). Searched on submit, then live while the results panel is open.
+    /// Only a real change re-searches and drops the ↑/↓ highlight: the field re-sets the same text when Return commits it,
+    /// and that must not clear the hit Return is about to open.
+    var query = "" { didSet { guard query != oldValue else { return }; if askPanelOpen { runSearch() }; askSelection = nil } }
+    private(set) var hits: [SearchHit] = []
+    /// “This meeting” (the meeting on screen) or “All meetings”; ⌘K switches to All meetings.
+    var askScope: AskScope = .thisMeeting { didSet { if askPanelOpen { runSearch(); reaskIfAnswered() } } }
+    private(set) var askPanelOpen = false
+    /// Hit highlighted with ↑/↓ (index into the panel's flattened order); Return opens it.
+    var askSelection: Int?
+    /// A hit or citation opened in a meeting that is still loading: applied once its detail arrives.
+    private var pendingJump: Jump?
+    private enum Jump { case hit(SearchHit), evidence(MeetingID, TranscriptEvidence?, notes: Bool), citation(CitationTarget) }
+    /// T54: answers from the local model, shown above the matches. Nil in contexts without a worker (ui-render).
+    var answers: AnswerModel?
+    /// Contextual-search indexing state and coverage (T112).
+    var indexer: ContextIndexer?
+    private(set) var error: String?
+    /// Transcript row to scroll to and highlight (set by evidence links and search hits).
+    var focusRowID: String?
+    /// The meeting screen's tab; here (not view state) so menu commands (⌘1–⌘3) can switch it. Any change not made by
+    /// the T32 rules counts as the user's choice for the open meeting and is kept for this session.
+    var detailTab: DetailTab = .notes {
+        didSet { if !applyingTabRule, let id = selection { chosenTabs[id] = detailTab; notesSwitch.userChoseTab(id) } }
+    }
+    private var applyingTabRule = false
+    private var chosenTabs: [MeetingID: DetailTab] = [:]
+    private var notesSwitch = NotesArrivalSwitch()
+    /// The meeting the open detail's tab was chosen for, so a refresh of the same meeting keeps the tab.
+    private var tabAppliedFor: MeetingID?
+    /// Set by the app: whether the notes model is installed (no model → never auto-switch to Notes).
+    var notesModelReady: () -> Bool = { false }
+    /// Natural-language Ask can run (models and search model installed); the pane is inert otherwise.
+    var askAvailable: () -> Bool = { true }
+    /// Settings → Ask: answers from the model (default) or word matches only. Kept in UserDefaults, which the pane and
+    /// Settings watch with @AppStorage; a change mid-question resets the pane.
+    var askMode: AskMode {
+        get { AskMode(stored: UserDefaults.standard.string(forKey: AskMode.key)) }
+        set { UserDefaults.standard.set(newValue.rawValue, forKey: AskMode.key); askModeChanged() }
+    }
+    enum DetailTab: String, CaseIterable { case notes = "Notes", transcript = "Transcript", recording = "Audio details" }
+    /// Bumped by ⌘K; the ask field takes focus.
+    var askFocusRequest = 0
+    /// Set with each request until the field takes it: the Ask pane may be hidden, so the field appears after the bump.
+    var askFocusPending = false
+    let store: MeetingStore?
+    weak var processing: ProcessingModel?
+
+    init(store: MeetingStore?) {
+        self.store = store
+        reload()
+    }
+
+    private var generation = 0
+
+    /// Reloads the list and the open meeting off the main thread (a two-hour transcript must not stall the UI).
+    func reload() {
+        indexer?.kick()   // T112: edits, deletions and new transcripts reach the contextual index promptly
+        answers?.sourcesChanged()   // T115: a finished answer whose sources were deleted is marked stale
+        guard let store else { return }
+        generation += 1
+        let gen = generation, id = selection
+        Task.detached(priority: .userInitiated) {
+            let items = Result { try MeetingListItem.load(store) }
+            let folders = Result { try store.folders() }
+            let detail = Result { try id.flatMap { try MeetingDetail.load(store, $0) } }
+            await MainActor.run {
+                guard gen == self.generation else { return }
+                switch items { case .success(let v): self.items = v; case .failure(let e): self.error = "Could not read the library: \(e.localizedDescription)" }
+                if case .success(let f) = folders {
+                    self.folders = f
+                    let valid = LibraryFolders.validFilter(self.folderFilter, folders: f)
+                    if valid != self.folderFilter { self.folderFilter = valid }
+                }
+                switch detail { case .success(let v): if self.selection == id { self.show(v) }; case .failure(let e): self.error = "Could not open the meeting: \(e.localizedDescription)" }
+                if self.askPanelOpen { self.runSearch() }
+            }
+        }
+    }
+
+    func reloadDetail() {
+        guard let store, let id = selection else { detail = nil; tabAppliedFor = nil; return }
+        if detail?.meeting.id != id { detail = nil; tabAppliedFor = nil }
+        Task.detached(priority: .userInitiated) {
+            let d = Result { try MeetingDetail.load(store, id) }
+            await MainActor.run {
+                guard self.selection == id else { return }
+                switch d { case .success(let v): self.show(v); case .failure(let e): self.error = "Could not open the meeting: \(e.localizedDescription)" }
+            }
+        }
+    }
+
+    /// Publishes a loaded detail and applies the tab rules (T32): a newly opened meeting gets the tab the user chose for
+    /// it this session, else its default; a meeting waiting for its first notes after Stop switches to Notes once.
+    private func show(_ d: MeetingDetail?) {
+        detail = d
+        guard let d else { tabAppliedFor = nil; return }
+        let id = d.meeting.id
+        if tabAppliedFor != id {
+            tabAppliedFor = id
+            setTabByRule(chosenTabs[id] ?? (d.defaultTab(isRecording: false) == .notes ? .notes : .transcript))
+        }
+        if notesSwitch.shouldSwitchToNotes(viewing: id, hasSummary: d.summary != nil) { setTabByRule(.notes) }
+        switch pendingJump {
+        case .hit(let hit) where hit.meetingID == id: pendingJump = nil; jump(to: hit, in: d)
+        case .evidence(let m, let e, let notes) where m == id: pendingJump = nil; jump(to: e, notes: notes, in: d)
+        case .citation(let t) where t.meetingID == id: pendingJump = nil; jump(to: t, in: d)
+        default: break
+        }
+    }
+
+    private func setTabByRule(_ tab: DetailTab) {
+        applyingTabRule = true
+        detailTab = tab
+        applyingTabRule = false
+    }
+
+    /// Record pressed: open the new meeting so the detail pane is its live transcript. A folder filter that would hide the
+    /// new card switches to the recording's folder (or All meetings when it is unfiled, T42).
+    func recordingStarted(_ id: MeetingID, folder: FolderID? = nil) {
+        let folder = RecordingDefaults.resolveFolder(folder, folders: folders)
+        let shown = LibraryFolders.filter(folderFilter, showingNewMeetingIn: folder)
+        if shown != folderFilter { folderFilter = shown }
+        selection = id
+        reload()
+    }
+
+    /// Stop: show the meeting's transcript, then Notes once when its first notes arrive (unless the user picks a tab).
+    func recordingStopped(_ id: MeetingID) {
+        chosenTabs[id] = nil
+        notesSwitch.stopped(id, notesModelReady: notesModelReady())
+        if selection == id { tabAppliedFor = id; setTabByRule(.transcript) } else { tabAppliedFor = nil; selection = id }
+        reload()
+    }
+
+    // MARK: Ask anything (T52)
+
+    /// ⌘K: focus the field with All meetings as the scope.
+    func askAllMeetings() {
+        askScope = .allMeetings
+        askFocusPending = true
+        askFocusRequest += 1
+    }
+
+    /// Return in the field: open the highlighted hit, or (re)run the search and show the panel.
+    func submitAsk() {
+        if askPanelOpen, let i = askSelection {
+            let shown = AskResults.flattened(AskResults.grouped(hits))
+            if shown.indices.contains(i) { open(shown[i]) }
+            return
+        }
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        switch askMode {
+        case .textMatch:
+            askPanelOpen = true
+            runSearch()
+        case .naturalLanguage:
+            guard askAvailable() else { return }
+            askPanelOpen = true
+            answers?.ask(query, in: AskResults.effectiveScope(askScope, meeting: selection), folder: askFolder)
+        }
+    }
+
+    /// The search mode changed: drop the results and any answer from the other mode, keeping the question.
+    func askModeChanged() {
+        closeAskPanel()
+        hits = []
+    }
+
+    /// The folder “This folder” searches (T42), or nil.
+    var askFolder: FolderID? { AskResults.effectiveFolder(askScope, folder: folderFilter.folderID) }
+
+    /// The scope switched with an answer on screen: answer again over the new scope.
+    private func reaskIfAnswered() {
+        guard askMode == .naturalLanguage, askAvailable(), let answers, answers.phase != .idle, !answers.question.isEmpty else { return }
+        answers.ask(answers.question, in: AskResults.effectiveScope(askScope, meeting: selection), folder: askFolder)
+    }
+
+    func moveAskSelection(by delta: Int) {
+        guard askPanelOpen else { return }
+        askSelection = AskResults.move(askSelection, by: delta, count: hits.count)
+    }
+
+    /// Esc, a click outside, or opening a hit. The text stays, so Return shows the same results again.
+    func closeAskPanel() {
+        askPanelOpen = false
+        askSelection = nil
+        answers?.endSession()
+    }
+
+    // MARK: Meeting actions (T79): asked for from the shared ⋯ / right-click menu, presented once by MainView.
+
+    struct ActionRequest: Identifiable {
+        enum Kind { case rename, destructive(DestructiveAction) }
+        let id = UUID()
+        let kind: Kind
+        let meetingID: MeetingID
+        let title: String
+    }
+    var actionRequest: ActionRequest?
+    var renameRequest: ActionRequest? { if case .rename = actionRequest?.kind { actionRequest } else { nil } }
+    var deleteRequest: (request: ActionRequest, action: DestructiveAction)? {
+        if let r = actionRequest, case .destructive(let a) = r.kind { (r, a) } else { nil }
+    }
+
+    func requestRename(_ id: MeetingID, title: String) { actionRequest = .init(kind: .rename, meetingID: id, title: title) }
+    func requestDelete(_ action: DestructiveAction, _ id: MeetingID, title: String) {
+        actionRequest = .init(kind: .destructive(action), meetingID: id, title: title)
+    }
+
+    /// Exports any meeting, open or not: the open one's loaded detail, or a fresh load from the store.
+    func export(_ format: MeetingExport.Format, _ id: MeetingID) {
+        guard let d = loadedDetail(id) else { return }
+        MeetingExport.run(format, d, folderName: folderName(d.meeting.folderID))
+    }
+
+    /// Copies any meeting's original audio segments (no transcript needed).
+    func exportAudio(_ id: MeetingID) {
+        guard let store, let d = loadedDetail(id) else { return }
+        MeetingExport.exportAudio(d, store: store)
+    }
+
+    private func loadedDetail(_ id: MeetingID) -> MeetingDetail? {
+        guard let store else { return nil }
+        return detail?.meeting.id == id ? detail : (try? MeetingDetail.load(store, id)) ?? nil
+    }
+
+    /// × and Esc (T78): clear the results and the question, then put the cursor back in the ask field for the next one.
+    func clearAsk() {
+        closeAskPanel()
+        query = ""
+        hits = []
+        askFocusPending = true
+        askFocusRequest += 1
+    }
+
+    private func runSearch() {
+        guard let store, askMode == .textMatch, !query.trimmingCharacters(in: .whitespaces).isEmpty else { hits = []; return }
+        // Questions search by their content words (“when will they ship?” → “ship”), like the retriever (T54).
+        let terms = Retriever.terms(query).joined(separator: " "), scope = AskResults.effectiveScope(askScope, meeting: selection)
+        hits = (try? store.search(terms, in: scope, folder: askFolder)) ?? []
+        // A question rarely has every word on one line: then list lines with any of them, best first.
+        if hits.isEmpty { hits = (try? store.search(terms, in: scope, folder: askFolder, anyTerm: true)) ?? [] }
+        if let i = askSelection, i >= hits.count { askSelection = nil }
+    }
+
+    /// Opens the hit's meeting at the match: the transcript row for transcript hits, the Notes tab for notes. The results
+    /// stay in the Ask pane, so the next match is a click away.
+    func open(_ hit: SearchHit) {
+        if selection == hit.meetingID, let d = detail, d.meeting.id == hit.meetingID {
+            jump(to: hit, in: d)
+        } else {
+            pendingJump = .hit(hit)
+            selection = hit.meetingID
+        }
+    }
+
+    /// A citation chip (T54): the cited line in the transcript, like a notes evidence link; a note without transcript
+    /// evidence opens Notes. The panel stays open so the other citations remain a click away.
+    func open(citation p: Passage) {
+        let e = AskPassages.jumpEvidence(p), notes = p.source != .transcript && e == nil
+        if selection == p.meetingID, let d = detail, d.meeting.id == p.meetingID {
+            jump(to: e, notes: notes, in: d)
+        } else {
+            pendingJump = .evidence(p.meetingID, e, notes: notes)
+            selection = p.meetingID
+        }
+    }
+
+    private func jump(to e: TranscriptEvidence?, notes: Bool, in d: MeetingDetail) {
+        guard !notes, let e, let t = d.transcript, let row = TranscriptRows.row(for: e, in: d.rows, revision: t) else { detailTab = .notes; return }
+        detailTab = .transcript
+        focusRowID = row.id
+    }
+
+    private func jump(to hit: SearchHit, in d: MeetingDetail) {
+        switch hit.kind {
+        case .transcript:
+            detailTab = .transcript
+            focusRowID = d.rows.first { $0.segmentID?.rawValue == hit.ref }?.id
+        case .notes: detailTab = .notes
+        case .speaker: detailTab = .transcript
+        case .title, .person: break
+        }
+    }
+
+    func dismissError() { error = nil }
+
+    // MARK: Source links (T97, spec 0009 §1): amaranth://meeting/… opened from an export or another app.
+
+    /// What a source link that can't be followed exactly says. `meeting`: offered with Open Meeting (a changed source).
+    struct SourceNotice: Identifiable {
+        let id = UUID()
+        let title: String
+        let message: String
+        let meeting: MeetingID?
+    }
+    var sourceNotice: SourceNotice?
+
+    /// Export Meetings… (T99): the scope it opens with; nil when the sheet is closed.
+    var bulkExportRequest: BulkExportRequest?
+    struct BulkExportRequest: Identifiable {
+        let id = UUID()
+        let scope: BulkExportModel.Scope
+        let meetingTitle: String?
+    }
+    /// The open meeting, else the folder the sidebar shows, else the whole library.
+    func requestBulkExport(meeting: MeetingID? = nil, title: String? = nil, folder: FolderID? = nil) {
+        if let meeting { bulkExportRequest = .init(scope: .meeting(meeting), meetingTitle: title); return }
+        if let folder { bulkExportRequest = .init(scope: .folder(folder), meetingTitle: nil); return }
+        if let d = detail { bulkExportRequest = .init(scope: .meeting(d.meeting.id), meetingTitle: d.meeting.title); return }
+        bulkExportRequest = .init(scope: folderFilter.folderID.map { .folder($0) } ?? .all, meetingTitle: nil)
+    }
+
+    /// Opens a source link: the cited transcript line or the Notes tab when it still resolves; otherwise says the source
+    /// changed (offering the meeting as it is now) or that the meeting isn't available. Never points at a different line,
+    /// never starts anything, never reveals removed text. Resolved off the main thread.
+    func openSourceLink(_ url: URL) {
+        guard let store else { return }
+        let reader = MeetingReader(store: store), text = url.absoluteString
+        Task.detached(priority: .userInitiated) {
+            let r = reader.resolve(text)
+            await MainActor.run { self.follow(r) }
+        }
+    }
+
+    func follow(_ r: CitationResolution) {
+        switch r {
+        case .current(let t):
+            if selection == t.meetingID, let d = detail, d.meeting.id == t.meetingID { jump(to: t, in: d) } else { pendingJump = .citation(t); selection = t.meetingID }
+        case .changed(let id, let title):
+            sourceNotice = SourceNotice(title: "This source has changed",
+                                        message: "The cited passage in “\(title)” was edited, removed or reprocessed after the link was made. Open the meeting to see it as it is now.",
+                                        meeting: id)
+        case .unavailable:
+            sourceNotice = SourceNotice(title: "Meeting not available", message: "This meeting isn't in Amaranth. It may have been deleted.", meeting: nil)
+        case .invalid:
+            sourceNotice = SourceNotice(title: "This link can't be opened", message: "It isn't a valid Amaranth meeting link.", meeting: nil)
+        }
+    }
+
+    func openNoticeMeeting(_ id: MeetingID) { sourceNotice = nil; selection = id }
+
+    private func jump(to t: CitationTarget, in d: MeetingDetail) {
+        switch t.source {
+        case .transcript?:
+            let rowID = "\(t.ref ?? "")/\(t.word ?? "")"
+            if d.rows.contains(where: { $0.id == rowID }) { detailTab = .transcript; focusRowID = rowID } else { follow(.changed(meetingID: t.meetingID, title: t.title)) }
+        case .notes?, .userNote?: detailTab = .notes
+        case nil: break
+        }
+    }
+
+    // MARK: Folders (T40): New Folder…, Rename… and Delete Folder… are asked for here and presented once by MainView.
+
+    enum FolderRequest: Identifiable {
+        /// `moving`: the meeting whose Move to Folder ▸ New Folder… asked for it, filed in the new folder once created.
+        case create(moving: MeetingID?)
+        case rename(Folder)
+        case delete(Folder)
+        var id: String {
+            switch self {
+            case .create(let m): "create-\(m?.rawValue ?? "")"
+            case .rename(let f): "rename-\(f.id)"
+            case .delete(let f): "delete-\(f.id)"
+            }
+        }
+    }
+    var folderRequest: FolderRequest?
+    var folderNameRequest: FolderRequest? { if case .delete = folderRequest { nil } else { folderRequest } }
+    var folderDeleteRequest: Folder? { if case .delete(let f) = folderRequest { f } else { nil } }
+
+    var filteredFolder: Folder? { folderFilter.folderID.flatMap { id in folders.first { $0.id == id } } }
+    func meetingCount(in folder: FolderID) -> Int { items.filter { $0.folderID == folder }.count }
+
+    /// Creates a folder. From the sidebar it opens the new folder; from a meeting's menu it files that meeting there and
+    /// keeps the current filter.
+    func createFolder(named name: String, moving meeting: MeetingID? = nil) {
+        guard let store else { return }
+        Task.detached(priority: .userInitiated) {
+            let r = Result { () throws -> Folder in
+                let f = try store.createFolder(name: name)
+                if let meeting { try store.moveMeeting(meeting, to: f.id) }
+                return f
+            }
+            await MainActor.run {
+                switch r {
+                case .success(let f): if meeting == nil { self.folders.append(f); self.folderFilter = .folder(f.id) }
+                case .failure(let e): self.error = e.localizedDescription
+                }
+                self.reload()
+            }
+        }
+    }
+
+    func renameFolder(_ id: FolderID, to name: String) {
+        guard let store else { return }
+        perform { try store.renameFolder(id, to: name) }
+    }
+
+    /// Deletes only the folder: its meetings become unfiled (MeetingStore.deleteFolder never touches their content).
+    func deleteFolder(_ id: FolderID) {
+        guard let store else { return }
+        if folderFilter == .folder(id) { folderFilter = .all }
+        perform { try store.deleteFolder(id) }
+    }
+
+    /// Files a meeting in a folder, or unfiles it with nil.
+    func move(_ meeting: MeetingID, to folder: FolderID?) {
+        guard let store else { return }
+        perform { try store.moveMeeting(meeting, to: folder) }
+    }
+
+    // MARK: Actions
+
+    func rename(_ id: MeetingID, to title: String) {
+        guard let store, var m = try? store.meeting(id), let t = MeetingTitle.renamed(from: m.title, to: title) else { return }
+        m.title = t
+        let updated = m
+        perform { try store.upsertMeeting(updated) }
+    }
+
+    /// Header people chip (T50). Stored through the store's setter so a recorder holding an older copy can't drop them.
+    func setPeople(_ id: MeetingID, _ people: [Person]) {
+        guard let store else { return }
+        perform { try store.setPeople(people, for: id) }
+    }
+
+    /// Header calendar chip (T57): links (or re-links / updates) the meeting to an event occurrence as a snapshot and
+    /// merges its named attendees into the people (T58).
+    func link(_ id: MeetingID, to event: CalendarEvent) {
+        guard let store else { return }
+        let keepEmails = CalendarSettings.keepEmails()
+        perform { try CalendarLinking.link(event, to: id, in: store, keepEmails: keepEmails) }
+    }
+
+    /// Removes the link only; people added from the event stay (user decision 2026-10-27).
+    func unlink(_ id: MeetingID) {
+        guard let store else { return }
+        perform { try store.setLinkedEvent(nil, for: id) }
+    }
+
+    /// Stores a user edit and re-runs speaker reconciliation (cheap); notes become stale, never silently rewritten.
+    func apply(_ edit: UserEdit) {
+        guard let store else { return }
+        let scheduler = processing?.scheduler
+        perform {
+            try store.appendEdit(edit)
+            switch edit.operation {   // text corrections, deletions and trims are applied at display time
+            case .correctText, .deleteText, .trimTranscript: return
+            default: break
+            }
+            try scheduler?.enqueueReconcile(edit.meetingID)
+        }
+    }
+
+    /// T96 “Start from Here…” / “End Here…”: hides the transcript outside the kept part, then deletes the audio there
+    /// (if any is left). Refused while transcription or speaker work still reads the audio.
+    func trim(_ edit: UserEdit) {
+        guard let store, case .trimTranscript(let start, let end) = edit.operation else { return }
+        let id = edit.meetingID
+        perform {
+            let busy = try store.jobs(meeting: id).contains { !$0.state.isTerminal && [.prepare, .transcribe, .diarize, .live].contains($0.key.stage) }
+            guard !busy else { throw TrimError.processing }
+            try store.appendEdit(edit)
+            try CaptureTrim.trimStored(id, store: store, start: start, end: end)
+        }
+    }
+
+    enum TrimError: LocalizedError {
+        case processing
+        var errorDescription: String? { "This meeting is still being transcribed. Try again when processing has finished." }
+    }
+
+    func regenerateNotes(_ id: MeetingID) {
+        let scheduler = processing?.scheduler
+        perform { _ = try scheduler?.enqueueNotes(id) }
+    }
+
+    /// Saves the pane's draft as a new notes revision (spec 0008 §6) and returns it, or nil when nothing was written.
+    /// Always synchronous (one small row), so saves land in the order they were made and a debounced save can never
+    /// overtake the flush on meeting switch or quit. `immediately` (the flush) skips the refresh.
+    @discardableResult
+    func saveNotes(_ draft: NotesDraft, immediately: Bool = false) -> NotesDocumentRevision? {
+        guard let store, draft.isDirty else { return nil }
+        let rev = draft.revision()
+        do {
+            guard try store.saveNotesDocument(rev) else { return nil }
+        } catch {
+            self.error = error.localizedDescription
+            return nil
+        }
+        if !immediately { reloadDetail() }
+        return rev
+    }
+
+    /// Previous Versions, newest first.
+    func notesRevisions(_ id: MeetingID) -> [NotesDocumentRevision] { (try? store?.notesDocumentRevisions(id, limit: 30)) ?? [] }
+
+    /// Restores an earlier version as the newest revision; the current one stays in the list.
+    func restoreNotes(_ old: NotesDocumentRevision) {
+        guard let store else { return }
+        perform { try store.saveNotesDocument(NotesEditing.restoring(old, currentSummaryID: try store.currentSummary(old.meetingID)?.id)) }
+    }
+
+    /// Notes generated while the user changed the notes (spec 0008 §4): Replace composes them with the current lines.
+    func replaceWithPendingNotes(_ id: MeetingID) {
+        guard let store else { return }
+        perform { try store.replaceWithPendingNotes(id) }
+    }
+
+    /// Keeps the notes as they are; the held result stays in the record of generated notes.
+    func dismissPendingNotes(_ id: MeetingID) {
+        guard let store else { return }
+        perform { try store.dismissPendingNotes(id) }
+    }
+
+    func delete(_ action: DestructiveAction, _ id: MeetingID) {
+        let scheduler = processing?.scheduler
+        if action == .deleteMeeting, selection == id { selection = nil }
+        perform {
+            switch action {
+            case .deleteAudioOnly: try scheduler?.deleteAudio(id)
+            case .deleteMeeting: try scheduler?.delete(id)
+            }
+        }
+    }
+
+    // MARK: Stored audio (T117, Settings → Recording → Storage)
+
+    struct StoredAudio: Equatable {
+        var bytes: Int64
+        var meetings: Int
+        /// Meetings "Delete all stored audio" would skip now (recording, or transcript/speaker work pending).
+        var skipped: Int
+        /// Meetings it would delete that have no transcript (nothing of them would be left).
+        var untranscribed: Int = 0
+    }
+
+    /// Walks the library's audio off the main thread. `recording`: the meeting the recorder is capturing, if any.
+    func loadStoredAudio(recording: MeetingID?) async -> StoredAudio? {
+        guard let store else { return nil }
+        let scheduler = processing?.scheduler
+        return await Task.detached(priority: .userInitiated) { () -> StoredAudio? in
+            guard let usage = try? store.storedAudioUsage() else { return nil }
+            var skipped = 0, untranscribed = 0
+            for id in usage.meetings {
+                guard let m = try? store.meeting(id) else { continue }
+                if (try? scheduler?.audioDeletionBlocked(m, recording: Set([recording].compactMap { $0 }))) ?? true { skipped += 1 }
+                else if m.currentTranscriptRevisionID == nil { untranscribed += 1 }
+            }
+            return StoredAudio(bytes: usage.bytes, meetings: usage.meetings.count, skipped: skipped, untranscribed: untranscribed)
+        }.value
+    }
+
+    /// Deletes the audio of every meeting that has some, except the skipped ones; returns the line to show.
+    func deleteAllStoredAudio(recording: MeetingID?) async -> String {
+        guard let store, let scheduler = processing?.scheduler else { return "Processing is unavailable, so no audio was deleted." }
+        let result = await Task.detached(priority: .userInitiated) { () -> Result<String, any Error> in
+            Result {
+                let before = try store.storedAudioUsage().bytes
+                let r = try scheduler.deleteAllStoredAudio(recording: Set([recording].compactMap { $0 }))
+                let after = try store.storedAudioUsage().bytes
+                return StoredAudioText.result(deleted: r.deleted.count, skipped: r.skipped.count, freed: max(0, before - after))
+            }
+        }.value
+        reload()
+        switch result {
+        case .success(let text): return text
+        case .failure(let e): return "Couldn’t delete all stored audio: \(e.localizedDescription)"
+        }
+    }
+
+    func retry(_ id: MeetingID) { processing?.retry(id); reload() }
+    func process(_ id: MeetingID) { processing?.enqueue(id); reload() }
+
+    /// Runs store/scheduler work off the main thread, then refreshes.
+    private func perform(_ body: @escaping @Sendable () throws -> Void) {
+        Task.detached(priority: .userInitiated) {
+            let r = Result { try body() }
+            await MainActor.run {
+                if case .failure(let e) = r { self.error = e.localizedDescription }
+                self.reload()
+            }
+        }
+    }
+}

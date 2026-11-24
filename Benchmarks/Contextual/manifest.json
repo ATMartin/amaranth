@@ -1,0 +1,22 @@
+{
+  "frozen": "2026-11-06",
+  "note": "heldout.json is frozen: any change must be listed in Benchmarks/Contextual/SEMANTICS.md 'Changes after freezing'. dev.json may be extended for tuning.",
+  "files": {
+    "dev.json": {
+      "sha256": "fa012561f436fb4a19a586cedcc6debf3d12488293ef966faa5d87ea8301e423",
+      "questions": 55,
+      "meetings": 26,
+      "lines": 811,
+      "author": "a separate AI assistant, from the specification and FORMAT.md only",
+      "provenance": "synthetic, no real meeting text"
+    },
+    "heldout.json": {
+      "sha256": "7940170553e387bd8ee7327b432eaba9421bc23bd1591c117d0f395951def022",
+      "questions": 63,
+      "meetings": 30,
+      "lines": 879,
+      "author": "a separate AI assistant, from the specification and FORMAT.md only",
+      "provenance": "synthetic, no real meeting text"
+    }
+  }
+}

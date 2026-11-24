@@ -1,0 +1,15 @@
+// Shared build settings. The bundle identifiers are fixed: changing them orphans existing libraries and permissions.
+MACOSX_DEPLOYMENT_TARGET = 26.5
+ARCHS = arm64
+ONLY_ACTIVE_ARCH = NO
+SWIFT_VERSION = 6.0
+SWIFT_STRICT_CONCURRENCY = complete
+ENABLE_HARDENED_RUNTIME = YES
+CODE_SIGN_STYLE = Automatic
+// Ad-hoc until a team is configured. Put DEVELOPMENT_TEAM = XXXXXXXXXX in Config/Signing.local.xcconfig (gitignored).
+CODE_SIGN_IDENTITY = -
+DEVELOPMENT_TEAM =
+// Where "Check for Updates…" looks for builds (GitHub owner/name). A fork should point this at its own repository,
+// here or in Config/Signing.local.xcconfig.
+AMARANTH_UPDATE_REPOSITORY = ATMartin/amaranth
+#include? "Signing.local.xcconfig"

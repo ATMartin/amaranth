@@ -1,0 +1,299 @@
+import SwiftUI
+import AppKit
+import Presentation
+import Storage
+
+@main
+struct AmaranthEntry {
+    @MainActor static func main() {
+        // T70: `Amaranth --build-info` prints this build's identity as JSON (scripts/publish.sh writes it into manifests).
+        if CommandLine.arguments.contains("--build-info") {
+            let b = BuildInfo.running
+            let info: [String: Any] = ["version": b.version, "build": b.build, "commit": b.commit, "dirty": b.dirty, "date": b.date,
+                                       "channel": b.channel.rawValue, "schemaVersion": MeetingStore.schemaVersion,
+                                       "minimumSystemVersion": Bundle.main.object(forInfoDictionaryKey: "LSMinimumSystemVersion") as? String ?? ""]
+            let data = (try? JSONSerialization.data(withJSONObject: info, options: [.sortedKeys])) ?? Data()
+            FileHandle.standardOutput.write(data + Data("\n".utf8))
+            exit(0)
+        }
+        if SelfTest.runIfRequested() {
+            // Headless: keep the main run loop alive until the self-test exits the process.
+            RunLoop.main.run()
+            return
+        }
+        AmaranthApp.main()
+    }
+}
+
+struct AmaranthApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
+    @State private var worker: WorkerClient
+    @State private var models: ModelSetupModel
+    @State private var recorder: RecorderModel
+    @State private var processing: ProcessingModel
+    @State private var library: LibraryModel
+    @State private var playback = PlaybackModel()
+    @State private var live: LiveTextModel
+    @State private var incremental: IncrementalProcessor
+    /// Calendar access (T56): created without asking; the first prompt comes from a user action.
+    @State private var calendar: CalendarModel
+    @State private var reminders: ReminderController
+    /// Check for Updates… (T71).
+    @State private var updates: UpdateModel
+
+    init() {
+        let worker = WorkerClient()
+        #if DEBUG
+        let recorder = StopLayoutProbe.isRequested ? RecorderModel(store: StopLayoutProbe.store, recover: false)
+            : Self.libraryRootOverride.map { RecorderModel(store: try? MeetingStore(root: $0)) } ?? RecorderModel()
+        #else
+        let recorder = RecorderModel()
+        #endif
+        let processing = ProcessingModel(store: recorder.store, worker: worker)
+        let library = LibraryModel(store: recorder.store)
+        recorder.processing = processing
+        library.processing = processing
+        processing.onChange = { [weak library] in library?.reload(); library?.indexer?.kick() }
+        // An answer in progress stops at Record: the speech models need the Mac (T54 yields like notes).
+        recorder.onStarted = { [weak library, weak recorder] id in
+            library?.answers?.cancel()
+            library?.indexer?.yieldNow()
+            library?.recordingStarted(id, folder: recorder?.folderID)
+        }
+        recorder.onFinished = { [weak library] id in library?.recordingStopped(id) }
+        recorder.onMeetingChanged = { [weak library] _ in library?.reload() }
+        library.notesModelReady = ModelSetupModel.isReady
+        // T54: answers from the notes model, only while it can't push the speech models out (notes 0002, processing 0003).
+        let answers = AnswerModel(store: recorder.store, worker: worker)
+        answers.modelReady = ModelSetupModel.isReady
+        answers.searchReady = ModelSetupModel.isSearchReady
+        // T115: a recording ends the attempt at once with the reason (a later Retry is a new attempt); transcription is
+        // waited out inside the 15 s.
+        answers.recordingReason = { [weak recorder] in
+            recorder?.inSession == true ? "Answers are paused while recording, so the recording keeps the Mac's full attention. Ask again when it ends; exact word matches are below." : nil
+        }
+        answers.busyReason = { [weak processing] in
+            processing?.transcriptWorkActive == true ? "Waiting for transcription to finish…" : nil
+        }
+        library.answers = answers
+        // T112: contextual-search indexing in the background; everything else goes first.
+        let indexer = ContextIndexer(store: recorder.store, worker: worker)
+        indexer.pauseReason = { [weak recorder, weak processing, weak answers] in
+            if recorder?.inSession == true { return "Paused while recording" }
+            if processing?.workPending == true { return "Waits for transcripts and notes to finish" }
+            if answers?.isWorking == true { return "Paused while answering" }
+            if processing?.memoryPressure == true { return "Paused while memory is low" }
+            let t = ProcessInfo.processInfo.thermalState
+            if t == .serious || t == .critical { return "Paused while the Mac is hot" }
+            return nil
+        }
+        library.indexer = indexer
+        answers.producer = { [weak indexer] in indexer?.engine?.activeProducer }
+        AppDelegate.recorder = recorder
+        let live = LiveTextModel(client: worker)
+        recorder.live = live
+        let modelsCheck = ModelSetupModel.isReady
+        live.modelsReady = modelsCheck
+        live.pauseReason = { [weak processing] in
+            let t = ProcessInfo.processInfo.thermalState
+            if t == .serious || t == .critical { return "Live text paused while the Mac is hot — recording continues" }
+            if processing?.memoryPressure == true { return "Live text paused while memory is low — recording continues" }
+            return nil
+        }
+        let incremental = IncrementalProcessor(client: worker)
+        incremental.pauseReason = { [weak processing] in
+            guard modelsCheck() else { return "Needs the model pack" }
+            return processing?.incrementalPauseReason()
+        }
+        incremental.onFinal = { [weak live] s in live?.applyFinal(s) }
+        recorder.incremental = incremental
+        _incremental = State(initialValue: incremental)
+        _live = State(initialValue: live)
+        let models = ModelSetupModel()
+        library.askAvailable = { [weak models] in models?.askReady ?? false }
+        // Core ML compiles each model for this Mac on its first load (about 16 s for ASR): do it now, not on the first job.
+        models.onInstalled = { [weak indexer] in
+            indexer?.kick()
+            Task { _ = try? await worker.send(.warmUp, timeout: .seconds(600)) }
+        }
+        _models = State(initialValue: models)
+        let calendar = CalendarModel()
+        recorder.calendar = calendar   // T59: the suggestion at Record reads it; it never asks for access
+        _calendar = State(initialValue: calendar)
+        // T61: the notification delegate must be set before launch finishes so a click that launches the app arrives.
+        let reminders = ReminderController(calendar: calendar)
+        reminders.recorder = recorder
+        if !SelfTest.isRequested && !Self.probing { reminders.start() }
+        if !SelfTest.isRequested { indexer.start() }
+        _reminders = State(initialValue: reminders)
+        let updates = UpdateModel()
+        updates.recorder = recorder
+        updates.processingPending = { [weak processing] in processing?.workPending == true }
+        AppDelegate.updates = updates
+        _updates = State(initialValue: updates)
+        _worker = State(initialValue: worker)
+        _recorder = State(initialValue: recorder)
+        _processing = State(initialValue: processing)
+        _library = State(initialValue: library)
+        #if DEBUG
+        if StopLayoutProbe.isRequested { Task { @MainActor in await StopLayoutProbe.run(recorder: recorder, library: library) } }
+        #endif
+    }
+
+    #if DEBUG
+    static var probing: Bool { StopLayoutProbe.isRequested || libraryRootOverride != nil }
+    /// Debug builds only: `--library-root <folder>` opens a synthetic library there instead of the real one (spec 0009
+    /// evidence uses isolated libraries). No reminders or update check run in that mode.
+    static var libraryRootOverride: URL? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "--library-root"), args.indices.contains(i + 1) else { return nil }
+        return URL(filePath: args[i + 1], directoryHint: .isDirectory)
+    }
+    #else
+    static let probing = false
+    #endif
+
+    var body: some Scene {
+        Window("Amaranth", id: "main") {
+            Group {
+                if OSVersionGate.isSupported && OSVersionGate.isSupportedArchitecture {
+                    MainView().frame(minHeight: 420)   // the window's minimum; taller content scrolls inside it
+                } else {
+                    UnsupportedSystemView()
+                }
+            }
+            .environment(worker)
+            .environment(models)
+            .environment(recorder)
+            .environment(processing)
+            .environment(library)
+            .environment(playback)
+            .environment(live)
+            .environment(calendar)
+            .environment(updates)
+            .modifier(AppearanceRoot())
+            .modifier(ReminderWindowOpener(reminders: reminders))
+            .windowFitsScreen()
+        }
+        .defaultSize(width: 1100, height: 720)
+        .commands {
+            MeetingCommands(library: library)
+            // View ▸ Show/Hide Sidebar (⌃⌘S): with the toolbar's own toggle removed (T75), declared so the shortcut never
+            // depends on the system adding it. It toggles the split view, which updates MainView's column visibility.
+            SidebarCommands()
+            UpdateCommands(updates: updates)
+        }
+
+        // Check for Updates… (T71): current vs available build, what changed, Install and Relaunch / Later.
+        Window("Software Update", id: UpdateWindow.id) {
+            UpdateWindow(updates: updates).modifier(AppearanceRoot())
+        }
+        .windowResizability(.contentSize)
+        .defaultPosition(.center)
+
+        MenuBarExtra {
+            MenuBarContent(recorder: recorder)
+        } label: {
+            // Visible whenever the app runs: the brand mark, with a record dot, pause bars or (T68, "Still recording?") an
+            // exclamation mark beside it during a session, so it is never silent and never relies on colour.
+            MenuBarLabel(recorder: recorder)
+        }
+
+        Settings {
+            SettingsView(models: models, recorder: recorder, calendar: calendar, reminders: reminders, library: library, updates: updates)
+        }
+    }
+}
+
+/// Gives the reminder controller SwiftUI's openWindow, so a clicked reminder can reopen a closed main window (T61).
+struct ReminderWindowOpener: ViewModifier {
+    let reminders: ReminderController
+    @Environment(\.openWindow) private var openWindow
+
+    func body(content: Content) -> some View {
+        content.onAppear { let open = openWindow; reminders.openMainWindow = { open(id: "main") } }
+    }
+}
+
+/// Menu bar: always shows whether Amaranth is recording, for how long, and offers pause/resume/stop.
+struct MenuBarContent: View {
+    @Bindable var recorder: RecorderModel
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        switch recorder.state {
+        case .recording where recorder.quiet != nil:
+            Text("Still recording? \(QuietMonitor.stripLabel(recorder.quiet!, now: recorder.elapsed)) — \(RecorderPresentation.clock(recorder.elapsed))")
+        case .recording: Text("Recording — \(RecorderPresentation.clock(recorder.elapsed))")
+        case .paused: Text("Paused — \(RecorderPresentation.clock(recorder.elapsed))")
+        case .interrupted: Text("Interrupted by sleep — audio saved")
+        case .preparing: Text("Starting…")
+        case .stopping: Text("Saving…")
+        default: Text("Not recording")
+        }
+        Divider()
+        if recorder.inSession {
+            if recorder.state == .paused || recorder.state == .interrupted { Button("Resume") { recorder.resume() } }
+            else { Button("Pause") { recorder.pause() }.disabled(recorder.state != .recording) }
+            if recorder.quiet != nil { Button("Keep Recording") { recorder.keepRecording() } }
+            Button(recorder.quiet != nil ? "Stop & Make Notes" : "Stop and Save") { recorder.stop() }.disabled(recorder.state == .stopping)
+        } else {
+            // Bring the window forward so the live transcript is in front (T32).
+            Button("Record") { recorder.start(); openWindow(id: "main"); NSApp.activate() }
+        }
+        Divider()
+        Button("Open Amaranth") { openWindow(id: "main"); NSApp.activate() }
+        Button("Quit Amaranth") { NSApp.terminate(nil) }.keyboardShortcut("q")
+    }
+}
+
+/// Quitting while recording asks first and saves; closing the window keeps recording (the menu bar shows it).
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    @MainActor static weak var recorder: RecorderModel?
+    @MainActor static weak var updates: UpdateModel?
+
+    private var appearanceObservation: NSKeyValueObservation?
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
+
+    /// Settings → Appearance and the toolbar toggle (T43/T44) both just write the setting; this applies it app-wide.
+    @MainActor func applicationWillFinishLaunching(_ notification: Notification) {
+        AppAppearance.apply(UserDefaults.standard.appearance)
+        appearanceObservation = UserDefaults.standard.observe(\.appearance, options: [.new]) { _, _ in
+            Task { @MainActor in AppAppearance.apply(UserDefaults.standard.appearance) }
+        }
+    }
+
+    /// T71: one check at launch (Settings → Updates → Check when Amaranth opens); never on a timer.
+    @MainActor func applicationDidFinishLaunching(_ notification: Notification) {
+        if !SelfTest.isRequested && !AmaranthApp.probing { Self.updates?.launchCheck() }
+    }
+
+    @MainActor func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard let recorder = Self.recorder, recorder.inSession else { return .terminateNow }
+        let alert = NSAlert()
+        alert.messageText = "Amaranth is recording"
+        alert.informativeText = "Stop and save the recording before quitting? Everything recorded so far is already saved to disk."
+        alert.addButton(withTitle: "Stop, Save and Quit")
+        alert.addButton(withTitle: "Keep Recording")
+        guard alert.runModal() == .alertFirstButtonReturn else { return .terminateCancel }
+        recorder.stopThen { NSApp.reply(toApplicationShouldTerminate: true) }
+        return .terminateLater
+    }
+}
+
+extension UserDefaults {
+    /// KVO-observable accessor for `AppAppearance.key`.
+    @objc dynamic var appearance: String? { string(forKey: AppAppearance.key) }
+}
+
+struct UnsupportedSystemView: View {
+    var body: some View {
+        ContentUnavailableView(
+            "Unsupported Mac",
+            systemImage: "exclamationmark.triangle",
+            description: Text("Amaranth requires an Apple silicon (M2 or newer) Mac running macOS 26.5.2 or later. This Mac runs \(OSVersionGate.currentDescription).")
+        )
+        .frame(minWidth: 480, minHeight: 300)
+    }
+}

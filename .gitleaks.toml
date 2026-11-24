@@ -1,0 +1,7 @@
+# gitleaks settings for scripts/privacy-scan.sh.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Synthetic benchmark sets: meeting keys such as h-pricing-1029 look like API keys to the generic rule."
+paths = ['''Benchmarks/Contextual/(dev|heldout)\.json''']

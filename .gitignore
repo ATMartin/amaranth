@@ -1,0 +1,43 @@
+.DS_Store
+.build/
+build/
+DerivedData/
+*.xcodeproj/
+xcuserdata/
+Config/Signing.local.xcconfig
+Benchmarks/Results/scratch/
+ModelStore/
+*.gguf
+*.mlmodelc/
+# Public fixture audio is fetched by Benchmarks/Fixtures/public/SOURCES.md; keep only provenance in git.
+Benchmarks/Fixtures/public/**/*.wav
+Benchmarks/Fixtures/public/**/*.flac
+Benchmarks/Fixtures/public/**/*.mp3
+Benchmarks/Results/*/inputs/
+dist/
+.build-check/
+# Regenerable benchmark intermediates (derived 16 kHz audio, per-window/LLM checkpoints); results and logs stay.
+Benchmarks/Results/*/sweep-inputs/
+Benchmarks/Results/*/production-inputs/
+Benchmarks/Results/*/notes-inputs/
+Benchmarks/Results/*/notes-work-*/
+Benchmarks/Results/**/*.wav
+Benchmarks/Results/**/*.caf
+.build-alt/
+.build-*/
+reports/
+
+# Consented real-meeting corpus: private, never committed (plan §10; Milestone E)
+Tests/Data/Recordings/
+# perf-suite outputs hold transcripts and notes (corpus content is private, plan §10); reports hold metrics only.
+Benchmarks/Results/*/outputs/
+
+# Per-run outputs hold transcripts and notes (corpus meetings are private): never committed.
+Benchmarks/Results/*/outputs/
+
+# Project management and working notes: kept locally, not published.
+docs/
+
+# Benchmark runs and the Ask evaluation set come from private recordings: kept locally, not published.
+Benchmarks/Results/
+Benchmarks/Ask/

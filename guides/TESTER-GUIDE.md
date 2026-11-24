@@ -1,0 +1,126 @@
+# Amaranth 0.1.0: tester guide (developer build)
+
+Amaranth records meetings on your Mac, both your microphone and the call audio. It then makes a transcript with
+speakers and evidence-backed notes, **entirely on this Mac**. Nothing is uploaded.
+
+> This guide comes with the DMG build of Amaranth. If you built the app from source, start with the README instead.
+>
+> **This is a developer build.** It is **not notarized**, so macOS will warn the first time you open it. Amaranth
+> never updates on its own: **Amaranth ▸ Check for Updates…** tells you when a newer build is out and installs it only
+> when you say so, and never during a recording ([how updates work](https://github.com/ATMartin/amaranth/blob/main/guides/UPDATES.md)).
+
+## Requirements
+- An Apple silicon Mac (M2 or newer) running **macOS 26.5.2 or later**. Older systems show an "Unsupported Mac" screen.
+- About 4 GB free for the optional model pack, plus about 2 GB per hour of recording (both sources, lossless at the devices' native
+  quality).
+
+## Install
+1. Open the DMG and drag **Amaranth** to Applications.
+2. The first time, right-click Amaranth and choose **Open**, then confirm. The build isn't notarized; this is
+   expected.
+3. A short welcome explains what stays local.
+
+## Models (optional for recording)
+Transcripts, speakers, notes and live text need a one-time model download (about 4 GB): **Settings → Models** or the
+toolbar button. Downloads are verified by hash and size and activate only when complete. Until then, Amaranth records
+normally ("record-only") and processes the audio once models are installed. You can also import a model pack folder
+offline.
+
+## Record
+1. Press **Record** (⇧⌘R) to start right away. To name the meeting, pick a microphone or choose a folder first, click
+   the ▾ next to it instead, then **Start recording**.
+2. The first time, macOS asks for the **microphone** and **system audio recording** permissions. Allow both. If you
+   deny one, the recorder says so and offers **Open Privacy Settings…**.
+3. While recording:
+   - each source has its own meter and status;
+   - the menu bar shows a red icon and the elapsed time;
+   - live text appears a few seconds behind speech (provisional, no speakers);
+   - you can type your own notes: each line goes into the meeting's notes and is used when they're generated.
+4. **Pause** (⇧⌘P) records nothing until Resume. **Stop and Save** (⇧⌘S) finishes. Closing the window keeps
+   recording. Quitting asks first.
+5. When the call ends, Amaranth stops by itself within a few seconds of the meeting app letting go of the
+   microphone. If only your side has been heard for three minutes it stops too, and a recording that goes quiet gets
+   a **Still recording?** alert. All of this can be changed in **Settings → Recording**.
+6. Tell participants you are recording.
+
+## After the meeting
+The meeting is processed in the background: preparing audio, transcribing, finding speakers, then writing notes. A
+one-hour meeting takes about 10 minutes on an M2 Max (both sources, including notes); slower Macs take longer. Processing pauses while you record or
+when the Mac is hot or low on memory, and the meeting shows why.
+
+- **Transcript:**
+  - Click a time to play from it (Space toggles).
+  - Right-click a line to correct text or change its speaker.
+  - Use the speaker bar to rename or merge speakers.
+  - "Unknown speaker" and overlap markers are shown honestly, not guessed.
+- **Notes:**
+  - Press **ⓘ** (⌘D) to show where each item came from (time links), transcript gaps and flags; right-click an item
+    for **Show in Transcript** in either mode.
+  - Items marked **?** are only partly confirmed by the transcript.
+  - The notes are one editable page: click any line to change it, or type your own lines anywhere (Return adds a line,
+    "# " starts a heading, "- " a bullet). Lines you write are used the next time notes are generated, and are never
+    lost: they're either cited by the new notes or kept word for word under **Also noted**.
+  - If you edit speakers or text, the notes say they're out of date; press **Regenerate**. After you've edited the
+    notes, Regenerate asks first; **Previous Versions** restores any earlier version.
+  - If you type while notes are being generated, the new notes wait: **New notes are ready. Replace?**
+- **Ask** (⌘K) opens the question box on the right. Ask about this meeting or all of them in plain words; the answer
+  links back to the notes and transcript lines it came from. Answers are written by the model on this Mac and can be
+  wrong, so follow the links for anything that matters.
+- **Audio details** (⌘3) shows what was recorded from each source, and any gaps.
+- **Folders** in the sidebar keep meetings organized; drag a meeting onto one.
+- **Rename** a meeting by right-clicking it in the sidebar.
+
+### Keyboard shortcuts
+
+| Action | Shortcut |
+|---|---|
+| Record | ⌘⇧R |
+| Pause / Resume | ⌘⇧P |
+| Stop and save | ⌘⇧S |
+| Notes / Transcript / Audio details | ⌘1 / ⌘2 / ⌘3 |
+| Show or hide details | ⌘D |
+| Export Markdown | ⌘E |
+| Ask a question | ⌘K |
+| Play / pause (Transcript tab) | Space |
+
+## Export
+**Export → Markdown / Plain Text / JSON** saves the transcript and the notes as shown, with timestamps, speakers
+and gaps. **Export → Original Audio…** copies the lossless audio segments plus a
+manifest of times and gaps. You can also export every meeting at once into a folder of plain files; see
+[how exports work](https://github.com/ATMartin/amaranth/blob/main/guides/EXPORTS.md).
+
+## Delete
+- **Delete Audio Only** removes the recordings but keeps the text and notes searchable. Playback and re-transcription
+  stop.
+- **Delete Meeting** removes everything for that meeting, including search entries. Files you exported elsewhere are
+  not affected. Neither can be undone.
+- **Settings → Recording → Keep audio after processing** is on by default. Turn it off and each meeting's audio is
+  removed once its transcript and notes are done. **Delete all stored audio…** does the same for meetings you already
+  have.
+
+## If something goes wrong
+- **The app or the Mac crashed while recording.** On next launch Amaranth recovers everything saved up to the crash,
+  about the last second or two may be lost, and the meeting is marked "Interrupted". Nothing is lost silently: gaps
+  are shown under Audio details.
+- **The disk is nearly full.** Amaranth warns, then stops and saves before the disk fills. It never deletes earlier
+  recordings.
+- **Processing failed.** The meeting shows "failed — retry available". Press **Retry Processing**. The audio is
+  always kept.
+- **Model files are damaged.** Settings → Models shows it and offers reinstall or import. Recording still works.
+- **Where the data lives:** `~/Library/Application Support/Amaranth/` (readable only by your user account).
+
+## What has been tested
+| Area | Tested on | Status |
+|---|---|---|
+| Capture, recovery, processing, notes, UI rendering | M2 Max, 96 GB, macOS 26.5.2 | Automated tests and self-tests pass |
+| Google Meet in Chrome | M2 Max, macOS 26.5.2 | In regular use by the maintainer |
+| Other meeting apps (Zoom, Teams, Slack), Bluetooth/USB devices, sleep/lock | — | **Not yet tested by a person** |
+| Base M2 / 16 GB | — | **Unverified** (no hardware) |
+| M2 / 8 GB | — | **Unverified; not supported** |
+
+## Known limitations
+- Transcripts are English-first. Other languages are not detected or flagged.
+- Speaker separation misses some overlapping speech. Expect to rename and fix speakers.
+- Notes come from a small local model. Many items are marked uncertain; check important ones against the cited lines.
+- On base M2 Macs, notes for long meetings may take longer than 20 minutes (unmeasured).
+- Live text is provisional; the final transcript replaces it after processing.

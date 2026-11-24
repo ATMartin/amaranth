@@ -1,0 +1,122 @@
+name: Amaranth
+options:
+  bundleIdPrefix: com.alexmartin.amaranth
+  deploymentTarget:
+    macOS: "26.5"
+  createIntermediateGroups: true
+  groupSortPosition: top
+configFiles:
+  Debug: Config/Base.xcconfig
+  Release: Config/Base.xcconfig
+packages:
+  AmaranthKit:
+    path: .
+targets:
+  Amaranth:
+    type: application
+    platform: macOS
+    sources:
+      - path: App
+    dependencies:
+      - package: AmaranthKit
+        product: Domain
+      - package: AmaranthKit
+        product: DomainFixtures
+      - package: AmaranthKit
+        product: Capture
+      - package: AmaranthKit
+        product: Models
+      - package: AmaranthKit
+        product: Storage
+      - package: AmaranthKit
+        product: ProcessingCore
+      - package: AmaranthKit
+        product: Presentation
+      - package: AmaranthKit
+        product: Export
+      - package: AmaranthKit
+        product: MeetingAccess
+      - package: AmaranthKit
+        product: Contextual
+      - target: InferenceWorker
+        embed: true
+        codeSign: true
+    entitlements:
+      path: App/Amaranth.entitlements
+      properties:
+        com.apple.security.device.audio-input: true
+        com.apple.security.personal-information.calendars: true
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Amaranth
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "0"   # replaced at build time by scripts/stamp-build.sh (T70)
+        LSMinimumSystemVersion: "26.5.2"
+        LSApplicationCategoryType: public.app-category.productivity
+        AmaranthUpdateRepository: $(AMARANTH_UPDATE_REPOSITORY)
+        NSMicrophoneUsageDescription: Amaranth records your microphone during meetings you start, and keeps the audio on this Mac.
+        NSAudioCaptureUsageDescription: Amaranth records system audio (other meeting participants) during meetings you start, and keeps the audio on this Mac.
+        NSCalendarsFullAccessUsageDescription: Amaranth reads your calendar to name recordings and list who was invited. Nothing leaves this Mac.
+        NSHumanReadableCopyright: "Local-only meeting recorder."
+        # T41: a meeting dragged from the sidebar onto a folder (App/Library/MeetingDrag.swift). Private to the app.
+        # T97 (spec 0009): source links amaranth://meeting/<id>?… open a meeting (navigation only).
+        CFBundleURLTypes:
+          - CFBundleURLName: com.alexmartin.amaranth.source-link
+            CFBundleURLSchemes: [amaranth]
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: com.alexmartin.amaranth.meeting-id
+            UTTypeDescription: Amaranth meeting
+            UTTypeConformsTo: [public.data]
+    postBuildScripts:
+      # T70: build number = commit count, plus commit, dirty flag, date and channel (scripts/stamp-build.sh).
+      - name: Stamp build number
+        script: '"$SRCROOT/scripts/stamp-build.sh"'
+        inputFiles:
+          - $(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)
+        basedOnDependencyAnalysis: false
+    settings:
+      base:
+        ENABLE_USER_SCRIPT_SANDBOXING: NO   # the stamp phase reads .git
+        PRODUCT_BUNDLE_IDENTIFIER: com.alexmartin.amaranth
+        PRODUCT_NAME: Amaranth
+        GENERATE_INFOPLIST_FILE: NO
+        # Inner Circle / Forest identity: the layered App/Resources/Amaranth.icon is the only app
+        # icon; AmaranthAccent tints system controls.
+        ASSETCATALOG_COMPILER_APPICON_NAME: Amaranth
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AmaranthAccent
+  InferenceWorker:
+    type: xpc-service
+    platform: macOS
+    sources:
+      - path: InferenceWorker/Service
+    dependencies:
+      - package: AmaranthKit
+        product: Domain
+      - package: AmaranthKit
+        product: ProcessingCore
+      - package: AmaranthKit
+        product: ProcessingRuntime
+    info:
+      path: InferenceWorker/Info.plist
+      properties:
+        CFBundleDisplayName: Amaranth Inference Worker
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "0"   # replaced at build time by scripts/stamp-build.sh (T70)
+        LSMinimumSystemVersion: "26.5.2"
+        XPCService:
+          ServiceType: Application
+          RunLoopType: NSRunLoop
+    postBuildScripts:
+      # T70: build number = commit count, plus commit, dirty flag, date and channel (scripts/stamp-build.sh).
+      - name: Stamp build number
+        script: '"$SRCROOT/scripts/stamp-build.sh"'
+        inputFiles:
+          - $(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)
+        basedOnDependencyAnalysis: false
+    settings:
+      base:
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        PRODUCT_BUNDLE_IDENTIFIER: com.alexmartin.amaranth.InferenceWorker
+        PRODUCT_NAME: com.alexmartin.amaranth.InferenceWorker
+        GENERATE_INFOPLIST_FILE: NO

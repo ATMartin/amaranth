@@ -1,0 +1,54 @@
+[
+ {
+  "url": "https://api.github.com/repos/ATMartin/amaranth/releases/432214798",
+  "assets_url": "https://api.github.com/repos/ATMartin/amaranth/releases/432214798/assets",
+  "upload_url": "https://uploads.github.com/repos/ATMartin/amaranth/releases/432214798/assets{?name,label}",
+  "html_url": "https://github.com/ATMartin/amaranth/releases/tag/build-122",
+  "id": 432214798,
+  "node_id": "RE_kwDOVads384ZwxMO",
+  "tag_name": "build-122",
+  "target_commitish": "2dad4c396b104bdf1d0ba0b690e65fb4d3e5d6cc",
+  "name": "Amaranth 0.1.0 (122)",
+  "draft": false,
+  "immutable": false,
+  "prerelease": false,
+  "created_at": "2026-11-03T02:30:04Z",
+  "updated_at": "2026-11-03T02:35:06Z",
+  "published_at": "2026-11-03T02:35:05Z",
+  "assets": [
+   {
+    "url": "https://api.github.com/repos/ATMartin/amaranth/releases/assets/703988350",
+    "id": 703988350,
+    "node_id": "RA_kwDOVads384p9gJ-",
+    "name": "Amaranth-0.1.0-122.zip",
+    "label": "",
+    "content_type": "application/zip",
+    "state": "uploaded",
+    "size": 19218285,
+    "digest": "sha256:3287fcf08b684113aa120e230bd4caadb66974f8b9a7373efef96cf8539231c8",
+    "download_count": 0,
+    "created_at": "2026-11-03T02:35:00Z",
+    "updated_at": "2026-11-03T02:35:04Z",
+    "browser_download_url": "https://github.com/ATMartin/amaranth/releases/download/build-122/Amaranth-0.1.0-122.zip"
+   },
+   {
+    "url": "https://api.github.com/repos/ATMartin/amaranth/releases/assets/703988659",
+    "id": 703988659,
+    "node_id": "RA_kwDOVads384p9gOz",
+    "name": "manifest.json",
+    "label": "",
+    "content_type": "application/json",
+    "state": "uploaded",
+    "size": 2399,
+    "digest": "sha256:a764162a0f9d236ccd710bfea20673eb76c07ec2b3ce7c15b09dea9f4be76e93",
+    "download_count": 0,
+    "created_at": "2026-11-03T02:35:06Z",
+    "updated_at": "2026-11-03T02:35:06Z",
+    "browser_download_url": "https://github.com/ATMartin/amaranth/releases/download/build-122/manifest.json"
+   }
+  ],
+  "tarball_url": "https://api.github.com/repos/ATMartin/amaranth/tarball/build-122",
+  "zipball_url": "https://api.github.com/repos/ATMartin/amaranth/zipball/build-122",
+  "body": "Build 122 (2dad4c3, release channel).\n\n- T70: fix the Release fault-injection check in build-app.sh (strings | grep -q died of SIGPIPE under pipefail).\n- T70: build number = commit count (stamped into app + worker), shared build-app.sh, publish.sh to GitHub Releases or a local folder.\n- Stop recording automatically when the call app lets go of the microphone (default), or ask; 10 s instead of 30 s.\n- Recording view: just the meeting title (no Live text / Provisional eyebrow or final-transcript note).\n- Transcript: right-clicking a line's text opens the row menu, not the system text menu.\n- T96: delete transcript lines; Start from Here\u2026 / End Here\u2026 trim the transcript and audio.\n- Milestone Q un-parked and extended to GitHub Releases updates (user decision 2026-11-02).\n- check.sh: fail when any swift test binary fails.\n- Spec 0008: cited user lines stay out of the document (user decision 2026-10-31); note L parked.\n- Reorder remaining milestones: loose ends \u2192 T21 \u2192 feedback round \u2192 F; park L, P, Q.\n- Notes tab: \"History\" and \"Footnotes\" labels; Footnotes without the icon, set close together.\n- Notes tab: pinned header and buttons, one editable region, Limitations as a footnote.\n- Notes tab: empty state, Generate before Regenerate, sparkles icon.\n- T95: Milestone R validation. Sonnet verdict v1 PASS WITH FIXES, fixes applied, verdict v2 PASS.\n- T94: remove the old notes stores; docs; Milestone L revised on the notes document.\n- T93: exports, search and Ask on the single notes field (spec 0008 \u00a77).\n- T92: notes while recording (spec 0008 \u00a72).\n- T91: one editable notes field in the Notes tab (spec 0008 \u00a75, \u00a76).\n- T90: generation reads the notes document; user lines survive; snapshot publishing (spec 0008 \u00a73\u20135).\n- T89: notes document, storage and the library v6 migration (spec 0008 \u00a71, \u00a78)."
+ }
+]

@@ -1,0 +1,4 @@
+// Copy to Signing.local.xcconfig and set your team. A stable signing identity keeps
+// macOS TCC microphone/system-audio grants across rebuilds.
+DEVELOPMENT_TEAM = ABCDE12345
+CODE_SIGN_IDENTITY = Apple Development
